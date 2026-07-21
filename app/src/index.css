@@ -82,6 +82,12 @@
   --color-el-dragon: #d264b0;
   --color-el-normal: #b7b1a4;
 
+  /* Rarity tiers (categorical; buckets in lib/ui.ts::rarityTier). */
+  --color-rarity-common: #7e7e7e;
+  --color-rarity-rare: #6a92ff;
+  --color-rarity-epic: #b963ff;
+  --color-rarity-legendary: #ff9557;
+
   /* Faces. */
   --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;

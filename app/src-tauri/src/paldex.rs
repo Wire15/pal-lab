@@ -69,8 +69,10 @@ pub struct SpeciesEntry {
     /// Work-suitability levels in `pal_data::gamedata::WORK_KINDS` canonical
     /// order (12 entries; the client filters to nonzero for display).
     pub work_suitability: Vec<u8>,
-    /// Partner-skill display name, when the pack carries one (`null` today).
+    /// Partner-skill display name, when known (`null` for ~130 DLC species).
     pub partner_skill: Option<String>,
+    /// Partner-skill effect description, paired with `partner_skill`.
+    pub partner_skill_desc: Option<String>,
     pub nocturnal: bool,
     pub food_amount: u8,
     /// `(min, max)` wild spawn level; `(0, 0)` means not found in the wild.
@@ -102,6 +104,7 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
             .collect(),
         work_suitability: sp.work_suitability.to_vec(),
         partner_skill: sp.partner_skill.clone(),
+        partner_skill_desc: sp.partner_skill_desc.clone(),
         nocturnal: sp.nocturnal,
         food_amount: sp.food_amount,
         wild_levels: sp.wild_levels,
@@ -398,6 +401,19 @@ mod tests {
         for pal in &summary.pals {
             let k = format!("{:?}", pal.container_kind);
             if kinds_seen.insert(k.clone(), ()).is_none() {
+                trimmed.push(pal.clone());
+                *per_kind.entry(k).or_default() += 1;
+            }
+        }
+        // pass 1b: guarantee a few human NPCs so the dev shim exercises the
+        // is_human rendering path (humans share Base/Palbox kinds with pals, so
+        // pass 1 may miss them).
+        for pal in &summary.pals {
+            if trimmed.iter().filter(|p| p.is_human).count() >= 3 {
+                break;
+            }
+            if pal.is_human && !trimmed.iter().any(|p| p.instance_id == pal.instance_id) {
+                let k = format!("{:?}", pal.container_kind);
                 trimmed.push(pal.clone());
                 *per_kind.entry(k).or_default() += 1;
             }

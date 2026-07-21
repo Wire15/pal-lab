@@ -36,6 +36,22 @@ pub struct PlayerInfo {
     pub name: String,
 }
 
+/// Base-camp ownership: one guild-owned base, mapped to its physical worker
+/// pal-container and the guild's member players. Emitted per base container so
+/// the UI can scope base strips to the guild members of a selected player.
+#[derive(Debug, Clone)]
+pub struct BaseOwnership {
+    /// Worker pal-container guid (matches an [`OwnedPal::container_id`] whose
+    /// `container_kind` is [`ContainerKind::Base`]).
+    pub container_id: Guid,
+    /// Owning guild id (`GroupSaveDataMap` group id).
+    pub guild_id: Guid,
+    /// Display guild name (e.g. `"Unnamed Guild"`).
+    pub guild_name: String,
+    /// Player uids of the guild's members present in this save.
+    pub member_uids: Vec<Guid>,
+}
+
 /// Everything the reader recovers from a save directory (or a single level
 /// file). Malformed entities are skipped and reported in `warnings`.
 #[derive(Debug, Default)]
@@ -43,6 +59,8 @@ pub struct SaveData {
     pub world_name: Option<String>,
     pub players: Vec<PlayerInfo>,
     pub pals: Vec<OwnedPal>,
+    /// Guild-owned base camps mapped to their worker containers + members.
+    pub bases: Vec<BaseOwnership>,
     pub warnings: Vec<String>,
 }
 
@@ -123,10 +141,17 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
         Err(_) => None,
     };
 
+    let bases = build_bases(
+        &parsed.guilds,
+        &parsed.base_id_to_container,
+        &parsed.players,
+    );
+
     Ok(SaveData {
         world_name,
         players: to_player_infos(&parsed.players),
         pals: parsed.pals,
+        bases,
         warnings,
     })
 }
@@ -137,12 +162,49 @@ pub fn read_level_sav(path: impl AsRef<Path>) -> Result<SaveData, SaveError> {
     let mut warnings = Vec::new();
     let blob = read_and_decompress(path.as_ref())?;
     let parsed = characters::parse_level(&blob, &mut warnings)?;
+    let bases = build_bases(
+        &parsed.guilds,
+        &parsed.base_id_to_container,
+        &parsed.players,
+    );
     Ok(SaveData {
         world_name: None,
         players: to_player_infos(&parsed.players),
         pals: parsed.pals,
+        bases,
         warnings,
     })
+}
+
+/// Join parsed guilds with the base_id -> container map, keeping only guild
+/// members that are known players in this save. One [`BaseOwnership`] per base
+/// container that resolves; bases with no worker container are skipped.
+fn build_bases(
+    guilds: &[characters::GuildRaw],
+    base_id_to_container: &std::collections::HashMap<Guid, Guid>,
+    players: &[characters::PlayerEntry],
+) -> Vec<BaseOwnership> {
+    let player_uids: HashSet<Guid> = players.iter().map(|p| p.uid).collect();
+    let mut bases = Vec::new();
+    for guild in guilds {
+        let member_uids: Vec<Guid> = guild
+            .member_candidates
+            .iter()
+            .copied()
+            .filter(|u| player_uids.contains(u))
+            .collect();
+        for base_id in &guild.base_ids {
+            if let Some(&container_id) = base_id_to_container.get(base_id) {
+                bases.push(BaseOwnership {
+                    container_id,
+                    guild_id: guild.guild_id,
+                    guild_name: guild.guild_name.clone(),
+                    member_uids: member_uids.clone(),
+                });
+            }
+        }
+    }
+    bases
 }
 
 fn to_player_infos(entries: &[characters::PlayerEntry]) -> Vec<PlayerInfo> {

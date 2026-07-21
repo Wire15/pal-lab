@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
 import type { NamedEntry, OwnedPal, SpeciesEntry } from "../lib/types";
 import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
@@ -14,12 +14,14 @@ import {
   compactPages,
   dimensionalPages,
   GRID_COLS,
+  guildBases,
   isQueryActive,
   matchesQuery,
   palKey,
   partySlots,
   physicalPages,
   playerContainers,
+  scopeBasesToPlayer,
   type GridCell,
   type SortKey,
 } from "../components/palbox/selectors";
@@ -223,6 +225,45 @@ export default function SaveInspector() {
     [saveSummary, activeUid],
   );
 
+  // Guild-scoped bases (slice A contract: SaveSummary.bases). Show only bases
+  // whose guild members include the active player; when players share a guild
+  // the bases appear on each member's tab. Falls back to the combined view when
+  // guild data is absent (stale fixture / pre-contract backend).
+  const guild = useMemo(
+    () => (saveSummary ? guildBases(saveSummary) : []),
+    [saveSummary],
+  );
+  const scopedBases = useMemo(
+    () => scopeBasesToPlayer(bases, guild, activeUid),
+    [bases, guild, activeUid],
+  );
+
+  // Fluid slot sizing: measure the (stable) content width and pack the party
+  // rail + GRID_COLS box columns into it, so the grid fills the viewport and
+  // grows on wider screens. Measuring the wrapper (not the flex-1 box column)
+  // avoids a size<->layout feedback loop.
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentWidth, setContentWidth] = useState(0);
+  useLayoutEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      setContentWidth(entries[0]?.contentRect.width ?? 0);
+    });
+    ro.observe(el);
+    setContentWidth(el.clientWidth);
+    return () => ro.disconnect();
+  }, [saveSummary, mode]);
+
+  const slotSize = useMemo(() => {
+    if (contentWidth <= 0) return 84;
+    const ROW_GAP = 24; // party rail -> box grid
+    const SLOT_GAP = 12; // matches PalGrid / PartyRail
+    const usable = contentWidth - ROW_GAP - (GRID_COLS - 1) * SLOT_GAP;
+    const raw = Math.floor(usable / (GRID_COLS + 1)); // +1 = party column
+    return Math.max(56, Math.min(160, raw));
+  }, [contentWidth]);
+
   const active = isQueryActive(query);
 
   // The pool that both the list table and the shown/total counter range over:
@@ -232,9 +273,9 @@ export default function SaveInspector() {
       ...containers.party,
       ...containers.palbox,
       ...containers.dimensional,
-      ...bases.flatMap((b) => b.pals),
+      ...scopedBases.flatMap((b) => b.pals),
     ],
-    [containers, bases],
+    [containers, scopedBases],
   );
 
   const shown = useMemo(
@@ -270,11 +311,11 @@ export default function SaveInspector() {
   }, [containers.party, active, query, namesById, species]);
 
   const visibleBases = useMemo(() => {
-    if (!active) return bases;
-    return bases
+    if (!active) return scopedBases;
+    return scopedBases
       .map((b) => ({ ...b, pals: applyQuery(b.pals, query, namesById, species) }))
       .filter((b) => b.pals.length > 0);
-  }, [bases, active, query, namesById, species]);
+  }, [scopedBases, active, query, namesById, species]);
 
   // Reset paging when the player, surface, or query-activeness changes.
   useEffect(() => setPage(0), [activeUid, surface, active, query.sortKey]);
@@ -435,17 +476,10 @@ export default function SaveInspector() {
         <div className="relative flex flex-1 overflow-hidden">
           {mode === "grid" ? (
             <div className="flex-1 overflow-auto px-6 py-5">
-              <div className="mx-auto flex max-w-[560px] flex-col gap-6">
-                <PartyRail
-                  slots={partyCells}
-                  nameOf={nameOf}
-                  selectedKey={selectedKey}
-                  onSelect={onSelect}
-                />
-
+              <div ref={contentRef} className="flex flex-col gap-6">
                 {/* Surface toggle (Palbox / Dimensional) */}
                 {hasDimensional && (
-                  <div className="flex items-center gap-1 self-center rounded-md border border-line p-0.5">
+                  <div className="flex items-center gap-1 self-start rounded-md border border-line p-0.5">
                     {(["palbox", "dimensional"] as BoxSurface[]).map((s) => (
                       <button
                         key={s}
@@ -463,28 +497,42 @@ export default function SaveInspector() {
                   </div>
                 )}
 
-                <BoxGrid
-                  pages={pages}
-                  page={safePage}
-                  onPage={setPage}
-                  pagerLabel={surface === "palbox" ? "Box" : "Page"}
-                  nameOf={nameOf}
-                  selectedKey={selectedKey}
-                  onSelect={onSelect}
-                  emptyHint={
-                    active
-                      ? "No pals match your filters."
-                      : surface === "palbox"
-                        ? "This player has no boxed pals."
-                        : "No dimensional storage pals."
-                  }
-                />
+                {/* Party rail (vertical, left) + the box grid filling the rest. */}
+                <div className="flex items-start gap-6">
+                  <PartyRail
+                    slots={partyCells}
+                    nameOf={nameOf}
+                    selectedKey={selectedKey}
+                    onSelect={onSelect}
+                    size={slotSize}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <BoxGrid
+                      pages={pages}
+                      page={safePage}
+                      onPage={setPage}
+                      pagerLabel={surface === "palbox" ? "Box" : "Page"}
+                      nameOf={nameOf}
+                      selectedKey={selectedKey}
+                      onSelect={onSelect}
+                      size={slotSize}
+                      emptyHint={
+                        active
+                          ? "No pals match your filters."
+                          : surface === "palbox"
+                            ? "This player has no boxed pals."
+                            : "No dimensional storage pals."
+                      }
+                    />
+                  </div>
+                </div>
 
                 <BaseStrip
                   bases={visibleBases}
                   nameOf={nameOf}
                   selectedKey={selectedKey}
                   onSelect={onSelect}
+                  size={slotSize}
                 />
               </div>
             </div>

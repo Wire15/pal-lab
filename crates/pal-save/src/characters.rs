@@ -4,9 +4,10 @@
 //! `rawdata/character.py`: each `CharacterSaveParameterMap` value's `RawData`
 //! is `SaveParameter` properties, then 4 unknown bytes, then a group-id guid.
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use pal_data::types::{ContainerKind, Gender, Guid, IvSet, OwnedPal};
+use pal_data::GameData;
 
 use crate::archive::Reader;
 use crate::gvas::{self, find, GvasHeader, Value};
@@ -21,12 +22,29 @@ pub struct PlayerEntry {
 
 /// Result of parsing a `Level.sav`. `base_containers` are the pal-container
 /// guids owned by base camps (from `BaseCampSaveData`), used to classify base
-/// worker pals.
+/// worker pals; `base_id_to_container` maps each base-camp id to that container
+/// so guild `base_ids` can be resolved to physical containers. `guilds` carries
+/// the raw guild ownership records (member resolution against the player set is
+/// deferred to the caller, which has the full player list).
 #[derive(Debug, Default)]
 pub struct LevelParse {
     pub pals: Vec<OwnedPal>,
     pub players: Vec<PlayerEntry>,
     pub base_containers: HashSet<Guid>,
+    pub base_id_to_container: HashMap<Guid, Guid>,
+    pub guilds: Vec<GuildRaw>,
+}
+
+/// A guild (`EPalGroupType::Guild`/`IndependentGuild`) parsed from
+/// `GroupSaveDataMap`. `member_candidates` are the distinct non-zero guids
+/// found in the player-list region of the raw record; the caller intersects
+/// them with the known player uids to get true members.
+#[derive(Debug, Clone, Default)]
+pub struct GuildRaw {
+    pub guild_id: Guid,
+    pub guild_name: String,
+    pub base_ids: Vec<Guid>,
+    pub member_candidates: Vec<Guid>,
 }
 
 /// Container ids extracted from a single player save, used to classify where a
@@ -64,21 +82,36 @@ pub fn parse_level(blob: &[u8], warnings: &mut Vec<String>) -> Result<LevelParse
         }
         gvas::skip_property(&mut r, &type_name, size)?;
     }
-    Err(SaveError::Gvas("worldSaveData not found in level save".into()))
+    Err(SaveError::Gvas(
+        "worldSaveData not found in level save".into(),
+    ))
 }
 
-fn parse_world_save_data(r: &mut Reader, warnings: &mut Vec<String>) -> Result<LevelParse, SaveError> {
+fn parse_world_save_data(
+    r: &mut Reader,
+    warnings: &mut Vec<String>,
+) -> Result<LevelParse, SaveError> {
     let mut out = LevelParse::default();
     while let Some((name, type_name, size)) = gvas::read_tag(r)? {
         if name == "CharacterSaveParameterMap" && type_name == "MapProperty" {
             parse_character_map(r, &mut out, warnings)?;
         } else if name == "BaseCampSaveData" && type_name == "MapProperty" {
-            // Base-camp worker containers. Parsed in an isolated sub-reader
-            // bounded by `size`, so any malformed base data warns and skips
-            // without desyncing the outer cursor (fail-soft).
-            match base_camp_containers(r, size) {
-                Ok(ids) => out.base_containers.extend(ids),
+            // Base-camp worker containers + base_id -> container map. Parsed in
+            // an isolated sub-reader bounded by `size`, so any malformed base
+            // data warns and skips without desyncing the outer cursor.
+            match base_camp_map(r, size) {
+                Ok(map) => {
+                    out.base_containers.extend(map.values().copied());
+                    out.base_id_to_container.extend(map);
+                }
                 Err(e) => warnings.push(format!("BaseCampSaveData: {e}")),
+            }
+        } else if name == "GroupSaveDataMap" && type_name == "MapProperty" {
+            // Guild ownership (guild id/name, base ids, members). Isolated
+            // sub-reader bounded by `size`; malformed guild data is fail-soft.
+            match parse_group_map(r, size) {
+                Ok(guilds) => out.guilds = guilds,
+                Err(e) => warnings.push(format!("GroupSaveDataMap: {e}")),
             }
         } else {
             gvas::skip_property(r, &type_name, size)?;
@@ -220,10 +253,28 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
     let owner_player_uid = find(param, "OwnerPlayerUId").and_then(Value::as_guid);
     let (container_id, slot_index) = slot_id(param);
 
+    // Human NPC detection (data-driven). Palworld stores catchable humans
+    // (merchants, hunters, villagers — e.g. `SalesPerson`, `Hunter_Rifle`,
+    // `Male_People03`) in the same `CharacterSaveParameterMap` as pals. Rule:
+    // an entity is a human iff its species id is absent from the pack AND its
+    // record carries no `Gender` property. Evidence from the real test save:
+    // all 1627 in-pack pals have a `Gender`; every human NPC has none (their
+    // sex is baked into the id). Requiring "absent from pack" as well keeps a
+    // genuine pal that is merely missing from the pack (e.g. the `GhostAnglerFish`
+    // casing gap) classified as a pal, not a human — such gaps are reported
+    // separately rather than mislabeled.
+    let species = GameData::get().species_by_id(&character_id);
+    let is_human = gender.is_none() && species.is_none();
+    // Canonicalize the id to the pack's exact casing when the species resolves
+    // (save files carry casing drift, e.g. `GhostAnglerFish` vs pack
+    // `GhostAnglerfish`); the frontend's icon/name maps are exact-match.
+    let character_id = species.map_or(character_id, |s| s.internal_name.clone());
+
     Ok(OwnedPal {
         instance_id,
         character_id,
         is_boss,
+        is_human,
         gender,
         level,
         rank,
@@ -245,10 +296,11 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
 const WORKER_DIRECTOR_CONTAINER_OFFSET: usize = 16 + 80 + 1 + 1;
 
 /// Parse the `BaseCampSaveData` map (Guid key + struct value) from an isolated
-/// sub-reader bounded by `size`, returning each base's worker pal-container
-/// guid. The outer reader is always advanced past the whole map region, so a
-/// malformed base cannot desync the caller (fail-soft).
-fn base_camp_containers(r: &mut Reader, size: usize) -> Result<HashSet<Guid>, SaveError> {
+/// sub-reader bounded by `size`, returning `base_id -> worker pal-container`
+/// for every base with a populated container. The outer reader is always
+/// advanced past the whole map region, so a malformed base cannot desync the
+/// caller (fail-soft).
+fn base_camp_map(r: &mut Reader, size: usize) -> Result<HashMap<Guid, Guid>, SaveError> {
     let _key_type = r.fstring()?; // StructProperty
     let _value_type = r.fstring()?; // StructProperty
     r.optional_guid()?;
@@ -260,15 +312,15 @@ fn base_camp_containers(r: &mut Reader, size: usize) -> Result<HashSet<Guid>, Sa
     sub.u32()?; // padding (always 0)
     let count = sub.u32()?;
 
-    let mut containers = HashSet::new();
+    let mut map = HashMap::new();
     for _ in 0..count {
-        let _base_id = sub.guid()?; // map key is a bare Guid
+        let base_id = sub.guid()?; // map key is a bare Guid
         let value = gvas::read_properties_until_end(&mut sub)?;
         if let Some(cid) = base_worker_container(&value) {
-            containers.insert(cid);
+            map.insert(base_id, cid);
         }
     }
-    Ok(containers)
+    Ok(map)
 }
 
 /// Extract the worker pal-container guid from a single base's value struct.
@@ -279,8 +331,100 @@ fn base_worker_container(value: &[(String, Value)]) -> Option<Guid> {
         .and_then(|p| find(p, "RawData"))
         .and_then(Value::as_bytes)?;
     let end = WORKER_DIRECTOR_CONTAINER_OFFSET + 16;
-    let cid: Guid = raw.get(WORKER_DIRECTOR_CONTAINER_OFFSET..end)?.try_into().ok()?;
+    let cid: Guid = raw
+        .get(WORKER_DIRECTOR_CONTAINER_OFFSET..end)?
+        .try_into()
+        .ok()?;
     (cid != Guid::default()).then_some(cid)
+}
+
+/// Parse the `GroupSaveDataMap` (Guid key + struct value) from an isolated
+/// sub-reader bounded by `size`, returning every guild's ownership record.
+/// Non-guild groups (parties, neutral orgs) are ignored. The outer reader is
+/// always advanced past the whole map region (fail-soft).
+fn parse_group_map(r: &mut Reader, size: usize) -> Result<Vec<GuildRaw>, SaveError> {
+    let _key_type = r.fstring()?; // StructProperty
+    let _value_type = r.fstring()?; // StructProperty
+    r.optional_guid()?;
+    let body = r.bytes(size)?.to_vec();
+
+    let mut sub = Reader::new(&body);
+    sub.u32()?; // padding (always 0)
+    let count = sub.u32()?;
+
+    let mut guilds = Vec::new();
+    for _ in 0..count {
+        let _key = sub.guid()?; // map key is a bare Guid (== group id)
+        let value = gvas::read_properties_until_end(&mut sub)?;
+        let gtype = find(&value, "GroupType")
+            .and_then(Value::as_str)
+            .unwrap_or("");
+        if !matches!(
+            gtype,
+            "EPalGroupType::Guild" | "EPalGroupType::IndependentGuild"
+        ) {
+            continue;
+        }
+        let Some(bytes) = find(&value, "RawData").and_then(Value::as_bytes) else {
+            continue;
+        };
+        if let Some(g) = decode_guild(bytes) {
+            guilds.push(g);
+        }
+    }
+    Ok(guilds)
+}
+
+/// Decode a guild's `RawData` blob. Layout (cheahjs/palworld-save-tools
+/// `rawdata/group.py`, current save version):
+/// `group_id: Guid` · `group_name: FString` ·
+/// `individual_character_handle_ids: TArray<{Guid, Guid}>` (32 B each) ·
+/// then the org section `unknown: u32` · `org_type: u8` ·
+/// `base_ids: TArray<Guid>` · `unknown2: u32` · then the guild section
+/// `base_camp_level: i32` · `map_object_base_camp_points: TArray<Guid>` ·
+/// `guild_name: FString`. What follows (`admin_player_uid` + a version-rich
+/// player list carrying nested status arrays) is NOT stably shaped across
+/// versions, so members are recovered by scanning that trailing region for
+/// guids: the caller intersects the candidates with the known player uids.
+/// Returns `None` if the fixed prefix cannot be decoded (fail-soft).
+fn decode_guild(bytes: &[u8]) -> Option<GuildRaw> {
+    let mut br = Reader::new(bytes);
+    let guild_id = br.guid().ok()?;
+    let _group_name = br.fstring().ok()?;
+    let handle_count = br.u32().ok()?;
+    br.skip(handle_count as usize * 32).ok()?;
+    let _unknown = br.u32().ok()?;
+    let _org_type = br.u8().ok()?;
+    let base_count = br.u32().ok()?;
+    let mut base_ids = Vec::with_capacity(base_count as usize);
+    for _ in 0..base_count {
+        base_ids.push(br.guid().ok()?);
+    }
+    let _unknown2 = br.u32().ok()?;
+    let _base_camp_level = br.i32().ok()?;
+    let point_count = br.u32().ok()?;
+    br.skip(point_count as usize * 16).ok()?;
+    let guild_name = br.fstring().ok().unwrap_or_default();
+
+    // Scan the trailing player-list region (admin uid + members) for distinct
+    // non-zero guids. The caller keeps only those that are known player uids.
+    let rest = &bytes[br.pos().min(bytes.len())..];
+    let mut member_candidates = Vec::new();
+    let mut i = 0;
+    while i + 16 <= rest.len() {
+        let w: Guid = rest[i..i + 16].try_into().ok()?;
+        if w != Guid::default() && !member_candidates.contains(&w) {
+            member_candidates.push(w);
+        }
+        i += 1;
+    }
+
+    Some(GuildRaw {
+        guild_id,
+        guild_name,
+        base_ids,
+        member_candidates,
+    })
 }
 
 fn talent(param: &[(String, Value)], name: &str) -> u8 {
@@ -294,14 +438,21 @@ fn clamp_iv(v: i32) -> u8 {
     v.clamp(0, 100) as u8
 }
 
-/// Strip a `BOSS_`/`PREDATOR_`/`GYM_` prefix. Only `BOSS_` marks an alpha/boss.
+/// Strip a boss/predator/gym prefix from a raw `CharacterID`, returning the
+/// bare species id and whether it is an alpha/boss variant. Matching is
+/// case-insensitive on the prefix token: the real save uses both `BOSS_`
+/// (tower/alpha, e.g. `BOSS_Anubis`) and title-case `Boss_` (field bosses,
+/// e.g. `Boss_IceFox`, `Boss_LavaGirl`); both strip to the base species and
+/// set the boss flag, so the field-boss variants resolve against the pack
+/// instead of rendering as unknown. Only the boss prefixes set `is_boss`.
 fn strip_species_prefix(id: &str) -> (String, bool) {
-    if let Some(rest) = id.strip_prefix("BOSS_") {
-        return (rest.to_string(), true);
+    let lower = id.to_ascii_lowercase();
+    if lower.starts_with("boss_") {
+        return (id["boss_".len()..].to_string(), true);
     }
-    for prefix in ["PREDATOR_", "GYM_"] {
-        if let Some(rest) = id.strip_prefix(prefix) {
-            return (rest.to_string(), false);
+    for prefix in ["predator_", "gym_"] {
+        if lower.starts_with(prefix) {
+            return (id[prefix.len()..].to_string(), false);
         }
     }
     (id.to_string(), false)

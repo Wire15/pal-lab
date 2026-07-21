@@ -29,6 +29,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -69,6 +70,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -110,6 +112,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -150,6 +153,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -190,6 +194,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -230,6 +235,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -276,7 +282,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Guardian of the Desert",
+    "partner_skill_desc": "When fighting together, applies Ground damage to the player's attacks. Sometimes dodges attacks with a high speed sidestep while in a battle.",
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -316,7 +323,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Flameclaw Hunter",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Hellfire Claw.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -357,7 +365,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Darkclaw Hunter",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Hellfire Claw.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -397,7 +406,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Gold Digger",
+    "partner_skill_desc": "Sometimes digs up Gold Coin when assigned to Ranch.",
     "nocturnal": true,
     "food_amount": 1,
     "wild_levels": [
@@ -437,7 +447,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Gold Digger",
+    "partner_skill_desc": "Sometimes digs up Gold Coin when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -477,7 +488,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hard Head",
+    "partner_skill_desc": "Can be ridden. Increases efficiency of destroying boulders while mounted.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -517,7 +529,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lifmunk Recoil",
+    "partner_skill_desc": "When activated, leaps into the player's head and uses a submachine gun to follows up player attacks.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -557,7 +570,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Eggbomb Launcher",
+    "partner_skill_desc": "When activated, equips to the player and transforms into an egg launcher.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -597,7 +611,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Guardian of the Forest",
+    "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nIncreases efficiency of cutting trees.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -637,7 +652,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Guardian of the Golden Forest",
+    "partner_skill_desc": "Can be ridden. Can perform a double jump while mounted. Increases efficiency of cutting trees.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -683,7 +699,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Drill Crusher",
+    "partner_skill_desc": "When activated, performs Shell Spin, follows the player while spinning, and mines ores efficiently.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -723,7 +740,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Galeclaw Rider",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider. Allows you to fire a gun while gliding with this Pal.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -763,7 +781,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Yellow Tank",
+    "partner_skill_desc": "Can be ridden. Can rapidly fire a minigun while mounted.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -803,7 +822,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Soothing Shower",
+    "partner_skill_desc": "When activated, spouts mysterious water that soothes wounds and restores the player's HP.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -843,7 +863,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Direhowl Rider",
+    "partner_skill_desc": "Can be ridden.\nMoves slightly faster than most mounts.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -889,7 +910,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Full-power Gorilla Mode",
+    "partner_skill_desc": "When activated, unleashes a primal fury that increases Gorirat's attack power.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -935,7 +957,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Full-power Gorilla Mode",
+    "partner_skill_desc": "When activated, unleashes a primal fury that increases Gorirat's attack power.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -975,7 +998,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Jolt Bomb",
+    "partner_skill_desc": "When activated, equips Jolthog to the player's hand. When thrown at an enemy, causes an electrical explosion upon impact.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1015,7 +1039,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cold Bomb",
+    "partner_skill_desc": "When activated, equips Jolthog Cryst to the player's hand. When thrown at an enemy, causes an icy explosion upon impact.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1055,7 +1080,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Swift Deity",
+    "partner_skill_desc": "Can be ridden. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -1095,7 +1121,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Swift Deity",
+    "partner_skill_desc": "Can be ridden. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -1135,7 +1162,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Huggy Fire",
+    "partner_skill_desc": "When activated, equips to the player and transforms into a flamethrower.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1175,7 +1203,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Princess Gaze",
+    "partner_skill_desc": "While in team, increases attack power of Grass Pals.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -1215,7 +1244,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Antigravity",
+    "partner_skill_desc": "While in team, Lunaris manipulates gravity, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -1255,7 +1285,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Pengullet Cannon",
+    "partner_skill_desc": "When activated, the player equips a Rocket Launcher and fires Pengullet as ammunition. Pengullet explodes on contact and is incapacitated.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1296,7 +1327,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Pengullet Cannon",
+    "partner_skill_desc": "When activated, the player equips a Rocket Launcher and fires Pengullet as ammunition. Pengullet explodes on contact and is incapacitated.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1337,7 +1369,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lady of Lightning",
+    "partner_skill_desc": "While in team, appears near the player. Follows up player attacks with lightning bolts.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -1377,7 +1410,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Angry Shark",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Aqua Gun. While in team, increases player's attack power.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -1417,7 +1451,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Angry Shark",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Spirit Fire. While in team, increases player's attack power.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -1457,7 +1492,8 @@
       1,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Fluffy Shield",
+    "partner_skill_desc": "When activated, equips to the player and becomes a shield.\nSometimes drops Wool when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1503,7 +1539,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Stormbringer Sea Dragon",
+    "partner_skill_desc": "Can be ridden to travel on water. While mounted, prevents stamina depletion while moving over water.",
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -1544,7 +1581,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Stormbringer Lava Dragon",
+    "partner_skill_desc": "Can be ridden. Enhances Fire attacks while mounted.",
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -1585,7 +1623,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Claws Glistening in the Dark",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Jumping Claw.",
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -1625,7 +1664,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Flying Trapeze",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider. Carries the player up high while gliding.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1665,7 +1705,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Winter Trapeze",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider. Carries the player up high while gliding.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1705,7 +1746,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wings of Flame",
+    "partner_skill_desc": "Can be ridden as a flying mount. Enhances Fire attacks while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -1745,7 +1787,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wings of Water",
+    "partner_skill_desc": "Can be ridden as a flying mount. Enhances Water attacks while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -1785,7 +1828,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Red Hare",
+    "partner_skill_desc": "Can be ridden. Applies Fire damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -1825,7 +1869,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Black Hare",
+    "partner_skill_desc": "Can be ridden. Applies Dark damage to the player's attacks while mounted.",
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -1866,7 +1911,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Amicable Holy Dragon",
+    "partner_skill_desc": "Can be ridden as a flying mount.\n While fighting together, Dark Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -1906,7 +1952,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Amicable Water Dragon",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile fighting together, Fire Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -1947,7 +1994,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Candy Pop",
+    "partner_skill_desc": "Sometimes drops Cotton Candy when assigned to ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -1987,7 +2035,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Candy Pop",
+    "partner_skill_desc": "Sometimes drops Cotton Candy when assigned to ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -2027,7 +2076,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dragon Hunter",
+    "partner_skill_desc": "While fighting together, Dragon Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -2067,7 +2117,8 @@
       0,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Pacapaca Wool",
+    "partner_skill_desc": "Can be ridden.\nSometimes drops Wool when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -2107,7 +2158,8 @@
       0,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Swift Swimmer",
+    "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted, prevents stamina depletion while moving over water.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -2147,7 +2199,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sand Swimmer",
+    "partner_skill_desc": "Can be ridden.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -2187,7 +2240,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Telepeck",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Phantom Peck.",
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -2227,7 +2281,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Waterwing Dance",
+    "partner_skill_desc": "Can be ridden to travel on water. Applies Water damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -2268,7 +2323,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Waterwing Dance",
+    "partner_skill_desc": "Can be ridden to travel on water. Applies Water damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -2315,7 +2371,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cat Helper",
+    "partner_skill_desc": "While in team, Cattiva helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -2355,7 +2412,8 @@
       1,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Caffeine Inoculation",
+    "partner_skill_desc": "When activated, Depresso drinks a massive amount of energy drinks, causing its movement speed to increase.",
     "nocturnal": true,
     "food_amount": 1,
     "wild_levels": [
@@ -2395,7 +2453,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wind and Clouds",
+    "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -2441,7 +2500,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ore-loving Beast",
+    "partner_skill_desc": "Can be ridden. Improves efficiency of mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -2488,7 +2548,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ice-loving Beast",
+    "partner_skill_desc": "Can be ridden. Improves efficiency of mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -2529,7 +2590,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Messenger of Death",
+    "partner_skill_desc": "Can be ridden.\nApplies Dark damage to the player's attacks while mounted.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -2569,7 +2631,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hawk Eye",
+    "partner_skill_desc": "While fighting together, allows you to deal more damage to weak points.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -2609,7 +2672,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hawk Eye",
+    "partner_skill_desc": "While fighting together, allows you to deal more damage to weak points.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -2656,7 +2720,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hungry Missile",
+    "partner_skill_desc": "Can be ridden. Can rapidly fire a missile launcher while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -2697,7 +2762,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Missile Party",
+    "partner_skill_desc": "Can be ridden. Can rapidly fire a missile launcher while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -2738,7 +2804,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Clear Mind",
+    "partner_skill_desc": "Can be ridden. Unaffected by the cold or heat while riding this Pal.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -2778,7 +2845,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sixth Sense",
+    "partner_skill_desc": "When activated, utilizes its sixth sense to detect nearby dungeons.",
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -2818,7 +2886,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sixth Sense",
+    "partner_skill_desc": "When activated, utilizes its sixth sense to detect nearby dungeons.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -2858,7 +2927,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Surfing Slam",
+    "partner_skill_desc": "When activated, Fuack body surfs towards an enemy and slams into them.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -2898,7 +2968,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Surfing Slam",
+    "partner_skill_desc": "When activated, Fuack body surfs towards an enemy and slams into them.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -2939,7 +3010,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Aerial Marauder",
+    "partner_skill_desc": "Can be ridden as a flying mount. Increases damage player deals to enemy weak points while mounted.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -2980,7 +3052,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Aerial Marauder",
+    "partner_skill_desc": "Can be ridden as a flying mount. Increases damage player deals to enemy weak points while mounted.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -3021,7 +3094,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Egg Layer",
+    "partner_skill_desc": "Sometimes lays an Egg when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -3061,7 +3135,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fragrant Dragon",
+    "partner_skill_desc": "Can be ridden.\nEnchances Grass attacks while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -3102,7 +3177,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Thunder Dragon",
+    "partner_skill_desc": "Can be ridden. Enhances Electric attacks while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -3143,7 +3219,8 @@
       1,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Static Electricity",
+    "partner_skill_desc": "While in team, increases attack power of Electric Pals.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -3194,7 +3271,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ice Steed",
+    "partner_skill_desc": "Can be ridden as a flying mount. Changes the player's attack type to Ice and enhances Ice attacks while mounted.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -3245,7 +3323,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Black Steed",
+    "partner_skill_desc": "Can be ridden as a flying mount. Changes the player's attack type to Dark and enhances Dark attacks while mounted.",
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -3291,7 +3370,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Gaia Crusher",
+    "partner_skill_desc": "Can be ridden. Improves efficiency of cutting trees and mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -3338,7 +3418,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ice Crusher",
+    "partner_skill_desc": "Can be ridden. Improves efficiency of cutting trees and mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -3379,7 +3460,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Life Steal",
+    "partner_skill_desc": "While fighting together, grants the player and Felbat the life steal effect which absorbs some of the received damage and restores HP.",
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -3425,7 +3507,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Overaffectionate",
+    "partner_skill_desc": "Can be ridden. While in team, Broncherry helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -3471,7 +3554,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Overaffectionate",
+    "partner_skill_desc": "Can be ridden. While in team, Broncherry helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -3512,7 +3596,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Scorching Predator",
+    "partner_skill_desc": "Can be ridden as a flying mount. While fighting together, Ice Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -3558,7 +3643,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Magma Kaiser",
+    "partner_skill_desc": "Can be ridden. Enchances Fire attacks while mounted.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -3604,7 +3690,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Magma Kaiser",
+    "partner_skill_desc": "Can be ridden. Enchances Fire attacks while mounted.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -3645,7 +3732,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Berry Picker",
+    "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -3685,7 +3773,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cool Body",
+    "partner_skill_desc": "Can be ridden.\nKeeps the rider cool in hot environments.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -3725,7 +3814,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Modified Dna",
+    "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dark attacks while mounted.",
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -3765,7 +3855,8 @@
       0,
       3
     ],
-    "partner_skill": null,
+    "partner_skill": "Silk Maker",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Blizzard Spike. Sometimes produces High Quality Cloth when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -3805,7 +3896,8 @@
       0,
       4
     ],
-    "partner_skill": null,
+    "partner_skill": "Silk Maker",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Blizzard Spike. Sometimes produces High Quality Cloth when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -3845,7 +3937,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Dig Here!",
+    "partner_skill_desc": "Sometimes digs up items from the ground when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -3885,7 +3978,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lord Fox",
+    "partner_skill_desc": "When fighting together, applies Fire damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -3925,7 +4019,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lord Fox",
+    "partner_skill_desc": "When fighting together, applies Fire damage to the player's attacks.",
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -3972,7 +4067,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Heart Drain",
+    "partner_skill_desc": "While fighting together, grants the player and Lovander the life steal effect which absorbs some of the received damage and restores HP.",
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -4012,7 +4108,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dark Knowledge",
+    "partner_skill_desc": "While in team, increases attack power of Dark Pals.",
     "nocturnal": true,
     "food_amount": 1,
     "wild_levels": [
@@ -4052,7 +4149,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Aqua Spout",
+    "partner_skill_desc": "While in team, increases attack power of Water Pals.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -4092,7 +4190,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Lava Spout",
+    "partner_skill_desc": "While in team, increases attack power of Fire Pals.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -4132,7 +4231,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fried Squid",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nCan float for long periods of time while gliding.",
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -4173,7 +4273,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fried Squid",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nCan float for long periods of time while gliding.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -4214,7 +4315,8 @@
       0,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Milk Maker",
+    "partner_skill_desc": "Sometimes produces Milk when assigned to ranch.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -4260,7 +4362,8 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Guardian of the Snowy Mountain",
+    "partner_skill_desc": "Can be ridden. While in team, Wumpo helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -4306,7 +4409,8 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Guardian of the Grassy Fields",
+    "partner_skill_desc": "Can be ridden. While in team, Wumpo Botan helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -4346,7 +4450,8 @@
       2,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Purification of Gaia",
+    "partner_skill_desc": "While fighting together, Ground Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -4386,7 +4491,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Travel Companion",
+    "partner_skill_desc": "Can be ridden as a flying mount.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -4426,7 +4532,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Helper Bunny",
+    "partner_skill_desc": "While in team, appears nearby the player. Automatically picks up nearby items.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -4472,7 +4579,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Harvest Goddess",
+    "partner_skill_desc": "When activated, the queen's soothing graces greatly restore the player's HP.",
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -4512,7 +4620,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Goddess of the Tranquil Light",
+    "partner_skill_desc": "When activated, the queen's soothing graces greatly restore the player's HP.",
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -4552,7 +4661,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Queen Bee Command",
+    "partner_skill_desc": "While fighting together, stats will increase the more Beegarde are in your team.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -4592,7 +4702,8 @@
       2,
       3
     ],
-    "partner_skill": null,
+    "partner_skill": "Worker Bee",
+    "partner_skill_desc": "Sometimes drops Honey when assigned to Ranch.\nWhile in team, Elizabee's stats will be increased.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -4632,7 +4743,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ultrasonic Sensor",
+    "partner_skill_desc": "When activated, uses ultrasonic waves to detect the location of nearby Pals.",
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -4672,7 +4784,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grenadier Panda",
+    "partner_skill_desc": "Can be ridden. Can rapidly fire a grenade launcher while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -4712,7 +4825,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Plane Partner",
+    "partner_skill_desc": "Can be ridden. Can rapidly fire a grenade launcher while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -4752,7 +4866,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Warm Body",
+    "partner_skill_desc": "Can be ridden. Keeps the rider warm in cold environments.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -4792,7 +4907,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Jumping Force",
+    "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -4832,7 +4948,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Jumping Force",
+    "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -4872,7 +4989,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ore Detector",
+    "partner_skill_desc": "When activated, generates subtle vibrations to detect nearby ore.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -4918,7 +5036,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Black Anklyosaur",
+    "partner_skill_desc": "Can be ridden a flying mount. Increases damage dealt to ore while mounted.",
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -4959,7 +5078,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grassland Speedster",
+    "partner_skill_desc": "When fighting together, increases player's movement speed and applies Grass damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -4999,7 +5119,8 @@
       0,
       3
     ],
-    "partner_skill": null,
+    "partner_skill": "Aurora Guide",
+    "partner_skill_desc": "While in a team, increases attack power of Ice pals.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -5050,7 +5171,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Aerial Missile",
+    "partner_skill_desc": "Can be ridden as a flying mount. Can rapidly fire a missile launcher while mounted.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -5090,7 +5212,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dream Chaser",
+    "partner_skill_desc": "While in team, appears near the player. Follows up player attacks with magic bullets.",
     "nocturnal": true,
     "food_amount": 1,
     "wild_levels": [
@@ -5130,7 +5253,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cheery Rifle",
+    "partner_skill_desc": "When activated, Tanzee will mercilessly fire an assault rifle at nearby enemies.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5170,7 +5294,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cheery Rifle",
+    "partner_skill_desc": "When activated, Tanzee will mercilessly fire an assault rifle at nearby enemies.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5210,7 +5335,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hellflame Lion",
+    "partner_skill_desc": "Can be ridden. While fighting together, Grass Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -5250,7 +5376,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Darkflame Lion",
+    "partner_skill_desc": "Can be ridden. While fighting together, Neutral Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -5297,7 +5424,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "King of Muscles",
+    "partner_skill_desc": "Can be ridden. While in team, Kingpaca helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -5343,7 +5471,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "King of Muscles",
+    "partner_skill_desc": "Can be ridden. While in team, Kingpaca helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -5383,7 +5512,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Logging Assistance",
+    "partner_skill_desc": "While in team, improves efficiency of cutting trees.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5424,7 +5554,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Logging Assistance",
+    "partner_skill_desc": "While in team, improves efficiency of cutting trees.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5465,7 +5596,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fluffy",
+    "partner_skill_desc": "While in team, Sweepa's stats will be increased.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5505,7 +5637,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "King of Fluff",
+    "partner_skill_desc": "While fighting together, stats will increase the more Swee are in your team.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -5545,7 +5678,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grimoire Collector",
+    "partner_skill_desc": "While fighting together, Neutral Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -5585,7 +5719,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grimoire Collector",
+    "partner_skill_desc": "While fighting together, Neutral Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -5626,7 +5761,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Skilled Fingers",
+    "partner_skill_desc": "While in team, increases attack power of Neutral Pals.\nWhile at base, increases work efficiency if working at Weapon Workbench.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -5666,7 +5802,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Thunderous",
+    "partner_skill_desc": "Can be ridden as a flying mount. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -5706,7 +5843,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Thunderous",
+    "partner_skill_desc": "Can be ridden as a flying mount. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -5752,7 +5890,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hard Armor",
+    "partner_skill_desc": "When fighting together, increases player's defense and applies Fire damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -5799,7 +5938,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hard Armor",
+    "partner_skill_desc": "When fighting together, increases player's defense and applies Fire damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -5850,7 +5990,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Holy Knight of the Firmament",
+    "partner_skill_desc": "Can be ridden. Can triple jump while mounted.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -5890,7 +6031,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Kuudere",
+    "partner_skill_desc": "When fighting together, applies Dark damage to the player's attacks.",
     "nocturnal": true,
     "food_amount": 1,
     "wild_levels": [
@@ -5930,7 +6072,8 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Brave Sailor",
+    "partner_skill_desc": "When fighting together, Fire Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -5972,6 +6115,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -6012,7 +6156,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wriggling Weasel",
+    "partner_skill_desc": "Can be ridden.\nApplies Dragon Dragon damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -6053,7 +6198,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wriggling Weasel",
+    "partner_skill_desc": "Can be ridden.\nApplies Dragon Dragon damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -6094,7 +6240,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sky Dragon's Affection",
+    "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dragon attacks while mounted.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -6134,7 +6281,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sky Dragon's Affection",
+    "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dragon attacks while mounted.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -6175,7 +6323,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wings of Death",
+    "partner_skill_desc": "Can be ridden as a flying mount. Applies Dark damage to the player's attacks while mounted.",
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -6215,7 +6364,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wings of Death",
+    "partner_skill_desc": "Can be ridden as a flying mount. Applies Dark damage to the player's attacks while mounted.",
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -6256,7 +6406,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Flame Wing",
+    "partner_skill_desc": "Can be ridden as a flying mount. Applies Fire damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -6296,7 +6447,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Brandish Blade",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Iaigiri.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -6336,7 +6488,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Brandish Blade",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Iaigiri.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -6377,7 +6530,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Zephyr Glider",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nAllows you to move quickly for long periods of time while gliding with this Pal.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -6417,7 +6571,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Zephyr Glider",
+    "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nAllows you to move quickly for long periods of time while gliding with this Pal.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -6469,7 +6624,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dark Knight of the Abyss",
+    "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -6509,7 +6665,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blessing of the Flower Spirit",
+    "partner_skill_desc": "When activated, uses medicinal flowers to restore the player's HP.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -6549,7 +6706,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blessing of the Flower Spirit",
+    "partner_skill_desc": "When activated, uses medicinal flowers to restore the player's HP.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -6590,7 +6748,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Plump Body",
+    "partner_skill_desc": "Can be ridden. Enhances Neutral attacks while mounted.",
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -6630,7 +6789,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Mysterious Scales",
+    "partner_skill_desc": "When activated, attacks target enemy with Poison Fog.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -6670,7 +6830,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Steel Scorpion",
+    "partner_skill_desc": "When fighting together, increases the player's defense and Electric Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -6711,7 +6872,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Steel Scorpion",
+    "partner_skill_desc": "When fighting together, increases the player's defense and Electric Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -6757,7 +6919,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ferocious Thunder Dragon",
+    "partner_skill_desc": "While fighting together, Water Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -6798,7 +6961,8 @@
       0,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Fluffy Wool",
+    "partner_skill_desc": "While in team, increases attack power of Neutral Pals. Sometimes drops Wool when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -6838,7 +7002,8 @@
       1,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Soil Improver",
+    "partner_skill_desc": "While in team, increases attack power of Ground Pals.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -6880,6 +7045,7 @@
       4
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -6920,7 +7086,8 @@
       1,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Magma Tears",
+    "partner_skill_desc": "Sometimes produces Flame Organ when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -6960,7 +7127,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Tiny Spark",
+    "partner_skill_desc": "While in team, increases attack power of Fire Pals.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -7001,6 +7169,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -7047,6 +7216,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -7087,6 +7257,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -7128,6 +7299,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -7168,6 +7340,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -7209,6 +7382,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -7249,6 +7423,7 @@
       3
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -7289,6 +7464,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -7330,6 +7506,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -7370,6 +7547,7 @@
       2
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -7411,6 +7589,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -7452,6 +7631,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -7499,6 +7679,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -7545,6 +7726,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -7585,6 +7767,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -7625,6 +7808,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -7665,6 +7849,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -7705,6 +7890,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -7751,6 +7937,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -7797,6 +7984,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -7837,6 +8025,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -7878,6 +8067,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -7930,6 +8120,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -7971,6 +8162,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -8011,6 +8203,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -8051,6 +8244,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -8091,6 +8285,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -8137,6 +8332,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8177,6 +8373,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -8217,6 +8414,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -8258,6 +8456,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8298,6 +8497,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -8338,6 +8538,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -8378,6 +8579,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -8418,6 +8620,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -8458,6 +8661,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -8498,6 +8702,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -8544,6 +8749,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -8584,6 +8790,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 4,
     "wild_levels": [
@@ -8624,6 +8831,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8670,6 +8878,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8716,6 +8925,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8756,6 +8966,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -8797,6 +9008,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -8838,6 +9050,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8879,6 +9092,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -8920,6 +9134,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -8959,7 +9174,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Huggy Fire",
+    "partner_skill_desc": "When activated, equips to the player and transforms into a flamethrower.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -8999,7 +9215,8 @@
       0,
       1
     ],
-    "partner_skill": null,
+    "partner_skill": "Berry Picker",
+    "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.",
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -9039,7 +9256,8 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Skilled Fingers",
+    "partner_skill_desc": "While in team, increases attack power of Neutral Pals.\nWhile at base, increases work efficiency if working at Weapon Workbench.",
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -9079,7 +9297,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Claws Glistening in the Dark",
+    "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Jumping Claw.",
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -9119,7 +9338,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Clear Mind",
+    "partner_skill_desc": "Can be ridden. Unaffected by the cold or heat while riding this Pal.",
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -9159,7 +9379,8 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lady of Lightning",
+    "partner_skill_desc": "While in team, appears near the player. Follows up player attacks with lightning bolts.",
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -9200,7 +9421,8 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dragon Hunter",
+    "partner_skill_desc": "While fighting together, Dragon Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -9240,7 +9462,8 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Wind and Clouds",
+    "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -9280,7 +9503,8 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Scorching Predator",
+    "partner_skill_desc": "Can be ridden as a flying mount. While fighting together, Ice Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -9321,6 +9545,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -9361,6 +9586,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -9401,6 +9627,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -9442,6 +9669,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -9483,6 +9711,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -9523,6 +9752,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -9569,6 +9799,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -9609,6 +9840,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -9650,6 +9882,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -9690,6 +9923,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -9731,6 +9965,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -9771,6 +10006,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -9812,6 +10048,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -9852,6 +10089,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -9892,6 +10130,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -9933,6 +10172,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -9973,6 +10213,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -10014,6 +10255,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -10055,6 +10297,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -10096,6 +10339,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -10136,6 +10380,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -10176,6 +10421,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -10216,6 +10462,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -10262,6 +10509,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -10303,6 +10551,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -10349,6 +10598,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -10396,6 +10646,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -10437,6 +10688,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -10477,6 +10729,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -10517,6 +10770,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -10557,6 +10811,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -10597,6 +10852,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -10638,6 +10894,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -10678,6 +10935,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
     "wild_levels": [
@@ -10718,6 +10976,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
     "wild_levels": [
@@ -10769,6 +11028,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -10809,6 +11069,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -10849,6 +11110,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
     "wild_levels": [
@@ -10890,6 +11152,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -10930,6 +11193,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -10970,6 +11234,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11010,6 +11275,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
     "wild_levels": [
@@ -11050,6 +11316,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11090,6 +11357,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11130,6 +11398,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -11170,6 +11439,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -11210,6 +11480,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
     "wild_levels": [
@@ -11250,6 +11521,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -11290,6 +11562,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
     "wild_levels": [
@@ -11330,6 +11603,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
     "wild_levels": [
@@ -11371,6 +11645,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -11411,6 +11686,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -11452,6 +11728,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -11493,6 +11770,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -11533,6 +11811,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
     "wild_levels": [
@@ -11574,6 +11853,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
     "wild_levels": [
@@ -11615,6 +11895,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -11655,6 +11936,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -11695,6 +11977,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11735,6 +12018,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11775,6 +12059,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
     "wild_levels": [
@@ -11815,6 +12100,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
     "wild_levels": [
@@ -11856,6 +12142,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
     "wild_levels": [
@@ -11896,6 +12183,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -11936,6 +12224,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -11977,6 +12266,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -12018,6 +12308,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
     "wild_levels": [
@@ -12058,6 +12349,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -12098,6 +12390,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -12138,6 +12431,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -12178,6 +12472,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -12219,6 +12514,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [
@@ -12260,6 +12556,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
     "wild_levels": [
@@ -12301,6 +12598,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
     "wild_levels": [
@@ -12347,6 +12645,7 @@
       0
     ],
     "partner_skill": null,
+    "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
     "wild_levels": [

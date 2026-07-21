@@ -49,6 +49,14 @@ pub struct OwnedPal {
     pub character_id: PalId,
     /// Alpha/boss variant (`BOSS_` prefix in the raw `CharacterID`).
     pub is_boss: bool,
+    /// A catchable human NPC (merchant, hunter, villager) rather than a pal.
+    /// Data-driven: an owned entity whose (prefix-stripped) `CharacterID` is
+    /// absent from the species pack AND whose save record carries no `Gender`
+    /// property. Verified against the real save: every one of 1627 in-pack
+    /// pals has a `Gender`, while every human NPC (SalesPerson, Hunter_*,
+    /// Male_/Female_People*) has none. Defaults to `false` for older data.
+    #[serde(default)]
+    pub is_human: bool,
     pub gender: Option<Gender>,
     pub level: u32,
     /// Condensation rank (0 = base).

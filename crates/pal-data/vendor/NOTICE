@@ -60,3 +60,51 @@ License: MIT (for palcalc's redistribution)
 These images are ultimately game assets from Palworld (c) Pocketpair, Inc.
 They are included here for personal, non-commercial use only. All rights to
 the underlying artwork remain with Pocketpair.
+
+Per-species partner skills
+==========================
+
+  partner-skills.json - internal_name -> { name, description } for each pal's
+                        Partner Skill (the game's "PartnerSkill" / "aura").
+
+palcalc's db.json ships PartnerSkill=null for every species, so this is a
+DERIVED mapping built from the `aura` { name, description } field of
+mlg404/palworld-paldex-api's src/pals.json. Match method: exact (normalized)
+English display-name match against palcalc's `Name` (paldex-api's numeric
+`id`/`key` is its own sequential index and does NOT align with the game
+PalDexNo, so it is not used for matching); slug names like "fluffy_shield" are
+title-cased to "Fluffy Shield" (articles/prepositions kept lowercase, e.g.
+"Guardian of the Desert"). Elemental variants with no paldex-api entry inherit
+their base form's partner skill (game-accurate: Palworld variants share the
+base PartnerSkill), resolved via palcalc's `Base_Suffix` internal-name scheme.
+
+Coverage: 169 / 299 species (138 exact name matches + 31 variant->base
+inheritances). The remaining ~130 (Sakurajima + Feybreak DLC and the Terraria
+collab pals) have no permissive partner-skill source and carry null; the UI
+omits the partner-skill section gracefully for those.
+
+Source:  https://github.com/mlg404/palworld-paldex-api  (src/pals.json)
+Author:  Victor Eyer and palworld-paldex-api contributors
+License: MIT
+
+build-pack merges partner-skills.json into the pack (PalSpecies.partner_skill
+and partner_skill_desc). The underlying partner-skill facts are game data from
+Palworld (c) Pocketpair, Inc., included here for personal, non-commercial use
+only.
+
+Alpha / UI marker icon
+======================
+
+The alpha (field-boss) marker in app/public/ui/alpha.png — the red horned icon
+shown on alpha pals — is sourced, unmodified in artwork, from palworld-save-pal's
+bundled art (ui/src/lib/assets/img/alpha.webp, itself the game's
+T_alpha_icon_normal). It was transcoded from WEBP to PNG (pixels unchanged; a
+lossless container change only).
+
+Source:  https://github.com/oMaN-Rod/palworld-save-pal  (ui/src/lib/assets/img/alpha.webp)
+Author:  oMaN-Rod and Palworld Save Pal contributors
+License: MIT
+
+This image is ultimately a game asset from Palworld (c) Pocketpair, Inc.,
+included here for personal, non-commercial use only. All rights to the
+underlying artwork remain with Pocketpair.

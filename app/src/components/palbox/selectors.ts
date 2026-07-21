@@ -6,7 +6,7 @@
 // (PALBOX-SORT-SPEC.md) are cloned here read-only: we never rewrite slots, we
 // reorder virtually.
 
-import type { OwnedPal, SpeciesEntry } from "../../lib/types";
+import type { OwnedPal, SaveSummary, SpeciesEntry } from "../../lib/types";
 
 /** Slots per Palbox / Dimensional page (6x5), matching the game. */
 export const PAGE_SIZE = 30;
@@ -85,6 +85,15 @@ export function hexGuid(g: number[]): string {
 /** Stable identity key for a pal instance. */
 export function palKey(pal: OwnedPal): string {
   return pal.instance_id.join("-");
+}
+
+/**
+ * Whether this entity is a captured human rather than a pal. Slice A adds
+ * `is_human: boolean` to OwnedPal; read defensively so the app compiles and
+ * degrades gracefully against fixtures / saves that predate the field.
+ */
+export function isHuman(pal: OwnedPal): boolean {
+  return (pal as OwnedPal & { is_human?: boolean }).is_human === true;
 }
 
 /** Species lookup helpers, tolerant of missing pack entries. */
@@ -303,6 +312,72 @@ export function baseGroups(pals: OwnedPal[]): BaseGroup[] {
     label: `Base ${i + 1}`,
     pals: map.get(cid)!.slice().sort(physicalOrder),
   }));
+}
+
+// --- Guild / base ownership scoping ----------------------------------------
+
+/**
+ * A base's guild membership, normalized from the SaveSummary.bases contract
+ * (slice A). `containerId`/`memberUids` are lowercased 32-char hex to match
+ * {@link hexGuid} and PlayerRef.uid. Read defensively so the view compiles and
+ * falls back to a combined base view until the backend field lands.
+ */
+export interface GuildBase {
+  containerId: string;
+  guildName: string | null;
+  memberUids: string[];
+}
+
+type RawBase = {
+  container_id?: number[] | string;
+  guild_id?: string;
+  guild_name?: string;
+  member_uids?: string[];
+};
+
+/** Normalize a hex-or-Guid identifier to lowercase 32-char hex. */
+function normHex(v: number[] | string | undefined): string {
+  if (Array.isArray(v)) return hexGuid(v);
+  return (v ?? "").toLowerCase();
+}
+
+/**
+ * Read the (optional) guild-base ownership table off a SaveSummary. Empty when
+ * the backend hasn't published `bases` yet — callers treat that as "no guild
+ * data, show the combined view".
+ */
+export function guildBases(summary: SaveSummary): GuildBase[] {
+  const raw = (summary as SaveSummary & { bases?: RawBase[] }).bases;
+  if (!Array.isArray(raw)) return [];
+  return raw.map((b) => ({
+    containerId: normHex(b.container_id),
+    guildName: b.guild_name ?? null,
+    memberUids: (b.member_uids ?? []).map((u) => normHex(u)),
+  }));
+}
+
+/**
+ * Scope base groups to those owned by the selected player's guild. A base is
+ * shown when its guild's members include `playerUidHex`, and is relabeled with
+ * its guild name for clarity. When guild data is absent (stale fixture /
+ * pre-contract backend) every base is returned unchanged — the graceful
+ * combined fallback. Bases with no matching guild entry are kept too, so real
+ * data is never silently hidden.
+ */
+export function scopeBasesToPlayer(
+  bases: BaseGroup[],
+  guild: GuildBase[],
+  playerUidHex: string,
+): BaseGroup[] {
+  if (guild.length === 0) return bases;
+  const byContainer = new Map(guild.map((g) => [g.containerId, g]));
+  const out: BaseGroup[] = [];
+  for (const b of bases) {
+    const g = byContainer.get(b.containerId);
+    if (g && !g.memberUids.includes(playerUidHex)) continue;
+    out.push(g?.guildName ? { ...b, label: g.guildName } : b);
+  }
+  return out;
 }
 
 // --- Paging -----------------------------------------------------------------

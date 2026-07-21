@@ -48,7 +48,6 @@ struct RawPal {
     attack: u32,
     defense: u32,
     guaranteed_passives_internal_ids: Vec<String>,
-    partner_skill: Option<String>,
     nocturnal: bool,
     food_amount: u32,
     min_wild_level: Option<u32>,
@@ -71,6 +70,13 @@ struct RawWork {
     cooling: u8,
     transporting: u8,
     farming: u8,
+}
+
+/// One entry of `vendor/partner-skills.json` (lowercase keys, no PascalCase).
+#[derive(Deserialize)]
+struct RawPartnerSkill {
+    name: String,
+    description: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -138,6 +144,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
+    // Per-species partner skill (internal_name -> {name, description}), sourced
+    // from mlg404/palworld-paldex-api's `aura` field with game-accurate
+    // variant->base inheritance (see vendor/NOTICE). Coverage is partial (base
+    // game only); the ~130 species without a permissive source carry None.
+    let partner_bytes = std::fs::read(vendor.join("partner-skills.json"))?;
+    let partner_skills: HashMap<String, RawPartnerSkill> =
+        serde_json::from_slice(&partner_bytes)?;
+
     // Intern species by db.json order.
     let mut index: HashMap<String, u16> = HashMap::with_capacity(db.pals.len());
     for (i, p) in db.pals.iter().enumerate() {
@@ -191,7 +205,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         w.farming,
                     ]
                 },
-                partner_skill: p.partner_skill.clone().filter(|s| !s.is_empty()),
+                partner_skill: partner_skills
+                    .get(&p.internal_name)
+                    .map(|ps| ps.name.clone()),
+                partner_skill_desc: partner_skills
+                    .get(&p.internal_name)
+                    .and_then(|ps| ps.description.clone()),
                 nocturnal: p.nocturnal,
                 food_amount: p.food_amount.min(u8::MAX as u32) as u8,
                 // 13 uncatchable pals (bosses/quest) have null wild levels ->
@@ -287,12 +306,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let json_total = db_bytes.len() + breeding_bytes.len();
     let with_elements = pack.species.iter().filter(|s| !s.elements.is_empty()).count();
+    let with_partner = pack.species.iter().filter(|s| s.partner_skill.is_some()).count();
     println!(
-        "wrote {} ({} bytes) | species={} (elements {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
+        "wrote {} ({} bytes) | species={} (elements {}/{}, partner {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
         out.display(),
         bytes.len(),
         pack.species.len(),
         with_elements,
+        pack.species.len(),
+        with_partner,
         pack.species.len(),
         pack.passives.len(),
         pack.breeding.len(),

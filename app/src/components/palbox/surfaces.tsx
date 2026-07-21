@@ -43,22 +43,27 @@ function SlotCell({
   );
 }
 
-/** A 6-wide grid of cells (pals or empty slots), data-tagged for scroll-into. */
+/** A GRID_COLS-wide grid of fluid cells (pals or empty slots), data-tagged for
+ *  scroll-into. `size` is the measured, clamped slot edge; the gap scales with
+ *  it so the grid keeps its rhythm from the smallest to the largest slot. */
 function PalGrid({
   cells,
   nameOf,
   selectedKey,
   onSelect,
+  size,
 }: {
   cells: GridCell[];
   nameOf: (pal: OwnedPal) => string;
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
+  size: number;
 }) {
+  const gap = 12;
   return (
     <div
-      className="grid w-fit gap-3"
-      style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))` }}
+      className="grid justify-start"
+      style={{ gridTemplateColumns: `repeat(${GRID_COLS}, ${size}px)`, gap }}
     >
       {cells.map((c, i) =>
         c.pal ? (
@@ -66,12 +71,13 @@ function PalGrid({
             <SlotCell
               pal={c.pal}
               name={nameOf(c.pal)}
+              size={size}
               selectedKey={selectedKey}
               onSelect={onSelect}
             />
           </span>
         ) : (
-          <EmptySlot key={`empty-${i}`} />
+          <EmptySlot key={`empty-${i}`} size={size} />
         ),
       )}
     </div>
@@ -120,43 +126,47 @@ function Pager({
   );
 }
 
-/** Party rail: PARTY_SIZE fixed circular slots for the active player. */
+/** Party rail: a vertical column of PARTY_SIZE fluid slots down the left of the
+ *  box grid, mirroring the in-game palbox screen. */
 export function PartyRail({
   slots,
   nameOf,
   selectedKey,
   onSelect,
+  size,
 }: {
   slots: (OwnedPal | null)[];
   nameOf: (pal: OwnedPal) => string;
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
+  size: number;
 }) {
+  const gap = 12;
+  const padCount = Math.max(0, PARTY_SIZE - slots.length);
   return (
-    <div>
+    <div className="shrink-0">
       <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">
         Party
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-col" style={{ gap }}>
         {slots.map((pal, i) =>
           pal ? (
             <span key={palKey(pal)} data-pal={palKey(pal)}>
               <SlotCell
                 pal={pal}
                 name={nameOf(pal)}
-                size={64}
+                size={size}
                 selectedKey={selectedKey}
                 onSelect={onSelect}
               />
             </span>
           ) : (
-            <EmptySlot key={`party-${i}`} size={64} />
+            <EmptySlot key={`party-${i}`} size={size} />
           ),
         )}
-        {slots.length < PARTY_SIZE &&
-          Array.from({ length: PARTY_SIZE - slots.length }, (_, i) => (
-            <EmptySlot key={`pad-${i}`} size={64} />
-          ))}
+        {Array.from({ length: padCount }, (_, i) => (
+          <EmptySlot key={`pad-${i}`} size={size} />
+        ))}
       </div>
     </div>
   );
@@ -176,6 +186,7 @@ export function BoxGrid({
   selectedKey,
   onSelect,
   emptyHint,
+  size,
 }: {
   pages: GridCell[][];
   page: number;
@@ -185,6 +196,7 @@ export function BoxGrid({
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
   emptyHint: string;
+  size: number;
 }) {
   if (pages.length === 0) {
     return (
@@ -195,31 +207,36 @@ export function BoxGrid({
   }
   const cells = pages[Math.min(page, pages.length - 1)] ?? [];
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-start gap-4">
       <PalGrid
         cells={cells}
         nameOf={nameOf}
         selectedKey={selectedKey}
         onSelect={onSelect}
+        size={size}
       />
       <Pager label={pagerLabel} page={page} total={pages.length} onPage={onPage} />
     </div>
   );
 }
 
-/** Base strip: all bases, one row each, player-independent. */
+/** Base strip: the selected player's guild bases, one row each. `size` follows
+ *  the box grid; base slots stay a touch more compact so many pals fit a row. */
 export function BaseStrip({
   bases,
   nameOf,
   selectedKey,
   onSelect,
+  size,
 }: {
   bases: BaseGroup[];
   nameOf: (pal: OwnedPal) => string;
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
+  size: number;
 }) {
   if (bases.length === 0) return null;
+  const baseSize = Math.max(44, Math.min(size, 56));
   return (
     <div>
       <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-faint">
@@ -231,7 +248,7 @@ export function BaseStrip({
             key={base.containerId}
             className="flex items-center gap-3 rounded-md border border-line-soft bg-panel/40 px-3 py-2"
           >
-            <span className="w-16 shrink-0 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+            <span className="w-28 shrink-0 truncate font-mono text-[11px] uppercase tracking-wider text-ink-dim" title={base.label}>
               {base.label}
             </span>
             <div className="flex flex-wrap gap-2.5">
@@ -240,7 +257,7 @@ export function BaseStrip({
                   <SlotCell
                     pal={pal}
                     name={nameOf(pal)}
-                    size={48}
+                    size={baseSize}
                     selectedKey={selectedKey}
                     onSelect={onSelect}
                   />

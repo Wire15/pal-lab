@@ -64,6 +64,12 @@ card top-rule, dex filters). In the current views two element colors do
 double duty as *semantic* glyph colors: **water = male ♂**, **dragon = female ♀**
 (chosen for contrast and legibility, not to imply element).
 
+### Rarity tiers (categorical; 4 bands)
+`rarity-common #7e7e7e` · `rarity-rare #6a92ff` · `rarity-epic #b963ff` ·
+`rarity-legendary #ff9557`. Bucketed by combi-rank in `lib/ui.ts::rarityTier(n)`
+(`≤4` Common, `5–7` Rare, `8–10` Epic, `>10` Legendary); consume as
+`var(--color-rarity-<tokenKey>)` or `text-rarity-*`. Never hardcode the hex.
+
 ## 3. Typography
 
 Three self-hosted faces (woff2 in `public/fonts`, `@font-face` in `index.css`;
@@ -306,3 +312,61 @@ info-panel** voice through our tokens:
   captures the pointer (`pointer-events: none`), and closes on leave, scroll, or
   resize. Species data comes from a module-cached `paldex_species` fetch, so the
   card is self-sufficient.
+
+## 11. Palbox — full-screen layout & the game-style slot
+
+The Save Inspector's grid view clones the in-game Palbox screen and must **fill
+the content area**, never sit as a small centered island. Owned by
+`components/palbox/**` + `views/SaveInspector.tsx`.
+
+### Layout
+- **Vertical party rail (left).** `PARTY_SIZE` (5) fluid slots stacked
+  top-to-bottom under a mono `PARTY` eyebrow, mirroring the game. `shrink-0` so
+  it never collapses; the box grid takes the remaining width to its right
+  (`flex items-start gap-6`). The surface toggle (Palbox / Dimensional) sits
+  above the row, left-aligned.
+- **Box grid (right).** The paged 6-wide game box (`GRID_COLS = 6`,
+  `PAGE_SIZE = 30` → 6×5), left-aligned (`justify-start`), packed. Physical
+  layout renders trailing empty slots (faint dashed circles); compact/filtered
+  and dimensional pages are gap-free.
+- **Bases (full width, below).** One row per base; see base scoping below.
+
+### Fluid slot sizing scale
+Slots are **fluid, not fixed**. `SaveInspector` measures the (stable) content
+wrapper width with a `ResizeObserver` and packs the party column + 6 box columns
+into it: `size = clamp(56px, floor((contentW − rowGap − 5·gap) / (COLS+1)), 160px)`
+with a fixed `12px` grid gap. Driving the size off the wrapper — not the flex-1
+box column — avoids a size↔layout feedback loop. The single `size` flows to
+`PartyRail`, `BoxGrid`/`PalGrid`, and `BaseStrip` (base slots stay compact:
+`clamp(44, size, 56)`). Result: the grid **grows on wider screens** (≈132px at
+1280 → 160px at 1600) and shrinks gracefully when the detail panel opens
+(≈77px), always filling the available width.
+
+### Gender glyph badge (replaces the colored dot)
+Gender is shown as a **glyph, never a bare colored dot**: the Mars/Venus glyph
+(`genderView`, `♂`/`♀`) on a small dark circular chip (`bg-raised`, `border-abyss`)
+at the slot's bottom-right, tinted with the §2 semantic colors (**water = ♂**,
+**dragon = ♀**). The badge and its glyph scale with the slot
+(`≈0.3·size` / `≈0.22·size`, floored at 15px / 10px) so it stays legible from the
+smallest to the largest slot. Genderless entities render no badge. List rows
+(`Sex` column) and the filter bar use the same glyph + tint; the dot is retired
+everywhere.
+
+### Human slot treatment
+Captured humans (`OwnedPal.is_human`, `selectors.ts::isHuman`) read as
+**intentional, not broken**: instead of a portrait/`?`, the slot shows a muted
+neutral **humanoid silhouette** (`HumanGlyph`, `text-ink-faint` on `bg-abyss/50`
+with a softer `line-soft` ring). This is distinct from the `?` `UNKNOWN_ICON`
+fallback, which stays reserved for genuinely unknown pals (missing art). The
+alpha badge is the real in-game marker (`assets.ts::alphaIconUrl`,
+`public/ui/alpha.png`), corner-anchored and slot-scaled.
+
+### Base scoping (per selected player)
+The Bases section is scoped to the selected player tab's **guild**:
+`guildBases(summary)` reads the additive `SaveSummary.bases` contract
+(`{container_id, guild_name, member_uids}`, all lowercase-hex), and
+`scopeBasesToPlayer` keeps bases whose `member_uids` include the active player's
+`PlayerRef.uid`, relabeling each with its `guild_name`. Bases shared by a guild
+appear on **every** member's tab (correct). **Graceful fallback:** when the
+backend hasn't published `bases` (stale fixture / pre-contract), every base is
+shown as the combined view with the default `Base N` labels — nothing is hidden.

@@ -95,6 +95,99 @@ fn reads_players_and_pals() {
     );
 }
 
+/// Human-NPC detection and guild/base ownership against the real save.
+#[test]
+fn humans_and_guild_bases() {
+    use pal_data::GameData;
+    let save = pal_save::read_save_dir(save_dir()).expect("read save dir");
+    let gd = GameData::get();
+
+    // Every owned entity whose species is absent from the pack must be flagged
+    // a human — there are no genuine pal data-gaps left (the one casing quirk,
+    // GhostAnglerFish -> Ghangler, resolves via the case-insensitive pack
+    // lookup). Conversely every human must be absent from the pack and carry no
+    // gender, and every non-human must resolve to a real species.
+    let mut pal_gaps = Vec::new();
+    for p in &save.pals {
+        let in_pack = gd.species_by_id(&p.character_id).is_some();
+        if p.is_human {
+            assert!(p.gender.is_none(), "human {} has a gender", p.character_id);
+            assert!(!in_pack, "human {} is actually in the pack", p.character_id);
+        } else if !in_pack {
+            pal_gaps.push(p.character_id.clone());
+        }
+    }
+    assert!(
+        pal_gaps.is_empty(),
+        "unexpected non-human species missing from pack (data gap): {pal_gaps:?}"
+    );
+
+    // The real save contains catchable human NPCs (SalesPerson, Hunter_*,
+    // Male_/Female_People*). At least a handful must be detected.
+    let humans: Vec<&str> = save
+        .pals
+        .iter()
+        .filter(|p| p.is_human)
+        .map(|p| p.character_id.as_str())
+        .collect();
+    assert!(
+        humans.len() >= 5,
+        "expected >=5 human NPCs, found {}: {humans:?}",
+        humans.len()
+    );
+    // The vast majority of the roster is real pals, not humans.
+    assert!(
+        humans.len() < save.pals.len() / 10,
+        "implausibly many humans: {} of {}",
+        humans.len(),
+        save.pals.len()
+    );
+
+    // Boss-prefixed field variants (title-case `Boss_IceFox`/`Boss_LavaGirl`)
+    // must strip to their base species and resolve, flagged as bosses.
+    assert!(
+        save.pals
+            .iter()
+            .any(|p| p.is_boss && gd.species_by_id(&p.character_id).is_some()),
+        "no boss-variant pal resolved to a pack species"
+    );
+
+    // Guild/base ownership: at least one guild base mapped to a real worker
+    // container, with non-empty members that are all known players.
+    assert!(!save.bases.is_empty(), "no guild bases mapped");
+    let player_uids: std::collections::HashSet<_> =
+        save.players.iter().map(|p| p.uid).collect();
+    let base_containers: std::collections::HashSet<_> = save
+        .pals
+        .iter()
+        .filter(|p| p.container_kind == ContainerKind::Base)
+        .filter_map(|p| p.container_id)
+        .collect();
+    let mut any_members = false;
+    let mut any_populated = false;
+    for b in &save.bases {
+        assert!(
+            !b.guild_name.is_empty() || !b.member_uids.is_empty(),
+            "base {:?} has neither guild name nor members",
+            b.container_id
+        );
+        for m in &b.member_uids {
+            assert!(player_uids.contains(m), "base member is not a known player");
+        }
+        if !b.member_uids.is_empty() {
+            any_members = true;
+        }
+        if base_containers.contains(&b.container_id) {
+            any_populated = true;
+        }
+    }
+    assert!(any_members, "no guild base had any member players");
+    assert!(
+        any_populated,
+        "no mapped base container holds any Base-classified pals"
+    );
+}
+
 fn count(save: &pal_save::SaveData, kind: ContainerKind) -> usize {
     save.pals
         .iter()

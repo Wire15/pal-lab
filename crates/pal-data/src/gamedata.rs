@@ -99,10 +99,13 @@ pub struct PalSpecies {
     /// Stored compact (12 bytes); use [`PalSpecies::work_level`] /
     /// [`PalSpecies::work_suitabilities`] to read by kind name.
     pub work_suitability: [u8; 12],
-    /// Partner-skill display name (`PartnerSkill`), when the pack carries one.
-    /// Currently `None` for every species in the shipped `db.json` — the field
-    /// is `null` there — but wired through so it lights up when data lands.
+    /// Partner-skill display name (e.g. Lamball -> `Fluffy Shield`), sourced
+    /// from `vendor/partner-skills.json`. `None` for the ~130 species (mostly
+    /// DLC) with no permissive partner-skill source.
     pub partner_skill: Option<String>,
+    /// Partner-skill effect description, paired with [`Self::partner_skill`];
+    /// `None` when the name is `None` or the source carried no text.
+    pub partner_skill_desc: Option<String>,
     /// Active only at night (`Nocturnal`).
     pub nocturnal: bool,
     /// Food-meter cost per feeding (`FoodAmount`, ~1..=10).
@@ -257,8 +260,12 @@ pub const UNREACHABLE: u16 = 10000;
 pub struct GameData {
     pack: Pack,
     n: usize,
-    /// `internal_name` -> species index.
+    /// `internal_name` -> species index (exact).
     by_id: HashMap<String, u16>,
+    /// lowercased `internal_name` -> species index. Fallback for save
+    /// `CharacterID`s whose casing differs from palcalc's db.json (e.g. the
+    /// save's `GhostAnglerFish` vs the pack's `GhostAnglerfish`).
+    by_id_ci: HashMap<String, u16>,
     /// canonical `(min_idx, max_idx)` -> indices into `pack.breeding`.
     breed_index: HashMap<(u16, u16), Vec<u32>>,
     /// child idx -> distinct canonical `(parent_a, parent_b)` pairs that breed
@@ -300,8 +307,13 @@ impl GameData {
     pub fn from_pack(pack: Pack) -> GameData {
         let n = pack.species.len();
         let mut by_id = HashMap::with_capacity(n);
+        let mut by_id_ci = HashMap::with_capacity(n);
         for (i, sp) in pack.species.iter().enumerate() {
             by_id.insert(sp.internal_name.clone(), i as u16);
+            // First writer wins on case-collision; exact `by_id` still shadows.
+            by_id_ci
+                .entry(sp.internal_name.to_ascii_lowercase())
+                .or_insert(i as u16);
         }
         let mut breed_index: HashMap<(u16, u16), Vec<u32>> = HashMap::new();
         let mut parents_index: HashMap<u16, Vec<(u16, u16)>> = HashMap::new();
@@ -317,6 +329,7 @@ impl GameData {
             pack,
             n,
             by_id,
+            by_id_ci,
             breed_index,
             parents_index,
         }
@@ -337,9 +350,14 @@ impl GameData {
         self.pack.species.iter()
     }
 
-    /// Interned index for a `CharacterID` / internal name.
+    /// Interned index for a `CharacterID` / internal name. Falls back to a
+    /// case-insensitive match so save `CharacterID`s whose casing differs from
+    /// palcalc's db.json (e.g. `GhostAnglerFish` vs `GhostAnglerfish`) resolve.
     pub fn species_index(&self, internal_name: &str) -> Option<u16> {
-        self.by_id.get(internal_name).copied()
+        self.by_id
+            .get(internal_name)
+            .copied()
+            .or_else(|| self.by_id_ci.get(&internal_name.to_ascii_lowercase()).copied())
     }
 
     /// Look up a species by its `CharacterID` / internal name.

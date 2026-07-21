@@ -45,6 +45,7 @@ fn make_owned(gd: &GameData, species: u16, gender: Gender) -> OwnedPal {
         rank: 0,
         passives: vec![],
         active_skills: vec![],
+        is_human: false,
         ivs: IvSet::default(),
         nickname: None,
         owner_player_uid: None,

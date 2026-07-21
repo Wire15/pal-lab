@@ -26,6 +26,11 @@ export interface OwnedPal {
   /** Species id with any BOSS_/PREDATOR_/GYM_ prefix stripped. */
   character_id: string;
   is_boss: boolean;
+  /**
+   * Catchable human NPC (merchant/hunter/villager) rather than a pal. Set when
+   * the species id is absent from the pack and the save record has no gender.
+   */
+  is_human: boolean;
   gender: Gender | null;
   level: number;
   /** Condensation rank (0 = base). */
@@ -46,10 +51,27 @@ export interface PlayerRef {
   name: string;
 }
 
+/**
+ * A guild-owned base camp mapped to its worker pal-container and the guild's
+ * member players. All ids are lowercase 32-char hex strings, matching
+ * `PlayerRef.uid` and the hex form of `OwnedPal.container_id` — so
+ * `guildBases`/`scopeBasesToPlayer` can compare `base.container_id` against
+ * `hexGuid(pal.container_id)` and match a selected player's `PlayerRef.uid`
+ * against `base.member_uids` directly.
+ */
+export interface BaseOwnership {
+  container_id: string;
+  guild_id: string;
+  guild_name: string;
+  member_uids: string[];
+}
+
 export interface SaveSummary {
   world_name: string;
   players: PlayerRef[];
   pals: OwnedPal[];
+  /** Guild-owned base camps mapped to worker containers + member players. */
+  bases: BaseOwnership[];
   /** Non-fatal parser warnings (skipped entities, unreadable sub-saves). */
   warnings: string[];
 }
@@ -151,8 +173,11 @@ export interface SpeciesEntry {
    * Planting, GenerateElectricity, Handiwork, Gathering, Lumbering, Mining,
    * MedicineProduction, Cooling, Transporting, Farming). */
   work_suitability: number[];
-  /** Partner-skill display name, or null when the pack has none. */
+  /** Partner-skill display name, or null when the pack has none (~130 species,
+   * mostly DLC, have no permissive partner-skill source). */
   partner_skill: string | null;
+  /** Partner-skill effect description, paired with {@link partner_skill}. */
+  partner_skill_desc: string | null;
   /** Whether the species is nocturnal. */
   nocturnal: boolean;
   /** Food-bowl demand (bars). */

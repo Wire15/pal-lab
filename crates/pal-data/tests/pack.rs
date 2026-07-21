@@ -168,12 +168,13 @@ fn species_metadata_round_trips() {
     assert_eq!(cat.food_amount, 6, "Nyafia food amount");
     assert!(cat.nocturnal, "Nyafia is nocturnal");
     assert_eq!(cat.wild_levels, (30, 60), "Nyafia wild level range");
-    // Partner-skill spot check: the shipped db.json has PartnerSkill=null for
-    // every species, so it decodes to None (never an empty string) — but the
-    // Option round-trips so it lights up when data lands.
-    assert_eq!(cat.partner_skill, None, "BadCatgirl partner skill");
+    // Partner-skill spot check: BadCatgirl (Nyafia) is a DLC species with no
+    // permissive partner-skill source, so it decodes to None (never an empty
+    // string). Populated species are covered by `partner_skill_spot_checks`.
+    assert_eq!(cat.partner_skill, None, "BadCatgirl partner skill (uncovered)");
+    assert_eq!(cat.partner_skill_desc, None, "BadCatgirl partner desc (uncovered)");
     assert!(
-        gd.species().all(|s| s.partner_skill != Some(String::new())),
+        gd.species().all(|s| s.partner_skill.as_deref() != Some("")),
         "partner_skill is never an empty string",
     );
 }
@@ -216,4 +217,60 @@ fn element_spot_checks() {
         jorm.contains(&"Water") && jorm.contains(&"Dragon"),
         "Jormuntide is Water+Dragon, got {jorm:?}",
     );
+}
+
+#[test]
+fn partner_skill_spot_checks() {
+    let gd = GameData::get();
+    let ps = |id: &str| -> (String, String) {
+        let s = gd.species_by_id(id).unwrap_or_else(|| panic!("{id} exists"));
+        (
+            s.partner_skill.clone().unwrap_or_else(|| panic!("{id} has partner skill")),
+            s.partner_skill_desc.clone().unwrap_or_else(|| panic!("{id} has partner desc")),
+        )
+    };
+    // Lamball (SheepBall) = Fluffy Shield.
+    assert_eq!(ps("SheepBall").0, "Fluffy Shield", "Lamball partner skill");
+    // Foxparks (Kitsunebi) = Huggy Fire.
+    assert_eq!(ps("Kitsunebi").0, "Huggy Fire", "Foxparks partner skill");
+    // Anubis = Guardian of the Desert (note lowercase "of the").
+    assert_eq!(ps("Anubis").0, "Guardian of the Desert", "Anubis partner skill");
+    // Descriptions are non-empty for covered species.
+    assert!(!ps("SheepBall").1.is_empty(), "Lamball partner desc non-empty");
+}
+
+#[test]
+fn partner_skill_coverage_from_vendor() {
+    let gd = GameData::get();
+    let covered = gd.species().filter(|s| s.partner_skill.is_some()).count();
+    // 138 exact name matches + 31 game-accurate variant->base inheritances from
+    // mlg404/palworld-paldex-api (see vendor/NOTICE). Locked so a coverage
+    // regression (e.g. a broken merge) is caught.
+    assert_eq!(covered, 169, "partner-skill coverage (of 299)");
+    // A name present implies a description is present in our vendored source.
+    for sp in gd.species() {
+        if sp.partner_skill.is_some() {
+            assert!(
+                sp.partner_skill_desc.is_some(),
+                "{} has a partner-skill name but no description",
+                sp.internal_name,
+            );
+        }
+    }
+}
+
+#[test]
+fn species_id_resolves_case_insensitively() {
+    let gd = GameData::get();
+    // The pack keys palcalc's "GhostAnglerfish"; the real save's CharacterID is
+    // "GhostAnglerFish" (capital F). Both must resolve to the same species.
+    let exact = gd.species_by_id("GhostAnglerfish").expect("exact key exists");
+    let from_save = gd
+        .species_by_id("GhostAnglerFish")
+        .expect("save-cased key resolves via ci fallback");
+    assert_eq!(exact.internal_name, from_save.internal_name);
+    // Exact casing still wins for a normal id.
+    assert_eq!(gd.species_by_id("Anubis").unwrap().name, "Anubis");
+    // Unknown id is still None.
+    assert!(gd.species_by_id("NotARealPalXYZ").is_none());
 }

@@ -146,3 +146,30 @@ export function containerLabel(kind: ContainerKind): string {
       return "Unknown";
   }
 }
+
+/** Pal rarity tier name, coarse-grained from the raw `Rarity` integer. */
+export type RarityTierName = "Common" | "Rare" | "Epic" | "Legendary";
+
+export interface RarityTier {
+  name: RarityTierName;
+  /** Color key: the `rarity-*` design token (`--color-rarity-<key>`). */
+  tokenKey: "common" | "rare" | "epic" | "legendary";
+}
+
+/**
+ * Bucket a species' raw `Rarity` number into one of the game's four rarity
+ * bands. Boundaries (<=4 Common, <=7 Rare, <=10 Epic, else Legendary) are
+ * corroborated by two independent community tools —
+ * snmtriet/palworld (src/app/pals/page.tsx: common 0-4, rare 5-7, epic 8-10,
+ * legendary 11+) and FearlessKenji/Paldeck (utility/paldeck.js getRarity:
+ * <=4 Common, <=7 Rare, <=10 Epic, else Legendary) — and verified against
+ * palcalc's db.json: the legendary pals (Frostallion(+Noct), Jetragon,
+ * Paladius, Necromus, Bellanoir(+Libero), Neptilius) carry Rarity 20 while
+ * every other species is 1-10, so the >10 cutoff isolates exactly them.
+ */
+export function rarityTier(n: number): RarityTier {
+  if (n <= 4) return { name: "Common", tokenKey: "common" };
+  if (n <= 7) return { name: "Rare", tokenKey: "rare" };
+  if (n <= 10) return { name: "Epic", tokenKey: "epic" };
+  return { name: "Legendary", tokenKey: "legendary" };
+}

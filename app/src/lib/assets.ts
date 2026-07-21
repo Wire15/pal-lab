@@ -28,6 +28,13 @@ export function palIconUrl(characterId: string): string {
 }
 
 /**
+ * URL for the in-game alpha (field-boss) marker — the red horned icon shown on
+ * alpha pals. Bundled at `app/public/ui/alpha.png`; sourced from
+ * palworld-save-pal (MIT), see crates/pal-data/vendor/NOTICE.
+ */
+export const alphaIconUrl: string = "/ui/alpha.png";
+
+/**
  * URL for an element-type icon. Element names are matched case-insensitively
  * against the bundled set; unknown elements resolve to {@link UNKNOWN_ICON}.
  */
