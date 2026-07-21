@@ -1,0 +1,179 @@
+# Pal Calc — UI Design Contract
+
+Binding reference for every view. Round 2 (Pal-dex grid, breeding-tree
+extensions) MUST follow this verbatim. The source of truth for values is
+`src/index.css` (`@theme` block) — this document explains intent and usage.
+
+## 1. Brief & direction
+
+**Job:** a fast, data-dense desktop companion that makes multi-step breeding
+plans legible at a glance.
+**Audience:** Palworld players engineering perfect pals.
+**Direction:** a dark **breeder's field terminal**. The chrome is quiet gunmetal
+slate; vibrancy comes from the cel-shaded pal art and the categorical element
+colors, never from the UI itself. Warm ancient-tech **amber** is the single
+brand accent (Palworld ruins / breeding-cake glow). This is deliberately
+game-adjacent and utilitarian — not a corporate dashboard, not kitsch.
+
+Non-negotiables: never indigo-on-white cards, never Inter-everywhere, never a
+gradient-metric hero, never glassmorphism. Spend boldness only on the signature.
+
+## 2. Color tokens
+
+All colors are `--color-*` custom properties consumed as Tailwind utilities
+(`bg-panel`, `text-ink`, `border-line`, `text-amber`, …). Never hardcode hex in
+components; if a new color is needed, add a token here first.
+
+### Surfaces (cool slate, blue-green tint, never pure black)
+| Token | Hex | Use |
+|---|---|---|
+| `abyss` | `#0d1117` | App background, input wells, icon backing |
+| `panel` | `#151c26` | Cards, sidebar, view headers |
+| `raised` | `#1d2733` | Table header, sticky bars, secondary buttons |
+| `hover` | `#232f3d` | Hover fill on interactive surfaces |
+| `line` | `#2b3746` | Primary borders, tree connectors |
+| `line-soft` | `#212c39` | Row dividers, hairlines |
+
+### Ink (cool off-white ramp, never pure white)
+| Token | Hex | Use |
+|---|---|---|
+| `ink` | `#e7ecf2` | Primary text, values |
+| `ink-dim` | `#9dabbb` | Secondary text, labels |
+| `ink-faint` | `#63717f` | Tertiary, captions, disabled, eyebrow meta |
+
+### Accent & status
+| Token | Hex | Use |
+|---|---|---|
+| `amber` | `#f0a94a` | Brand accent, primary CTA, active nav, focus ring |
+| `amber-bright` | `#ffbe63` | CTA hover, special-passive text |
+| `amber-deep` | `#c17f2c` | Reserved (pressed/deep amber) |
+| `good` | `#57cf8b` | High quality, high odds, positive passive |
+| `fair` | `#e7c34a` | Mid-high quality, even odds |
+| `warn` | `#f0983f` | Low odds, parser warnings |
+| `bad` | `#ef6a6a` | Low quality, rare odds, negative passive, errors |
+
+### Element accents (categorical; 9 Palworld types)
+`el-fire #ff7043` · `el-water #4aa8e0` · `el-leaf #6ec25a` ·
+`el-electricity #f2c744` · `el-ice #74d3e6` · `el-earth #cc9a5a` ·
+`el-dark #8a68d6` · `el-dragon #d264b0` · `el-normal #b7b1a4`
+
+Mapping from element name → token is case-insensitive and already handled in
+`lib/assets.ts` (Ground→Earth, Grass→Leaf, Electric→Electricity, Neutral→Normal).
+Round 2 uses these as the accent for a species' primary element (badge tint,
+card top-rule, dex filters). In the current views two element colors do
+double duty as *semantic* glyph colors: **water = male ♂**, **dragon = female ♀**
+(chosen for contrast and legibility, not to imply element).
+
+## 3. Typography
+
+Three self-hosted faces (woff2 in `public/fonts`, `@font-face` in `index.css`;
+the app is offline-first, so no runtime font network).
+
+| Role | Face | Token | Where |
+|---|---|---|---|
+| Display | **Chakra Petch** (600/700) | `font-display` | Wordmark, view titles, plan/section labels. Angular HUD voice. |
+| Body | **IBM Plex Sans** (var 100–700) | `font-sans` | All prose, names, controls. Engineered, high x-height. |
+| Numeric | **IBM Plex Mono** (500/600) | `font-mono` | IVs, times, %s, counts, eyebrows, paths. Always `tabular-nums`. |
+
+Chakra Petch is the deliberate risk — used *sparingly* and with tracking so
+headings read like an in-game terminal, never as body text.
+
+### Type scale
+| Step | Size / tracking | Token pattern |
+|---|---|---|
+| View title | 20px / bold / `tracking-wide` | `font-display text-xl font-bold` |
+| Eyebrow | 11px / uppercase / `tracking-[0.24em]` amber | `font-mono ... text-amber` |
+| Column / field label | 11px / uppercase / `tracking-wider` faint | `font-mono ... text-ink-faint` |
+| Body | 13–14px | `font-sans` |
+| Data value | 13px mono tabular | `font-mono tabular-nums` |
+| Chip / meta | 11px (9px for tier/arrow) | — |
+
+Eyebrows use mono uppercase because they encode a *system section*, not decoration.
+
+## 4. Spacing, radius, elevation
+
+- **Spacing:** 4px base grid (Tailwind default scale). View padding `px-6 py-5`;
+  card inner `p-3`/`px-2.5 py-2`; control padding `px-2.5–3 py-1.5`.
+- **Radius tokens:** `--radius-xs 3px` (chips, focus), `sm 5px` (badges),
+  `md 8px` (controls, cards, icons), `lg 12px` (plan containers). Crisp, small —
+  a terminal, not a pillow. Fully-round only for the offline dot and IV bars.
+- **Elevation:** flat. Depth is expressed by *surface step* (abyss → panel →
+  raised) and 1px `line` borders, **not** drop shadows. No glow, no blur.
+- **Borders:** 1px `line` for structure, `line-soft` for row dividers.
+
+## 5. Color semantics (data coding)
+
+Encoded once in `lib/ui.ts`; reuse those helpers, don't re-derive thresholds.
+
+- **IV talents (0–100)** — `ivBand()` → `good ≥90`, `fair ≥70`, `mid ≥50`,
+  `low <50`. Rendered as a right-aligned mono numeral tinted by band with a thin
+  quality bar (`QUALITY_TEXT` / `QUALITY_FILL`).
+- **Breeding success rate (0–1)** — `probBand()` → `high ≥75%` good, `even ≥50%`
+  fair, `long ≥25%` warn, `rare <25%` bad. Rendered as an outlined mono pill.
+- **Passives** — `passiveView()` parses the id into `{label, dir, tone, tier}`.
+  `dir up` → good/green, `dir down` → bad/red, `Rare/Legend` → special/amber,
+  else neutral. Direction is shown as ▲/▼ **and** color (never color alone).
+  Tier digit → roman numeral (`ROMAN`). Tones in `PASSIVE_TONE`.
+- **Sources** — Bred = amber tag; Owned = neutral tag + location; Wild = leaf
+  tag with capture count.
+
+## 6. Component patterns
+
+Primitives live in `components/primitives.tsx`; compose them, don't reinvent.
+
+- **PalIcon** `{id,name,size}` — cel-shaded portrait keyed by internal species
+  id, `rounded-md`, 1px `line` ring, `abyss` backing, lazy, falls back to
+  `UNKNOWN_ICON` on error. Roster 34px, tree 30px, autocomplete/inline 26px.
+- **PassiveChip** `{id}` — 11px, `rounded-sm`, tone border+fill+text, ▲/▼ arrow,
+  truncated label (`max-w-[14ch]`), tier roman, `title` = raw id.
+- **Tag** `{tone}` — neutral/amber/boss outline badge for categorical metadata
+  (containers, cake, "Fastest", "Alpha").
+- **Buttons:** primary = solid `bg-amber text-abyss` → `hover:bg-amber-bright`,
+  `disabled:opacity` + `cursor-not-allowed`, busy shows verb-in-progress
+  ("Solving…"). Secondary = `bg-raised border-line text-ink-dim` →
+  `hover:bg-hover hover:text-ink`.
+- **Inputs:** `bg-abyss border-line`, `focus:border-amber/60`; paths/numerics in
+  mono. Composite fields (target species) wrap icon+input in one bordered well
+  with `focus-within:border-amber/60`.
+- **Tables:** `sticky top-0` header on `raised`, mono uppercase sortable headers
+  (active = amber + ▲/▼), `line-soft` row dividers, `hover:bg-panel/70` rows,
+  numerics right-aligned. Built to stay scannable at 1000+ rows.
+- **Cards / panels:** `panel` fill, `line` border, radius `md`/`lg`; section
+  headers sit on `raised` with a bottom `line`.
+- **Chips vs Tags:** chips carry *graded* data (passives); tags carry *flat*
+  categories. Keep them visually distinct (chip = data tone, tag = neutral).
+
+## 7. Signature element — the Lineage Ladder
+
+The breeding plan tree is the hero and the thing the app is remembered by.
+(`TreeNode` in `views/Solver.tsx`.)
+
+- Each step is a compact **node card**: chevron · PalIcon · species + ♂/♀ · then
+  right-aligned source tag, color-coded probability pill, per-step time.
+- The **target root** is emphasized with an `amber/45` border and amber tint,
+  under a mono "TARGET" eyebrow.
+- Children hang off a vertical `line` **connector rail** with short horizontal
+  elbows — an ancestry/tech-tree read, not default disclosure triangles.
+- Collapsible via `<details open>`; the chevron rotates on open
+  (`group-open/n:rotate-90`). Stays legible past depth 4 because the card is
+  self-contained and only the rail indents.
+- Wild leaves read as capture goals (leaf tag, no odds); owned leaves are
+  terminal facts (neutral tag, 100%/instant).
+- Each plan is wrapped in a container with a summary header: plan number,
+  "Fastest" tag on the quickest, big amber total time, then mono stats
+  (steps · wild · cake).
+
+## 8. Window chrome & quality floor
+
+- **Scrollbars:** thin, `line` thumb on transparent track, rounded, brighten on
+  hover (`index.css` base layer, WebKit + Firefox).
+- **Selection:** amber at 34% over `ink`.
+- **Focus:** one global `:focus-visible` — 2px amber outline, 2px offset — on
+  every control. Mouse focus suppressed (`:focus:not(:focus-visible)`).
+- **States:** every view ships loading (verb-in-progress CTA), empty
+  ("No save loaded" / "Plan a breeding path" / "No path found" — each an
+  invitation to act), no-match ("No pals match …"), and error (bad-toned banner)
+  states. Empty states guide the next action; errors state what happened.
+- **Reduced motion:** `prefers-reduced-motion` collapses transitions.
+- **Copy:** sentence case, active-voice verbs ("Load save", "Solve breeding
+  path"), no filler. Interface voice in errors/empties, not an apology.

@@ -1,8 +1,174 @@
 @import "tailwindcss";
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
+/* ------------------------------------------------------------------ *
+ * Self-hosted faces (desktop app runs offline; no runtime network).
+ * Display : Chakra Petch  - angular HUD/terminal voice for headings.
+ * Body    : IBM Plex Sans - neutral, high x-height, engineered feel.
+ * Numeric : IBM Plex Mono - tabular figures for IVs / times / rates.
+ * ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Chakra Petch";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/chakra-petch-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Chakra Petch";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/chakra-petch-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-600.woff2") format("woff2");
+}
+
+/* ------------------------------------------------------------------ *
+ * Design tokens - the single source of truth. Round 2 consumes these
+ * via Tailwind utilities (bg-panel, text-ink, font-display, el-fire...).
+ * ------------------------------------------------------------------ */
+@theme {
+  /* Surfaces: cool slate, blue-green tint, never pure black. */
+  --color-abyss: #0d1117;
+  --color-panel: #151c26;
+  --color-raised: #1d2733;
+  --color-hover: #232f3d;
+  --color-line: #2b3746;
+  --color-line-soft: #212c39;
+
+  /* Ink: cool off-white ramp, never pure white. */
+  --color-ink: #e7ecf2;
+  --color-ink-dim: #9dabbb;
+  --color-ink-faint: #63717f;
+
+  /* Primary accent: warm ancient-tech gold (Palworld ruins / cake glow). */
+  --color-amber: #f0a94a;
+  --color-amber-bright: #ffbe63;
+  --color-amber-deep: #c17f2c;
+
+  /* Status / quality semantics. */
+  --color-good: #57cf8b;
+  --color-fair: #e7c34a;
+  --color-warn: #f0983f;
+  --color-bad: #ef6a6a;
+
+  /* Palworld element accents (categorical). */
+  --color-el-fire: #ff7043;
+  --color-el-water: #4aa8e0;
+  --color-el-leaf: #6ec25a;
+  --color-el-electricity: #f2c744;
+  --color-el-ice: #74d3e6;
+  --color-el-earth: #cc9a5a;
+  --color-el-dark: #8a68d6;
+  --color-el-dragon: #d264b0;
+  --color-el-normal: #b7b1a4;
+
+  /* Faces. */
+  --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Radius: crisp, small. The tool is a terminal, not a pillow. */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Window chrome: scrollbars, selection, focus, base type.
+ * ------------------------------------------------------------------ */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background-color: var(--color-abyss);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-amber) 34%, transparent);
+    color: var(--color-ink);
+  }
+
+  /* Slim, themed scrollbars that read as part of the panel. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #3a4a5c;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* One consistent, visible keyboard focus ring across every control. */
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Kill the native number-input spinners; they clash with the theme. */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
