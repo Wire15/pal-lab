@@ -10,6 +10,7 @@ import type {
 } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../components/primitives";
+import { useAppState } from "../state";
 
 /** Count wild-caught leaves in a plan tree (header summary cross-check). */
 function countWild(node: PlanNode): number {
@@ -122,7 +123,7 @@ function TreeNode({
 }
 
 export default function Solver() {
-  const [saveDir, setSaveDir] = useState("");
+  const { saveDir, setSaveDir, solveTarget, clearSolveTarget } = useAppState();
   const [species, setSpecies] = useState("");
   const [passiveInput, setPassiveInput] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
@@ -140,6 +141,14 @@ export default function Solver() {
     invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
     invoke<NamedEntry[]>("list_passives").then(setPassiveList).catch(() => {});
   }, []);
+
+  // Pre-fill the target when the Pal-dex jumps here via "Solve for this pal".
+  useEffect(() => {
+    if (solveTarget !== null) {
+      setSpecies(solveTarget);
+      clearSolveTarget();
+    }
+  }, [solveTarget, clearSolveTarget]);
 
   const passiveNames = useMemo(
     () => new Set(passiveList.map((p) => p.name)),

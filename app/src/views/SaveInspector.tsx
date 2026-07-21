@@ -10,6 +10,7 @@ import {
   QUALITY_TEXT,
 } from "../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../components/primitives";
+import { useAppState } from "../state";
 
 type SortKey =
   | "species"
@@ -51,7 +52,7 @@ function IvCell({ value }: { value: number }) {
 }
 
 export default function SaveInspector() {
-  const [saveDir, setSaveDir] = useState("");
+  const { saveDir, setSaveDir } = useAppState();
   const [summary, setSummary] = useState<SaveSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

@@ -1,9 +1,8 @@
-import { useState } from "react";
 import SaveInspector from "./views/SaveInspector";
 import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
-
-type View = "save" | "solver" | "paldex";
+import { AppStateProvider, useAppState } from "./state";
+import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
 function NavIcon({ view }: { view: View }) {
@@ -49,8 +48,8 @@ const NAV: { id: View; label: string; hint: string }[] = [
   { id: "paldex", label: "Pal-dex", hint: "Reference" },
 ];
 
-export default function App() {
-  const [view, setView] = useState<View>("save");
+function Shell() {
+  const { view, setView } = useAppState();
 
   return (
     <div className="flex h-full bg-abyss text-ink">
@@ -122,5 +121,13 @@ export default function App() {
         {view === "paldex" && <Paldex />}
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppStateProvider>
+      <Shell />
+    </AppStateProvider>
   );
 }

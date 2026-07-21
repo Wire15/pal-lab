@@ -3,36 +3,117 @@
 // so it serves static JSON fixtures captured from the real commands run against
 // `testdata` — letting every view render and be screenshotted without Tauri.
 //
+// The fixtures are loaded lazily via dynamic import: they are code-split into
+// their own chunk and never enter the Tauri entry bundle (where `isTauri` is
+// true and the real IPC is used).
+//
 // Regenerate the fixtures with:
 //   cargo test gen_dev_fixtures -- --ignored   (in app/src-tauri)
 
 import { invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { InvokeArgs } from "@tauri-apps/api/core";
-
-import paldexSpecies from "../dev-fixtures/paldex-species.json";
-import rosterCounts from "../dev-fixtures/roster-counts.json";
-import saveSummary from "../dev-fixtures/save-summary.json";
-import solveResult from "../dev-fixtures/solve-result.json";
-import listPassives from "../dev-fixtures/list-passives.json";
+import type {
+  ChildResult,
+  ParentsResult,
+  SpeciesDetail,
+  SpeciesEntry,
+} from "./types";
 
 /** Tauri v2 injects this global into the webview; absent in a plain browser. */
 const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
-/** `{id, name}` list derived from the species fixture (mirrors list_species). */
-const listSpecies = (paldexSpecies as { id: string; name: string }[]).map((s) => ({
-  id: s.id,
-  name: s.name,
-}));
+interface DevFixtures {
+  /** Command name -> whole fixture, for commands with no argument keying. */
+  simple: Record<string, unknown>;
+  /** Species detail keyed by internal id. */
+  detail: Record<string, SpeciesDetail>;
+  /** Parent pairs keyed by child internal id. */
+  parents: Record<string, ParentsResult>;
+  /** Child keyed by canonical "min_id|max_id" of the two parents. */
+  child: Record<string, { id: string; name: string; paldex_no: number }>;
+  /** Full species list, for synthesizing detail of uncovered ids. */
+  species: SpeciesEntry[];
+}
 
-/** Command name -> fixture served in browser dev mode. */
-const FIXTURES: Record<string, unknown> = {
-  load_save: saveSummary,
-  solve: solveResult,
-  list_species: listSpecies,
-  list_passives: listPassives,
-  paldex_species: paldexSpecies,
-  roster_counts: rosterCounts,
-};
+let devPromise: Promise<DevFixtures> | null = null;
+
+/** Load and cache the dev fixtures on first browser-mode invoke. */
+function loadDev(): Promise<DevFixtures> {
+  if (!devPromise) {
+    devPromise = Promise.all([
+      import("../dev-fixtures/paldex-species.json"),
+      import("../dev-fixtures/roster-counts.json"),
+      import("../dev-fixtures/save-summary.json"),
+      import("../dev-fixtures/solve-result.json"),
+      import("../dev-fixtures/list-passives.json"),
+      import("../dev-fixtures/paldex-species-detail.json"),
+      import("../dev-fixtures/breeding-parents.json"),
+      import("../dev-fixtures/breeding-child.json"),
+    ]).then(([species, roster, save, solve, passives, detail, parents, child]) => {
+      const speciesData = species.default as SpeciesEntry[];
+      return {
+        simple: {
+          load_save: save.default,
+          solve: solve.default,
+          list_species: speciesData.map((s) => ({ id: s.id, name: s.name })),
+          list_passives: passives.default,
+          paldex_species: speciesData,
+          roster_counts: roster.default,
+        },
+        detail: detail.default as Record<string, SpeciesDetail>,
+        parents: parents.default as Record<string, ParentsResult>,
+        child: child.default as DevFixtures["child"],
+        species: speciesData,
+      };
+    });
+  }
+  return devPromise;
+}
+
+/** Canonical "min_id|max_id" key matching the child-fixture generator. */
+function pairKey(a: string, b: string): string {
+  return a <= b ? `${a}|${b}` : `${b}|${a}`;
+}
+
+function arg(args: InvokeArgs | undefined, key: string): string {
+  return String((args as Record<string, unknown> | undefined)?.[key] ?? "");
+}
+
+/** Serve a command from the dev fixtures, with graceful fallbacks. */
+async function invokeDev<T>(cmd: string, args?: InvokeArgs): Promise<T> {
+  const dev = await loadDev();
+
+  if (cmd === "paldex_species_detail") {
+    const id = arg(args, "id");
+    const hit = dev.detail[id];
+    if (hit) return hit as T;
+    // Synthesize a minimal detail (header/stats/passives) for uncovered ids so
+    // in-dex navigation never hard-errors; breeding panels read as empty.
+    const row = dev.species.find((s) => s.id === id);
+    if (row) {
+      return { ...row, breeding: { parent_pair_count: 0, unique_combos: [] } } as T;
+    }
+    throw new Error(`dev shim: unknown pal '${id}'`);
+  }
+
+  if (cmd === "breeding_parents") {
+    const child = arg(args, "child");
+    return (dev.parents[child] ?? { total: 0, pairs: [] }) as T;
+  }
+
+  if (cmd === "breeding_child") {
+    const a = arg(args, "parentA");
+    const b = arg(args, "parentB");
+    const child = dev.child[pairKey(a, b)] ?? null;
+    return { child } as ChildResult as T;
+  }
+
+  if (cmd in dev.simple) return dev.simple[cmd] as T;
+
+  throw new Error(
+    `dev shim: no fixture for command '${cmd}' (run in Tauri, or add a fixture)`,
+  );
+}
 
 /**
  * Invoke a Tauri command. Delegates to the real IPC inside Tauri; serves a
@@ -43,10 +124,5 @@ export function invoke<T>(cmd: string, args?: InvokeArgs): Promise<T> {
   if (isTauri) {
     return tauriInvoke<T>(cmd, args);
   }
-  if (cmd in FIXTURES) {
-    return Promise.resolve(FIXTURES[cmd] as T);
-  }
-  return Promise.reject(
-    new Error(`dev shim: no fixture for command '${cmd}' (run in Tauri, or add a fixture)`),
-  );
+  return invokeDev<T>(cmd, args);
 }

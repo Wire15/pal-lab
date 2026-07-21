@@ -108,3 +108,96 @@ export interface BreedingPlan {
   /** Estimated cakes consumed across all steps (0 for Normal). */
   cake_count: number;
 }
+
+// --- Pal-dex (mirrors app/src-tauri/src/paldex.rs) ---
+
+/** A passive resolved to `{id, name, rank}` for a species' guaranteed rolls. */
+export interface PassiveRef {
+  id: string;
+  name: string;
+  rank: number;
+}
+
+/** Base stats the pack carries for a species. */
+export interface SpeciesStats {
+  hp: number;
+  attack: number;
+  defense: number;
+  rarity: number;
+}
+
+/** Lightweight species reference for parent/child links. */
+export interface SpeciesRef {
+  id: string;
+  name: string;
+  paldex_no: number;
+}
+
+/** One species row for the pal-dex grid (from `paldex_species`). */
+export interface SpeciesEntry {
+  id: string;
+  name: string;
+  paldex_no: number;
+  is_variant: boolean;
+  /** palcalc BreedingPower used by the child formula. */
+  combi_rank: number;
+  combi_rank_priority: number;
+  male_probability: number;
+  stats: SpeciesStats;
+  guaranteed_passives: PassiveRef[];
+}
+
+/** A gender-pinned "unique combo" this species takes part in. */
+export interface UniqueCombo {
+  parent_a: SpeciesRef;
+  parent_b: SpeciesRef;
+  child: SpeciesRef;
+  /** "parent" if this species is a parent in the combo, else "child". */
+  role: "parent" | "child";
+}
+
+/** Breeding participation notes for a species detail. */
+export interface BreedingNotes {
+  parent_pair_count: number;
+  unique_combos: UniqueCombo[];
+}
+
+/** Full detail (`paldex_species_detail`): the grid row plus breeding notes. */
+export interface SpeciesDetail extends SpeciesEntry {
+  breeding: BreedingNotes;
+}
+
+/** A canonical parent pair that breeds into a target child. */
+export interface ParentPair {
+  parent_a: SpeciesRef;
+  parent_b: SpeciesRef;
+}
+
+/** Reverse breeding lookup result (`breeding_parents`). */
+export interface ParentsResult {
+  /** Total distinct parent pairs before any cap. */
+  total: number;
+  pairs: ParentPair[];
+}
+
+/** Forward breeding result (`breeding_child`). */
+export interface ChildResult {
+  child: SpeciesRef | null;
+}
+
+/** Best (max) IV seen across owned instances of a species. */
+export interface BestIvs {
+  hp: number;
+  atk: number;
+  def: number;
+}
+
+/** Per-species owned tally from `roster_counts`, keyed by character id. */
+export interface RosterCount {
+  male: number;
+  female: number;
+  best_ivs: BestIvs;
+}
+
+/** `roster_counts` returns a map of character id -> tally. */
+export type RosterCounts = Record<string, RosterCount>;

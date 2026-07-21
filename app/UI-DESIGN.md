@@ -177,3 +177,61 @@ The breeding plan tree is the hero and the thing the app is remembered by.
 - **Reduced motion:** `prefers-reduced-motion` collapses transitions.
 - **Copy:** sentence case, active-voice verbs ("Load save", "Solve breeding
   path"), no filler. Interface voice in errors/empties, not an apology.
+
+## 9. Round 2 — Pal-dex reference layer
+
+The dex is the reference differentiator: paldb-style browsing of all 299 species
+annotated with **your** roster. Two views inside one `Paldex` container (index ⇄
+detail), composing the existing tokens and primitives — no new visual language.
+
+### Element data (correction to §2)
+The shipped pack (`crates/pal-data`, built from palcalc's `db.json`) carries **no
+per-species element/type field** — only a global list of the 9 element
+definitions. Element badges and an element filter are therefore *not* shipped in
+round 2 (the assignment gated them on "if available in data"). The element
+tokens in §2 remain reserved for when a game-file extractor adds per-species
+types; until then the dex draws its categorical color from the cel-shaded pal
+art itself, and uses **rarity**, **variant**, and **owned** as the real
+categorical/graded signals. When element data lands, re-enable the element badge
+(primary-type tint) and element filter here.
+
+### Index (grid)
+- Responsive card grid, `auto-fill minmax(184px, 1fr)`, `gap-2` — ~5 columns at
+  1280, ~3 at 1024. Dense and scannable, like the table but icon-first.
+- **Species card** = `panel` + `line`, `hover:border-amber/40 hover:bg-hover`,
+  the whole card a focusable `<button>` (global amber focus ring). Top row: mono
+  dex `#NNN` (zero-padded) + variant `B` glyph (`el-dragon`), and — when a save
+  is loaded — an owned split `♂N`/`♀N` (water/dragon glyphs, §2 semantic colors).
+  Body: PalIcon 44px + name + mono `rank NNNN` (combi rank).
+- **Controls:** search (name/id/dex #); a segmented **sort** control (`raised`
+  active = amber + ▲/▼) over Dex # · Name · Combi rank; `Owned only` (disabled +
+  faint until a save loads) and `Hide variants` toggles.
+- **Roster source strip:** a `raised/60` bar with a mono `ROSTER` label, save
+  path input, Browse, and Load — reuses the shared save dir (§— App state) so a
+  save loaded in Roster/Solver auto-annotates the dex on arrival.
+
+### Detail
+- Sticky back bar (`← All pals`) + `Pal-dex` eyebrow.
+- **Header card:** PalIcon 96 (`rounded-lg`), mono `#NNN · Rarity R`, display-2xl
+  name, combi rank, and a **gender-ratio bar** — a split `el-water`(♂) /
+  `el-dragon`(♀) fill from `male_probability` with mono % labels. Primary CTA
+  `Solve for this pal` (amber) jumps to the Solver pre-filled (shared state).
+- **Panels** use one `Section` shell: `panel/40` + `line`, mono-eyebrow header on
+  `raised` with an optional right-aligned mono stat/link. Sections: Base stats
+  (4 mono stat wells), Guaranteed passives (`PassiveChip`s or empty line), **Your
+  roster** (owned count + ♂/♀ split + best-IV bars via `ivBand`/`QUALITY_*`, with
+  a `View in Roster →` link), and **Breeding**.
+- **Breeding** is two panels: *reverse* ("How to breed this pal") lists parent
+  pairs — total count in the header, first 12 as `icon+name × icon+name` cells,
+  then "and X more pairs"; *forward* ("Breed with…") is a species autocomplete
+  that resolves the child inline (`A + B → child`). Gender-locked combos, when
+  the pack pins them, get their own panel.
+- **In-dex navigation:** every species cell anywhere in the detail (parent
+  pairs, forward child, combos) is a button that reselects that species — the dex
+  browses itself; cross-view jumps go through the lifted App state.
+
+### Lifted App state (`src/state.tsx`)
+A single small context (`AppStateProvider`/`useAppState`), no store: shared
+`saveDir` (Roster · Solver · Pal-dex read/write one path), the active `view`, and
+a one-shot `solveTarget` the Solver consumes on arrival. `requestSolve(name)`
+sets the target and switches view; `View in Roster` just flips `view`.

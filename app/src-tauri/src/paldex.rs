@@ -428,5 +428,55 @@ mod tests {
             "solve-result.json",
             serde_json::to_string_pretty(&plans).unwrap(),
         );
+
+        // --- Pal-dex reference fixtures (round 2) ---
+        // Detail for every species so any clicked pal renders in dev; the map is
+        // keyed by internal id. Small per entry (list row + breeding notes).
+        let all_ids: Vec<String> =
+            GameData::get().species().map(|sp| sp.internal_name.clone()).collect();
+        let mut detail_map: Map<String, SpeciesDetail> = Map::new();
+        for id in &all_ids {
+            detail_map.insert(id.clone(), paldex_species_detail(id.clone()).expect("detail"));
+        }
+        write(
+            "paldex-species-detail.json",
+            serde_json::to_string_pretty(&detail_map).unwrap(),
+        );
+
+        // Reverse breeding (parent pairs) for every species. `total` stays exact
+        // (matches the real command); the pair list is trimmed to a display
+        // prefix so the fixture stays compact — the view only shows the first N.
+        const FIXTURE_PAIRS: usize = 16;
+        let mut parents_map: Map<String, ParentsResult> = Map::new();
+        for id in &all_ids {
+            let mut res = breeding_parents(id.clone()).expect("parents");
+            res.pairs.truncate(FIXTURE_PAIRS);
+            parents_map.insert(id.clone(), res);
+        }
+        write("breeding-parents.json", serde_json::to_string(&parents_map).unwrap());
+
+        // Forward breeding (child of a x b) for every pair with a featured
+        // first parent. Covers the "breed with..." widget on the pages screenshot
+        // review exercises; the dev shim falls back to null for uncovered pairs.
+        // Keyed by canonical "min_id|max_id"; only resolvable pairs are stored.
+        const FEATURED: &[&str] = &[
+            "Anubis", "JetDragon", "IceHorse", "KingBahamut", "Bastet", "SheepBall",
+            "PinkCat", "ChickenPal", "ElecPanda", "Horus", "CaptainPenguin",
+            "NegativeKoala", "LazyDragon", "Deer", "Monkey", "Kitsunebi", "Ganesha",
+            "Sekhmet", "FairyDragon", "BlueDragon", "Kelpie", "Plesiosaur",
+            "Serpent_Ground", "CuteFox",
+        ];
+        let mut child_map: Map<String, SpeciesRef> = Map::new();
+        for f in FEATURED {
+            for t in &all_ids {
+                let res = breeding_child((*f).to_string(), t.clone(), None, None)
+                    .expect("child lookup");
+                if let Some(child) = res.child {
+                    let (lo, hi) = if *f <= t.as_str() { (*f, t.as_str()) } else { (t.as_str(), *f) };
+                    child_map.entry(format!("{lo}|{hi}")).or_insert(child);
+                }
+            }
+        }
+        write("breeding-child.json", serde_json::to_string(&child_map).unwrap());
     }
 }

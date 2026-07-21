@@ -1,0 +1,6405 @@
+{
+  "LanternButler": {
+    "id": "LanternButler",
+    "name": "Loomen",
+    "paldex_no": 180,
+    "is_variant": false,
+    "combi_rank": 890,
+    "combi_rank_priority": 89000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 100,
+      "defense": 95,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 670,
+      "unique_combos": []
+    }
+  },
+  "ClioneTwins": {
+    "id": "ClioneTwins",
+    "name": "Amione",
+    "paldex_no": 47,
+    "is_variant": false,
+    "combi_rank": 2520,
+    "combi_rank_priority": 252000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 65,
+      "attack": 70,
+      "defense": 65,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 321,
+      "unique_combos": []
+    }
+  },
+  "NightLady_Dark": {
+    "id": "NightLady_Dark",
+    "name": "Bellanoir Libero",
+    "paldex_no": 195,
+    "is_variant": true,
+    "combi_rank": 130,
+    "combi_rank_priority": 13000,
+    "male_probability": 0.1,
+    "stats": {
+      "hp": 120,
+      "attack": 150,
+      "defense": 100,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Witch",
+        "name": "Siren of the Void",
+        "rank": 4
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "Penguin_Electric": {
+    "id": "Penguin_Electric",
+    "name": "Pengullet Lux",
+    "paldex_no": 17,
+    "is_variant": true,
+    "combi_rank": 2490,
+    "combi_rank_priority": 572,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "JellyfishFairy": {
+    "id": "JellyfishFairy",
+    "name": "Jelliette",
+    "paldex_no": 45,
+    "is_variant": false,
+    "combi_rank": 2650,
+    "combi_rank_priority": 265000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 90,
+      "defense": 70,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 134,
+      "unique_combos": []
+    }
+  },
+  "GrassMammoth_Ice": {
+    "id": "GrassMammoth_Ice",
+    "name": "Mammorest Cryst",
+    "paldex_no": 87,
+    "is_variant": true,
+    "combi_rank": 1070,
+    "combi_rank_priority": 107000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 150,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "BlueDragon": {
+    "id": "BlueDragon",
+    "name": "Azurobe",
+    "paldex_no": 41,
+    "is_variant": false,
+    "combi_rank": 1830,
+    "combi_rank_priority": 183000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1090,
+      "unique_combos": []
+    }
+  },
+  "ChickenPal": {
+    "id": "ChickenPal",
+    "name": "Chikipi",
+    "paldex_no": 3,
+    "is_variant": false,
+    "combi_rank": 3080,
+    "combi_rank_priority": 308000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 60,
+      "defense": 60,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 46,
+      "unique_combos": []
+    }
+  },
+  "WeaselDragon": {
+    "id": "WeaselDragon",
+    "name": "Chillet",
+    "paldex_no": 103,
+    "is_variant": false,
+    "combi_rank": 2330,
+    "combi_rank_priority": 233000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 165,
+      "unique_combos": []
+    }
+  },
+  "MoonQueen": {
+    "id": "MoonQueen",
+    "name": "Selyne",
+    "paldex_no": 190,
+    "is_variant": false,
+    "combi_rank": 360,
+    "combi_rank_priority": 36000,
+    "male_probability": 0.2,
+    "stats": {
+      "hp": 130,
+      "attack": 115,
+      "defense": 110,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "LeafPrincess": {
+    "id": "LeafPrincess",
+    "name": "Lullu",
+    "paldex_no": 125,
+    "is_variant": false,
+    "combi_rank": 1990,
+    "combi_rank_priority": 199000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 224,
+      "unique_combos": []
+    }
+  },
+  "Deer_Ground": {
+    "id": "Deer_Ground",
+    "name": "Eikthyrdeer Terra",
+    "paldex_no": 32,
+    "is_variant": true,
+    "combi_rank": 2580,
+    "combi_rank_priority": 258000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FluffyBird": {
+    "id": "FluffyBird",
+    "name": "Muffly",
+    "paldex_no": 59,
+    "is_variant": false,
+    "combi_rank": 2480,
+    "combi_rank_priority": 248000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 80,
+      "defense": 55,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 334,
+      "unique_combos": []
+    }
+  },
+  "NightFox": {
+    "id": "NightFox",
+    "name": "Nox",
+    "paldex_no": 24,
+    "is_variant": false,
+    "combi_rank": 2920,
+    "combi_rank_priority": 292000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 70,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 58,
+      "unique_combos": []
+    }
+  },
+  "SnakeGirl": {
+    "id": "SnakeGirl",
+    "name": "Venusa",
+    "paldex_no": 178,
+    "is_variant": false,
+    "combi_rank": 970,
+    "combi_rank_priority": 97000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 80,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 712,
+      "unique_combos": []
+    }
+  },
+  "BadCatgirl": {
+    "id": "BadCatgirl",
+    "name": "Nyafia",
+    "paldex_no": 143,
+    "is_variant": false,
+    "combi_rank": 1250,
+    "combi_rank_priority": 125000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 110,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 214,
+      "unique_combos": []
+    }
+  },
+  "NegativeKoala": {
+    "id": "NegativeKoala",
+    "name": "Depresso",
+    "paldex_no": 16,
+    "is_variant": false,
+    "combi_rank": 3000,
+    "combi_rank_priority": 300000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 40,
+      "unique_combos": []
+    }
+  },
+  "LazyCatfish_Gold": {
+    "id": "LazyCatfish_Gold",
+    "name": "Dumud Gild",
+    "paldex_no": 109,
+    "is_variant": true,
+    "combi_rank": 1620,
+    "combi_rank_priority": 576,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 75,
+      "defense": 100,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Mothman": {
+    "id": "Mothman",
+    "name": "Silvance",
+    "paldex_no": 193,
+    "is_variant": false,
+    "combi_rank": 80,
+    "combi_rank_priority": 8000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 120,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "IceSeal_Ground": {
+    "id": "IceSeal_Ground",
+    "name": "Polapup Terra",
+    "paldex_no": 72,
+    "is_variant": true,
+    "combi_rank": 1100,
+    "combi_rank_priority": 110000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 110,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SharkKid": {
+    "id": "SharkKid",
+    "name": "Gobfin",
+    "paldex_no": 55,
+    "is_variant": false,
+    "combi_rank": 2550,
+    "combi_rank_priority": 255000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 75,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 183,
+      "unique_combos": []
+    }
+  },
+  "CatMage": {
+    "id": "CatMage",
+    "name": "Katress",
+    "paldex_no": 79,
+    "is_variant": false,
+    "combi_rank": 2040,
+    "combi_rank_priority": 204000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 105,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 447,
+      "unique_combos": [
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "CatMage_Fire",
+            "name": "Katress Ignis",
+            "paldex_no": 79
+          },
+          "role": "parent"
+        },
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "FoxMage_Dark",
+            "name": "Wixen Noct",
+            "paldex_no": 78
+          },
+          "role": "parent"
+        }
+      ]
+    }
+  },
+  "YakushimaMonster002": {
+    "id": "YakushimaMonster002",
+    "name": "Enchanted Sword",
+    "paldex_no": 10008,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 8,
+      "unique_combos": []
+    }
+  },
+  "BluePlatypus_Fire": {
+    "id": "BluePlatypus_Fire",
+    "name": "Fuack Ignis",
+    "paldex_no": 5,
+    "is_variant": true,
+    "combi_rank": 2300,
+    "combi_rank_priority": 575,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 85,
+      "defense": 60,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CuteButterfly": {
+    "id": "CuteButterfly",
+    "name": "Cinnamoth",
+    "paldex_no": 61,
+    "is_variant": false,
+    "combi_rank": 2620,
+    "combi_rank_priority": 262000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 108,
+      "unique_combos": []
+    }
+  },
+  "LeafMomonga": {
+    "id": "LeafMomonga",
+    "name": "Herbil",
+    "paldex_no": 10,
+    "is_variant": false,
+    "combi_rank": 2630,
+    "combi_rank_priority": 263000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 75,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 142,
+      "unique_combos": []
+    }
+  },
+  "BlueSkyDragon": {
+    "id": "BlueSkyDragon",
+    "name": "Shaolong",
+    "paldex_no": 192,
+    "is_variant": false,
+    "combi_rank": 40,
+    "combi_rank_priority": 4000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 135,
+      "defense": 120,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "WingGolem": {
+    "id": "WingGolem",
+    "name": "Knocklem",
+    "paldex_no": 159,
+    "is_variant": false,
+    "combi_rank": 260,
+    "combi_rank_priority": 26000,
+    "male_probability": 0.7,
+    "stats": {
+      "hp": 105,
+      "attack": 110,
+      "defense": 135,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 95,
+      "unique_combos": []
+    }
+  },
+  "Alpaca": {
+    "id": "Alpaca",
+    "name": "Melpaca",
+    "paldex_no": 20,
+    "is_variant": false,
+    "combi_rank": 2720,
+    "combi_rank_priority": 272000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 75,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 98,
+      "unique_combos": []
+    }
+  },
+  "FireKirin": {
+    "id": "FireKirin",
+    "name": "Pyrin",
+    "paldex_no": 93,
+    "is_variant": false,
+    "combi_rank": 1980,
+    "combi_rank_priority": 198000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 95,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 225,
+      "unique_combos": []
+    }
+  },
+  "Horus": {
+    "id": "Horus",
+    "name": "Faleris",
+    "paldex_no": 188,
+    "is_variant": false,
+    "combi_rank": 500,
+    "combi_rank_priority": 50000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 110,
+      "defense": 115,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "ScorpionMan_Electric": {
+    "id": "ScorpionMan_Electric",
+    "name": "Prixter Lux",
+    "paldex_no": 141,
+    "is_variant": true,
+    "combi_rank": 850,
+    "combi_rank_priority": 85000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 115,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "ThunderBird": {
+    "id": "ThunderBird",
+    "name": "Beakon",
+    "paldex_no": 96,
+    "is_variant": false,
+    "combi_rank": 1690,
+    "combi_rank_priority": 169000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 115,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 264,
+      "unique_combos": []
+    }
+  },
+  "HoodGhost": {
+    "id": "HoodGhost",
+    "name": "Hoodle",
+    "paldex_no": 166,
+    "is_variant": false,
+    "combi_rank": 1770,
+    "combi_rank_priority": 177000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 85,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 257,
+      "unique_combos": []
+    }
+  },
+  "SnowPeafowl": {
+    "id": "SnowPeafowl",
+    "name": "Frostplume",
+    "paldex_no": 114,
+    "is_variant": false,
+    "combi_rank": 860,
+    "combi_rank_priority": 86000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 274,
+      "unique_combos": []
+    }
+  },
+  "KendoFrog_Dark": {
+    "id": "KendoFrog_Dark",
+    "name": "Croajiro Noct",
+    "paldex_no": 9,
+    "is_variant": true,
+    "combi_rank": 1860,
+    "combi_rank_priority": 186000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 110,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Gorilla": {
+    "id": "Gorilla",
+    "name": "Gorirat",
+    "paldex_no": 74,
+    "is_variant": false,
+    "combi_rank": 2140,
+    "combi_rank_priority": 214000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 95,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [
+      {
+        "id": "PAL_rude",
+        "name": "Hooligan",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 204,
+      "unique_combos": []
+    }
+  },
+  "GhostBeast": {
+    "id": "GhostBeast",
+    "name": "Maraith",
+    "paldex_no": 117,
+    "is_variant": false,
+    "combi_rank": 1710,
+    "combi_rank_priority": 171000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 243,
+      "unique_combos": []
+    }
+  },
+  "QueenBee": {
+    "id": "QueenBee",
+    "name": "Elizabee",
+    "paldex_no": 68,
+    "is_variant": false,
+    "combi_rank": 1790,
+    "combi_rank_priority": 179000,
+    "male_probability": 0.1,
+    "stats": {
+      "hp": 90,
+      "attack": 105,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 380,
+      "unique_combos": []
+    }
+  },
+  "GrassGolem": {
+    "id": "GrassGolem",
+    "name": "Dualith",
+    "paldex_no": 138,
+    "is_variant": false,
+    "combi_rank": 510,
+    "combi_rank_priority": 51000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 125,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 115,
+      "unique_combos": []
+    }
+  },
+  "FlowerDoll_Fire": {
+    "id": "FlowerDoll_Fire",
+    "name": "Petallia Ignis",
+    "paldex_no": 89,
+    "is_variant": true,
+    "combi_rank": 820,
+    "combi_rank_priority": 82000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 100,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "ElecCat": {
+    "id": "ElecCat",
+    "name": "Sparkit",
+    "paldex_no": 42,
+    "is_variant": false,
+    "combi_rank": 3010,
+    "combi_rank_priority": 301000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 40,
+      "unique_combos": []
+    }
+  },
+  "CactusDoll_Dark": {
+    "id": "CactusDoll_Dark",
+    "name": "Needoll Noct",
+    "paldex_no": 100,
+    "is_variant": true,
+    "combi_rank": 1580,
+    "combi_rank_priority": 158000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 90,
+      "defense": 70,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GhostDragon_Fire": {
+    "id": "GhostDragon_Fire",
+    "name": "Eidrolon Ignis",
+    "paldex_no": 171,
+    "is_variant": true,
+    "combi_rank": 140,
+    "combi_rank_priority": 14000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 130,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001_Red": {
+    "id": "YakushimaMonster001_Red",
+    "name": "Red Slime",
+    "paldex_no": 10007,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 85,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SwordCutlassfish": {
+    "id": "SwordCutlassfish",
+    "name": "Skutlass",
+    "paldex_no": 128,
+    "is_variant": false,
+    "combi_rank": 1420,
+    "combi_rank_priority": 142000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 100,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 496,
+      "unique_combos": []
+    }
+  },
+  "FlyingManta": {
+    "id": "FlyingManta",
+    "name": "Celaray",
+    "paldex_no": 7,
+    "is_variant": false,
+    "combi_rank": 2740,
+    "combi_rank_priority": 274000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 139,
+      "unique_combos": []
+    }
+  },
+  "ScorpionMan": {
+    "id": "ScorpionMan",
+    "name": "Prixter",
+    "paldex_no": 141,
+    "is_variant": false,
+    "combi_rank": 1510,
+    "combi_rank_priority": 151000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 110,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 519,
+      "unique_combos": []
+    }
+  },
+  "BlackGriffon": {
+    "id": "BlackGriffon",
+    "name": "Shadowbeak",
+    "paldex_no": 189,
+    "is_variant": false,
+    "combi_rank": 550,
+    "combi_rank_priority": 55000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 120,
+      "defense": 140,
+      "rarity": 10
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "ThunderBird_Ice": {
+    "id": "ThunderBird_Ice",
+    "name": "Beakon Cryst",
+    "paldex_no": 96,
+    "is_variant": true,
+    "combi_rank": 580,
+    "combi_rank_priority": 58000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 115,
+      "defense": 85,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CaptainPenguin_Black": {
+    "id": "CaptainPenguin_Black",
+    "name": "Penking Lux",
+    "paldex_no": 18,
+    "is_variant": true,
+    "combi_rank": 1850,
+    "combi_rank_priority": 573,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SheepBall": {
+    "id": "SheepBall",
+    "name": "Lamball",
+    "paldex_no": 1,
+    "is_variant": false,
+    "combi_rank": 3050,
+    "combi_rank_priority": 305000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 30,
+      "unique_combos": []
+    }
+  },
+  "LazyCatfish": {
+    "id": "LazyCatfish",
+    "name": "Dumud",
+    "paldex_no": 109,
+    "is_variant": false,
+    "combi_rank": 2290,
+    "combi_rank_priority": 229000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 70,
+      "defense": 95,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 260,
+      "unique_combos": []
+    }
+  },
+  "LilyQueen": {
+    "id": "LilyQueen",
+    "name": "Lyleen",
+    "paldex_no": 186,
+    "is_variant": false,
+    "combi_rank": 240,
+    "combi_rank_priority": 24000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 120,
+      "attack": 120,
+      "defense": 110,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementBoost_Leaf_2_PAL",
+        "name": "Spirit Emperor",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "MysteryMask": {
+    "id": "MysteryMask",
+    "name": "Omascul",
+    "paldex_no": 150,
+    "is_variant": false,
+    "combi_rank": 1140,
+    "combi_rank_priority": 114000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 100,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 185,
+      "unique_combos": []
+    }
+  },
+  "LotusDragon": {
+    "id": "LotusDragon",
+    "name": "Ophydia",
+    "paldex_no": 175,
+    "is_variant": false,
+    "combi_rank": 230,
+    "combi_rank_priority": 23000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 115,
+      "defense": 120,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 316,
+      "unique_combos": []
+    }
+  },
+  "VolcanicMonster_Ice": {
+    "id": "VolcanicMonster_Ice",
+    "name": "Reptyro Cryst",
+    "paldex_no": 129,
+    "is_variant": true,
+    "combi_rank": 600,
+    "combi_rank_priority": 60000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 130,
+      "rarity": 7
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SmallArmadillo": {
+    "id": "SmallArmadillo",
+    "name": "Kikit",
+    "paldex_no": 126,
+    "is_variant": false,
+    "combi_rank": 2310,
+    "combi_rank_priority": 231000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 70,
+      "defense": 90,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 255,
+      "unique_combos": []
+    }
+  },
+  "IceDeer": {
+    "id": "IceDeer",
+    "name": "Reindrix",
+    "paldex_no": 101,
+    "is_variant": false,
+    "combi_rank": 1930,
+    "combi_rank_priority": 193000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 85,
+      "defense": 110,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 465,
+      "unique_combos": []
+    }
+  },
+  "ElecLizard": {
+    "id": "ElecLizard",
+    "name": "Slowatt",
+    "paldex_no": 167,
+    "is_variant": false,
+    "combi_rank": 1750,
+    "combi_rank_priority": 175000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 392,
+      "unique_combos": []
+    }
+  },
+  "ElecPomeranian": {
+    "id": "ElecPomeranian",
+    "name": "Puffolt",
+    "paldex_no": 62,
+    "is_variant": false,
+    "combi_rank": 2360,
+    "combi_rank_priority": 236000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 159,
+      "unique_combos": []
+    }
+  },
+  "KendoFrog": {
+    "id": "KendoFrog",
+    "name": "Croajiro",
+    "paldex_no": 9,
+    "is_variant": false,
+    "combi_rank": 2600,
+    "combi_rank_priority": 260000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 100,
+      "defense": 85,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 112,
+      "unique_combos": []
+    }
+  },
+  "SharkKid_Fire": {
+    "id": "SharkKid_Fire",
+    "name": "Gobfin Ignis",
+    "paldex_no": 55,
+    "is_variant": true,
+    "combi_rank": 2430,
+    "combi_rank_priority": 243000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 75,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001_Rainbow": {
+    "id": "YakushimaMonster001_Rainbow",
+    "name": "Rainbow Slime",
+    "paldex_no": 10006,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 95,
+      "defense": 105,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 17,
+      "unique_combos": []
+    }
+  },
+  "WindChimes": {
+    "id": "WindChimes",
+    "name": "Hangyu",
+    "paldex_no": 38,
+    "is_variant": false,
+    "combi_rank": 2780,
+    "combi_rank_priority": 278000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 85,
+      "unique_combos": []
+    }
+  },
+  "Sekhmet": {
+    "id": "Sekhmet",
+    "name": "Sekhmet",
+    "paldex_no": 140,
+    "is_variant": false,
+    "combi_rank": 870,
+    "combi_rank_priority": 87000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 110,
+      "attack": 115,
+      "defense": 100,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 141,
+      "unique_combos": []
+    }
+  },
+  "Carbunclo": {
+    "id": "Carbunclo",
+    "name": "Lifmunk",
+    "paldex_no": 4,
+    "is_variant": false,
+    "combi_rank": 3020,
+    "combi_rank_priority": 302000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 37,
+      "unique_combos": []
+    }
+  },
+  "LizardMan": {
+    "id": "LizardMan",
+    "name": "Leezpunk",
+    "paldex_no": 73,
+    "is_variant": false,
+    "combi_rank": 2670,
+    "combi_rank_priority": 267000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 80,
+      "defense": 50,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 108,
+      "unique_combos": []
+    }
+  },
+  "BlueDragon_Ice": {
+    "id": "BlueDragon_Ice",
+    "name": "Azurobe Cryst",
+    "paldex_no": 41,
+    "is_variant": true,
+    "combi_rank": 1220,
+    "combi_rank_priority": 578,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "IceNarwhal": {
+    "id": "IceNarwhal",
+    "name": "Whalaska",
+    "paldex_no": 151,
+    "is_variant": false,
+    "combi_rank": 710,
+    "combi_rank_priority": 71000,
+    "male_probability": 0.58,
+    "stats": {
+      "hp": 105,
+      "attack": 115,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 635,
+      "unique_combos": []
+    }
+  },
+  "CactusDoll": {
+    "id": "CactusDoll",
+    "name": "Needoll",
+    "paldex_no": 100,
+    "is_variant": false,
+    "combi_rank": 2420,
+    "combi_rank_priority": 242000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 221,
+      "unique_combos": []
+    }
+  },
+  "SifuDog": {
+    "id": "SifuDog",
+    "name": "Dogen",
+    "paldex_no": 155,
+    "is_variant": false,
+    "combi_rank": 1460,
+    "combi_rank_priority": 146000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 248,
+      "unique_combos": []
+    }
+  },
+  "BlackPuppy": {
+    "id": "BlackPuppy",
+    "name": "Smokie",
+    "paldex_no": 149,
+    "is_variant": false,
+    "combi_rank": 1760,
+    "combi_rank_priority": 176000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 90,
+      "defense": 85,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 260,
+      "unique_combos": []
+    }
+  },
+  "MopBaby": {
+    "id": "MopBaby",
+    "name": "Swee",
+    "paldex_no": 35,
+    "is_variant": false,
+    "combi_rank": 2840,
+    "combi_rank_priority": 284000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 60,
+      "defense": 60,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 146,
+      "unique_combos": []
+    }
+  },
+  "IceFox": {
+    "id": "IceFox",
+    "name": "Foxcicle",
+    "paldex_no": 95,
+    "is_variant": false,
+    "combi_rank": 1970,
+    "combi_rank_priority": 197000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 95,
+      "defense": 105,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 228,
+      "unique_combos": []
+    }
+  },
+  "YakushimaBoss001_Small": {
+    "id": "YakushimaBoss001_Small",
+    "name": "Demon Eye",
+    "paldex_no": 10001,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 110,
+      "defense": 95,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 10,
+      "unique_combos": []
+    }
+  },
+  "SaintCentaur": {
+    "id": "SaintCentaur",
+    "name": "Paladius",
+    "paldex_no": 198,
+    "is_variant": false,
+    "combi_rank": 180,
+    "combi_rank_priority": 18000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 120,
+      "defense": 145,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "ElementBoost_Normal_2_PAL",
+        "name": "Celestial Emperor",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "SakuraSaurus_Water": {
+    "id": "SakuraSaurus_Water",
+    "name": "Broncherry Aqua",
+    "paldex_no": 108,
+    "is_variant": true,
+    "combi_rank": 1080,
+    "combi_rank_priority": 108000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 95,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DarkAlien": {
+    "id": "DarkAlien",
+    "name": "Xenovader",
+    "paldex_no": 145,
+    "is_variant": false,
+    "combi_rank": 1820,
+    "combi_rank_priority": 182000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 125,
+      "defense": 85,
+      "rarity": 7
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Alien",
+        "name": "Otherworldly Cells",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "FengyunDeeper_Electric": {
+    "id": "FengyunDeeper_Electric",
+    "name": "Fenglope Lux",
+    "paldex_no": 83,
+    "is_variant": true,
+    "combi_rank": 900,
+    "combi_rank_priority": 90000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 115,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SmallYeti": {
+    "id": "SmallYeti",
+    "name": "Snugloo",
+    "paldex_no": 133,
+    "is_variant": false,
+    "combi_rank": 2390,
+    "combi_rank_priority": 239000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 85,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 231,
+      "unique_combos": []
+    }
+  },
+  "IceSeal": {
+    "id": "IceSeal",
+    "name": "Polapup",
+    "paldex_no": 72,
+    "is_variant": false,
+    "combi_rank": 1660,
+    "combi_rank_priority": 166000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 269,
+      "unique_combos": []
+    }
+  },
+  "ThiefBird": {
+    "id": "ThiefBird",
+    "name": "Roujay",
+    "paldex_no": 177,
+    "is_variant": false,
+    "combi_rank": 530,
+    "combi_rank_priority": 53000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 110,
+      "attack": 115,
+      "defense": 95,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 148,
+      "unique_combos": []
+    }
+  },
+  "LongCat": {
+    "id": "LongCat",
+    "name": "Valentail",
+    "paldex_no": 162,
+    "is_variant": false,
+    "combi_rank": 1900,
+    "combi_rank_priority": 190000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1021,
+      "unique_combos": []
+    }
+  },
+  "GrassMinotaur": {
+    "id": "GrassMinotaur",
+    "name": "Elgrove",
+    "paldex_no": 81,
+    "is_variant": false,
+    "combi_rank": 2020,
+    "combi_rank_priority": 202000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 307,
+      "unique_combos": []
+    }
+  },
+  "GhostAnglerfish": {
+    "id": "GhostAnglerfish",
+    "name": "Ghangler",
+    "paldex_no": 97,
+    "is_variant": false,
+    "combi_rank": 880,
+    "combi_rank_priority": 88000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 125,
+      "defense": 105,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 143,
+      "unique_combos": []
+    }
+  },
+  "KingAlpaca_Ice": {
+    "id": "KingAlpaca_Ice",
+    "name": "Kingpaca Cryst",
+    "paldex_no": 21,
+    "is_variant": true,
+    "combi_rank": 1530,
+    "combi_rank_priority": 153000,
+    "male_probability": 0.9,
+    "stats": {
+      "hp": 120,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Ronin_Dark": {
+    "id": "Ronin_Dark",
+    "name": "Bushi Noct",
+    "paldex_no": 85,
+    "is_variant": true,
+    "combi_rank": 840,
+    "combi_rank_priority": 84000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 130,
+      "defense": 80,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FlowerDinosaur_Electric": {
+    "id": "FlowerDinosaur_Electric",
+    "name": "Dinossom Lux",
+    "paldex_no": 84,
+    "is_variant": true,
+    "combi_rank": 1890,
+    "combi_rank_priority": 189000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 90,
+      "defense": 90,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "LilyQueen_Dark": {
+    "id": "LilyQueen_Dark",
+    "name": "Lyleen Noct",
+    "paldex_no": 186,
+    "is_variant": true,
+    "combi_rank": 220,
+    "combi_rank_priority": 22000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 115,
+      "attack": 120,
+      "defense": 115,
+      "rarity": 10
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Monkey_Fire": {
+    "id": "Monkey_Fire",
+    "name": "Tanzee Ignis",
+    "paldex_no": 23,
+    "is_variant": true,
+    "combi_rank": 2830,
+    "combi_rank_priority": 283000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CatVampire": {
+    "id": "CatVampire",
+    "name": "Felbat",
+    "paldex_no": 65,
+    "is_variant": false,
+    "combi_rank": 1570,
+    "combi_rank_priority": 157000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 105,
+      "defense": 110,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1280,
+      "unique_combos": []
+    }
+  },
+  "SnowTigerBeastman": {
+    "id": "SnowTigerBeastman",
+    "name": "Bastigor",
+    "paldex_no": 191,
+    "is_variant": false,
+    "combi_rank": 50,
+    "combi_rank_priority": 5000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 140,
+      "attack": 130,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "TropicalOstrich": {
+    "id": "TropicalOstrich",
+    "name": "Palumba",
+    "paldex_no": 106,
+    "is_variant": false,
+    "combi_rank": 1240,
+    "combi_rank_priority": 124000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 110,
+      "defense": 115,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 206,
+      "unique_combos": []
+    }
+  },
+  "Yeti_Grass": {
+    "id": "Yeti_Grass",
+    "name": "Wumpo Botan",
+    "paldex_no": 134,
+    "is_variant": true,
+    "combi_rank": 610,
+    "combi_rank_priority": 61000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 80,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 576,
+      "unique_combos": []
+    }
+  },
+  "IceNarwhal_Fire": {
+    "id": "IceNarwhal_Fire",
+    "name": "Whalaska Ignis",
+    "paldex_no": 151,
+    "is_variant": true,
+    "combi_rank": 370,
+    "combi_rank_priority": 37000,
+    "male_probability": 0.42,
+    "stats": {
+      "hp": 105,
+      "attack": 120,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DarkFlameFox": {
+    "id": "DarkFlameFox",
+    "name": "Majex",
+    "paldex_no": 115,
+    "is_variant": false,
+    "combi_rank": 1010,
+    "combi_rank_priority": 101000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 110,
+      "attack": 115,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 420,
+      "unique_combos": []
+    }
+  },
+  "GrassRabbitMan": {
+    "id": "GrassRabbitMan",
+    "name": "Verdash",
+    "paldex_no": 152,
+    "is_variant": false,
+    "combi_rank": 1160,
+    "combi_rank_priority": 116000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 115,
+      "defense": 90,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 189,
+      "unique_combos": []
+    }
+  },
+  "BerryGoat_Dark": {
+    "id": "BerryGoat_Dark",
+    "name": "Caprity Noct",
+    "paldex_no": 34,
+    "is_variant": true,
+    "combi_rank": 1940,
+    "combi_rank_priority": 194000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 75,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "RobinHood": {
+    "id": "RobinHood",
+    "name": "Robinquill",
+    "paldex_no": 76,
+    "is_variant": false,
+    "combi_rank": 2260,
+    "combi_rank_priority": 226000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 180,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001_Purple": {
+    "id": "YakushimaMonster001_Purple",
+    "name": "Purple Slime",
+    "paldex_no": 10005,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 5,
+      "unique_combos": []
+    }
+  },
+  "Serpent": {
+    "id": "Serpent",
+    "name": "Surfent",
+    "paldex_no": 75,
+    "is_variant": false,
+    "combi_rank": 2440,
+    "combi_rank_priority": 244000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 214,
+      "unique_combos": []
+    }
+  },
+  "Monkey": {
+    "id": "Monkey",
+    "name": "Tanzee",
+    "paldex_no": 23,
+    "is_variant": false,
+    "combi_rank": 2900,
+    "combi_rank_priority": 290000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 62,
+      "unique_combos": []
+    }
+  },
+  "HerculesBeetle_Ground": {
+    "id": "HerculesBeetle_Ground",
+    "name": "Warsect Terra",
+    "paldex_no": 113,
+    "is_variant": true,
+    "combi_rank": 630,
+    "combi_rank_priority": 63000,
+    "male_probability": 0.85,
+    "stats": {
+      "hp": 120,
+      "attack": 105,
+      "defense": 120,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up1",
+        "name": "Hard Skin",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GhostAnglerfish_Fire": {
+    "id": "GhostAnglerfish_Fire",
+    "name": "Ghangler Ignis",
+    "paldex_no": 97,
+    "is_variant": true,
+    "combi_rank": 720,
+    "combi_rank_priority": 72000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 130,
+      "defense": 105,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "OctopusGirl": {
+    "id": "OctopusGirl",
+    "name": "Gloopie",
+    "paldex_no": 48,
+    "is_variant": false,
+    "combi_rank": 2530,
+    "combi_rank_priority": 253000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 85,
+      "defense": 70,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 187,
+      "unique_combos": []
+    }
+  },
+  "Manticore": {
+    "id": "Manticore",
+    "name": "Blazehowl",
+    "paldex_no": 112,
+    "is_variant": false,
+    "combi_rank": 1360,
+    "combi_rank_priority": 136000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 110,
+      "defense": 80,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 229,
+      "unique_combos": []
+    }
+  },
+  "WhiteDeer": {
+    "id": "WhiteDeer",
+    "name": "Celesdir",
+    "paldex_no": 157,
+    "is_variant": false,
+    "combi_rank": 570,
+    "combi_rank_priority": 57000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 110,
+      "defense": 100,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FireKirin_Dark": {
+    "id": "FireKirin_Dark",
+    "name": "Pyrin Noct",
+    "paldex_no": 93,
+    "is_variant": true,
+    "combi_rank": 1870,
+    "combi_rank_priority": 187000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 95,
+      "defense": 90,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "WizardOwl": {
+    "id": "WizardOwl",
+    "name": "Hoocrates",
+    "paldex_no": 19,
+    "is_variant": false,
+    "combi_rank": 2940,
+    "combi_rank_priority": 294000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 54,
+      "unique_combos": []
+    }
+  },
+  "ElecSnail_Ground": {
+    "id": "ElecSnail_Ground",
+    "name": "Snock Lux",
+    "paldex_no": 163,
+    "is_variant": true,
+    "combi_rank": 1500,
+    "combi_rank_priority": 150000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Penguin": {
+    "id": "Penguin",
+    "name": "Pengullet",
+    "paldex_no": 17,
+    "is_variant": false,
+    "combi_rank": 2960,
+    "combi_rank_priority": 296000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 50,
+      "unique_combos": []
+    }
+  },
+  "FairyDragon": {
+    "id": "FairyDragon",
+    "name": "Elphidran",
+    "paldex_no": 63,
+    "is_variant": false,
+    "combi_rank": 2280,
+    "combi_rank_priority": 228000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 80,
+      "defense": 90,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 176,
+      "unique_combos": []
+    }
+  },
+  "OctopusGirl_Neutral": {
+    "id": "OctopusGirl_Neutral",
+    "name": "Gloopie Primo",
+    "paldex_no": 48,
+    "is_variant": true,
+    "combi_rank": 1630,
+    "combi_rank_priority": 163000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 70,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "WhiteAlienDragon": {
+    "id": "WhiteAlienDragon",
+    "name": "Xenogard",
+    "paldex_no": 146,
+    "is_variant": false,
+    "combi_rank": 990,
+    "combi_rank_priority": 99000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 120,
+      "defense": 130,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Alien",
+        "name": "Otherworldly Cells",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "DarkMechaDragon": {
+    "id": "DarkMechaDragon",
+    "name": "Xenolord",
+    "paldex_no": 196,
+    "is_variant": false,
+    "combi_rank": 400,
+    "combi_rank_priority": 40000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 120,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Invader",
+        "name": "Invader",
+        "rank": 4
+      },
+      {
+        "id": "Alien",
+        "name": "Otherworldly Cells",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "KingSunfish": {
+    "id": "KingSunfish",
+    "name": "Solmora",
+    "paldex_no": 169,
+    "is_variant": false,
+    "combi_rank": 1370,
+    "combi_rank_priority": 137000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 85,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 231,
+      "unique_combos": []
+    }
+  },
+  "DrillGame": {
+    "id": "DrillGame",
+    "name": "Digtoise",
+    "paldex_no": 107,
+    "is_variant": false,
+    "combi_rank": 1550,
+    "combi_rank_priority": 155000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 95,
+      "defense": 120,
+      "rarity": 5
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up1",
+        "name": "Hard Skin",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 276,
+      "unique_combos": []
+    }
+  },
+  "Hedgehog_Ice": {
+    "id": "Hedgehog_Ice",
+    "name": "Jolthog Cryst",
+    "paldex_no": 15,
+    "is_variant": true,
+    "combi_rank": 2850,
+    "combi_rank_priority": 285000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 80,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GrassPanda": {
+    "id": "GrassPanda",
+    "name": "Mossanda",
+    "paldex_no": 102,
+    "is_variant": false,
+    "combi_rank": 2060,
+    "combi_rank_priority": 206000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 90,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 328,
+      "unique_combos": []
+    }
+  },
+  "MopKing": {
+    "id": "MopKing",
+    "name": "Sweepa",
+    "paldex_no": 36,
+    "is_variant": false,
+    "combi_rank": 2150,
+    "combi_rank_priority": 215000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 90,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 701,
+      "unique_combos": []
+    }
+  },
+  "MimicDog": {
+    "id": "MimicDog",
+    "name": "Mimog",
+    "paldex_no": 144,
+    "is_variant": false,
+    "combi_rank": 1740,
+    "combi_rank_priority": 174000,
+    "male_probability": 0.8,
+    "stats": {
+      "hp": 60,
+      "attack": 60,
+      "defense": 130,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "SleeveRabbit": {
+    "id": "SleeveRabbit",
+    "name": "Lapure",
+    "paldex_no": 170,
+    "is_variant": false,
+    "combi_rank": 810,
+    "combi_rank_priority": 81000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 105,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 273,
+      "unique_combos": []
+    }
+  },
+  "CuteFox": {
+    "id": "CuteFox",
+    "name": "Vixy",
+    "paldex_no": 6,
+    "is_variant": false,
+    "combi_rank": 3060,
+    "combi_rank_priority": 306000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 28,
+      "unique_combos": []
+    }
+  },
+  "PinkRabbit": {
+    "id": "PinkRabbit",
+    "name": "Ribbuny",
+    "paldex_no": 44,
+    "is_variant": false,
+    "combi_rank": 2860,
+    "combi_rank_priority": 286000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 65,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 105,
+      "unique_combos": []
+    }
+  },
+  "Kitsunebi_Ice": {
+    "id": "Kitsunebi_Ice",
+    "name": "Foxparks Cryst",
+    "paldex_no": 29,
+    "is_variant": true,
+    "combi_rank": 2500,
+    "combi_rank_priority": 250000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "RaijinDaughter": {
+    "id": "RaijinDaughter",
+    "name": "Dazzi",
+    "paldex_no": 92,
+    "is_variant": false,
+    "combi_rank": 2400,
+    "combi_rank_priority": 240000,
+    "male_probability": 0.2,
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 152,
+      "unique_combos": []
+    }
+  },
+  "Horus_Water": {
+    "id": "Horus_Water",
+    "name": "Faleris Aqua",
+    "paldex_no": 188,
+    "is_variant": true,
+    "combi_rank": 450,
+    "combi_rank_priority": 45000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 110,
+      "defense": 115,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "MoonChild": {
+    "id": "MoonChild",
+    "name": "Wistella",
+    "paldex_no": 181,
+    "is_variant": false,
+    "combi_rank": 1180,
+    "combi_rank_priority": 118000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 90,
+      "defense": 60,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 193,
+      "unique_combos": []
+    }
+  },
+  "GrassMammoth": {
+    "id": "GrassMammoth",
+    "name": "Mammorest",
+    "paldex_no": 87,
+    "is_variant": false,
+    "combi_rank": 1340,
+    "combi_rank_priority": 134000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 150,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 774,
+      "unique_combos": []
+    }
+  },
+  "Mutant": {
+    "id": "Mutant",
+    "name": "Lunaris",
+    "paldex_no": 82,
+    "is_variant": false,
+    "combi_rank": 2010,
+    "combi_rank_priority": 201000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 100,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 201,
+      "unique_combos": []
+    }
+  },
+  "KingBahamut": {
+    "id": "KingBahamut",
+    "name": "Blazamut",
+    "paldex_no": 137,
+    "is_variant": false,
+    "combi_rank": 410,
+    "combi_rank_priority": 41000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 125,
+      "defense": 120,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementBoost_Fire_2_PAL",
+        "name": "Flame Emperor",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 87,
+      "unique_combos": []
+    }
+  },
+  "MummyPal": {
+    "id": "MummyPal",
+    "name": "Gildra",
+    "paldex_no": 120,
+    "is_variant": false,
+    "combi_rank": 1170,
+    "combi_rank_priority": 117000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 120,
+      "defense": 105,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 191,
+      "unique_combos": []
+    }
+  },
+  "CowPal": {
+    "id": "CowPal",
+    "name": "Mozzarina",
+    "paldex_no": 40,
+    "is_variant": false,
+    "combi_rank": 2800,
+    "combi_rank_priority": 280000,
+    "male_probability": 0.2,
+    "stats": {
+      "hp": 90,
+      "attack": 50,
+      "defense": 80,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 81,
+      "unique_combos": []
+    }
+  },
+  "PurpleSpider": {
+    "id": "PurpleSpider",
+    "name": "Tarantriss",
+    "paldex_no": 71,
+    "is_variant": false,
+    "combi_rank": 1730,
+    "combi_rank_priority": 173000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 387,
+      "unique_combos": []
+    }
+  },
+  "StuffedShark": {
+    "id": "StuffedShark",
+    "name": "Finsider",
+    "paldex_no": 88,
+    "is_variant": false,
+    "combi_rank": 2450,
+    "combi_rank_priority": 245000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 212,
+      "unique_combos": []
+    }
+  },
+  "PandaGirl": {
+    "id": "PandaGirl",
+    "name": "Leafan",
+    "paldex_no": 90,
+    "is_variant": false,
+    "combi_rank": 1410,
+    "combi_rank_priority": 141000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 100,
+      "attack": 115,
+      "defense": 95,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 239,
+      "unique_combos": []
+    }
+  },
+  "SkyDragon_Grass": {
+    "id": "SkyDragon_Grass",
+    "name": "Quivern Botan",
+    "paldex_no": 124,
+    "is_variant": true,
+    "combi_rank": 1300,
+    "combi_rank_priority": 130000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 105,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "PlantSlime_Flower": {
+    "id": "PlantSlime_Flower",
+    "name": "Gumoss",
+    "paldex_no": 12,
+    "is_variant": true,
+    "combi_rank": 2950,
+    "combi_rank_priority": 295000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 10
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "Baphomet_Dark": {
+    "id": "Baphomet_Dark",
+    "name": "Incineram Noct",
+    "paldex_no": 91,
+    "is_variant": true,
+    "combi_rank": 1310,
+    "combi_rank_priority": 131000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 85,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SkyDragon": {
+    "id": "SkyDragon",
+    "name": "Quivern",
+    "paldex_no": 124,
+    "is_variant": false,
+    "combi_rank": 1210,
+    "combi_rank_priority": 121000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 299,
+      "unique_combos": []
+    }
+  },
+  "Kirin": {
+    "id": "Kirin",
+    "name": "Univolt",
+    "paldex_no": 54,
+    "is_variant": false,
+    "combi_rank": 2270,
+    "combi_rank_priority": 227000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 178,
+      "unique_combos": []
+    }
+  },
+  "TentacleTurtle": {
+    "id": "TentacleTurtle",
+    "name": "Turtacle",
+    "paldex_no": 37,
+    "is_variant": false,
+    "combi_rank": 2410,
+    "combi_rank_priority": 241000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 75,
+      "defense": 115,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 150,
+      "unique_combos": []
+    }
+  },
+  "TentacleTurtle_Ground": {
+    "id": "TentacleTurtle_Ground",
+    "name": "Turtacle Terra",
+    "paldex_no": 37,
+    "is_variant": true,
+    "combi_rank": 1330,
+    "combi_rank_priority": 577,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 85,
+      "defense": 125,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FlowerRabbit": {
+    "id": "FlowerRabbit",
+    "name": "Flopie",
+    "paldex_no": 77,
+    "is_variant": false,
+    "combi_rank": 2660,
+    "combi_rank_priority": 266000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 65,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 110,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001_Blue": {
+    "id": "YakushimaMonster001_Blue",
+    "name": "Blue Slime",
+    "paldex_no": 10003,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DreamDemon": {
+    "id": "DreamDemon",
+    "name": "Daedream",
+    "paldex_no": 22,
+    "is_variant": false,
+    "combi_rank": 2910,
+    "combi_rank_priority": 291000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 60,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 60,
+      "unique_combos": []
+    }
+  },
+  "PinkLizard": {
+    "id": "PinkLizard",
+    "name": "Lovander",
+    "paldex_no": 69,
+    "is_variant": false,
+    "combi_rank": 2090,
+    "combi_rank_priority": 209000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 120,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 5
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementResist_Normal_1_PAL",
+        "name": "Abnormal",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 214,
+      "unique_combos": []
+    }
+  },
+  "BrownRabbit": {
+    "id": "BrownRabbit",
+    "name": "Lapiron",
+    "paldex_no": 165,
+    "is_variant": false,
+    "combi_rank": 1680,
+    "combi_rank_priority": 168000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 266,
+      "unique_combos": []
+    }
+  },
+  "MushroomDragon": {
+    "id": "MushroomDragon",
+    "name": "Shroomer",
+    "paldex_no": 118,
+    "is_variant": false,
+    "combi_rank": 1520,
+    "combi_rank_priority": 152000,
+    "male_probability": 0.55,
+    "stats": {
+      "hp": 110,
+      "attack": 80,
+      "defense": 90,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 394,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001_Pink": {
+    "id": "YakushimaMonster001_Pink",
+    "name": "Illuminant Slime",
+    "paldex_no": 10004,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 85,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 5,
+      "unique_combos": []
+    }
+  },
+  "JellyfishGhost": {
+    "id": "JellyfishGhost",
+    "name": "Jellroy",
+    "paldex_no": 46,
+    "is_variant": false,
+    "combi_rank": 2590,
+    "combi_rank_priority": 259000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 75,
+      "defense": 75,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 171,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster003": {
+    "id": "YakushimaMonster003",
+    "name": "Cave Bat",
+    "paldex_no": 10009,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 75,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "GhostRabbit": {
+    "id": "GhostRabbit",
+    "name": "Nitemary",
+    "paldex_no": 148,
+    "is_variant": false,
+    "combi_rank": 1230,
+    "combi_rank_priority": 123000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 105,
+      "attack": 95,
+      "defense": 105,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 303,
+      "unique_combos": []
+    }
+  },
+  "RaijinDaughter_Water": {
+    "id": "RaijinDaughter_Water",
+    "name": "Dazzi Noct",
+    "paldex_no": 92,
+    "is_variant": true,
+    "combi_rank": 1910,
+    "combi_rank_priority": 191000,
+    "male_probability": 0.2,
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defense": 75,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SumoDog": {
+    "id": "SumoDog",
+    "name": "Bulldosu",
+    "paldex_no": 156,
+    "is_variant": false,
+    "combi_rank": 1190,
+    "combi_rank_priority": 119000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 95,
+      "defense": 100,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 194,
+      "unique_combos": []
+    }
+  },
+  "FlowerDinosaur": {
+    "id": "FlowerDinosaur",
+    "name": "Dinossom",
+    "paldex_no": 84,
+    "is_variant": false,
+    "combi_rank": 2100,
+    "combi_rank_priority": 210000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 212,
+      "unique_combos": []
+    }
+  },
+  "NaughtyCat": {
+    "id": "NaughtyCat",
+    "name": "Grintale",
+    "paldex_no": 70,
+    "is_variant": false,
+    "combi_rank": 2120,
+    "combi_rank_priority": 212000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 208,
+      "unique_combos": []
+    }
+  },
+  "Suzaku_Water": {
+    "id": "Suzaku_Water",
+    "name": "Suzaku Aqua",
+    "paldex_no": 122,
+    "is_variant": true,
+    "combi_rank": 740,
+    "combi_rank_priority": 74000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 125,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "WhiteShieldDragon": {
+    "id": "WhiteShieldDragon",
+    "name": "Silvegis",
+    "paldex_no": 160,
+    "is_variant": false,
+    "combi_rank": 560,
+    "combi_rank_priority": 56000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 110,
+      "defense": 115,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 234,
+      "unique_combos": []
+    }
+  },
+  "GhostRabbit_Grass": {
+    "id": "GhostRabbit_Grass",
+    "name": "Nitemary Botan",
+    "paldex_no": 148,
+    "is_variant": true,
+    "combi_rank": 1320,
+    "combi_rank_priority": 132000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 110,
+      "attack": 95,
+      "defense": 105,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "WeaselDragon_Fire": {
+    "id": "WeaselDragon_Fire",
+    "name": "Chillet Ignis",
+    "paldex_no": 103,
+    "is_variant": true,
+    "combi_rank": 1950,
+    "combi_rank_priority": 195000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 85,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SakuraSaurus": {
+    "id": "SakuraSaurus",
+    "name": "Broncherry",
+    "paldex_no": 108,
+    "is_variant": false,
+    "combi_rank": 1380,
+    "combi_rank_priority": 138000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 90,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 233,
+      "unique_combos": []
+    }
+  },
+  "HerculesBeetle": {
+    "id": "HerculesBeetle",
+    "name": "Warsect",
+    "paldex_no": 113,
+    "is_variant": false,
+    "combi_rank": 1280,
+    "combi_rank_priority": 128000,
+    "male_probability": 0.85,
+    "stats": {
+      "hp": 120,
+      "attack": 100,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up1",
+        "name": "Hard Skin",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 858,
+      "unique_combos": []
+    }
+  },
+  "FoxMage_Dark": {
+    "id": "FoxMage_Dark",
+    "name": "Wixen Noct",
+    "paldex_no": 78,
+    "is_variant": true,
+    "combi_rank": 1490,
+    "combi_rank_priority": 149000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 110,
+      "defense": 85,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": [
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "FoxMage_Dark",
+            "name": "Wixen Noct",
+            "paldex_no": 78
+          },
+          "role": "child"
+        }
+      ]
+    }
+  },
+  "DomeArmorDragon": {
+    "id": "DomeArmorDragon",
+    "name": "Aegidron",
+    "paldex_no": 184,
+    "is_variant": false,
+    "combi_rank": 30,
+    "combi_rank_priority": 3000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 125,
+      "defense": 140,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 122,
+      "unique_combos": []
+    }
+  },
+  "Bastet_Ice": {
+    "id": "Bastet_Ice",
+    "name": "Mau Cryst",
+    "paldex_no": 27,
+    "is_variant": true,
+    "combi_rank": 2750,
+    "combi_rank_priority": 275000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 65,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Umihebi": {
+    "id": "Umihebi",
+    "name": "Jormuntide",
+    "paldex_no": 121,
+    "is_variant": false,
+    "combi_rank": 590,
+    "combi_rank_priority": 59000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 120,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementBoost_Aqua_2_PAL",
+        "name": "Lord of the Sea",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 210,
+      "unique_combos": []
+    }
+  },
+  "WhiteMoth": {
+    "id": "WhiteMoth",
+    "name": "Sibelyx",
+    "paldex_no": 116,
+    "is_variant": false,
+    "combi_rank": 1810,
+    "combi_rank_priority": 181000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 90,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 495,
+      "unique_combos": []
+    }
+  },
+  "LazyDragon_Electric": {
+    "id": "LazyDragon_Electric",
+    "name": "Relaxaurus Lux",
+    "paldex_no": 94,
+    "is_variant": true,
+    "combi_rank": 770,
+    "combi_rank_priority": 77000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 120,
+      "defense": 110,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DarkScorpion_Ground": {
+    "id": "DarkScorpion_Ground",
+    "name": "Menasting Terra",
+    "paldex_no": 99,
+    "is_variant": true,
+    "combi_rank": 640,
+    "combi_rank_priority": 64000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 105,
+      "defense": 130,
+      "rarity": 10
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CatMage_Fire": {
+    "id": "CatMage_Fire",
+    "name": "Katress Ignis",
+    "paldex_no": 79,
+    "is_variant": true,
+    "combi_rank": 1800,
+    "combi_rank_priority": 180000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": [
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "CatMage_Fire",
+            "name": "Katress Ignis",
+            "paldex_no": 79
+          },
+          "role": "child"
+        }
+      ]
+    }
+  },
+  "RockBeast": {
+    "id": "RockBeast",
+    "name": "Pierdon",
+    "paldex_no": 131,
+    "is_variant": false,
+    "combi_rank": 1110,
+    "combi_rank_priority": 111000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 105,
+      "defense": 120,
+      "rarity": 6
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 270,
+      "unique_combos": []
+    }
+  },
+  "BerryGoat": {
+    "id": "BerryGoat",
+    "name": "Caprity",
+    "paldex_no": 34,
+    "is_variant": false,
+    "combi_rank": 2610,
+    "combi_rank_priority": 261000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 70,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 110,
+      "unique_combos": []
+    }
+  },
+  "Plesiosaur": {
+    "id": "Plesiosaur",
+    "name": "Braloha",
+    "paldex_no": 110,
+    "is_variant": false,
+    "combi_rank": 1030,
+    "combi_rank_priority": 103000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 95,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 258,
+      "unique_combos": []
+    }
+  },
+  "LazyDragon": {
+    "id": "LazyDragon",
+    "name": "Relaxaurus",
+    "paldex_no": 94,
+    "is_variant": false,
+    "combi_rank": 1090,
+    "combi_rank_priority": 109000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 115,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "PAL_FullStomach_Up_1",
+        "name": "Glutton",
+        "rank": -1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 456,
+      "unique_combos": []
+    }
+  },
+  "IceCrocodile": {
+    "id": "IceCrocodile",
+    "name": "Munchill",
+    "paldex_no": 86,
+    "is_variant": false,
+    "combi_rank": 2130,
+    "combi_rank_priority": 213000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 80,
+      "defense": 85,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 205,
+      "unique_combos": []
+    }
+  },
+  "WhiteMoth_Neutral": {
+    "id": "WhiteMoth_Neutral",
+    "name": "Sibelyx Primo",
+    "paldex_no": 116,
+    "is_variant": true,
+    "combi_rank": 650,
+    "combi_rank_priority": 65000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 90,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Yeti": {
+    "id": "Yeti",
+    "name": "Wumpo",
+    "paldex_no": 134,
+    "is_variant": false,
+    "combi_rank": 830,
+    "combi_rank_priority": 83000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 80,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 335,
+      "unique_combos": []
+    }
+  },
+  "Ganesha": {
+    "id": "Ganesha",
+    "name": "Teafant",
+    "paldex_no": 11,
+    "is_variant": false,
+    "combi_rank": 3070,
+    "combi_rank_priority": 307000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 60,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 26,
+      "unique_combos": []
+    }
+  },
+  "GhostBlackCat": {
+    "id": "GhostBlackCat",
+    "name": "Wispaw",
+    "paldex_no": 50,
+    "is_variant": false,
+    "combi_rank": 2250,
+    "combi_rank_priority": 225000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 95,
+      "defense": 70,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 273,
+      "unique_combos": []
+    }
+  },
+  "LittleBriarRose": {
+    "id": "LittleBriarRose",
+    "name": "Bristla",
+    "paldex_no": 60,
+    "is_variant": false,
+    "combi_rank": 2690,
+    "combi_rank_priority": 269000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 103,
+      "unique_combos": []
+    }
+  },
+  "LavaGirl": {
+    "id": "LavaGirl",
+    "name": "Flambelle",
+    "paldex_no": 25,
+    "is_variant": false,
+    "combi_rank": 2700,
+    "combi_rank_priority": 270000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 102,
+      "unique_combos": []
+    }
+  },
+  "MushroomLady": {
+    "id": "MushroomLady",
+    "name": "Mycora",
+    "paldex_no": 179,
+    "is_variant": false,
+    "combi_rank": 760,
+    "combi_rank_priority": 76000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 105,
+      "attack": 95,
+      "defense": 90,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 179,
+      "unique_combos": []
+    }
+  },
+  "Werewolf": {
+    "id": "Werewolf",
+    "name": "Loupmoon",
+    "paldex_no": 56,
+    "is_variant": false,
+    "combi_rank": 2110,
+    "combi_rank_priority": 211000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 100,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 210,
+      "unique_combos": []
+    }
+  },
+  "DarkScorpion": {
+    "id": "DarkScorpion",
+    "name": "Menasting",
+    "paldex_no": 99,
+    "is_variant": false,
+    "combi_rank": 1120,
+    "combi_rank_priority": 112000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 130,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 181,
+      "unique_combos": []
+    }
+  },
+  "Gorilla_Ground": {
+    "id": "Gorilla_Ground",
+    "name": "Gorirat Terra",
+    "paldex_no": 74,
+    "is_variant": true,
+    "combi_rank": 1880,
+    "combi_rank_priority": 188000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 100,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [
+      {
+        "id": "PAL_rude",
+        "name": "Hooligan",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Bastet": {
+    "id": "Bastet",
+    "name": "Mau",
+    "paldex_no": 27,
+    "is_variant": false,
+    "combi_rank": 3040,
+    "combi_rank_priority": 304000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 60,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 32,
+      "unique_combos": []
+    }
+  },
+  "GuardianDog": {
+    "id": "GuardianDog",
+    "name": "Yakumo",
+    "paldex_no": 127,
+    "is_variant": false,
+    "combi_rank": 2230,
+    "combi_rank_priority": 223000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 85,
+      "defense": 85,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 277,
+      "unique_combos": []
+    }
+  },
+  "RedFlowerBird": {
+    "id": "RedFlowerBird",
+    "name": "Tropicaw",
+    "paldex_no": 173,
+    "is_variant": false,
+    "combi_rank": 1350,
+    "combi_rank_priority": 135000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 226,
+      "unique_combos": []
+    }
+  },
+  "JetDragon": {
+    "id": "JetDragon",
+    "name": "Jetragon",
+    "paldex_no": 202,
+    "is_variant": false,
+    "combi_rank": 70,
+    "combi_rank_priority": 7000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 140,
+      "defense": 120,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "ElementBoost_Dragon_2_PAL",
+        "name": "Divine Dragon",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "VenusFlytrap": {
+    "id": "VenusFlytrap",
+    "name": "Carnibora",
+    "paldex_no": 136,
+    "is_variant": false,
+    "combi_rank": 1700,
+    "combi_rank_priority": 170000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 85,
+      "attack": 90,
+      "defense": 85,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 263,
+      "unique_combos": []
+    }
+  },
+  "CubeTurtle": {
+    "id": "CubeTurtle",
+    "name": "Tetroise",
+    "paldex_no": 142,
+    "is_variant": false,
+    "combi_rank": 790,
+    "combi_rank_priority": 79000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 100,
+      "defense": 135,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 194,
+      "unique_combos": []
+    }
+  },
+  "Eagle": {
+    "id": "Eagle",
+    "name": "Galeclaw",
+    "paldex_no": 49,
+    "is_variant": false,
+    "combi_rank": 2570,
+    "combi_rank_priority": 257000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 60,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 172,
+      "unique_combos": []
+    }
+  },
+  "SoldierBee": {
+    "id": "SoldierBee",
+    "name": "Beegarde",
+    "paldex_no": 67,
+    "is_variant": false,
+    "combi_rank": 2350,
+    "combi_rank_priority": 235000,
+    "male_probability": 0.1,
+    "stats": {
+      "hp": 80,
+      "attack": 90,
+      "defense": 90,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 162,
+      "unique_combos": []
+    }
+  },
+  "Manticore_Dark": {
+    "id": "Manticore_Dark",
+    "name": "Blazehowl Noct",
+    "paldex_no": 112,
+    "is_variant": true,
+    "combi_rank": 1270,
+    "combi_rank_priority": 127000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 115,
+      "defense": 80,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FeatherOstrich": {
+    "id": "FeatherOstrich",
+    "name": "Dazemu",
+    "paldex_no": 123,
+    "is_variant": false,
+    "combi_rank": 2210,
+    "combi_rank_priority": 221000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 90,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 679,
+      "unique_combos": []
+    }
+  },
+  "Kirin_Ice": {
+    "id": "Kirin_Ice",
+    "name": "Univolt Cryst",
+    "paldex_no": 54,
+    "is_variant": true,
+    "combi_rank": 540,
+    "combi_rank_priority": 54000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 105,
+      "defense": 110,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "SamuraiDog": {
+    "id": "SamuraiDog",
+    "name": "Pupperai",
+    "paldex_no": 13,
+    "is_variant": false,
+    "combi_rank": 2930,
+    "combi_rank_priority": 293000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 56,
+      "unique_combos": []
+    }
+  },
+  "RobinHood_Ground": {
+    "id": "RobinHood_Ground",
+    "name": "Robinquill Terra",
+    "paldex_no": 76,
+    "is_variant": true,
+    "combi_rank": 2050,
+    "combi_rank_priority": 205000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster001": {
+    "id": "YakushimaMonster001",
+    "name": "Green Slime",
+    "paldex_no": 10002,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 70,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "GrassPanda_Electric": {
+    "id": "GrassPanda_Electric",
+    "name": "Mossanda Lux",
+    "paldex_no": 102,
+    "is_variant": true,
+    "combi_rank": 1440,
+    "combi_rank_priority": 144000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DarkCrow": {
+    "id": "DarkCrow",
+    "name": "Cawgnito",
+    "paldex_no": 57,
+    "is_variant": false,
+    "combi_rank": 2370,
+    "combi_rank_priority": 237000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 95,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 235,
+      "unique_combos": []
+    }
+  },
+  "CandleGhost": {
+    "id": "CandleGhost",
+    "name": "Sootseer",
+    "paldex_no": 135,
+    "is_variant": false,
+    "combi_rank": 980,
+    "combi_rank_priority": 98000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 125,
+      "defense": 90,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 326,
+      "unique_combos": []
+    }
+  },
+  "LegendDeer": {
+    "id": "LegendDeer",
+    "name": "Hartalis",
+    "paldex_no": 197,
+    "is_variant": false,
+    "combi_rank": 90,
+    "combi_rank_priority": 9000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 135,
+      "attack": 130,
+      "defense": 110,
+      "rarity": 10
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Salvation",
+        "name": "Savior",
+        "rank": 4
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "FengyunDeeper": {
+    "id": "FengyunDeeper",
+    "name": "Fenglope",
+    "paldex_no": 83,
+    "is_variant": false,
+    "combi_rank": 1960,
+    "combi_rank_priority": 196000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 110,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 457,
+      "unique_combos": []
+    }
+  },
+  "GhostDragon": {
+    "id": "GhostDragon",
+    "name": "Eidrolon",
+    "paldex_no": 171,
+    "is_variant": false,
+    "combi_rank": 300,
+    "combi_rank_priority": 30000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 125,
+      "defense": 120,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 263,
+      "unique_combos": []
+    }
+  },
+  "AmaterasuWolf": {
+    "id": "AmaterasuWolf",
+    "name": "Kitsun",
+    "paldex_no": 111,
+    "is_variant": false,
+    "combi_rank": 1670,
+    "combi_rank_priority": 167000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 115,
+      "defense": 100,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 268,
+      "unique_combos": []
+    }
+  },
+  "PlantSlime": {
+    "id": "PlantSlime",
+    "name": "Gumoss",
+    "paldex_no": 12,
+    "is_variant": false,
+    "combi_rank": 2950,
+    "combi_rank_priority": 295000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 52,
+      "unique_combos": []
+    }
+  },
+  "FlameBuffalo": {
+    "id": "FlameBuffalo",
+    "name": "Arsox",
+    "paldex_no": 58,
+    "is_variant": false,
+    "combi_rank": 2320,
+    "combi_rank_priority": 232000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 95,
+      "defense": 95,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 168,
+      "unique_combos": []
+    }
+  },
+  "FlameBambi": {
+    "id": "FlameBambi",
+    "name": "Rooby",
+    "paldex_no": 26,
+    "is_variant": false,
+    "combi_rank": 2870,
+    "combi_rank_priority": 287000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 70,
+      "defense": 75,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 68,
+      "unique_combos": []
+    }
+  },
+  "OniGhostGirl": {
+    "id": "OniGhostGirl",
+    "name": "Bakemi",
+    "paldex_no": 168,
+    "is_variant": false,
+    "combi_rank": 1540,
+    "combi_rank_priority": 154000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 70,
+      "attack": 85,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 401,
+      "unique_combos": []
+    }
+  },
+  "HadesBird": {
+    "id": "HadesBird",
+    "name": "Helzephyr",
+    "paldex_no": 80,
+    "is_variant": false,
+    "combi_rank": 1130,
+    "combi_rank_priority": 113000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 125,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 183,
+      "unique_combos": []
+    }
+  },
+  "MonochromeQueen": {
+    "id": "MonochromeQueen",
+    "name": "Solenne",
+    "paldex_no": 182,
+    "is_variant": false,
+    "combi_rank": 280,
+    "combi_rank_priority": 28000,
+    "male_probability": 0.3,
+    "stats": {
+      "hp": 110,
+      "attack": 115,
+      "defense": 115,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 63,
+      "unique_combos": []
+    }
+  },
+  "WhiteTiger_Ground": {
+    "id": "WhiteTiger_Ground",
+    "name": "Cryolinx Terra",
+    "paldex_no": 132,
+    "is_variant": true,
+    "combi_rank": 470,
+    "combi_rank_priority": 47000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 105,
+      "defense": 110,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GrimGirl": {
+    "id": "GrimGirl",
+    "name": "Splatterina",
+    "paldex_no": 153,
+    "is_variant": false,
+    "combi_rank": 780,
+    "combi_rank_priority": 78000,
+    "male_probability": 0.38,
+    "stats": {
+      "hp": 95,
+      "attack": 115,
+      "defense": 105,
+      "rarity": 4
+    },
+    "guaranteed_passives": [
+      {
+        "id": "PAL_sadist",
+        "name": "Sadist",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 183,
+      "unique_combos": []
+    }
+  },
+  "RedArmorBird": {
+    "id": "RedArmorBird",
+    "name": "Ragnahawk",
+    "paldex_no": 104,
+    "is_variant": false,
+    "combi_rank": 1050,
+    "combi_rank_priority": 105000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 105,
+      "defense": 120,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 177,
+      "unique_combos": []
+    }
+  },
+  "Hedgehog": {
+    "id": "Hedgehog",
+    "name": "Jolthog",
+    "paldex_no": 15,
+    "is_variant": false,
+    "combi_rank": 3030,
+    "combi_rank_priority": 303000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 45,
+      "unique_combos": []
+    }
+  },
+  "NightLady": {
+    "id": "NightLady",
+    "name": "Bellanoir",
+    "paldex_no": 195,
+    "is_variant": false,
+    "combi_rank": 620,
+    "combi_rank_priority": 62000,
+    "male_probability": 0.1,
+    "stats": {
+      "hp": 120,
+      "attack": 150,
+      "defense": 100,
+      "rarity": 20
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "WingGolem_Fire": {
+    "id": "WingGolem_Fire",
+    "name": "Knocklem Ignis",
+    "paldex_no": 159,
+    "is_variant": true,
+    "combi_rank": 210,
+    "combi_rank_priority": 21000,
+    "male_probability": 0.7,
+    "stats": {
+      "hp": 105,
+      "attack": 115,
+      "defense": 135,
+      "rarity": 10
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Kelpie_Fire": {
+    "id": "Kelpie_Fire",
+    "name": "Kelpsea Ignis",
+    "paldex_no": 43,
+    "is_variant": true,
+    "combi_rank": 2470,
+    "combi_rank_priority": 247000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 207,
+      "unique_combos": []
+    }
+  },
+  "WoolFox": {
+    "id": "WoolFox",
+    "name": "Cremis",
+    "paldex_no": 8,
+    "is_variant": false,
+    "combi_rank": 2890,
+    "combi_rank_priority": 289000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 75,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 64,
+      "unique_combos": []
+    }
+  },
+  "ThunderFluffyBird": {
+    "id": "ThunderFluffyBird",
+    "name": "Dynamoff",
+    "paldex_no": 172,
+    "is_variant": false,
+    "combi_rank": 1400,
+    "combi_rank_priority": 140000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 85,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 237,
+      "unique_combos": []
+    }
+  },
+  "ElecSnail": {
+    "id": "ElecSnail",
+    "name": "Snock",
+    "paldex_no": 163,
+    "is_variant": false,
+    "combi_rank": 1780,
+    "combi_rank_priority": 178000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 70,
+      "defense": 75,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 256,
+      "unique_combos": []
+    }
+  },
+  "BirdDragon": {
+    "id": "BirdDragon",
+    "name": "Vanwyrm",
+    "paldex_no": 64,
+    "is_variant": false,
+    "combi_rank": 1650,
+    "combi_rank_priority": 165000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 115,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1229,
+      "unique_combos": []
+    }
+  },
+  "Garm": {
+    "id": "Garm",
+    "name": "Direhowl",
+    "paldex_no": 33,
+    "is_variant": false,
+    "combi_rank": 2680,
+    "combi_rank_priority": 268000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 90,
+      "defense": 75,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 106,
+      "unique_combos": []
+    }
+  },
+  "ThunderDragonMan": {
+    "id": "ThunderDragonMan",
+    "name": "Orserk",
+    "paldex_no": 187,
+    "is_variant": false,
+    "combi_rank": 120,
+    "combi_rank_priority": 12000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 130,
+      "defense": 115,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementBoost_Thunder_2_PAL",
+        "name": "Lord of Lightning",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "CubeTurtle_Neutral": {
+    "id": "CubeTurtle_Neutral",
+    "name": "Tetroise Primo",
+    "paldex_no": 142,
+    "is_variant": true,
+    "combi_rank": 200,
+    "combi_rank_priority": 20000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 100,
+      "defense": 140,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "PoseidonOrca": {
+    "id": "PoseidonOrca",
+    "name": "Neptilius",
+    "paldex_no": 201,
+    "is_variant": false,
+    "combi_rank": 160,
+    "combi_rank_priority": 16000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 145,
+      "defense": 125,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "Nushi",
+        "name": "Lunker",
+        "rank": 4
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "YakushimaBoss001": {
+    "id": "YakushimaBoss001",
+    "name": "Eye of Cthulhu",
+    "paldex_no": 10000,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 95,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 11,
+      "unique_combos": []
+    }
+  },
+  "HawkBird": {
+    "id": "HawkBird",
+    "name": "Nitewing",
+    "paldex_no": 51,
+    "is_variant": false,
+    "combi_rank": 2560,
+    "combi_rank_priority": 256000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 95,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 118,
+      "unique_combos": []
+    }
+  },
+  "AmaterasuWolf_Dark": {
+    "id": "AmaterasuWolf_Dark",
+    "name": "Kitsun Noct",
+    "paldex_no": 111,
+    "is_variant": true,
+    "combi_rank": 800,
+    "combi_rank_priority": 80000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 115,
+      "defense": 105,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "DandelionGirl": {
+    "id": "DandelionGirl",
+    "name": "Souffline",
+    "paldex_no": 164,
+    "is_variant": false,
+    "combi_rank": 2000,
+    "combi_rank_priority": 200000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 70,
+      "attack": 75,
+      "defense": 60,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 222,
+      "unique_combos": []
+    }
+  },
+  "PinkCat": {
+    "id": "PinkCat",
+    "name": "Cattiva",
+    "paldex_no": 2,
+    "is_variant": false,
+    "combi_rank": 2760,
+    "combi_rank_priority": 276000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [
+      {
+        "id": "PAL_ALLAttack_down1",
+        "name": "Coward",
+        "rank": -1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 135,
+      "unique_combos": []
+    }
+  },
+  "FlowerPrince": {
+    "id": "FlowerPrince",
+    "name": "Dandilord",
+    "paldex_no": 194,
+    "is_variant": false,
+    "combi_rank": 60,
+    "combi_rank_priority": 6000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 125,
+      "attack": 135,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "GoldenHorse": {
+    "id": "GoldenHorse",
+    "name": "Gildane",
+    "paldex_no": 154,
+    "is_variant": false,
+    "combi_rank": 730,
+    "combi_rank_priority": 73000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 110,
+      "defense": 110,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 225,
+      "unique_combos": []
+    }
+  },
+  "WhiteTiger": {
+    "id": "WhiteTiger",
+    "name": "Cryolinx",
+    "paldex_no": 132,
+    "is_variant": false,
+    "combi_rank": 1040,
+    "combi_rank_priority": 104000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 110,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 175,
+      "unique_combos": []
+    }
+  },
+  "SweetsSheep_Ground": {
+    "id": "SweetsSheep_Ground",
+    "name": "Woolipop Terra",
+    "paldex_no": 39,
+    "is_variant": true,
+    "combi_rank": 2030,
+    "combi_rank_priority": 203000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 95,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FoxMage": {
+    "id": "FoxMage",
+    "name": "Wixen",
+    "paldex_no": 78,
+    "is_variant": false,
+    "combi_rank": 2080,
+    "combi_rank_priority": 208000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 110,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 215,
+      "unique_combos": [
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "CatMage_Fire",
+            "name": "Katress Ignis",
+            "paldex_no": 79
+          },
+          "role": "parent"
+        },
+        {
+          "parent_a": {
+            "id": "CatMage",
+            "name": "Katress",
+            "paldex_no": 79
+          },
+          "parent_b": {
+            "id": "FoxMage",
+            "name": "Wixen",
+            "paldex_no": 78
+          },
+          "child": {
+            "id": "FoxMage_Dark",
+            "name": "Wixen Noct",
+            "paldex_no": 78
+          },
+          "role": "parent"
+        }
+      ]
+    }
+  },
+  "SweetsSheep": {
+    "id": "SweetsSheep",
+    "name": "Woolipop",
+    "paldex_no": 39,
+    "is_variant": false,
+    "combi_rank": 2820,
+    "combi_rank_priority": 282000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 115,
+      "unique_combos": []
+    }
+  },
+  "VolcanoDragon_Ice": {
+    "id": "VolcanoDragon_Ice",
+    "name": "Moldron Cryst",
+    "paldex_no": 105,
+    "is_variant": true,
+    "combi_rank": 380,
+    "combi_rank_priority": 38000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 125,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Werewolf_Ice": {
+    "id": "Werewolf_Ice",
+    "name": "Loupmoon Cryst",
+    "paldex_no": 56,
+    "is_variant": true,
+    "combi_rank": 1290,
+    "combi_rank_priority": 129000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "BlackPuppy_Ice": {
+    "id": "BlackPuppy_Ice",
+    "name": "Smokie Cryst",
+    "paldex_no": 149,
+    "is_variant": true,
+    "combi_rank": 1610,
+    "combi_rank_priority": 161000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 85,
+      "attack": 90,
+      "defense": 90,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CatBat": {
+    "id": "CatBat",
+    "name": "Tombat",
+    "paldex_no": 52,
+    "is_variant": false,
+    "combi_rank": 2340,
+    "combi_rank_priority": 234000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 95,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 164,
+      "unique_combos": []
+    }
+  },
+  "Boar": {
+    "id": "Boar",
+    "name": "Rushoar",
+    "paldex_no": 28,
+    "is_variant": false,
+    "combi_rank": 2880,
+    "combi_rank_priority": 288000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 66,
+      "unique_combos": []
+    }
+  },
+  "KingWhale": {
+    "id": "KingWhale",
+    "name": "Panthalus",
+    "paldex_no": 203,
+    "is_variant": false,
+    "combi_rank": 20,
+    "combi_rank_priority": 2000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 180,
+      "attack": 120,
+      "defense": 200,
+      "rarity": 10
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "ColorfulBird": {
+    "id": "ColorfulBird",
+    "name": "Tocotoco",
+    "paldex_no": 53,
+    "is_variant": false,
+    "combi_rank": 2730,
+    "combi_rank_priority": 273000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 96,
+      "unique_combos": []
+    }
+  },
+  "CaptainPenguin": {
+    "id": "CaptainPenguin",
+    "name": "Penking",
+    "paldex_no": 18,
+    "is_variant": false,
+    "combi_rank": 2070,
+    "combi_rank_priority": 207000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 95,
+      "defense": 95,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 218,
+      "unique_combos": []
+    }
+  },
+  "ThunderDog": {
+    "id": "ThunderDog",
+    "name": "Rayhound",
+    "paldex_no": 98,
+    "is_variant": false,
+    "combi_rank": 1920,
+    "combi_rank_priority": 192000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 100,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 357,
+      "unique_combos": []
+    }
+  },
+  "Kitsunebi": {
+    "id": "Kitsunebi",
+    "name": "Foxparks",
+    "paldex_no": 29,
+    "is_variant": false,
+    "combi_rank": 2990,
+    "combi_rank_priority": 299000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 75,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 43,
+      "unique_combos": []
+    }
+  },
+  "MushroomDragon_Dark": {
+    "id": "MushroomDragon_Dark",
+    "name": "Shroomer Noct",
+    "paldex_no": 118,
+    "is_variant": true,
+    "combi_rank": 1450,
+    "combi_rank_priority": 145000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 501,
+      "unique_combos": []
+    }
+  },
+  "IceHorse": {
+    "id": "IceHorse",
+    "name": "Frostallion",
+    "paldex_no": 200,
+    "is_variant": false,
+    "combi_rank": 150,
+    "combi_rank_priority": 15000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 140,
+      "defense": 120,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "ElementBoost_Ice_2_PAL",
+        "name": "Ice Emperor",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "KingBahamut_Dragon": {
+    "id": "KingBahamut_Dragon",
+    "name": "Blazamut Ryu",
+    "paldex_no": 137,
+    "is_variant": true,
+    "combi_rank": 100,
+    "combi_rank_priority": 10000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 130,
+      "defense": 125,
+      "rarity": 10
+    },
+    "guaranteed_passives": [
+      {
+        "id": "EternalFlame",
+        "name": "Eternal Flame",
+        "rank": 4
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "CloverFairy": {
+    "id": "CloverFairy",
+    "name": "Clovee",
+    "paldex_no": 14,
+    "is_variant": false,
+    "combi_rank": 2970,
+    "combi_rank_priority": 297000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 65,
+      "defense": 65,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 48,
+      "unique_combos": []
+    }
+  },
+  "FlyingManta_Thunder": {
+    "id": "FlyingManta_Thunder",
+    "name": "Celaray Lux",
+    "paldex_no": 7,
+    "is_variant": true,
+    "combi_rank": 2380,
+    "combi_rank_priority": 574,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 75,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "BlueThunderHorse": {
+    "id": "BlueThunderHorse",
+    "name": "Azurmane",
+    "paldex_no": 161,
+    "is_variant": false,
+    "combi_rank": 420,
+    "combi_rank_priority": 42000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 120,
+      "defense": 110,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 220,
+      "unique_combos": []
+    }
+  },
+  "PinkRabbit_Grass": {
+    "id": "PinkRabbit_Grass",
+    "name": "Ribbuny Botan",
+    "paldex_no": 44,
+    "is_variant": true,
+    "combi_rank": 2460,
+    "combi_rank_priority": 246000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 65,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "YakushimaMonster003_Purple": {
+    "id": "YakushimaMonster003_Purple",
+    "name": "Illuminant Bat",
+    "paldex_no": 10010,
+    "is_variant": false,
+    "combi_rank": 3100,
+    "combi_rank_priority": 310000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 80,
+      "defense": 95,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 4,
+      "unique_combos": []
+    }
+  },
+  "Kelpie": {
+    "id": "Kelpie",
+    "name": "Kelpsea",
+    "paldex_no": 43,
+    "is_variant": false,
+    "combi_rank": 2810,
+    "combi_rank_priority": 281000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 70,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 79,
+      "unique_combos": []
+    }
+  },
+  "Serpent_Ground": {
+    "id": "Serpent_Ground",
+    "name": "Surfent Terra",
+    "paldex_no": 75,
+    "is_variant": true,
+    "combi_rank": 1840,
+    "combi_rank_priority": 184000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 90,
+      "defense": 100,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "IceHorse_Dark": {
+    "id": "IceHorse_Dark",
+    "name": "Frostallion Noct",
+    "paldex_no": 200,
+    "is_variant": true,
+    "combi_rank": 110,
+    "combi_rank_priority": 11000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 140,
+      "attack": 140,
+      "defense": 135,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "ElementBoost_Dark_2_PAL",
+        "name": "Lord of the Underworld",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Baphomet": {
+    "id": "Baphomet",
+    "name": "Incineram",
+    "paldex_no": 91,
+    "is_variant": false,
+    "combi_rank": 1470,
+    "combi_rank_priority": 147000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 100,
+      "defense": 85,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 250,
+      "unique_combos": []
+    }
+  },
+  "HadesBird_Electric": {
+    "id": "HadesBird_Electric",
+    "name": "Helzephyr Lux",
+    "paldex_no": 80,
+    "is_variant": true,
+    "combi_rank": 960,
+    "combi_rank_priority": 96000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 105,
+      "attack": 125,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "RockBeast_Ice": {
+    "id": "RockBeast_Ice",
+    "name": "Pierdon Cryst",
+    "paldex_no": 131,
+    "is_variant": true,
+    "combi_rank": 460,
+    "combi_rank_priority": 46000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 110,
+      "defense": 120,
+      "rarity": 7
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Deer": {
+    "id": "Deer",
+    "name": "Eikthyrdeer",
+    "paldex_no": 32,
+    "is_variant": false,
+    "combi_rank": 2710,
+    "combi_rank_priority": 271000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 80,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 99,
+      "unique_combos": []
+    }
+  },
+  "BluePlatypus": {
+    "id": "BluePlatypus",
+    "name": "Fuack",
+    "paldex_no": 5,
+    "is_variant": false,
+    "combi_rank": 2980,
+    "combi_rank_priority": 298000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 80,
+      "defense": 60,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 46,
+      "unique_combos": []
+    }
+  },
+  "Umihebi_Fire": {
+    "id": "Umihebi_Fire",
+    "name": "Jormuntide Ignis",
+    "paldex_no": 121,
+    "is_variant": true,
+    "combi_rank": 170,
+    "combi_rank_priority": 17000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 130,
+      "defense": 100,
+      "rarity": 9
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GrassGolem_Dark": {
+    "id": "GrassGolem_Dark",
+    "name": "Dualith Noct",
+    "paldex_no": 138,
+    "is_variant": true,
+    "combi_rank": 250,
+    "combi_rank_priority": 25000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 110,
+      "defense": 125,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "NightBlueHorse": {
+    "id": "NightBlueHorse",
+    "name": "Starryon",
+    "paldex_no": 130,
+    "is_variant": false,
+    "combi_rank": 1150,
+    "combi_rank_priority": 115000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 100,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 187,
+      "unique_combos": []
+    }
+  },
+  "NegativeOctopus": {
+    "id": "NegativeOctopus",
+    "name": "Killamari",
+    "paldex_no": 30,
+    "is_variant": false,
+    "combi_rank": 2770,
+    "combi_rank_priority": 277000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 60,
+      "attack": 60,
+      "defense": 70,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 88,
+      "unique_combos": []
+    }
+  },
+  "BlackMetalDragon": {
+    "id": "BlackMetalDragon",
+    "name": "Astegon",
+    "paldex_no": 158,
+    "is_variant": false,
+    "combi_rank": 490,
+    "combi_rank_priority": 49000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 125,
+      "defense": 125,
+      "rarity": 9
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up1",
+        "name": "Hard Skin",
+        "rank": 1
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 104,
+      "unique_combos": []
+    }
+  },
+  "Ronin": {
+    "id": "Ronin",
+    "name": "Bushi",
+    "paldex_no": 85,
+    "is_variant": false,
+    "combi_rank": 1560,
+    "combi_rank_priority": 156000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 125,
+      "defense": 80,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 286,
+      "unique_combos": []
+    }
+  },
+  "WhiteDeer_Dark": {
+    "id": "WhiteDeer_Dark",
+    "name": "Celesdir Noct",
+    "paldex_no": 157,
+    "is_variant": true,
+    "combi_rank": 270,
+    "combi_rank_priority": 27000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 115,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "Suzaku": {
+    "id": "Suzaku",
+    "name": "Suzaku",
+    "paldex_no": 122,
+    "is_variant": false,
+    "combi_rank": 1200,
+    "combi_rank_priority": 120000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 197,
+      "unique_combos": []
+    }
+  },
+  "FairyDragon_Water": {
+    "id": "FairyDragon_Water",
+    "name": "Elphidran Aqua",
+    "paldex_no": 63,
+    "is_variant": true,
+    "combi_rank": 1640,
+    "combi_rank_priority": 164000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 115,
+      "attack": 80,
+      "defense": 95,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "LizardMan_Fire": {
+    "id": "LizardMan_Fire",
+    "name": "Leezpunk Ignis",
+    "paldex_no": 73,
+    "is_variant": true,
+    "combi_rank": 2640,
+    "combi_rank_priority": 264000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 80,
+      "defense": 50,
+      "rarity": 3
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "CuteMole": {
+    "id": "CuteMole",
+    "name": "Fuddler",
+    "paldex_no": 31,
+    "is_variant": false,
+    "combi_rank": 2790,
+    "combi_rank_priority": 279000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 65,
+      "attack": 80,
+      "defense": 50,
+      "rarity": 1
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 84,
+      "unique_combos": []
+    }
+  },
+  "SwordCutlassfish_Fire": {
+    "id": "SwordCutlassfish_Fire",
+    "name": "Skutlass Ignis",
+    "paldex_no": 128,
+    "is_variant": true,
+    "combi_rank": 1590,
+    "combi_rank_priority": 159000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "KabukiMan": {
+    "id": "KabukiMan",
+    "name": "Renjishi",
+    "paldex_no": 183,
+    "is_variant": false,
+    "combi_rank": 290,
+    "combi_rank_priority": 29000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 105,
+      "attack": 120,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 45,
+      "unique_combos": []
+    }
+  },
+  "VolcanoDragon": {
+    "id": "VolcanoDragon",
+    "name": "Moldron",
+    "paldex_no": 105,
+    "is_variant": false,
+    "combi_rank": 750,
+    "combi_rank_priority": 75000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 125,
+      "defense": 115,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 172,
+      "unique_combos": []
+    }
+  },
+  "KingAlpaca": {
+    "id": "KingAlpaca",
+    "name": "Kingpaca",
+    "paldex_no": 21,
+    "is_variant": false,
+    "combi_rank": 2220,
+    "combi_rank_priority": 222000,
+    "male_probability": 0.9,
+    "stats": {
+      "hp": 120,
+      "attack": 85,
+      "defense": 90,
+      "rarity": 8
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 187,
+      "unique_combos": []
+    }
+  },
+  "ElecPanda": {
+    "id": "ElecPanda",
+    "name": "Grizzbolt",
+    "paldex_no": 185,
+    "is_variant": false,
+    "combi_rank": 1020,
+    "combi_rank_priority": 102000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 105,
+      "defense": 105,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "WindChimes_Ice": {
+    "id": "WindChimes_Ice",
+    "name": "Hangyu Cryst",
+    "paldex_no": 38,
+    "is_variant": true,
+    "combi_rank": 2510,
+    "combi_rank_priority": 251000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 80,
+      "attack": 80,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "ClownRabbit": {
+    "id": "ClownRabbit",
+    "name": "Dupin",
+    "paldex_no": 176,
+    "is_variant": false,
+    "combi_rank": 520,
+    "combi_rank_priority": 52000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 110,
+      "defense": 100,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 76,
+      "unique_combos": []
+    }
+  },
+  "VolcanicMonster": {
+    "id": "VolcanicMonster",
+    "name": "Reptyro",
+    "paldex_no": 129,
+    "is_variant": false,
+    "combi_rank": 1060,
+    "combi_rank_priority": 106000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 120,
+      "rarity": 6
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Deffence_up2_2",
+        "name": "Heavyweight",
+        "rank": 2
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 359,
+      "unique_combos": []
+    }
+  },
+  "FoxExorcist": {
+    "id": "FoxExorcist",
+    "name": "Flaracle",
+    "paldex_no": 174,
+    "is_variant": false,
+    "combi_rank": 390,
+    "combi_rank_priority": 39000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 125,
+      "defense": 105,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 286,
+      "unique_combos": []
+    }
+  },
+  "NegativeOctopus_Neutral": {
+    "id": "NegativeOctopus_Neutral",
+    "name": "Killamari Primo",
+    "paldex_no": 30,
+    "is_variant": true,
+    "combi_rank": 2540,
+    "combi_rank_priority": 571,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 70,
+      "attack": 60,
+      "defense": 70,
+      "rarity": 2
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "VioletFairy": {
+    "id": "VioletFairy",
+    "name": "Vaelet",
+    "paldex_no": 66,
+    "is_variant": false,
+    "combi_rank": 1480,
+    "combi_rank_priority": 148000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 120,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 508,
+      "unique_combos": []
+    }
+  },
+  "KingSunfish_Thunder": {
+    "id": "KingSunfish_Thunder",
+    "name": "Solmora Lux",
+    "paldex_no": 169,
+    "is_variant": true,
+    "combi_rank": 1000,
+    "combi_rank_priority": 100000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 95,
+      "defense": 85,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "GrassMinotaur_Ice": {
+    "id": "GrassMinotaur_Ice",
+    "name": "Elgrove Cryst",
+    "paldex_no": 81,
+    "is_variant": true,
+    "combi_rank": 440,
+    "combi_rank_priority": 44000,
+    "male_probability": 0.6,
+    "stats": {
+      "hp": 120,
+      "attack": 100,
+      "defense": 105,
+      "rarity": 7
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "FlowerDoll": {
+    "id": "FlowerDoll",
+    "name": "Petallia",
+    "paldex_no": 89,
+    "is_variant": false,
+    "combi_rank": 1720,
+    "combi_rank_priority": 172000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 100,
+      "attack": 95,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 244,
+      "unique_combos": []
+    }
+  },
+  "StuffedShark_Fire": {
+    "id": "StuffedShark_Fire",
+    "name": "Finsider Ignis",
+    "paldex_no": 88,
+    "is_variant": true,
+    "combi_rank": 2240,
+    "combi_rank_priority": 581,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 75,
+      "attack": 90,
+      "defense": 80,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "NightBlueHorse_Neutral": {
+    "id": "NightBlueHorse_Neutral",
+    "name": "Starryon Primo",
+    "paldex_no": 130,
+    "is_variant": true,
+    "combi_rank": 430,
+    "combi_rank_priority": 43000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 110,
+      "attack": 105,
+      "defense": 100,
+      "rarity": 8
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "BlueberryFairy": {
+    "id": "BlueberryFairy",
+    "name": "Prunelia",
+    "paldex_no": 147,
+    "is_variant": false,
+    "combi_rank": 1390,
+    "combi_rank_priority": 139000,
+    "male_probability": 0.4,
+    "stats": {
+      "hp": 105,
+      "attack": 95,
+      "defense": 100,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 235,
+      "unique_combos": []
+    }
+  },
+  "IceWitch": {
+    "id": "IceWitch",
+    "name": "Icelyn",
+    "paldex_no": 119,
+    "is_variant": false,
+    "combi_rank": 1260,
+    "combi_rank_priority": 126000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 95,
+      "attack": 115,
+      "defense": 105,
+      "rarity": 4
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 326,
+      "unique_combos": []
+    }
+  },
+  "Anubis": {
+    "id": "Anubis",
+    "name": "Anubis",
+    "paldex_no": 139,
+    "is_variant": false,
+    "combi_rank": 480,
+    "combi_rank_priority": 48000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 120,
+      "attack": 130,
+      "defense": 100,
+      "rarity": 10
+    },
+    "guaranteed_passives": [
+      {
+        "id": "ElementBoost_Earth_2_PAL",
+        "name": "Earth Emperor",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 234,
+      "unique_combos": []
+    }
+  },
+  "ThunderDog_Ice": {
+    "id": "ThunderDog_Ice",
+    "name": "Rayhound Cryst",
+    "paldex_no": 98,
+    "is_variant": true,
+    "combi_rank": 1600,
+    "combi_rank_priority": 160000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 105,
+      "defense": 80,
+      "rarity": 6
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  },
+  "BlackCentaur": {
+    "id": "BlackCentaur",
+    "name": "Necromus",
+    "paldex_no": 199,
+    "is_variant": false,
+    "combi_rank": 190,
+    "combi_rank_priority": 19000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 130,
+      "attack": 145,
+      "defense": 120,
+      "rarity": 20
+    },
+    "guaranteed_passives": [
+      {
+        "id": "Legend",
+        "name": "Legend",
+        "rank": 4
+      },
+      {
+        "id": "ElementBoost_Dark_2_PAL",
+        "name": "Lord of the Underworld",
+        "rank": 3
+      }
+    ],
+    "breeding": {
+      "parent_pair_count": 1,
+      "unique_combos": []
+    }
+  },
+  "BirdDragon_Ice": {
+    "id": "BirdDragon_Ice",
+    "name": "Vanwyrm Cryst",
+    "paldex_no": 64,
+    "is_variant": true,
+    "combi_rank": 1430,
+    "combi_rank_priority": 143000,
+    "male_probability": 0.5,
+    "stats": {
+      "hp": 90,
+      "attack": 120,
+      "defense": 95,
+      "rarity": 5
+    },
+    "guaranteed_passives": [],
+    "breeding": {
+      "parent_pair_count": 2,
+      "unique_combos": []
+    }
+  }
+}
