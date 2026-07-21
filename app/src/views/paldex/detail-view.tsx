@@ -11,6 +11,7 @@ import type {
 import { ivBand, QUALITY_FILL, QUALITY_TEXT } from "../../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
+import { ElementBadges } from "../../components/element";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
@@ -182,6 +183,7 @@ export default function PaldexDetail({
                 </span>
                 {detail.is_variant && <Tag tone="boss">Variant</Tag>}
                 <span>Rarity {detail.stats.rarity}</span>
+                <ElementBadges elements={detail.elements} label size={15} />
               </div>
               <h1 className="font-display text-2xl font-bold tracking-wide text-ink">
                 {detail.name}

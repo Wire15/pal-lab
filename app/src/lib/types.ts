@@ -159,6 +159,10 @@ export interface SpeciesEntry {
   food_amount: number;
   /** Wild spawn level range [min, max]. */
   wild_levels: [number, number];
+  /** Element type(s): 1–2 canonical kind names ("Normal", "Fire", "Water",
+   * "Leaf", "Electricity", "Ice", "Earth", "Dark", "Dragon") in the game's
+   * primary-then-secondary order. */
+  elements: string[];
 }
 
 /** A gender-pinned "unique combo" this species takes part in. */

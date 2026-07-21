@@ -34,6 +34,9 @@
     "wild_levels": [
       30,
       60
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -71,6 +74,10 @@
     "wild_levels": [
       30,
       66
+    ],
+    "elements": [
+      "Leaf",
+      "Dark"
     ]
   },
   {
@@ -108,6 +115,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -145,6 +155,9 @@
     "wild_levels": [
       53,
       66
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -182,6 +195,9 @@
     "wild_levels": [
       5,
       50
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -219,6 +235,10 @@
     "wild_levels": [
       40,
       65
+    ],
+    "elements": [
+      "Water",
+      "Earth"
     ]
   },
   {
@@ -262,6 +282,9 @@
     "wild_levels": [
       55,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -299,6 +322,10 @@
     "wild_levels": [
       30,
       44
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -336,6 +363,9 @@
     "wild_levels": [
       37,
       39
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -373,6 +403,9 @@
     "wild_levels": [
       5,
       25
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -410,6 +443,9 @@
     "wild_levels": [
       1,
       45
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -447,6 +483,9 @@
     "wild_levels": [
       5,
       25
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -484,6 +523,9 @@
     "wild_levels": [
       1,
       14
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -521,6 +563,9 @@
     "wild_levels": [
       1,
       47
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -558,6 +603,9 @@
     "wild_levels": [
       6,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -595,6 +643,9 @@
     "wild_levels": [
       20,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -638,6 +689,9 @@
     "wild_levels": [
       17,
       44
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -675,6 +729,9 @@
     "wild_levels": [
       11,
       29
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -712,6 +769,9 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -749,6 +809,9 @@
     "wild_levels": [
       2,
       25
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -786,6 +849,9 @@
     "wild_levels": [
       6,
       14
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -829,6 +895,9 @@
     "wild_levels": [
       22,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -872,6 +941,9 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -909,6 +981,9 @@
     "wild_levels": [
       4,
       13
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -946,6 +1021,9 @@
     "wild_levels": [
       1,
       24
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -983,6 +1061,9 @@
     "wild_levels": [
       14,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -1020,6 +1101,9 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -1057,6 +1141,9 @@
     "wild_levels": [
       5,
       18
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -1094,6 +1181,9 @@
     "wild_levels": [
       1,
       29
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -1131,6 +1221,9 @@
     "wild_levels": [
       25,
       49
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -1168,6 +1261,10 @@
     "wild_levels": [
       1,
       45
+    ],
+    "elements": [
+      "Water",
+      "Ice"
     ]
   },
   {
@@ -1205,6 +1302,10 @@
     "wild_levels": [
       50,
       55
+    ],
+    "elements": [
+      "Water",
+      "Electricity"
     ]
   },
   {
@@ -1242,6 +1343,9 @@
     "wild_levels": [
       1,
       55
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -1279,6 +1383,9 @@
     "wild_levels": [
       14,
       34
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -1316,6 +1423,9 @@
     "wild_levels": [
       20,
       50
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -1353,6 +1463,9 @@
     "wild_levels": [
       1,
       20
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -1396,6 +1509,10 @@
     "wild_levels": [
       55,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Water"
     ]
   },
   {
@@ -1433,6 +1550,10 @@
     "wild_levels": [
       66,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Fire"
     ]
   },
   {
@@ -1470,6 +1591,9 @@
     "wild_levels": [
       14,
       38
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -1507,6 +1631,9 @@
     "wild_levels": [
       9,
       40
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -1544,6 +1671,9 @@
     "wild_levels": [
       25,
       60
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -1581,6 +1711,9 @@
     "wild_levels": [
       40,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -1618,6 +1751,9 @@
     "wild_levels": [
       42,
       80
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -1655,6 +1791,9 @@
     "wild_levels": [
       29,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -1692,6 +1831,10 @@
     "wild_levels": [
       32,
       80
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -1729,6 +1872,9 @@
     "wild_levels": [
       20,
       80
+    ],
+    "elements": [
+      "Dragon"
     ]
   },
   {
@@ -1766,6 +1912,10 @@
     "wild_levels": [
       33,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Water"
     ]
   },
   {
@@ -1803,6 +1953,9 @@
     "wild_levels": [
       9,
       19
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -1840,6 +1993,9 @@
     "wild_levels": [
       55,
       60
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -1877,6 +2033,9 @@
     "wild_levels": [
       42,
       49
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -1914,6 +2073,9 @@
     "wild_levels": [
       5,
       17
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -1951,6 +2113,9 @@
     "wild_levels": [
       12,
       35
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -1988,6 +2153,9 @@
     "wild_levels": [
       31,
       63
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -2025,6 +2193,9 @@
     "wild_levels": [
       14,
       57
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -2062,6 +2233,10 @@
     "wild_levels": [
       35,
       80
+    ],
+    "elements": [
+      "Water",
+      "Dragon"
     ]
   },
   {
@@ -2099,6 +2274,10 @@
     "wild_levels": [
       50,
       80
+    ],
+    "elements": [
+      "Ice",
+      "Dragon"
     ]
   },
   {
@@ -2142,6 +2321,9 @@
     "wild_levels": [
       1,
       20
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -2179,6 +2361,9 @@
     "wild_levels": [
       4,
       35
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -2216,6 +2401,9 @@
     "wild_levels": [
       25,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -2259,6 +2447,10 @@
     "wild_levels": [
       36,
       50
+    ],
+    "elements": [
+      "Fire",
+      "Earth"
     ]
   },
   {
@@ -2302,6 +2494,10 @@
     "wild_levels": [
       42,
       67
+    ],
+    "elements": [
+      "Ice",
+      "Earth"
     ]
   },
   {
@@ -2339,6 +2535,9 @@
     "wild_levels": [
       38,
       60
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -2376,6 +2575,9 @@
     "wild_levels": [
       22,
       34
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -2413,6 +2615,10 @@
     "wild_levels": [
       30,
       55
+    ],
+    "elements": [
+      "Leaf",
+      "Earth"
     ]
   },
   {
@@ -2456,6 +2662,10 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Water"
     ]
   },
   {
@@ -2493,6 +2703,10 @@
     "wild_levels": [
       48,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Electricity"
     ]
   },
   {
@@ -2530,6 +2744,9 @@
     "wild_levels": [
       34,
       38
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -2567,6 +2784,9 @@
     "wild_levels": [
       21,
       40
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -2604,6 +2824,9 @@
     "wild_levels": [
       28,
       40
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -2641,6 +2864,9 @@
     "wild_levels": [
       6,
       20
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -2678,6 +2904,10 @@
     "wild_levels": [
       32,
       50
+    ],
+    "elements": [
+      "Water",
+      "Fire"
     ]
   },
   {
@@ -2715,6 +2945,10 @@
     "wild_levels": [
       20,
       63
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -2752,6 +2986,10 @@
     "wild_levels": [
       23,
       67
+    ],
+    "elements": [
+      "Ice",
+      "Dark"
     ]
   },
   {
@@ -2789,6 +3027,9 @@
     "wild_levels": [
       1,
       25
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -2826,6 +3067,10 @@
     "wild_levels": [
       10,
       35
+    ],
+    "elements": [
+      "Leaf",
+      "Dragon"
     ]
   },
   {
@@ -2863,6 +3108,10 @@
     "wild_levels": [
       15,
       47
+    ],
+    "elements": [
+      "Electricity",
+      "Dragon"
     ]
   },
   {
@@ -2900,6 +3149,9 @@
     "wild_levels": [
       1,
       12
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -2948,6 +3200,9 @@
     "wild_levels": [
       60,
       60
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -2996,6 +3251,9 @@
     "wild_levels": [
       65,
       65
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -3039,6 +3297,10 @@
     "wild_levels": [
       26,
       80
+    ],
+    "elements": [
+      "Leaf",
+      "Earth"
     ]
   },
   {
@@ -3082,6 +3344,10 @@
     "wild_levels": [
       36,
       80
+    ],
+    "elements": [
+      "Ice",
+      "Earth"
     ]
   },
   {
@@ -3119,6 +3385,9 @@
     "wild_levels": [
       20,
       66
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -3162,6 +3431,9 @@
     "wild_levels": [
       23,
       80
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -3205,6 +3477,10 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Leaf",
+      "Water"
     ]
   },
   {
@@ -3242,6 +3518,9 @@
     "wild_levels": [
       76,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -3285,6 +3564,9 @@
     "wild_levels": [
       46,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -3328,6 +3610,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Dragon",
+      "Fire"
     ]
   },
   {
@@ -3365,6 +3651,9 @@
     "wild_levels": [
       6,
       30
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -3402,6 +3691,9 @@
     "wild_levels": [
       32,
       80
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -3439,6 +3731,9 @@
     "wild_levels": [
       50,
       80
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -3476,6 +3771,9 @@
     "wild_levels": [
       25,
       45
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -3513,6 +3811,9 @@
     "wild_levels": [
       75,
       78
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -3550,6 +3851,9 @@
     "wild_levels": [
       1,
       25
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -3587,6 +3891,9 @@
     "wild_levels": [
       20,
       38
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -3624,6 +3931,10 @@
     "wild_levels": [
       30,
       55
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -3667,6 +3978,9 @@
     "wild_levels": [
       30,
       42
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -3704,6 +4018,9 @@
     "wild_levels": [
       4,
       22
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -3741,6 +4058,9 @@
     "wild_levels": [
       9,
       20
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -3778,6 +4098,9 @@
     "wild_levels": [
       20,
       38
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -3815,6 +4138,10 @@
     "wild_levels": [
       5,
       62
+    ],
+    "elements": [
+      "Dark",
+      "Water"
     ]
   },
   {
@@ -3852,6 +4179,10 @@
     "wild_levels": [
       24,
       55
+    ],
+    "elements": [
+      "Normal",
+      "Water"
     ]
   },
   {
@@ -3889,6 +4220,9 @@
     "wild_levels": [
       9,
       19
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -3932,6 +4266,9 @@
     "wild_levels": [
       42,
       80
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -3975,6 +4312,9 @@
     "wild_levels": [
       38,
       80
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4012,6 +4352,9 @@
     "wild_levels": [
       20,
       57
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4049,6 +4392,9 @@
     "wild_levels": [
       12,
       40
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -4086,6 +4432,9 @@
     "wild_levels": [
       1,
       35
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4129,6 +4478,9 @@
     "wild_levels": [
       58,
       80
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4166,6 +4518,9 @@
     "wild_levels": [
       49,
       80
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -4203,6 +4558,9 @@
     "wild_levels": [
       34,
       39
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4240,6 +4598,9 @@
     "wild_levels": [
       20,
       34
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4277,6 +4638,9 @@
     "wild_levels": [
       10,
       45
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -4314,6 +4678,9 @@
     "wild_levels": [
       27,
       80
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4351,6 +4718,9 @@
     "wild_levels": [
       15,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -4388,6 +4758,9 @@
     "wild_levels": [
       1,
       34
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -4425,6 +4798,9 @@
     "wild_levels": [
       20,
       58
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -4462,6 +4838,9 @@
     "wild_levels": [
       35,
       77
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -4499,6 +4878,9 @@
     "wild_levels": [
       1,
       40
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -4542,6 +4924,10 @@
     "wild_levels": [
       55,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Dark"
     ]
   },
   {
@@ -4579,6 +4965,9 @@
     "wild_levels": [
       35,
       53
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4616,6 +5005,9 @@
     "wild_levels": [
       15,
       37
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -4664,6 +5056,9 @@
     "wild_levels": [
       60,
       70
+    ],
+    "elements": [
+      "Dragon"
     ]
   },
   {
@@ -4701,6 +5096,9 @@
     "wild_levels": [
       4,
       16
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -4738,6 +5136,9 @@
     "wild_levels": [
       4,
       20
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -4775,6 +5176,9 @@
     "wild_levels": [
       10,
       12
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -4812,6 +5216,9 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -4849,6 +5256,10 @@
     "wild_levels": [
       34,
       80
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -4892,6 +5303,9 @@
     "wild_levels": [
       23,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -4935,6 +5349,9 @@
     "wild_levels": [
       46,
       46
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -4972,6 +5389,10 @@
     "wild_levels": [
       2,
       13
+    ],
+    "elements": [
+      "Leaf",
+      "Earth"
     ]
   },
   {
@@ -5009,6 +5430,10 @@
     "wild_levels": [
       2,
       4
+    ],
+    "elements": [
+      "Leaf",
+      "Earth"
     ]
   },
   {
@@ -5046,6 +5471,9 @@
     "wild_levels": [
       1,
       34
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -5083,6 +5511,9 @@
     "wild_levels": [
       11,
       40
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -5120,6 +5551,9 @@
     "wild_levels": [
       20,
       46
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -5157,6 +5591,10 @@
     "wild_levels": [
       30,
       52
+    ],
+    "elements": [
+      "Dark",
+      "Fire"
     ]
   },
   {
@@ -5194,6 +5632,9 @@
     "wild_levels": [
       1,
       35
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -5231,6 +5672,9 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -5268,6 +5712,9 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -5311,6 +5758,10 @@
     "wild_levels": [
       34,
       80
+    ],
+    "elements": [
+      "Earth",
+      "Leaf"
     ]
   },
   {
@@ -5354,6 +5805,9 @@
     "wild_levels": [
       30,
       64
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -5402,6 +5856,9 @@
     "wild_levels": [
       60,
       60
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -5439,6 +5896,9 @@
     "wild_levels": [
       1,
       25
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -5476,6 +5936,10 @@
     "wild_levels": [
       15,
       44
+    ],
+    "elements": [
+      "Water",
+      "Ice"
     ]
   },
   {
@@ -5513,6 +5977,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Water",
+      "Electricity"
     ]
   },
   {
@@ -5550,6 +6018,10 @@
     "wild_levels": [
       11,
       80
+    ],
+    "elements": [
+      "Ice",
+      "Dragon"
     ]
   },
   {
@@ -5587,6 +6059,10 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Fire",
+      "Dragon"
     ]
   },
   {
@@ -5624,6 +6100,9 @@
     "wild_levels": [
       40,
       80
+    ],
+    "elements": [
+      "Dragon"
     ]
   },
   {
@@ -5661,6 +6140,10 @@
     "wild_levels": [
       45,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Leaf"
     ]
   },
   {
@@ -5698,6 +6181,9 @@
     "wild_levels": [
       24,
       80
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -5735,6 +6221,10 @@
     "wild_levels": [
       47,
       80
+    ],
+    "elements": [
+      "Dark",
+      "Electricity"
     ]
   },
   {
@@ -5772,6 +6262,9 @@
     "wild_levels": [
       32,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -5809,6 +6302,9 @@
     "wild_levels": [
       25,
       59
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -5846,6 +6342,10 @@
     "wild_levels": [
       46,
       67
+    ],
+    "elements": [
+      "Fire",
+      "Dark"
     ]
   },
   {
@@ -5883,6 +6383,9 @@
     "wild_levels": [
       2,
       20
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -5920,6 +6423,10 @@
     "wild_levels": [
       26,
       55
+    ],
+    "elements": [
+      "Water",
+      "Electricity"
     ]
   },
   {
@@ -5968,6 +6475,9 @@
     "wild_levels": [
       60,
       60
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -6005,6 +6515,9 @@
     "wild_levels": [
       28,
       57
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -6042,6 +6555,10 @@
     "wild_levels": [
       71,
       73
+    ],
+    "elements": [
+      "Leaf",
+      "Fire"
     ]
   },
   {
@@ -6079,6 +6596,9 @@
     "wild_levels": [
       17,
       48
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -6116,6 +6636,9 @@
     "wild_levels": [
       16,
       29
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -6153,6 +6676,10 @@
     "wild_levels": [
       31,
       44
+    ],
+    "elements": [
+      "Dark",
+      "Earth"
     ]
   },
   {
@@ -6190,6 +6717,9 @@
     "wild_levels": [
       48,
       55
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -6233,6 +6763,10 @@
     "wild_levels": [
       74,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Electricity"
     ]
   },
   {
@@ -6270,6 +6804,9 @@
     "wild_levels": [
       1,
       13
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -6307,6 +6844,10 @@
     "wild_levels": [
       1,
       50
+    ],
+    "elements": [
+      "Earth",
+      "Water"
     ]
   },
   {
@@ -6344,6 +6885,10 @@
     "wild_levels": [
       25,
       65
+    ],
+    "elements": [
+      "Earth",
+      "Water"
     ]
   },
   {
@@ -6381,6 +6926,9 @@
     "wild_levels": [
       1,
       50
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -6418,6 +6966,9 @@
     "wild_levels": [
       4,
       30
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -6455,6 +7006,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -6498,6 +7052,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -6535,6 +7092,10 @@
     "wild_levels": [
       76,
       80
+    ],
+    "elements": [
+      "Dark",
+      "Normal"
     ]
   },
   {
@@ -6572,6 +7133,9 @@
     "wild_levels": [
       4,
       65
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -6609,6 +7173,10 @@
     "wild_levels": [
       61,
       80
+    ],
+    "elements": [
+      "Water",
+      "Dark"
     ]
   },
   {
@@ -6646,6 +7214,9 @@
     "wild_levels": [
       30,
       65
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -6683,6 +7254,9 @@
     "wild_levels": [
       30,
       77
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -6720,6 +7294,10 @@
     "wild_levels": [
       39,
       77
+    ],
+    "elements": [
+      "Leaf",
+      "Dark"
     ]
   },
   {
@@ -6757,6 +7335,9 @@
     "wild_levels": [
       30,
       49
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -6794,6 +7375,10 @@
     "wild_levels": [
       45,
       67
+    ],
+    "elements": [
+      "Dark",
+      "Fire"
     ]
   },
   {
@@ -6831,6 +7416,10 @@
     "wild_levels": [
       48,
       49
+    ],
+    "elements": [
+      "Dark",
+      "Earth"
     ]
   },
   {
@@ -6868,6 +7457,10 @@
     "wild_levels": [
       65,
       70
+    ],
+    "elements": [
+      "Electricity",
+      "Earth"
     ]
   },
   {
@@ -6911,6 +7504,9 @@
     "wild_levels": [
       55,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -6954,6 +7550,9 @@
     "wild_levels": [
       65,
       73
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -6991,6 +7590,9 @@
     "wild_levels": [
       30,
       65
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -7028,6 +7630,9 @@
     "wild_levels": [
       51,
       56
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -7065,6 +7670,9 @@
     "wild_levels": [
       31,
       49
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -7102,6 +7710,9 @@
     "wild_levels": [
       5,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -7145,6 +7756,9 @@
     "wild_levels": [
       25,
       30
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7188,6 +7802,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Dragon"
     ]
   },
   {
@@ -7225,6 +7842,10 @@
     "wild_levels": [
       32,
       80
+    ],
+    "elements": [
+      "Fire",
+      "Earth"
     ]
   },
   {
@@ -7262,6 +7883,10 @@
     "wild_levels": [
       78,
       78
+    ],
+    "elements": [
+      "Ice",
+      "Earth"
     ]
   },
   {
@@ -7310,6 +7935,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Dark",
+      "Dragon"
     ]
   },
   {
@@ -7347,6 +7976,9 @@
     "wild_levels": [
       50,
       67
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7384,6 +8016,9 @@
     "wild_levels": [
       50,
       54
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -7421,6 +8056,9 @@
     "wild_levels": [
       42,
       80
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7458,6 +8096,9 @@
     "wild_levels": [
       74,
       76
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -7501,6 +8142,9 @@
     "wild_levels": [
       59,
       80
+    ],
+    "elements": [
+      "Dragon"
     ]
   },
   {
@@ -7538,6 +8182,9 @@
     "wild_levels": [
       30,
       66
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7575,6 +8222,10 @@
     "wild_levels": [
       62,
       64
+    ],
+    "elements": [
+      "Dark",
+      "Ice"
     ]
   },
   {
@@ -7612,6 +8263,9 @@
     "wild_levels": [
       54,
       80
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -7649,6 +8303,9 @@
     "wild_levels": [
       79,
       79
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7686,6 +8343,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -7723,6 +8383,9 @@
     "wild_levels": [
       50,
       66
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7760,6 +8423,9 @@
     "wild_levels": [
       65,
       69
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7797,6 +8463,9 @@
     "wild_levels": [
       37,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -7834,6 +8503,9 @@
     "wild_levels": [
       65,
       66
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -7877,6 +8549,9 @@
     "wild_levels": [
       52,
       80
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7914,6 +8589,9 @@
     "wild_levels": [
       20,
       58
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -7951,6 +8629,9 @@
     "wild_levels": [
       57,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -7994,6 +8675,9 @@
     "wild_levels": [
       42,
       50
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -8037,6 +8721,9 @@
     "wild_levels": [
       68,
       69
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8074,6 +8761,10 @@
     "wild_levels": [
       10,
       80
+    ],
+    "elements": [
+      "Water",
+      "Dark"
     ]
   },
   {
@@ -8111,6 +8802,10 @@
     "wild_levels": [
       65,
       66
+    ],
+    "elements": [
+      "Water",
+      "Normal"
     ]
   },
   {
@@ -8148,6 +8843,10 @@
     "wild_levels": [
       42,
       80
+    ],
+    "elements": [
+      "Ice",
+      "Water"
     ]
   },
   {
@@ -8185,6 +8884,10 @@
     "wild_levels": [
       58,
       80
+    ],
+    "elements": [
+      "Ice",
+      "Fire"
     ]
   },
   {
@@ -8222,6 +8925,9 @@
     "wild_levels": [
       6,
       80
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -8259,6 +8965,9 @@
     "wild_levels": [
       15,
       58
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8296,6 +9005,9 @@
     "wild_levels": [
       23,
       58
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -8333,6 +9045,9 @@
     "wild_levels": [
       18,
       58
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -8370,6 +9085,9 @@
     "wild_levels": [
       30,
       66
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8407,6 +9125,9 @@
     "wild_levels": [
       56,
       66
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -8444,6 +9165,10 @@
     "wild_levels": [
       20,
       66
+    ],
+    "elements": [
+      "Dark",
+      "Electricity"
     ]
   },
   {
@@ -8481,6 +9206,9 @@
     "wild_levels": [
       56,
       64
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -8518,6 +9246,9 @@
     "wild_levels": [
       57,
       80
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -8555,6 +9286,9 @@
     "wild_levels": [
       56,
       80
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -8592,6 +9326,9 @@
     "wild_levels": [
       75,
       80
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8629,6 +9366,9 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -8666,6 +9406,10 @@
     "wild_levels": [
       30,
       80
+    ],
+    "elements": [
+      "Dark",
+      "Water"
     ]
   },
   {
@@ -8703,6 +9447,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Fire",
+      "Water"
     ]
   },
   {
@@ -8740,6 +9488,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8777,6 +9528,9 @@
     "wild_levels": [
       55,
       74
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -8820,6 +9574,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -8857,6 +9614,10 @@
     "wild_levels": [
       1,
       50
+    ],
+    "elements": [
+      "Leaf",
+      "Normal"
     ]
   },
   {
@@ -8894,6 +9655,9 @@
     "wild_levels": [
       32,
       34
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -8931,6 +9695,10 @@
     "wild_levels": [
       10,
       60
+    ],
+    "elements": [
+      "Ice",
+      "Water"
     ]
   },
   {
@@ -8968,6 +9736,9 @@
     "wild_levels": [
       31,
       40
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -9005,6 +9776,10 @@
     "wild_levels": [
       33,
       36
+    ],
+    "elements": [
+      "Dark",
+      "Leaf"
     ]
   },
   {
@@ -9042,6 +9817,9 @@
     "wild_levels": [
       75,
       78
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -9079,6 +9857,9 @@
     "wild_levels": [
       1,
       40
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -9116,6 +9897,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Water",
+      "Fire"
     ]
   },
   {
@@ -9153,6 +9938,9 @@
     "wild_levels": [
       65,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -9190,6 +9978,10 @@
     "wild_levels": [
       33,
       60
+    ],
+    "elements": [
+      "Ice",
+      "Water"
     ]
   },
   {
@@ -9227,6 +10019,10 @@
     "wild_levels": [
       55,
       60
+    ],
+    "elements": [
+      "Ice",
+      "Earth"
     ]
   },
   {
@@ -9264,6 +10060,10 @@
     "wild_levels": [
       3,
       13
+    ],
+    "elements": [
+      "Leaf",
+      "Normal"
     ]
   },
   {
@@ -9301,6 +10101,9 @@
     "wild_levels": [
       18,
       69
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -9338,6 +10141,9 @@
     "wild_levels": [
       11,
       73
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -9375,6 +10181,9 @@
     "wild_levels": [
       74,
       78
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -9412,6 +10221,9 @@
     "wild_levels": [
       65,
       69
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -9455,6 +10267,10 @@
     "wild_levels": [
       33,
       80
+    ],
+    "elements": [
+      "Leaf",
+      "Earth"
     ]
   },
   {
@@ -9492,6 +10308,9 @@
     "wild_levels": [
       32,
       50
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -9535,6 +10354,10 @@
     "wild_levels": [
       46,
       80
+    ],
+    "elements": [
+      "Earth",
+      "Leaf"
     ]
   },
   {
@@ -9578,6 +10401,10 @@
     "wild_levels": [
       70,
       77
+    ],
+    "elements": [
+      "Earth",
+      "Dark"
     ]
   },
   {
@@ -9615,6 +10442,9 @@
     "wild_levels": [
       39,
       68
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -9652,6 +10482,9 @@
     "wild_levels": [
       48,
       80
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -9689,6 +10522,9 @@
     "wild_levels": [
       60,
       78
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -9726,6 +10562,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -9763,6 +10602,10 @@
     "wild_levels": [
       14,
       80
+    ],
+    "elements": [
+      "Water",
+      "Dark"
     ]
   },
   {
@@ -9800,6 +10643,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -9837,6 +10683,9 @@
     "wild_levels": [
       66,
       78
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -9874,6 +10723,9 @@
     "wild_levels": [
       2,
       4
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -9922,6 +10774,9 @@
     "wild_levels": [
       60,
       60
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -9959,6 +10814,9 @@
     "wild_levels": [
       30,
       66
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -9996,6 +10854,10 @@
     "wild_levels": [
       40,
       44
+    ],
+    "elements": [
+      "Water",
+      "Fire"
     ]
   },
   {
@@ -10033,6 +10895,9 @@
     "wild_levels": [
       33,
       35
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -10070,6 +10935,9 @@
     "wild_levels": [
       33,
       35
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -10107,6 +10975,9 @@
     "wild_levels": [
       36,
       41
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -10144,6 +11015,9 @@
     "wild_levels": [
       36,
       41
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -10181,6 +11055,9 @@
     "wild_levels": [
       42,
       44
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10218,6 +11095,9 @@
     "wild_levels": [
       42,
       44
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10255,6 +11135,9 @@
     "wild_levels": [
       42,
       44
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10292,6 +11175,9 @@
     "wild_levels": [
       36,
       41
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10329,6 +11215,9 @@
     "wild_levels": [
       42,
       44
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10366,6 +11255,9 @@
     "wild_levels": [
       45,
       45
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -10403,6 +11295,9 @@
     "wild_levels": [
       33,
       35
+    ],
+    "elements": [
+      "Dark"
     ]
   },
   {
@@ -10440,6 +11335,10 @@
     "wild_levels": [
       39,
       80
+    ],
+    "elements": [
+      "Dark",
+      "Earth"
     ]
   },
   {
@@ -10477,6 +11376,9 @@
     "wild_levels": [
       66,
       67
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -10514,6 +11416,10 @@
     "wild_levels": [
       76,
       78
+    ],
+    "elements": [
+      "Water",
+      "Electricity"
     ]
   },
   {
@@ -10551,6 +11457,10 @@
     "wild_levels": [
       76,
       78
+    ],
+    "elements": [
+      "Dark",
+      "Normal"
     ]
   },
   {
@@ -10588,6 +11498,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Electricity"
     ]
   },
   {
@@ -10625,6 +11538,10 @@
     "wild_levels": [
       74,
       76
+    ],
+    "elements": [
+      "Electricity",
+      "Earth"
     ]
   },
   {
@@ -10662,6 +11579,10 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Dark",
+      "Fire"
     ]
   },
   {
@@ -10699,6 +11620,9 @@
     "wild_levels": [
       53,
       56
+    ],
+    "elements": [
+      "Earth"
     ]
   },
   {
@@ -10736,6 +11660,9 @@
     "wild_levels": [
       45,
       48
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -10773,6 +11700,9 @@
     "wild_levels": [
       15,
       65
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -10810,6 +11740,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -10847,6 +11780,9 @@
     "wild_levels": [
       9,
       65
+    ],
+    "elements": [
+      "Water"
     ]
   },
   {
@@ -10884,6 +11820,10 @@
     "wild_levels": [
       35,
       77
+    ],
+    "elements": [
+      "Dark",
+      "Fire"
     ]
   },
   {
@@ -10921,6 +11861,9 @@
     "wild_levels": [
       63,
       69
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -10958,6 +11901,9 @@
     "wild_levels": [
       65,
       69
+    ],
+    "elements": [
+      "Normal"
     ]
   },
   {
@@ -10995,6 +11941,10 @@
     "wild_levels": [
       69,
       80
+    ],
+    "elements": [
+      "Leaf",
+      "Water"
     ]
   },
   {
@@ -11032,6 +11982,10 @@
     "wild_levels": [
       76,
       78
+    ],
+    "elements": [
+      "Dragon",
+      "Water"
     ]
   },
   {
@@ -11069,6 +12023,9 @@
     "wild_levels": [
       28,
       69
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -11106,6 +12063,9 @@
     "wild_levels": [
       24,
       80
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -11143,6 +12103,9 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Ice"
     ]
   },
   {
@@ -11180,6 +12143,9 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Leaf"
     ]
   },
   {
@@ -11217,6 +12183,10 @@
     "wild_levels": [
       65,
       80
+    ],
+    "elements": [
+      "Dragon",
+      "Dark"
     ]
   },
   {
@@ -11254,6 +12224,10 @@
     "wild_levels": [
       75,
       77
+    ],
+    "elements": [
+      "Dragon",
+      "Fire"
     ]
   },
   {
@@ -11291,6 +12265,10 @@
     "wild_levels": [
       0,
       0
+    ],
+    "elements": [
+      "Leaf",
+      "Dark"
     ]
   },
   {
@@ -11328,6 +12306,9 @@
     "wild_levels": [
       78,
       80
+    ],
+    "elements": [
+      "Fire"
     ]
   },
   {
@@ -11371,6 +12352,10 @@
     "wild_levels": [
       79,
       79
+    ],
+    "elements": [
+      "Dragon",
+      "Earth"
     ]
   }
 ]

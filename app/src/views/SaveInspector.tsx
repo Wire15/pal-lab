@@ -1,48 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { invoke } from "../lib/tauri";
-import type { Guid, NamedEntry, OwnedPal, PlayerRef } from "../lib/types";
-import {
-  containerLabel,
-  genderView,
-  ivBand,
-  QUALITY_FILL,
-  QUALITY_TEXT,
-} from "../lib/ui";
+import type { NamedEntry, OwnedPal, SpeciesEntry } from "../lib/types";
+import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../components/primitives";
 import { useAppState } from "../state";
+import { FilterBar } from "../components/palbox/filter-bar";
+import { PalDetail } from "../components/palbox/detail-panel";
+import { BaseStrip, BoxGrid, PartyRail } from "../components/palbox/surfaces";
+import { usePalboxState, type PalboxMode } from "../components/palbox/use-palbox-state";
+import {
+  applyQuery,
+  baseGroups,
+  compactPages,
+  dimensionalPages,
+  GRID_COLS,
+  isQueryActive,
+  matchesQuery,
+  palKey,
+  partySlots,
+  physicalPages,
+  playerContainers,
+  type GridCell,
+  type SortKey,
+} from "../components/palbox/selectors";
 
-type SortKey =
-  | "species"
-  | "gender"
-  | "level"
-  | "hp"
-  | "attack"
-  | "defense"
-  | "container_kind";
+type BoxSurface = "palbox" | "dimensional";
 
-type SortDir = "asc" | "desc";
-
-const COLUMNS: { key: SortKey; label: string; align?: "right" }[] = [
-  { key: "species", label: "Pal" },
-  { key: "gender", label: "Sex" },
-  { key: "level", label: "Lv", align: "right" },
-  { key: "hp", label: "HP", align: "right" },
-  { key: "attack", label: "ATK", align: "right" },
-  { key: "defense", label: "DEF", align: "right" },
-  { key: "container_kind", label: "Location" },
-];
-
-/** Lowercase 32-char hex of a serialized GUID, matching the backend's format. */
-function hexGuid(g: Guid): string {
-  return g.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-/** Stable row key for a pal (its instance GUID). */
-function palKey(pal: OwnedPal): string {
-  return pal.instance_id.join("-");
-}
-
-/** One IV talent: mono numeral tinted by quality with a thin quality bar. */
+/** One IV talent for the list table: mono numeral tinted by band + quality bar. */
 function IvCell({ value }: { value: number }) {
   const band = ivBand(value);
   return (
@@ -60,388 +44,385 @@ function IvCell({ value }: { value: number }) {
   );
 }
 
-/** A labelled IV bar for the detail panel: label above, numeral, wide bar. */
-function IvStat({ label, value }: { label: string; value: number }) {
-  const band = ivBand(value);
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          {label}
-        </span>
-        <span className={`font-mono text-[13px] font-medium tabular-nums ${QUALITY_TEXT[band]}`}>
-          {value}
-        </span>
-      </div>
-      <span className="h-1.5 w-full overflow-hidden rounded-full bg-abyss">
-        <span
-          className={`block h-full rounded-full ${QUALITY_FILL[band]}`}
-          style={{ width: `${Math.min(100, value)}%` }}
-        />
-      </span>
-    </div>
-  );
-}
+/** Column headers that map to a shared sort key are clickable; the rest are
+ *  plain labels. Ordering for both modes comes from the one shared query. */
+const SORTABLE_COLUMNS: Partial<Record<SortKey, true>> = { name: true, level: true };
 
-/**
- * Right-side detail panel for one selected pal. Sits beside the table at wide
- * widths and overlays it below `xl` so the roster never gets crushed. Closes
- * via its X button, Escape, or a re-click on the open row (handled upstream).
- */
-function PalDetail({
-  pal,
-  players,
-  displayName,
-  onClose,
-  onViewInDex,
+function RosterTable({
+  rows,
+  nameOf,
+  sortKey,
+  sortDir,
+  onSort,
+  selectedKey,
+  onSelect,
 }: {
-  pal: OwnedPal;
-  players: PlayerRef[];
-  displayName: string;
-  onClose: () => void;
-  onViewInDex: (id: string) => void;
+  rows: OwnedPal[];
+  nameOf: (pal: OwnedPal) => string;
+  sortKey: SortKey;
+  sortDir: "asc" | "desc";
+  onSort: (key: SortKey) => void;
+  selectedKey: string | null;
+  onSelect: (pal: OwnedPal) => void;
 }) {
-  const g = genderView(pal.gender);
-  const ownerHex = pal.owner_player_uid ? hexGuid(pal.owner_player_uid) : null;
-  const owner = ownerHex
-    ? players.find((p) => p.uid === ownerHex)?.name ?? null
-    : null;
-  const instanceHex = hexGuid(pal.instance_id);
-  const skills = pal.active_skills ?? [];
-  const [copied, setCopied] = useState(false);
-
-  function copyId() {
-    navigator.clipboard
-      ?.writeText(instanceHex)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1200);
-      })
-      .catch(() => {});
-  }
+  const header = (label: string, key: SortKey | null, align?: "right") => {
+    const sortable = key !== null && SORTABLE_COLUMNS[key];
+    const active = sortable && sortKey === key;
+    return (
+      <th
+        onClick={sortable ? () => onSort(key) : undefined}
+        className={`border-b border-line px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-wider ${
+          align === "right" ? "text-right" : "text-left"
+        } ${sortable ? "cursor-pointer select-none transition-colors hover:text-ink" : ""} ${
+          active ? "text-amber" : "text-ink-faint"
+        }`}
+      >
+        {label}
+        {sortable && (
+          <span className="ml-1 inline-block w-2 text-amber">
+            {active ? (sortDir === "asc" ? "\u25b2" : "\u25bc") : ""}
+          </span>
+        )}
+      </th>
+    );
+  };
 
   return (
-    <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col border-l border-line bg-panel xl:static xl:z-auto">
-      <header className="flex shrink-0 items-center justify-between border-b border-line bg-raised px-4 py-3">
-        <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-          Pal detail
-        </span>
-        <button
-          onClick={onClose}
-          aria-label="Close detail"
-          className="rounded-md p-1 text-ink-faint transition-colors hover:bg-hover hover:text-ink"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.9"
-            strokeLinecap="round"
-          >
-            <path d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </button>
-      </header>
-
-      <div className="flex-1 overflow-auto px-4 py-4">
-        {/* Identity */}
-        <div className="flex items-start gap-3">
-          <PalIcon id={pal.character_id} name={displayName} size={72} className="rounded-lg" />
-          <div className="min-w-0 pt-0.5">
-            <div className="flex items-center gap-2">
-              <h2 className="truncate font-display text-lg font-bold tracking-wide text-ink">
-                {displayName}
-              </h2>
-              {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
-            </div>
-            {pal.nickname && (
-              <div className="truncate font-mono text-[12px] text-ink-dim">
-                &ldquo;{pal.nickname}&rdquo;
-              </div>
-            )}
-            <button
-              onClick={() => onViewInDex(pal.character_id)}
-              className="mt-1.5 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-amber transition-colors hover:text-amber-bright"
+    <table className="w-full border-collapse text-sm">
+      <thead className="sticky top-0 z-10">
+        <tr className="bg-raised text-left">
+          {header("Pal", "name")}
+          {header("Sex", null)}
+          {header("Lv", "level", "right")}
+          {header("HP", null, "right")}
+          {header("ATK", null, "right")}
+          {header("DEF", null, "right")}
+          {header("Location", null)}
+          {header("Passives", null)}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((pal) => {
+          const g = genderView(pal.gender);
+          const key = palKey(pal);
+          const isSelected = key === selectedKey;
+          return (
+            <tr
+              key={key}
+              data-pal={key}
+              onClick={() => onSelect(pal)}
+              aria-selected={isSelected}
+              className={`cursor-pointer border-b border-line-soft transition-colors ${
+                isSelected ? "bg-hover" : "hover:bg-panel/70"
+              }`}
             >
-              View in Pal-dex
-              <span aria-hidden>&rarr;</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Vitals */}
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-line-soft py-3 text-[13px]">
-          <span className="flex items-center gap-1.5" title={g.label}>
-            <span className={`text-base leading-none ${g.className}`}>{g.glyph}</span>
-            <span className="text-ink-dim">{g.label}</span>
-          </span>
-          <span className="text-ink-dim">
-            <span className="font-mono text-ink-faint">Lv </span>
-            <span className="font-mono tabular-nums text-ink">{pal.level}</span>
-          </span>
-          {pal.rank > 0 && (
-            <span
-              className="font-mono text-[13px] text-amber"
-              title={`Condensation rank ${pal.rank}`}
-            >
-              {"\u2605".repeat(pal.rank)}
-            </span>
-          )}
-        </div>
-
-        {/* IVs */}
-        <section className="mt-4">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            IV talents
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <IvStat label="HP" value={pal.ivs.hp} />
-            <IvStat label="ATK" value={pal.ivs.attack} />
-            <IvStat label="DEF" value={pal.ivs.defense} />
-          </div>
-        </section>
-
-        {/* Passives */}
-        <section className="mt-4">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Passives
-          </div>
-          {pal.passives.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {pal.passives.map((p, i) => (
-                <PassiveChip key={`${p}-${i}`} id={p} />
-              ))}
-            </div>
-          ) : (
-            <span className="text-[13px] text-ink-faint">No passives.</span>
-          )}
-        </section>
-
-        {/* Active skills */}
-        <section className="mt-4">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Active skills
-          </div>
-          {skills.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {skills.map((s, i) => (
-                <span
-                  key={`${s}-${i}`}
-                  title={s}
-                  className="inline-flex items-center rounded-sm border border-line bg-raised px-1.5 py-0.5 font-mono text-[11px] leading-none text-ink-dim"
-                >
-                  {s}
+              <td className="relative px-4 py-2">
+                {isSelected && (
+                  <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-amber" />
+                )}
+                <div className="flex items-center gap-3">
+                  <PalIcon id={pal.character_id} name={nameOf(pal)} size={34} />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate font-medium text-ink">{nameOf(pal)}</span>
+                      {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
+                      {pal.rank > 0 && (
+                        <span
+                          className="font-mono text-[11px] text-amber"
+                          title={`Condensation rank ${pal.rank}`}
+                        >
+                          {"\u2605".repeat(pal.rank)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="truncate font-mono text-[11px] text-ink-faint">
+                      {pal.nickname ? `"${pal.nickname}"` : pal.character_id}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td className="px-4 py-2">
+                <span className={`text-base leading-none ${g.className}`} title={g.label}>
+                  {g.glyph}
                 </span>
-              ))}
-            </div>
-          ) : (
-            <span className="text-[13px] text-ink-faint">Not recorded.</span>
-          )}
-        </section>
-
-        {/* Provenance */}
-        <section className="mt-4">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Owner &amp; storage
-          </div>
-          <dl className="flex flex-col gap-1.5 text-[13px]">
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-faint">Player</dt>
-              <dd className="truncate text-ink">{owner ?? "\u2014"}</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-faint">Location</dt>
-              <dd>
+              </td>
+              <td className="px-4 py-2 text-right font-mono text-[13px] tabular-nums text-ink-dim">
+                {pal.level}
+              </td>
+              <td className="px-4 py-2">
+                <IvCell value={pal.ivs.hp} />
+              </td>
+              <td className="px-4 py-2">
+                <IvCell value={pal.ivs.attack} />
+              </td>
+              <td className="px-4 py-2">
+                <IvCell value={pal.ivs.defense} />
+              </td>
+              <td className="px-4 py-2">
                 <Tag>{containerLabel(pal.container_kind)}</Tag>
-              </dd>
-            </div>
-            {pal.slot_index !== null && (
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="text-ink-faint">Slot</dt>
-                <dd className="font-mono tabular-nums text-ink-dim">{pal.slot_index}</dd>
-              </div>
-            )}
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-ink-faint">Instance</dt>
-              <dd>
-                <button
-                  onClick={copyId}
-                  title="Copy instance id"
-                  className="max-w-[18ch] truncate font-mono text-[11px] text-ink-dim transition-colors hover:text-amber"
-                >
-                  {copied ? "Copied!" : instanceHex}
-                </button>
-              </dd>
-            </div>
-          </dl>
-        </section>
-      </div>
-    </aside>
+              </td>
+              <td className="px-4 py-2">
+                {pal.passives.length > 0 ? (
+                  <div className="flex max-w-[22rem] flex-wrap gap-1">
+                    {pal.passives.map((p, i) => (
+                      <PassiveChip key={`${p}-${i}`} id={p} />
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-ink-faint">&mdash;</span>
+                )}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
 
 export default function SaveInspector() {
   const { saveSummary, saveLoading, saveError, requestDex } = useAppState();
-  const [query, setQuery] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("species");
-  const [sortDir, setSortDir] = useState<SortDir>("asc");
-  const [nameById, setNameById] = useState<Map<string, string>>(new Map());
+  const { storedPlayer, setStoredPlayer, mode, setMode, query, patchQuery } =
+    usePalboxState();
+
+  const [namesById, setNamesById] = useState<Map<string, string>>(new Map());
+  const [species, setSpecies] = useState<Map<string, SpeciesEntry>>(new Map());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [surface, setSurface] = useState<BoxSurface>("palbox");
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species")
-      .then((list) => setNameById(new Map(list.map((s) => [s.id, s.name]))))
+      .then((list) => setNamesById(new Map(list.map((s) => [s.id, s.name]))))
+      .catch(() => {});
+    invoke<SpeciesEntry[]>("paldex_species")
+      .then((list) => setSpecies(new Map(list.map((s) => [s.id, s]))))
       .catch(() => {});
   }, []);
 
-  function toggleSort(key: SortKey) {
-    if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else {
-      setSortKey(key);
-      setSortDir("asc");
-    }
-  }
+  const players = saveSummary?.players ?? [];
+  // Resolve the active player: the remembered one if still present, else first.
+  const activeUid =
+    players.find((p) => p.uid === storedPlayer)?.uid ?? players[0]?.uid ?? "";
 
-  const displayName = (pal: OwnedPal) =>
-    nameById.get(pal.character_id) ?? pal.character_id;
-
-  const rows = useMemo(() => {
-    if (!saveSummary) return [];
-    const q = query.trim().toLowerCase();
-    const filtered = q
-      ? saveSummary.pals.filter((p) => {
-          const hay = [
-            displayName(p),
-            p.character_id,
-            p.nickname ?? "",
-            p.container_kind,
-            ...p.passives,
-          ]
-            .join(" ")
-            .toLowerCase();
-          return hay.includes(q);
-        })
-      : saveSummary.pals;
-
-    const value = (pal: OwnedPal): string | number => {
-      switch (sortKey) {
-        case "species":
-          return displayName(pal).toLowerCase();
-        case "gender":
-          return pal.gender ?? "";
-        case "level":
-          return pal.level;
-        case "hp":
-          return pal.ivs.hp;
-        case "attack":
-          return pal.ivs.attack;
-        case "defense":
-          return pal.ivs.defense;
-        case "container_kind":
-          return pal.container_kind;
-      }
-    };
-
-    return [...filtered].sort((a, b) => {
-      const av = value(a);
-      const bv = value(b);
-      const cmp =
-        typeof av === "number" && typeof bv === "number"
-          ? av - bv
-          : String(av).localeCompare(String(bv));
-      return sortDir === "asc" ? cmp : -cmp;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveSummary, sortKey, sortDir, query, nameById]);
-
-  const selected = useMemo(
-    () => rows.find((p) => palKey(p) === selectedKey) ?? null,
-    [rows, selectedKey],
+  const nameOf = useCallback(
+    (pal: OwnedPal) => namesById.get(pal.character_id) ?? pal.character_id,
+    [namesById],
   );
 
-  // Keyboard: up/down moves the selection while the detail panel is open;
-  // Escape closes it. Scoped to when a pal is selected.
+  const bases = useMemo(
+    () => (saveSummary ? baseGroups(saveSummary.pals) : []),
+    [saveSummary],
+  );
+
+  const containers = useMemo(
+    () =>
+      saveSummary
+        ? playerContainers(saveSummary.pals, activeUid)
+        : { party: [], palbox: [], dimensional: [] },
+    [saveSummary, activeUid],
+  );
+
+  const active = isQueryActive(query);
+
+  // The pool that both the list table and the shown/total counter range over:
+  // the active player's own pals plus the (player-independent) base pals.
+  const pool = useMemo(
+    () => [
+      ...containers.party,
+      ...containers.palbox,
+      ...containers.dimensional,
+      ...bases.flatMap((b) => b.pals),
+    ],
+    [containers, bases],
+  );
+
+  const shown = useMemo(
+    () => pool.filter((p) => matchesQuery(p, query, namesById, species)).length,
+    [pool, query, namesById, species],
+  );
+
+  // Grid-mode surface pages for the active box surface.
+  const pages: GridCell[][] = useMemo(() => {
+    const pals = surface === "palbox" ? containers.palbox : containers.dimensional;
+    if (active) return compactPages(applyQuery(pals, query, namesById, species));
+    if (surface === "palbox") return physicalPages(pals);
+    return dimensionalPages(pals).map((dp) =>
+      dp.pals.map((pal, i) => ({ pal, cell: i })),
+    );
+  }, [surface, containers, active, query, namesById, species]);
+
+  // List-mode rows: the whole pool under the shared query.
+  const rows = useMemo(
+    () => applyQuery(pool, query, namesById, species),
+    [pool, query, namesById, species],
+  );
+
+  // The bar hides non-matches on EVERY surface (PALBOX decision 4), not just
+  // the box grid: party slots that fail the query blank out, and base rows are
+  // filtered (and reordered) then dropped when they hold no matches.
+  const partyCells = useMemo(() => {
+    const slots = partySlots(containers.party);
+    if (!active) return slots;
+    return slots.map((p) =>
+      p && matchesQuery(p, query, namesById, species) ? p : null,
+    );
+  }, [containers.party, active, query, namesById, species]);
+
+  const visibleBases = useMemo(() => {
+    if (!active) return bases;
+    return bases
+      .map((b) => ({ ...b, pals: applyQuery(b.pals, query, namesById, species) }))
+      .filter((b) => b.pals.length > 0);
+  }, [bases, active, query, namesById, species]);
+
+  // Reset paging when the player, surface, or query-activeness changes.
+  useEffect(() => setPage(0), [activeUid, surface, active, query.sortKey]);
+
+  // Clamp the page if the underlying page count shrank.
+  const safePage = Math.min(page, Math.max(0, pages.length - 1));
+
+  const selected = useMemo(
+    () => saveSummary?.pals.find((p) => palKey(p) === selectedKey) ?? null,
+    [saveSummary, selectedKey],
+  );
+
+  const onSelect = useCallback(
+    (pal: OwnedPal) =>
+      setSelectedKey((cur) => (cur === palKey(pal) ? null : palKey(pal))),
+    [],
+  );
+
+  // The flat, visual-order list arrow keys walk in grid mode: party, then the
+  // current box page, then every base — matching what's on screen.
+  const navList = useMemo(() => {
+    if (mode !== "grid") return rows;
+    const flat: OwnedPal[] = [];
+    for (const p of partyCells) if (p) flat.push(p);
+    for (const c of pages[safePage] ?? []) if (c.pal) flat.push(c.pal);
+    for (const b of visibleBases) flat.push(...b.pals);
+    return flat;
+  }, [mode, rows, partyCells, pages, safePage, visibleBases]);
+
+  // Keyboard: Esc closes; arrows move the selection; [ ] / PgUp / PgDn page the
+  // grid. Grid nav uses row geometry (±1 horizontal, ±cols vertical).
   useEffect(() => {
-    if (!selectedKey) return;
     const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "SELECT" || t.tagName === "TEXTAREA")) {
+        if (e.key !== "Escape") return;
+      }
       if (e.key === "Escape") {
         setSelectedKey(null);
         return;
       }
-      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      // Box paging (grid mode).
+      if (mode === "grid" && (e.key === "[" || e.key === "]" || e.key === "PageUp" || e.key === "PageDown")) {
+        e.preventDefault();
+        const back = e.key === "[" || e.key === "PageUp";
+        setPage((p) => Math.min(pages.length - 1, Math.max(0, p + (back ? -1 : 1))));
+        return;
+      }
+      if (!selectedKey) return;
+      const arrows: Record<string, number> = {
+        ArrowLeft: -1,
+        ArrowRight: 1,
+        ArrowUp: mode === "grid" ? -GRID_COLS : -1,
+        ArrowDown: mode === "grid" ? GRID_COLS : 1,
+      };
+      if (!(e.key in arrows)) return;
       e.preventDefault();
-      const idx = rows.findIndex((p) => palKey(p) === selectedKey);
+      const idx = navList.findIndex((p) => palKey(p) === selectedKey);
       if (idx === -1) return;
-      const next =
-        e.key === "ArrowDown"
-          ? Math.min(rows.length - 1, idx + 1)
-          : Math.max(0, idx - 1);
-      const key = palKey(rows[next]);
+      const next = Math.min(navList.length - 1, Math.max(0, idx + arrows[e.key]));
+      const key = palKey(navList[next]);
       setSelectedKey(key);
       requestAnimationFrame(() => {
-        document
-          .querySelector(`[data-pal="${key}"]`)
-          ?.scrollIntoView({ block: "nearest" });
+        document.querySelector(`[data-pal="${key}"]`)?.scrollIntoView({ block: "nearest" });
       });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedKey, rows]);
+  }, [selectedKey, navList, mode, pages.length]);
+
+  const hasDimensional = containers.dimensional.length > 0;
 
   return (
     <div className="flex h-full flex-col">
       {/* View header */}
-      <header className="shrink-0 border-b border-line bg-panel/60 px-6 pb-4 pt-5">
+      <header className="shrink-0 border-b border-line bg-panel/60 px-6 pb-3 pt-5">
         <div className="flex items-baseline justify-between gap-4">
           <div>
             <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
               Save Inspector
             </div>
-            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-              Roster
-            </h1>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">Palbox</h1>
           </div>
           {saveSummary && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="text-right font-mono text-xs text-ink-dim">
                 <span className="text-ink">{saveSummary.world_name}</span>
                 <span className="mx-2 text-ink-faint">/</span>
                 <span className="text-amber">{saveSummary.pals.length}</span> pals
               </div>
-              <input
-                className="w-56 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-                placeholder="Filter by name, passive, location..."
-                value={query}
-                onChange={(e) => setQuery(e.currentTarget.value)}
-              />
-              {query && (
-                <span className="font-mono text-xs text-ink-faint">
-                  {rows.length} shown
-                </span>
-              )}
+              {/* Mode toggle */}
+              <div className="flex items-center overflow-hidden rounded-md border border-line">
+                {(["grid", "list"] as PalboxMode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMode(m)}
+                    aria-pressed={mode === m}
+                    className={`px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors ${
+                      mode === m
+                        ? "bg-amber/15 text-amber"
+                        : "bg-abyss text-ink-dim hover:bg-hover hover:text-ink"
+                    }`}
+                  >
+                    {m === "grid" ? "Palbox" : "List"}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
-        {saveSummary && (
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-ink-dim">
-            <span>
-              <span className="text-ink-faint">Players </span>
-              {saveSummary.players.map((p) => p.name).join(", ") || "none"}
+        {saveSummary && saveSummary.warnings.length > 0 && (
+          <div className="mt-2 text-xs">
+            <span
+              className="text-warn"
+              title={saveSummary.warnings.slice(0, 20).join("\n")}
+            >
+              {saveSummary.warnings.length} parser warnings
             </span>
-            {saveSummary.warnings.length > 0 && (
-              <span
-                className="text-warn"
-                title={saveSummary.warnings.slice(0, 20).join("\n")}
-              >
-                {saveSummary.warnings.length} parser warnings
-              </span>
-            )}
           </div>
         )}
       </header>
+
+      {/* Player tabs */}
+      {saveSummary && players.length > 0 && (
+        <div className="flex shrink-0 items-center gap-1 border-b border-line bg-panel/40 px-6 pt-2">
+          {players.map((p) => {
+            const isActive = p.uid === activeUid;
+            return (
+              <button
+                key={p.uid}
+                onClick={() => setStoredPlayer(p.uid)}
+                aria-pressed={isActive}
+                className={`-mb-px border-b-2 px-3 py-2 text-[13px] transition-colors ${
+                  isActive
+                    ? "border-amber font-medium text-ink"
+                    : "border-transparent text-ink-dim hover:text-ink"
+                }`}
+              >
+                {p.name || "Unnamed"}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Shared sort / search / filter bar */}
+      {saveSummary && <FilterBar query={query} onChange={patchQuery} shown={shown} total={pool.length} />}
 
       {/* Body */}
       {saveError && !saveSummary && (
@@ -451,138 +432,103 @@ export default function SaveInspector() {
       )}
 
       {saveSummary ? (
-        rows.length === 0 ? (
-          <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
-            No pals match &ldquo;{query}&rdquo;.
-          </div>
-        ) : (
-          <div className="relative flex flex-1 overflow-hidden">
-            <div className="flex-1 overflow-auto">
-              <table className="w-full border-collapse text-sm">
-                <thead className="sticky top-0 z-10">
-                  <tr className="bg-raised text-left">
-                    {COLUMNS.map((c) => {
-                      const activeSort = sortKey === c.key;
-                      return (
-                        <th
-                          key={c.key}
-                          onClick={() => toggleSort(c.key)}
-                          className={`cursor-pointer select-none border-b border-line px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-wider transition-colors hover:text-ink ${
-                            c.align === "right" ? "text-right" : "text-left"
-                          } ${activeSort ? "text-amber" : "text-ink-faint"}`}
-                        >
-                          {c.label}
-                          <span className="ml-1 inline-block w-2 text-amber">
-                            {activeSort ? (sortDir === "asc" ? "\u25b2" : "\u25bc") : ""}
-                          </span>
-                        </th>
-                      );
-                    })}
-                    <th className="border-b border-line px-4 py-2.5 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
-                      Passives
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((pal) => {
-                    const g = genderView(pal.gender);
-                    const key = palKey(pal);
-                    const isSelected = key === selectedKey;
-                    return (
-                      <tr
-                        key={key}
-                        data-pal={key}
-                        onClick={() =>
-                          setSelectedKey((cur) => (cur === key ? null : key))
-                        }
-                        aria-selected={isSelected}
-                        className={`cursor-pointer border-b border-line-soft transition-colors ${
-                          isSelected ? "bg-hover" : "hover:bg-panel/70"
+        <div className="relative flex flex-1 overflow-hidden">
+          {mode === "grid" ? (
+            <div className="flex-1 overflow-auto px-6 py-5">
+              <div className="mx-auto flex max-w-[560px] flex-col gap-6">
+                <PartyRail
+                  slots={partyCells}
+                  nameOf={nameOf}
+                  selectedKey={selectedKey}
+                  onSelect={onSelect}
+                />
+
+                {/* Surface toggle (Palbox / Dimensional) */}
+                {hasDimensional && (
+                  <div className="flex items-center gap-1 self-center rounded-md border border-line p-0.5">
+                    {(["palbox", "dimensional"] as BoxSurface[]).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setSurface(s)}
+                        aria-pressed={surface === s}
+                        className={`rounded px-3 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors ${
+                          surface === s
+                            ? "bg-amber/15 text-amber"
+                            : "text-ink-dim hover:bg-hover hover:text-ink"
                         }`}
                       >
-                        <td className="relative px-4 py-2">
-                          {isSelected && (
-                            <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-amber" />
-                          )}
-                          <div className="flex items-center gap-3">
-                            <PalIcon id={pal.character_id} name={displayName(pal)} size={34} />
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className="truncate font-medium text-ink">
-                                  {displayName(pal)}
-                                </span>
-                                {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
-                                {pal.rank > 0 && (
-                                  <span
-                                    className="font-mono text-[11px] text-amber"
-                                    title={`Condensation rank ${pal.rank}`}
-                                  >
-                                    {"\u2605".repeat(pal.rank)}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="truncate font-mono text-[11px] text-ink-faint">
-                                {pal.nickname ? `"${pal.nickname}"` : pal.character_id}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-2">
-                          <span className={`text-base leading-none ${g.className}`} title={g.label}>
-                            {g.glyph}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2 text-right font-mono text-[13px] tabular-nums text-ink-dim">
-                          {pal.level}
-                        </td>
-                        <td className="px-4 py-2">
-                          <IvCell value={pal.ivs.hp} />
-                        </td>
-                        <td className="px-4 py-2">
-                          <IvCell value={pal.ivs.attack} />
-                        </td>
-                        <td className="px-4 py-2">
-                          <IvCell value={pal.ivs.defense} />
-                        </td>
-                        <td className="px-4 py-2">
-                          <Tag>{containerLabel(pal.container_kind)}</Tag>
-                        </td>
-                        <td className="px-4 py-2">
-                          {pal.passives.length > 0 ? (
-                            <div className="flex max-w-[22rem] flex-wrap gap-1">
-                              {pal.passives.map((p, i) => (
-                                <PassiveChip key={`${p}-${i}`} id={p} />
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-ink-faint">&mdash;</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                        {s === "palbox" ? "Palbox" : "Dimensional"}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-            {selected && (
-              <>
-                {/* Scrim below xl, where the panel overlays the table. */}
-                <div
-                  className="absolute inset-0 z-10 bg-abyss/40 xl:hidden"
-                  onClick={() => setSelectedKey(null)}
+                <BoxGrid
+                  pages={pages}
+                  page={safePage}
+                  onPage={setPage}
+                  pagerLabel={surface === "palbox" ? "Box" : "Page"}
+                  nameOf={nameOf}
+                  selectedKey={selectedKey}
+                  onSelect={onSelect}
+                  emptyHint={
+                    active
+                      ? "No pals match your filters."
+                      : surface === "palbox"
+                        ? "This player has no boxed pals."
+                        : "No dimensional storage pals."
+                  }
                 />
-                <PalDetail
-                  pal={selected}
-                  players={saveSummary.players}
-                  displayName={displayName(selected)}
-                  onClose={() => setSelectedKey(null)}
-                  onViewInDex={requestDex}
+
+                <BaseStrip
+                  bases={visibleBases}
+                  nameOf={nameOf}
+                  selectedKey={selectedKey}
+                  onSelect={onSelect}
                 />
-              </>
-            )}
-          </div>
-        )
+              </div>
+            </div>
+          ) : rows.length === 0 ? (
+            <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
+              No pals match your filters.
+            </div>
+          ) : (
+            <div className="flex-1 overflow-auto">
+              <RosterTable
+                rows={rows}
+                nameOf={nameOf}
+                sortKey={query.sortKey}
+                sortDir={query.sortDir}
+                onSort={(key) =>
+                  patchQuery(
+                    query.sortKey === key
+                      ? { sortDir: query.sortDir === "asc" ? "desc" : "asc" }
+                      : { sortKey: key, sortDir: "asc" },
+                  )
+                }
+                selectedKey={selectedKey}
+                onSelect={onSelect}
+              />
+            </div>
+          )}
+
+          {selected && (
+            <>
+              {/* Scrim below xl, where the panel overlays the surface. */}
+              <div
+                className="absolute inset-0 z-10 bg-abyss/40 xl:hidden"
+                onClick={() => setSelectedKey(null)}
+              />
+              <PalDetail
+                pal={selected}
+                players={saveSummary.players}
+                displayName={nameOf(selected)}
+                onClose={() => setSelectedKey(null)}
+                onViewInDex={requestDex}
+              />
+            </>
+          )}
+        </div>
       ) : saveLoading ? (
         <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
           Loading save&hellip;
@@ -591,8 +537,8 @@ export default function SaveInspector() {
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
           <div className="font-display text-lg text-ink-dim">No save loaded</div>
           <p className="max-w-xs text-sm text-ink-faint">
-            Load a Palworld save from the sidebar to inspect every owned pal,
-            their IV talents, and passives.
+            Load a Palworld save from the sidebar to inspect every player&rsquo;s
+            party, boxes, dimensional storage, and base pals.
           </p>
         </div>
       )}

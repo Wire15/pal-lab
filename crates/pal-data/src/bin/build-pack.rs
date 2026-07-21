@@ -13,7 +13,8 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 use pal_data::gamedata::{
-    BreedingEntry, InheritanceWeights, Pack, PalSpecies, ParentGender, PassiveSkill, UNREACHABLE,
+    BreedingEntry, ElementKind, InheritanceWeights, Pack, PalSpecies, ParentGender, PassiveSkill,
+    UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -119,6 +120,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let db: RawDb = serde_json::from_slice(&db_bytes)?;
     let br: RawBreeding = serde_json::from_slice(&breeding_bytes)?;
 
+    // Per-species element types (internal_name -> canonical kind names), derived
+    // from oMaN-Rod/palworld-save-pal's data/json/pals.json (see vendor/NOTICE).
+    let elements_bytes = std::fs::read(vendor.join("elements.json"))?;
+    let raw_elements: HashMap<String, Vec<String>> = serde_json::from_slice(&elements_bytes)?;
+    let elements: HashMap<String, Vec<ElementKind>> = raw_elements
+        .iter()
+        .map(|(name, kinds)| {
+            let parsed = kinds
+                .iter()
+                .map(|k| {
+                    ElementKind::parse(k)
+                        .unwrap_or_else(|| panic!("elements.json: unknown kind {k:?} for {name}"))
+                })
+                .collect();
+            (name.clone(), parsed)
+        })
+        .collect();
+
     // Intern species by db.json order.
     let mut index: HashMap<String, u16> = HashMap::with_capacity(db.pals.len());
     for (i, p) in db.pals.iter().enumerate() {
@@ -181,9 +200,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     p.min_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
                     p.max_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
                 ),
+                elements: elements.get(&p.internal_name).cloned().unwrap_or_default(),
             }
         })
         .collect();
+
+    // Element coverage is a hard data contract: every species should resolve.
+    let missing_elements: Vec<&str> = species
+        .iter()
+        .filter(|s| s.elements.is_empty())
+        .map(|s| s.internal_name.as_str())
+        .collect();
+    if !missing_elements.is_empty() {
+        eprintln!(
+            "warning: {} species missing elements: {:?}",
+            missing_elements.len(),
+            missing_elements
+        );
+    }
 
     let passives: Vec<PassiveSkill> = db
         .passive_skills
@@ -252,10 +286,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::fs::write(&out, &bytes)?;
 
     let json_total = db_bytes.len() + breeding_bytes.len();
+    let with_elements = pack.species.iter().filter(|s| !s.elements.is_empty()).count();
     println!(
-        "wrote {} ({} bytes) | species={} passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
+        "wrote {} ({} bytes) | species={} (elements {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
         out.display(),
         bytes.len(),
+        pack.species.len(),
+        with_elements,
         pack.species.len(),
         pack.passives.len(),
         pack.breeding.len(),

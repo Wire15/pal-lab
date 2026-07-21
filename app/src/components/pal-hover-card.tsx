@@ -22,6 +22,7 @@ import { invoke } from "../lib/tauri";
 import type { SpeciesEntry } from "../lib/types";
 import { PalIcon } from "./primitives";
 import { nonzeroWork, WorkGlyph } from "./work-suit";
+import { ElementBadges } from "./element";
 
 const CARD_W = 268;
 const OPEN_DELAY = 250;
@@ -209,6 +210,7 @@ function HoverCardBody({ entry }: { entry: SpeciesEntry }) {
             {entry.is_variant && <span className="text-el-dragon">Variant</span>}
           </div>
         </div>
+        <ElementBadges elements={entry.elements} size={16} className="ml-auto self-start" />
       </div>
 
       {/* Partner skill (omitted gracefully when the pack has none) */}

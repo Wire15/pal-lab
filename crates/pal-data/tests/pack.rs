@@ -177,3 +177,43 @@ fn species_metadata_round_trips() {
         "partner_skill is never an empty string",
     );
 }
+
+#[test]
+fn every_species_has_one_or_two_elements() {
+    let gd = GameData::get();
+    for sp in gd.species() {
+        let n = sp.elements.len();
+        assert!(
+            (1..=2).contains(&n),
+            "{} has {} elements (expected 1-2)",
+            sp.internal_name,
+            n,
+        );
+    }
+}
+
+#[test]
+fn element_spot_checks() {
+    let gd = GameData::get();
+    let els = |id: &str| -> Vec<&'static str> {
+        gd.species_by_id(id)
+            .unwrap_or_else(|| panic!("{id} exists"))
+            .elements
+            .iter()
+            .map(|e| e.as_str())
+            .collect()
+    };
+    // Anubis = Earth (in-game "Ground"), single-element.
+    assert_eq!(els("Anubis"), ["Earth"], "Anubis is Earth");
+    // Foxparks (Kitsunebi) = Fire, single-element.
+    assert_eq!(els("Kitsunebi"), ["Fire"], "Foxparks is Fire");
+    // Lamball (SheepBall) = Normal (in-game "Neutral"), single-element.
+    assert_eq!(els("SheepBall"), ["Normal"], "Lamball is Normal");
+    // Jormuntide (Umihebi) = Water + Dragon (dual; game's ElementType order).
+    let jorm = els("Umihebi");
+    assert_eq!(jorm.len(), 2, "Jormuntide is dual-element, got {jorm:?}");
+    assert!(
+        jorm.contains(&"Water") && jorm.contains(&"Dragon"),
+        "Jormuntide is Water+Dragon, got {jorm:?}",
+    );
+}

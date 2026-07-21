@@ -184,35 +184,55 @@ The dex is the reference differentiator: paldb-style browsing of all 299 species
 annotated with **your** roster. Two views inside one `Paldex` container (index ⇄
 detail), composing the existing tokens and primitives — no new visual language.
 
-### Element data (correction to §2)
-The shipped pack (`crates/pal-data`, built from palcalc's `db.json`) carries **no
-per-species element/type field** — only a global list of the 9 element
-definitions. Element badges and an element filter are therefore *not* shipped in
-round 2 (the assignment gated them on "if available in data"). The element
-tokens in §2 remain reserved for when a game-file extractor adds per-species
-types; until then the dex draws its categorical color from the cel-shaded pal
-art itself, and uses **rarity**, **variant**, and **owned** as the real
-categorical/graded signals. When element data lands, re-enable the element badge
-(primary-type tint) and element filter here.
+### Element types (`components/element.tsx`)
+The pack now carries per-species **element types** — `elements: string[]`, 1–2
+canonical kinds ("Normal", "Fire", "Water", "Leaf", "Electricity", "Ice",
+"Earth", "Dark", "Dragon") in primary-then-secondary order — so the element
+badges and filter reserved in §2 are **live**. The visual language is one
+primitive, no new tokens:
+
+- **`ElementIcon`** — the bundled full-color type tile
+  (`public/elements/<Kind>.png`, keyed case-insensitively via
+  `lib/assets.ts::elementIconUrl`; `elementTokenKey` resolves the matching
+  `el-*` token). The icon already carries the categorical color, so it needs no
+  extra tint; `rounded-sm`, lazy, sized per context (13px card, 15px detail,
+  16px hover/filter).
+- **`ElementChip {element, label?}`** — icon-only by default; with `label` it
+  becomes a quiet `bg-abyss/70` pill (matching the work-badge treatment) whose
+  name text is tinted with the element's `--color-el-<key>` token — never a
+  hardcoded hex. `ElementBadges {elements}` maps the 1–2 types.
+- **Placement:** icon-only near the dex `#` on the card face and in the hover
+  card header (compact, siblings to the work badges); **labelled** beside rarity
+  in the detail header.
+- **Element filter (index):** a labelled row of 9 icon toggles under the search
+  row. Multi-select with **OR** semantics (a pal matches if *any* of its types
+  is selected), **AND**-combined with owned-only / hide-variants / search.
+  Inactive toggles are muted (`grayscale opacity-45`, color-preview on hover);
+  active toggles get an `amber/70` border on `raised`. A `Clear` affordance
+  appears once any type is on. The element color pop is the categorical signal
+  the dex previously borrowed from the pal art alone.
 
 ### Index (grid)
 - Responsive card grid, `auto-fill minmax(184px, 1fr)`, `gap-2` — ~5 columns at
   1280, ~3 at 1024. Dense and scannable, like the table but icon-first.
 - **Species card** = `panel` + `line`, `hover:border-amber/40 hover:bg-hover`,
   the whole card a focusable `<button>` (global amber focus ring). Top row: mono
-  dex `#NNN` (zero-padded) + variant `B` glyph (`el-dragon`), and — when a save
-  is loaded — an owned split `♂N`/`♀N` (water/dragon glyphs, §2 semantic colors).
-  Body: PalIcon 44px + name + mono `rank NNNN` (combi rank).
+  dex `#NNN` (zero-padded) + variant `B` glyph (`el-dragon`) + compact
+  element-type icon(s), and — when a save is loaded — an owned split `♂N`/`♀N`
+  (water/dragon glyphs, §2 semantic colors). Body: PalIcon 44px + name + mono
+  `rank NNNN` (combi rank), then the work-suitability badges.
 - **Controls:** search (name/id/dex #); a segmented **sort** control (`raised`
   active = amber + ▲/▼) over Dex # · Name · Combi rank; `Owned only` (disabled +
-  faint until a save loads) and `Hide variants` toggles.
+  faint until a save loads) and `Hide variants` toggles; then a 9-type
+  **element filter** row (see Element types above).
 - **Roster source strip:** a `raised/60` bar with a mono `ROSTER` label, save
   path input, Browse, and Load — reuses the shared save dir (§— App state) so a
   save loaded in Roster/Solver auto-annotates the dex on arrival.
 
 ### Detail
 - Sticky back bar (`← All pals`) + `Pal-dex` eyebrow.
-- **Header card:** PalIcon 96 (`rounded-lg`), mono `#NNN · Rarity R`, display-2xl
+- **Header card:** PalIcon 96 (`rounded-lg`), mono `#NNN · Rarity R` + labelled
+  **element chips** (§Element types), display-2xl
   name, combi rank, and a **gender-ratio bar** — a split `el-water`(♂) /
   `el-dragon`(♀) fill from `male_probability` with mono % labels. Primary CTA
   `Solve for this pal` (amber) jumps to the Solver pre-filled (shared state).
@@ -273,7 +293,8 @@ info-panel** voice through our tokens:
   border and a dark `abyss/70` ring. Separation comes from the surface step +
   border + ring, per §4 — the one sanctioned floating overlay, still flat.
 - **Layout:** header (PalIcon 40, display name, mono amber `#NNN`, rarity,
-  `Variant`); an optional **partner-skill** row (mono eyebrow + amber-bright
+  `Variant`, with compact **element-type icon(s)** at the header's right edge);
+  an optional **partner-skill** row (mono eyebrow + amber-bright
   name, wraps, *omitted entirely when null* — the shipped pack has none yet); a
   **work-suitability** block (nonzero only, glyph + label + mono `Lv n`, two
   columns past six rows); and a footer with a 10-slot amber **food meter**, a

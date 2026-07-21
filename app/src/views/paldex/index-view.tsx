@@ -3,6 +3,7 @@ import type { RosterCounts, SpeciesEntry } from "../../lib/types";
 import { PalIcon } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { CardWorkBadges } from "../../components/work-suit";
+import { ElementBadges, ElementIcon } from "../../components/element";
 
 type SortKey = "paldex" | "name" | "rank";
 type SortDir = "asc" | "desc";
@@ -11,6 +12,19 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "paldex", label: "Dex #" },
   { key: "name", label: "Name" },
   { key: "rank", label: "Combi rank" },
+];
+
+/** The 9 canonical element types, in the §2 palette order, for the filter row. */
+const ELEMENT_KINDS = [
+  "Normal",
+  "Fire",
+  "Water",
+  "Leaf",
+  "Electricity",
+  "Ice",
+  "Earth",
+  "Dark",
+  "Dragon",
 ];
 
 export default function PaldexIndex({
@@ -27,6 +41,16 @@ export default function PaldexIndex({
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [hideVariants, setHideVariants] = useState(false);
+  const [elements, setElements] = useState<Set<string>>(() => new Set());
+
+  function toggleElement(kind: string) {
+    setElements((prev) => {
+      const next = new Set(prev);
+      if (next.has(kind)) next.delete(kind);
+      else next.add(kind);
+      return next;
+    });
+  }
 
   function toggleSort(key: SortKey) {
     if (key === sortKey) {
@@ -47,6 +71,7 @@ export default function PaldexIndex({
     let list = species.filter((s) => {
       if (hideVariants && s.is_variant) return false;
       if (ownedOnly && !(roster?.[s.id] && roster[s.id].male + roster[s.id].female > 0)) return false;
+      if (elements.size > 0 && !s.elements.some((e) => elements.has(e))) return false;
       if (!q) return true;
       return (
         s.name.toLowerCase().includes(q) ||
@@ -64,7 +89,7 @@ export default function PaldexIndex({
     });
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [species, roster, query, sortKey, sortDir, ownedOnly, hideVariants]);
+  }, [species, roster, query, sortKey, sortDir, ownedOnly, hideVariants, elements]);
 
   return (
     <div className="flex h-full flex-col">
@@ -143,6 +168,49 @@ export default function PaldexIndex({
             Hide variants
           </label>
         </div>
+
+        {/* Element filter — multi-select, OR semantics, ANDed with the rest */}
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+            Element
+          </span>
+          <div className="flex items-center gap-1">
+            {ELEMENT_KINDS.map((kind) => {
+              const active = elements.has(kind);
+              return (
+                <button
+                  key={kind}
+                  onClick={() => toggleElement(kind)}
+                  title={kind}
+                  aria-pressed={active}
+                  className={`group flex items-center justify-center rounded-sm border p-0.5 transition-colors ${
+                    active
+                      ? "border-amber/70 bg-raised"
+                      : "border-line/60 bg-panel hover:border-line hover:bg-hover"
+                  }`}
+                >
+                  <ElementIcon
+                    element={kind}
+                    size={18}
+                    className={
+                      active
+                        ? ""
+                        : "opacity-45 grayscale transition-[filter,opacity] group-hover:opacity-90 group-hover:grayscale-0"
+                    }
+                  />
+                </button>
+              );
+            })}
+          </div>
+          {elements.size > 0 && (
+            <button
+              onClick={() => setElements(new Set())}
+              className="font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Grid */}
@@ -169,11 +237,14 @@ export default function PaldexIndex({
                     onClick={() => onSelect(s.id)}
                     className="group flex flex-col gap-2 rounded-md border border-line bg-panel p-3 text-left transition-colors hover:border-amber/40 hover:bg-hover"
                   >
-                    <div className="flex items-start justify-between font-mono text-[10px] leading-none">
-                      <span className="text-ink-faint tabular-nums">
-                        #{String(s.paldex_no).padStart(3, "0")}
-                        {s.is_variant && <span className="ml-1 text-el-dragon">B</span>}
-                      </span>
+                    <div className="flex items-start justify-between gap-2 font-mono text-[10px] leading-none">
+                      <div className="flex min-w-0 items-center gap-1.5">
+                        <span className="shrink-0 text-ink-faint tabular-nums">
+                          #{String(s.paldex_no).padStart(3, "0")}
+                          {s.is_variant && <span className="ml-1 text-el-dragon">B</span>}
+                        </span>
+                        <ElementBadges elements={s.elements} size={13} />
+                      </div>
                       {total > 0 && (
                         <span className="tabular-nums">
                           {owned!.male > 0 && <span className="text-el-water">{"\u2642"}{owned!.male}</span>}

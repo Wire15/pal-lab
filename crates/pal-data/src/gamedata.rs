@@ -16,6 +16,61 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::Gender;
 
+/// One of the 9 canonical Palworld element kinds, matching `db.json`'s
+/// top-level `Elements` table order (`Normal`, `Fire`, `Water`, `Leaf`,
+/// `Electricity`, `Ice`, `Earth`, `Dark`, `Dragon`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ElementKind {
+    Normal,
+    Fire,
+    Water,
+    Leaf,
+    Electricity,
+    Ice,
+    Earth,
+    Dark,
+    Dragon,
+}
+
+/// Canonical element-kind names, indexed by [`ElementKind`] discriminant order.
+pub const ELEMENT_KINDS: [&str; 9] = [
+    "Normal",
+    "Fire",
+    "Water",
+    "Leaf",
+    "Electricity",
+    "Ice",
+    "Earth",
+    "Dark",
+    "Dragon",
+];
+
+impl ElementKind {
+    /// Every kind in canonical [`ELEMENT_KINDS`] order.
+    pub const ALL: [ElementKind; 9] = [
+        ElementKind::Normal,
+        ElementKind::Fire,
+        ElementKind::Water,
+        ElementKind::Leaf,
+        ElementKind::Electricity,
+        ElementKind::Ice,
+        ElementKind::Earth,
+        ElementKind::Dark,
+        ElementKind::Dragon,
+    ];
+
+    /// Canonical display/id string (e.g. `"Leaf"`, `"Earth"`).
+    #[inline]
+    pub fn as_str(self) -> &'static str {
+        ELEMENT_KINDS[self as usize]
+    }
+
+    /// Parse a canonical element name; `None` for anything outside the 9 kinds.
+    pub fn parse(s: &str) -> Option<ElementKind> {
+        ELEMENT_KINDS.iter().position(|k| *k == s).map(|i| Self::ALL[i])
+    }
+}
+
 /// One pal species. `internal_name` is the save-file `CharacterID` key
 /// (e.g. `"Anubis"`, `"BadCatgirl"`); `name` is the English display name.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -54,6 +109,10 @@ pub struct PalSpecies {
     pub food_amount: u8,
     /// `(MinWildLevel, MaxWildLevel)` — the wild spawn level range.
     pub wild_levels: (u8, u8),
+    /// Element type(s): 1–2 of the 9 canonical [`ElementKind`]s, in the game's
+    /// `ElementType1`/`ElementType2` (primary-then-secondary) order. Sourced
+    /// from `vendor/elements.json`; every shipped species carries at least one.
+    pub elements: Vec<ElementKind>,
 }
 
 /// Canonical order of the 12 work-suitability kinds, matching `db.json`'s

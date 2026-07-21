@@ -75,6 +75,9 @@ pub struct SpeciesEntry {
     pub food_amount: u8,
     /// `(min, max)` wild spawn level; `(0, 0)` means not found in the wild.
     pub wild_levels: (u8, u8),
+    /// Element type(s): 1–2 canonical kind names (`"Normal"`, `"Fire"`, …) in
+    /// the game's primary-then-secondary order.
+    pub elements: Vec<String>,
 }
 
 fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
@@ -102,6 +105,7 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
         nocturnal: sp.nocturnal,
         food_amount: sp.food_amount,
         wild_levels: sp.wild_levels,
+        elements: sp.elements.iter().map(|e| e.as_str().to_string()).collect(),
     }
 }
 

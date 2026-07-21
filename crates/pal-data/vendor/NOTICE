@@ -16,6 +16,27 @@ here under that license as a day-one data contract; pal-calc converts them to
 a compact binary pack (pack/paldata.pack) at build time and credits the
 original authors. See the palcalc repository for the full license text.
 
+Per-species element types
+=========================
+
+  elements.json - internal_name -> [element kinds] (1-2 of the 9 canonical
+                  kinds: Normal, Fire, Water, Leaf, Electricity, Ice, Earth,
+                  Dark, Dragon), in the game's ElementType1/ElementType2 order.
+
+This is a DERIVED mapping: the element lists were extracted from the
+`element_types` field of `data/json/pals.json` and keyed to palcalc's internal
+species ids (the game `CharacterID`s that our db.json already uses). It reflects
+the current Palworld 1.0 element assignments (e.g. Lovander = Dark, Dumud =
+Earth+Water), verified against the game's DT_PalMonsterParameter data table.
+
+Source:  https://github.com/oMaN-Rod/palworld-save-pal  (data/json/pals.json)
+Author:  oMaN-Rod and Palworld Save Pal contributors
+License: MIT
+
+build-pack merges elements.json into the pack (PalSpecies.elements). The
+underlying element facts are game data from Palworld (c) Pocketpair, Inc.,
+included here for personal, non-commercial use only.
+
 Icon assets
 ===========
 

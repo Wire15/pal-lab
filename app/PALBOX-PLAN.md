@@ -23,13 +23,15 @@ graph LR
   B --- D[Base strip below:<br/>one row per base]
 ```
 
-## Decisions to confirm with user
+## Decisions (confirmed by user, 2026-07-21)
 
-1. **Player switcher**: tabs above the party rail (game shows only "you"; a server save has 4 players). Proposed: tabs, remember last.
-2. **Slot styling**: circular icon slots like the game (level ring, gender dot, alpha crown) vs current square cards. Proposed: circular in the grid, cards stay in list mode.
-3. **Keep the table**: list/box mode toggle — table remains for sort/filter power use. Proposed: yes, toggle top-right.
-4. **Search behavior**: game-style highlight (matching slots lit, others dimmed) instead of removing slots. Proposed: highlight.
-5. **Box ordering**: slot order is ground truth; no re-sorting inside the grid (sorting lives in list mode).
+1. **Player switcher**: YES — tabs above the party rail, remember last selection.
+2. **Slot styling**: circular game-style slots in the grid (level ring, gender dot, alpha symbol); cards stay in list mode.
+3. **Table view kept** as list-mode toggle. REQUIREMENT: replicate the in-game palbox sort/search feature set ("pretty in depth") and apply it to BOTH views — spec researched in `PALBOX-SORT-SPEC.md` before build.
+4. **Search behavior**: HIDE non-matching slots (not dim).
+5. **Grid sorting**: fully sortable/searchable like the game — virtual reorder (flatten → sort → repaginate); a "slot order" sort restores physical layout. (Read-only: we never rearrange the actual save.)
+
+Data gap being closed pre-build: per-species element types (in-game filters are element-driven) — sourced from a permissively-licensed community dataset into the pack; also unlocks element badges in the Pal-dex.
 
 ## Build slices (one designer round + polish)
 

@@ -36,6 +36,17 @@ export function elementIconUrl(element: string): string {
   return key ? `/elements/${key}.png` : UNKNOWN_ICON;
 }
 
+/**
+ * Design-token suffix for an element type — the `el-*` color key used both as
+ * a Tailwind utility (`text-el-fire`) and as the CSS custom property
+ * `--color-el-<key>`. Matched case-insensitively with the same aliases as
+ * {@link elementIconUrl}; returns `null` for unknown elements.
+ */
+export function elementTokenKey(element: string): string | null {
+  const key = ELEMENT_ICONS[element.toLowerCase()];
+  return key ? key.toLowerCase() : null;
+}
+
 const ELEMENT_ICONS: Record<string, string> = {
   dark: "Dark",
   dragon: "Dragon",
