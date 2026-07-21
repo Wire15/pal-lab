@@ -1,0 +1,19 @@
+# Rust
+target/
+Cargo.lock.bak
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Tauri
+app/src-tauri/target/
+
+# Local game data / extracts (large, machine-specific)
+data/extracted/
+*.usmap
+
+# OS
+Thumbs.db
+.DS_Store
