@@ -56,7 +56,11 @@ pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
 }
 
 /// `PlZ`: single (`0x31`) or double (`0x32`) zlib pass.
-fn decompress_zlib(payload: &[u8], save_type: u8, uncompressed_len: usize) -> Result<Vec<u8>, SaveError> {
+fn decompress_zlib(
+    payload: &[u8],
+    save_type: u8,
+    _uncompressed_len: usize,
+) -> Result<Vec<u8>, SaveError> {
     let first = zlib_inflate(payload)?;
     match save_type {
         0x31 => Ok(first),
@@ -69,7 +73,6 @@ fn decompress_zlib(payload: &[u8], save_type: u8, uncompressed_len: usize) -> Re
             "unknown PlZ save_type 0x{other:02x}"
         ))),
     }
-    .map(|out| verify_len(out, uncompressed_len, save_type))
 }
 
 fn zlib_inflate(input: &[u8]) -> Result<Vec<u8>, SaveError> {
@@ -81,29 +84,55 @@ fn zlib_inflate(input: &[u8]) -> Result<Vec<u8>, SaveError> {
 }
 
 /// `PlM`: Oodle-compressed payload (Kraken). Only `save_type` 0x31 is known.
-fn decompress_oodle(payload: &[u8], save_type: u8, uncompressed_len: usize) -> Result<Vec<u8>, SaveError> {
+fn decompress_oodle(
+    payload: &[u8],
+    save_type: u8,
+    uncompressed_len: usize,
+) -> Result<Vec<u8>, SaveError> {
     if save_type != 0x31 {
         return Err(SaveError::Compression(format!(
             "unknown PlM save_type 0x{save_type:02x}"
         )));
     }
-    let mut out = vec![0u8; uncompressed_len];
-    // SAFETY: `out` is sized to the header-declared uncompressed length, which
-    // bounds the decompressor's writes for a well-formed Kraken stream.
-    let written = unsafe { oozle::decompress(payload, &mut out) }
-        .map_err(|e| SaveError::Compression(format!("Oodle decompress failed: {e}")))?;
-    out.truncate(written);
-    Ok(verify_len(out, uncompressed_len, save_type))
+    oodle_decompress(payload, uncompressed_len)
 }
 
-/// Warn (via the returned buffer being kept) but do not fail on a length
-/// mismatch; the GVAS parser is the real validator. We just log-shape the size.
-fn verify_len(out: Vec<u8>, expected: usize, _save_type: u8) -> Vec<u8> {
-    debug_assert!(
-        out.len() == expected || expected == 0,
-        "decompressed {} bytes, header expected {}",
-        out.len(),
-        expected
-    );
-    out
+extern "C" {
+    /// Vendored powzix/ooz entrypoint (see `vendor/ooz/kraken.cpp`). Returns the
+    /// number of decompressed bytes, or a negative value on failure. May write
+    /// up to `SAFE_SPACE` bytes past `dst_len` as scratch.
+    fn ooz_kraken_decompress(
+        src: *const u8,
+        src_len: usize,
+        dst: *mut u8,
+        dst_len: usize,
+    ) -> i32;
+}
+
+/// Safe wrapper over the vendored Kraken decompressor. Allocates the
+/// destination (plus scratch pad) and validates that the decoder produced
+/// exactly `expected_len` bytes.
+fn oodle_decompress(src: &[u8], expected_len: usize) -> Result<Vec<u8>, SaveError> {
+    /// The decompressor writes past the target buffer; see kraken.cpp.
+    const SAFE_SPACE: usize = 64;
+
+    let mut out = vec![0u8; expected_len + SAFE_SPACE];
+    // SAFETY: `src`/`out` are valid slices; `dst_len` is `expected_len`, and the
+    // buffer carries `SAFE_SPACE` extra bytes to absorb the decoder's overrun.
+    let written = unsafe {
+        ooz_kraken_decompress(src.as_ptr(), src.len(), out.as_mut_ptr(), expected_len)
+    };
+    if written < 0 {
+        return Err(SaveError::Compression(
+            "Oodle Kraken decompress failed".into(),
+        ));
+    }
+    let written = written as usize;
+    if written != expected_len {
+        return Err(SaveError::Compression(format!(
+            "Oodle decompressed {written} bytes, header expected {expected_len}"
+        )));
+    }
+    out.truncate(written);
+    Ok(out)
 }

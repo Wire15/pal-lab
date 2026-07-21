@@ -48,4 +48,6 @@ export interface SaveSummary {
   world_name: string;
   players: PlayerRef[];
   pals: OwnedPal[];
+  /** Non-fatal parser warnings (skipped entities, unreadable sub-saves). */
+  warnings: string[];
 }

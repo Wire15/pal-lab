@@ -141,6 +141,14 @@ export default function SaveInspector() {
             {summary.players.map((p) => p.name).join(", ") || "no players"}
             {" - "}
             {summary.pals.length} pals
+            {summary.warnings.length > 0 && (
+              <span
+                className="ml-2 text-amber-600"
+                title={summary.warnings.slice(0, 20).join("\n")}
+              >
+                ({summary.warnings.length} warnings)
+              </span>
+            )}
           </div>
 
           <div className="overflow-auto rounded border border-gray-200">

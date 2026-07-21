@@ -52,6 +52,7 @@ name = "app"
 version = "0.1.0"
 dependencies = [
  "pal-data",
+ "pal-save",
  "serde",
  "serde_json",
  "tauri",
@@ -2322,6 +2323,17 @@ dependencies = [
  "bincode",
  "serde",
  "serde_json",
+ "thiserror 2.0.19",
+]
+
+[[package]]
+name = "pal-save"
+version = "0.1.0"
+dependencies = [
+ "cc",
+ "flate2",
+ "pal-data",
+ "serde",
  "thiserror 2.0.19",
 ]
 

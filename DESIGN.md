@@ -85,6 +85,16 @@ Output: compact binary pack, versioned per game build. paldb.cc has no public AP
 Out of scope v1: items/tech/construction/merchant DBs, mutation outcome tables (rate modeled,
 outcomes stubbed), active-skill solving, save editing (read-only always).
 
+## Implementation findings (2026-07-21, Foundations phase)
+
+- 1.0-era server saves are **Oodle-compressed throughout** (`PlM1` header, Kraken streams) — Level.sav, Players/*.sav, LevelMeta.sav alike. zlib (`PlZ*`) kept for older saves.
+- Oodle decompression: vendored powzix/ooz C++ via `cc` (`ooz_kraken_decompress` wrapper). **LICENSE FLAG:** ooz files carry GPL-3.0 headers — fine for private use, incompatible with MIT distribution. Before publishing: relicense repo GPL-3 or dynamically load the game's `oo2core` DLL. See `crates/pal-save/vendor/ooz/README.md`.
+- Dimensional Pal Storage is NOT in Level.sav: each player has a self-contained `Players/<uid>_dps.sav` (9600-slot SaveParameterArray); zero instance-id overlap with Level.sav — merge, don't cross-reference.
+- Base-camp workers classify via `BaseCampSaveData` → WorkerDirector RawData container id (offset 98: id16 + FTransform 80 + 2 bytes).
+- Save fields: `SlotId` (not `SlotID`); gender enum `EPalGenderType_*`; absent property = default value (Level absent = 1).
+- Reference save (testdata/save1, gitignored): 4 players, 1,669 pals (1537 palbox / 76 base / 36 dimensional / 20 party / 0 unknown), full parse ~36 ms + ~620 ms dps merge.
+- thepalprofessor.com (guide site, no API): move sources are tri-class **Fruit / Breeding / Exclusive**; exactly 11 curated breed-passable attacks exist; true exclusives never breed down. Pal-dex annotation in v1.x; active-skill solving stays v2.
+
 ## Risks
 
 - Save format churns every game patch (palcalc needed 5 hotfixes in a week after 1.0). Mitigation: build on maintained uesave-rs lineage; version-gate parsers; fail soft per-container.

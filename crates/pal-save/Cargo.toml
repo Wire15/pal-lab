@@ -8,8 +8,10 @@ license.workspace = true
 pal-data = { path = "../pal-data" }
 serde.workspace = true
 thiserror.workspace = true
-oozle = "0.1.5"
 flate2 = "1"
+
+[build-dependencies]
+cc = "1"
 
 [[bin]]
 name = "dump"
