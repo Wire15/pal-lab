@@ -5,6 +5,7 @@ use pal_data::types::Gender;
 use pal_data::GameData;
 use serde::{Deserialize, Serialize};
 
+use crate::solver::config::CakeKind;
 use crate::solver::refs::{EffPassive, PalRef, RefGender};
 
 /// How a plan node is obtained.
@@ -42,6 +43,12 @@ pub struct BreedingPlan {
     pub total_time_secs: f64,
     pub total_steps: u32,
     pub total_wild_pals: u32,
+    /// The cake used for this plan (default [`CakeKind::Normal`] — no cake).
+    pub cake: CakeKind,
+    /// Estimated total cakes consumed across every breeding step (one cake per
+    /// breeding attempt). `0` for [`CakeKind::Normal`]. Lets the UI show
+    /// "needs ~N cakes".
+    pub cake_count: u32,
 }
 
 fn gender_opt(g: RefGender) -> Option<Gender> {
@@ -91,13 +98,30 @@ fn node_of(gd: &GameData, r: &PalRef) -> PlanNode {
 }
 
 impl BreedingPlan {
-    /// Build a plan from a solved reference.
-    pub fn from_ref(gd: &GameData, r: &PalRef) -> BreedingPlan {
+    /// Build a plan from a solved reference, tagged with the `cake` it was
+    /// solved for. `cake_count` sums the estimated breeding attempts over every
+    /// bred node (one cake per attempt); zero for [`CakeKind::Normal`].
+    pub fn from_ref(gd: &GameData, r: &PalRef, cake: CakeKind) -> BreedingPlan {
+        let cake_count = if cake.consumes_cakes() { cake_attempts(r) } else { 0 };
         BreedingPlan {
             root: node_of(gd, r),
             total_time_secs: r.total_effort(),
             total_steps: r.num_breeding_steps(),
             total_wild_pals: r.num_wild_pals(),
+            cake,
+            cake_count,
         }
+    }
+}
+
+/// Sum estimated breeding attempts over every bred node in the plan tree.
+fn cake_attempts(r: &PalRef) -> u32 {
+    match r {
+        PalRef::Bred(b) => {
+            b.attempts_estimate()
+                .saturating_add(cake_attempts(&b.parent1))
+                .saturating_add(cake_attempts(&b.parent2))
+        }
+        _ => 0,
     }
 }

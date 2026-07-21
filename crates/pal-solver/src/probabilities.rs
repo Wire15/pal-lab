@@ -155,6 +155,59 @@ pub fn prob_inherited_target_passives(
     total
 }
 
+/// Special-cake variant of [`prob_inherited_target_passives`]: the direct-inherit
+/// roll `X` is FORCED to 4 (`PassiveInheritCountOverride=4` from
+/// `DA_BreedingItemEffectData`, palcalc #208), still capped by the pool size, so
+/// the actual number inherited is `min(4, pool_size)`. The random-add roll `Y`
+/// is unchanged.
+///
+/// This is [`prob_inherited_target_passives`] evaluated at the single term
+/// `num_inherited = 4` with `P(X=4)` replaced by `1.0` (X no longer rolled). All
+/// other math — the subset fraction that the inherited set contains the desired
+/// passives, and the random-fill distribution — is identical. Purely ADDITIVE:
+/// the base function and its oracle fixtures are untouched.
+pub fn prob_inherited_target_passives_forced(
+    pool_size: usize,
+    num_desired: usize,
+    num_final: usize,
+    weights: &InheritanceWeights,
+) -> f64 {
+    let random = normalize(&weights.passive_random_add);
+    let random_prob = |n: usize| -> f64 { random.get(n).copied().unwrap_or(0.0) };
+    let random_at_least =
+        |n: usize| -> f64 { (n..=MAX_TOTAL_PASSIVES).map(random_prob).sum() };
+
+    // X is forced to 4; the pool caps how many are actually inherited.
+    let actual = MAX_TOTAL_PASSIVES.min(pool_size);
+    if actual < num_desired {
+        return 0.0;
+    }
+    let num_irrelevant_parent = actual - num_desired;
+    let num_irrelevant_random = num_final.saturating_sub(actual);
+    if actual + num_irrelevant_random > num_final {
+        return 0.0;
+    }
+
+    // P(the forced size-`actual` inherited set contains all desired passives).
+    let got_required_from_parent = if num_desired == 0 {
+        1.0
+    } else if num_irrelevant_parent == 0 {
+        1.0 / choose(pool_size, num_desired)
+    } else {
+        let combos_with_irrelevant = choose(pool_size - num_desired, num_irrelevant_parent);
+        let combos_any = choose(pool_size, actual);
+        combos_with_irrelevant / combos_any
+    };
+
+    let got_exact_required_random = if num_final == MAX_TOTAL_PASSIVES {
+        random_at_least(num_irrelevant_random)
+    } else {
+        random_prob(num_irrelevant_random)
+    };
+
+    got_required_from_parent * got_exact_required_random
+}
+
 /// P(child inherits all `num_required` relevant IV categories from its
 /// parents), where `num_single_relevant_parent` of those categories are
 /// carried by only ONE parent (each such category halves the odds).

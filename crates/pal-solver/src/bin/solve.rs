@@ -2,7 +2,9 @@
 //! print the best breeding plans as an indented tree.
 //!
 //! Usage:
-//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--wild]
+//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--wild] [--cake <kind>]
+//!
+//! `--cake` accepts normal (default), mushroom, vegetable, deluxe, special.
 //!
 //! `target-species` and `passive` accept either an internal id (`Anubis`,
 //! `Legend`) or an English display name.
@@ -12,7 +14,8 @@ use std::process::ExitCode;
 use pal_data::types::PassiveId;
 use pal_data::GameData;
 use pal_solver::solver::{
-    solve, PlanNode, PlanSource, SolverConfig, TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve, CakeKind, PlanNode, PlanSource, SolverConfig,
+    TargetPal, TargetSpec,
 };
 
 fn main() -> ExitCode {
@@ -33,6 +36,7 @@ fn run(args: &[String]) -> Result<(), String> {
     let mut positional: Vec<&str> = Vec::new();
     let mut max_steps: Option<u32> = None;
     let mut wild = false;
+    let mut cake = CakeKind::Normal;
 
     let mut i = 0;
     while i < args.len() {
@@ -42,6 +46,11 @@ fn run(args: &[String]) -> Result<(), String> {
                 i += 1;
                 let v = args.get(i).ok_or("--max-steps needs a value")?;
                 max_steps = Some(v.parse().map_err(|_| format!("invalid --max-steps: {v}"))?);
+            }
+            "--cake" => {
+                i += 1;
+                let v = args.get(i).ok_or("--cake needs a value")?;
+                cake = v.parse()?;
             }
             other => positional.push(other),
         }
@@ -64,7 +73,7 @@ fn run(args: &[String]) -> Result<(), String> {
         .map(|n| resolve_passive(gd, n).ok_or_else(|| format!("unknown passive: {n}")))
         .collect::<Result<_, _>>()?;
 
-    let mut cfg = SolverConfig { allow_wild: wild, ..SolverConfig::default() };
+    let mut cfg = SolverConfig { allow_wild: wild, cake, ..SolverConfig::default() };
     if let Some(n) = max_steps {
         cfg.max_breeding_steps = n;
         cfg.max_solver_iterations = n;
@@ -86,10 +95,11 @@ fn run(args: &[String]) -> Result<(), String> {
 
     let target_display = gd.species_at(target_species).map(|s| s.name.as_str()).unwrap_or(target_name);
     println!(
-        "Solving for {target_display} with [{}]  (max_steps={}, wild={})\n",
+        "Solving for {target_display} with [{}]  (max_steps={}, wild={}, cake={:?})\n",
         passive_names.join(", "),
         cfg.max_breeding_steps,
-        wild
+        wild,
+        cake
     );
 
     let plans = solve(gd, &spec, &save.pals, &cfg);
@@ -106,29 +116,13 @@ fn run(args: &[String]) -> Result<(), String> {
             plan.total_steps,
             plan.total_wild_pals
         );
+        if plan.cake_count > 0 {
+            println!("    needs ~{} {:?} Cake(s)", plan.cake_count, plan.cake);
+        }
         print_node(&plan.root, 0);
         println!();
     }
     Ok(())
-}
-
-fn resolve_species(gd: &GameData, name: &str) -> Option<u16> {
-    if let Some(idx) = gd.species_index(name) {
-        return Some(idx);
-    }
-    let lower = name.to_lowercase();
-    gd.species()
-        .enumerate()
-        .find(|(_, s)| s.name.to_lowercase() == lower)
-        .map(|(i, _)| i as u16)
-}
-
-fn resolve_passive(gd: &GameData, name: &str) -> Option<PassiveId> {
-    let lower = name.to_lowercase();
-    gd.passives()
-        .iter()
-        .find(|p| p.internal_name == name || p.name.to_lowercase() == lower)
-        .map(|p| p.internal_name.clone())
 }
 
 fn print_node(node: &PlanNode, depth: usize) {

@@ -16,7 +16,10 @@ use pal_data::types::{Gender, PassiveId};
 use pal_data::{GameData, InheritanceWeights, OwnedPal};
 use rayon::prelude::*;
 
-use crate::probabilities::{prob_inherited_target_ivs, prob_inherited_target_passives};
+use crate::probabilities::{
+    prob_inherited_target_ivs, prob_inherited_target_passives,
+    prob_inherited_target_passives_forced,
+};
 use crate::solver::config::SolverConfig;
 use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
@@ -388,7 +391,11 @@ fn breed_pair(
             let mut prob_accum = 0.0f64;
             let max_final = MAX_TOTAL_PASSIVES.min(num_desired + spec.max_irrelevant as usize);
             for num_final in num_desired..=max_final {
-                prob_accum += prob_inherited_target_passives(pool_size, num_desired, num_final, weights);
+                prob_accum += if cfg.cake.forces_all_passives() {
+                    prob_inherited_target_passives_forced(pool_size, num_desired, num_final, weights)
+                } else {
+                    prob_inherited_target_passives(pool_size, num_desired, num_final, weights)
+                };
                 if prob_accum <= 0.0 {
                     continue;
                 }
@@ -397,7 +404,7 @@ fn breed_pair(
                 for _ in num_desired..num_final {
                     effective.push(EffPassive::Random);
                 }
-                let bred = BredPalRef::new(
+                let mut bred = BredPalRef::new(
                     gd,
                     child,
                     r1.clone(),
@@ -407,6 +414,10 @@ fn breed_pair(
                     child_ivs,
                     ivs_prob,
                 );
+                let egg_mult = cfg.cake.egg_multiplier();
+                if egg_mult != 1.0 {
+                    bred = bred.with_egg_multiplier(gd, egg_mult);
+                }
                 let bred = PalRef::Bred(Box::new(bred));
                 if bred.total_effort() <= cfg.max_effort_secs
                     && (spec.is_satisfied_by(&bred) || ws.is_optimal(&bred))
@@ -428,6 +439,10 @@ pub fn solve(
 ) -> Vec<BreedingPlan> {
     let mut spec = spec.clone();
     spec.normalize();
+    // Mushroom/DeluxeVegetable cakes raise the egg's IV floor; model it by
+    // lowering the spec's IV thresholds before the search (single source of
+    // truth for owned relevance, IV probability, and satisfaction checks).
+    cfg.cake.apply_iv_floor(&mut spec);
     let weights = gd.inheritance();
 
     let initial = build_initial_content(gd, &spec, owned, cfg);
@@ -475,5 +490,5 @@ pub fn solve(
     }
 
     let pruned = crate::solver::pruning::prune_results(results, cfg.result_limit);
-    pruned.iter().map(|r| BreedingPlan::from_ref(gd, r)).collect()
+    pruned.iter().map(|r| BreedingPlan::from_ref(gd, r, cfg.cake)).collect()
 }

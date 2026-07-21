@@ -302,6 +302,9 @@ pub struct BredPalRef {
     pub num_breeding_steps: u32,
     pub num_wild_pals: u32,
     pub num_eggs: u32,
+    /// Eggs produced per breeding cycle (cake `BreedCount`; 1.0 = no cake). The
+    /// per-attempt breeding time divides by this in [`BredPalRef::recompute_effort`].
+    pub egg_multiplier: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -559,6 +562,7 @@ impl BredPalRef {
             num_breeding_steps: 0,
             num_wild_pals: 0,
             num_eggs: 0,
+            egg_multiplier: 1.0,
         };
         r.recompute_effort(gd);
         r
@@ -579,7 +583,11 @@ impl BredPalRef {
             (f64::INFINITY, f64::INFINITY)
         } else {
             let time_per_breed = AVG_BREEDING_TIME_SECS; // TimeFactor = 1.0 (Philanthropist not modeled)
-            let total_breeding_time = self.avg_required_breedings as f64 * time_per_breed;
+            // BreedCount>1 (Vegetable cake) yields several eggs per cycle, so the
+            // cycles needed to hit `avg_required_breedings` target eggs — and thus
+            // the breeding time — divide by the egg multiplier.
+            let total_breeding_time =
+                self.avg_required_breedings as f64 * time_per_breed / self.egg_multiplier;
             let self_effort = if MULTIPLE_INCUBATORS {
                 total_breeding_time + incubation
             } else {
@@ -612,5 +620,24 @@ impl BredPalRef {
         let mut r = BredPalRef { gender, avg_required_breedings: avg, ..self.clone() };
         r.recompute_effort(gd);
         r
+    }
+
+    /// Return a copy with a cake egg-multiplier applied (Vegetable/DeluxeVegetable
+    /// `BreedCount=2`), recomputing effort. `1.0` is the no-cake default.
+    pub fn with_egg_multiplier(&self, gd: &GameData, egg_multiplier: f64) -> BredPalRef {
+        let mut r = BredPalRef { egg_multiplier, ..self.clone() };
+        r.recompute_effort(gd);
+        r
+    }
+
+    /// Estimated breeding *attempts* (cycles) for this step: eggs-to-success
+    /// divided by eggs-per-cycle, rounded up. Each attempt consumes one cake.
+    /// Capped so an infeasible ref (`avg == u32::MAX`) does not overflow display.
+    pub fn attempts_estimate(&self) -> u32 {
+        if self.avg_required_breedings == u32::MAX {
+            return 0;
+        }
+        let cycles = (self.avg_required_breedings as f64 / self.egg_multiplier).ceil();
+        cycles.min(1_000_000.0) as u32
     }
 }

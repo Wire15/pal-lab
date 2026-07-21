@@ -26,4 +26,5 @@ serde_json = "1"
 # Shared vocabulary + the real save reader.
 pal-data = { path = "../../crates/pal-data" }
 pal-save = { path = "../../crates/pal-save" }
+pal-solver = { path = "../../crates/pal-solver" }
 

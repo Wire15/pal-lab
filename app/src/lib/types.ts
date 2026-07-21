@@ -51,3 +51,48 @@ export interface SaveSummary {
   /** Non-fatal parser warnings (skipped entities, unreadable sub-saves). */
   warnings: string[];
 }
+
+// --- Solver (mirrors crates/pal-solver/src/solver/results.rs + the Tauri
+// `solve` command's SolveRequest). ---
+
+export interface SolveRequest {
+  target_species: string;
+  required_passives: string[];
+  max_steps?: number;
+  allow_wild?: boolean;
+  max_irrelevant?: number;
+}
+
+/** `{id, name}` from list_species / list_passives. */
+export interface NamedEntry {
+  id: string;
+  name: string;
+}
+
+/**
+ * How a plan node is obtained. serde emits an externally-tagged enum:
+ * `{ Owned: { location } }` | `{ Wild: { captures } }` | `"Bred"`.
+ */
+export type PlanSource =
+  | { Owned: { location: string } }
+  | { Wild: { captures: number } }
+  | "Bred";
+
+export interface PlanNode {
+  species: number;
+  species_name: string;
+  /** null = unresolved/wildcard gender. */
+  gender: Gender | null;
+  passives: string[];
+  source: PlanSource;
+  probability: number;
+  est_time_secs: number;
+  children: PlanNode[];
+}
+
+export interface BreedingPlan {
+  root: PlanNode;
+  total_time_secs: number;
+  total_steps: number;
+  total_wild_pals: number;
+}
