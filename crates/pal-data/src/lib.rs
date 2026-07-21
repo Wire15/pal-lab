@@ -6,6 +6,8 @@
 //! compact binary pack converted from extracted game data — never parsed from
 //! JSON at startup.
 
+pub mod gamedata;
 pub mod types;
 
+pub use gamedata::{GameData, PackError};
 pub use types::*;

@@ -1,0 +1,17 @@
+Vendored game-data files
+=========================
+
+The following files in this directory are vendored, unmodified, from the
+palcalc project:
+
+  db.json        - pal species, passives, active skills, elements, gender probabilities
+  breeding.json  - full breeding table + minimum-breeding-steps matrix
+
+Source:  https://github.com/tylercamp/palcalc  (PalCalc.Model/)
+Author:  Tyler Camp and palcalc contributors
+License: MIT
+
+palcalc is distributed under the MIT License. These data files are included
+here under that license as a day-one data contract; pal-calc converts them to
+a compact binary pack (pack/paldata.pack) at build time and credits the
+original authors. See the palcalc repository for the full license text.
