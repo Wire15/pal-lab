@@ -90,9 +90,21 @@ export interface PlanNode {
   children: PlanNode[];
 }
 
+/** serde unit enum -> plain string. */
+export type CakeKind =
+  | "Normal"
+  | "Mushroom"
+  | "Vegetable"
+  | "DeluxeVegetable"
+  | "Special";
+
 export interface BreedingPlan {
   root: PlanNode;
   total_time_secs: number;
   total_steps: number;
   total_wild_pals: number;
+  /** Cake used for this plan ("Normal" = none). */
+  cake: CakeKind;
+  /** Estimated cakes consumed across all steps (0 for Normal). */
+  cake_count: number;
 }

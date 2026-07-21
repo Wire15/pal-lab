@@ -15,3 +15,20 @@ palcalc is distributed under the MIT License. These data files are included
 here under that license as a day-one data contract; pal-calc converts them to
 a compact binary pack (pack/paldata.pack) at build time and credits the
 original authors. See the palcalc repository for the full license text.
+
+Icon assets
+===========
+
+The pal icons in app/public/pals/ and the element / passive-rank icons in
+app/public/elements/ are sourced, unmodified, from palcalc's bundled art
+(PalCalc.UI/Resources/Pals, .../Elements, .../TraitRank). pal-calc renames
+each pal icon from palcalc's display-name key to the internal species id
+(e.g. "Lamball.png" -> "SheepBall.png") but does not alter the image bytes.
+
+Source:  https://github.com/tylercamp/palcalc  (PalCalc.UI/Resources/)
+Author:  Tyler Camp and palcalc contributors
+License: MIT (for palcalc's redistribution)
+
+These images are ultimately game assets from Palworld (c) Pocketpair, Inc.
+They are included here for personal, non-commercial use only. All rights to
+the underlying artwork remain with Pocketpair.

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "../lib/tauri";
 import { open } from "@tauri-apps/plugin-dialog";
 import type {
   BreedingPlan,
@@ -295,6 +295,9 @@ export default function Solver() {
                   {plan.total_steps} steps &middot; {plan.total_wild_pals} wild
                   {countWild(plan.root) !== plan.total_wild_pals
                     ? ` (${countWild(plan.root)} wild nodes)`
+                    : ""}
+                  {plan.cake && plan.cake !== "Normal"
+                    ? ` \u00b7 ${plan.cake} cake (~${plan.cake_count})`
                     : ""}
                 </span>
               </div>

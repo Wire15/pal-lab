@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "../lib/tauri";
 import { open } from "@tauri-apps/plugin-dialog";
 import type { OwnedPal, SaveSummary } from "../lib/types";
 

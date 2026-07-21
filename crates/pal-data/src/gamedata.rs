@@ -150,6 +150,10 @@ pub struct GameData {
     by_id: HashMap<String, u16>,
     /// canonical `(min_idx, max_idx)` -> indices into `pack.breeding`.
     breed_index: HashMap<(u16, u16), Vec<u32>>,
+    /// child idx -> distinct canonical `(parent_a, parent_b)` pairs that breed
+    /// into it (reverse of the breeding table). Built eagerly alongside
+    /// `breed_index` — dedup keeps it far smaller than the 44851 raw rows.
+    parents_index: HashMap<u16, Vec<(u16, u16)>>,
 }
 
 /// Errors decoding the embedded / on-disk pack.
@@ -189,15 +193,21 @@ impl GameData {
             by_id.insert(sp.internal_name.clone(), i as u16);
         }
         let mut breed_index: HashMap<(u16, u16), Vec<u32>> = HashMap::new();
+        let mut parents_index: HashMap<u16, Vec<(u16, u16)>> = HashMap::new();
         for (i, e) in pack.breeding.iter().enumerate() {
-            let key = (e.parent1.min(e.parent2), e.parent1.max(e.parent2));
-            breed_index.entry(key).or_default().push(i as u32);
+            let pair = (e.parent1.min(e.parent2), e.parent1.max(e.parent2));
+            breed_index.entry(pair).or_default().push(i as u32);
+            let parents = parents_index.entry(e.child).or_default();
+            if !parents.contains(&pair) {
+                parents.push(pair);
+            }
         }
         GameData {
             pack,
             n,
             by_id,
             breed_index,
+            parents_index,
         }
     }
 
@@ -235,6 +245,28 @@ impl GameData {
     /// All passive-skill definitions.
     pub fn passives(&self) -> &[PassiveSkill] {
         &self.pack.passives
+    }
+
+    /// The full breeding table (species interned to indices).
+    pub fn breeding(&self) -> &[BreedingEntry] {
+        &self.pack.breeding
+    }
+
+    /// Passive-skill definition by its internal id (e.g. `"Runner"`).
+    pub fn passive_by_id(&self, internal_name: &str) -> Option<&PassiveSkill> {
+        self.pack
+            .passives
+            .iter()
+            .find(|p| p.internal_name == internal_name)
+    }
+
+    /// Distinct canonical `(parent_a, parent_b)` index pairs that breed into
+    /// `child` (reverse breeding lookup). Empty slice for unreachable children.
+    pub fn parents_of(&self, child: u16) -> &[(u16, u16)] {
+        self.parents_index
+            .get(&child)
+            .map(Vec::as_slice)
+            .unwrap_or(&[])
     }
 
     /// Solver inheritance weight arrays.
