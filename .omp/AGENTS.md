@@ -17,3 +17,4 @@ research, settled decisions, and provenance-rated breeding mechanics.
 - Solver correctness is gated on palcalc's MIT test fixtures (probability oracles) — don't port the solver without porting the oracles.
 - Mutation outcome tables are unknown publicly — keep stubbed, never fabricate (rate ~1%/egg is fine to model).
 - palworld-save-tools (Python) is dead/stale — it is a format SPEC, not a dependency; build on the uesave-rs lineage.
+- Release exes MUST be built via the Tauri CLI (`bun run tauri build --no-bundle` in app/, CI=true) — plain `cargo build --release` on src-tauri yields a dev-flagged exe that tries to load localhost:1420 instead of embedded assets.
