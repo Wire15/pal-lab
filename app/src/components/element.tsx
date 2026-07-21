@@ -87,3 +87,58 @@ export function ElementBadges({
     </div>
   );
 }
+
+/**
+ * A paldb-style element **banner** for the detail header: the full-color type
+ * tile beside the element name, on a chip whose border and fill are the
+ * element's own `el-*` token mixed down (`color-mix`, never a hardcoded hex).
+ * Larger and louder than {@link ElementChip} — one per type, sized for the hero
+ * header rather than dense card/hover contexts.
+ */
+export function ElementBanner({
+  element,
+  size = 20,
+}: {
+  element: string;
+  size?: number;
+}) {
+  const key = elementTokenKey(element);
+  const color = key ? `var(--color-el-${key})` : "var(--color-ink-dim)";
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-md border py-1 pl-1 pr-3"
+      style={{
+        borderColor: `color-mix(in srgb, ${color} 40%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${color} 13%, transparent)`,
+      }}
+    >
+      <ElementIcon element={element} size={size} />
+      <span
+        className="font-display text-[12px] font-semibold uppercase tracking-[0.12em]"
+        style={{ color }}
+      >
+        {element}
+      </span>
+    </span>
+  );
+}
+
+/** The 1–2 element banners for a species, primary then secondary; null when empty. */
+export function ElementBanners({
+  elements,
+  size = 20,
+  className = "",
+}: {
+  elements: string[] | undefined;
+  size?: number;
+  className?: string;
+}) {
+  if (!elements || elements.length === 0) return null;
+  return (
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      {elements.map((e) => (
+        <ElementBanner key={e} element={e} size={size} />
+      ))}
+    </div>
+  );
+}

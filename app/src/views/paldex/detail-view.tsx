@@ -8,14 +8,21 @@ import type {
   SpeciesDetail,
   SpeciesRef,
 } from "../../lib/types";
-import { ivBand, QUALITY_FILL, QUALITY_TEXT } from "../../lib/ui";
+import { ivBand, QUALITY_FILL, QUALITY_TEXT, rarityTier } from "../../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
-import { ElementBadges } from "../../components/element";
+import { ElementBanners } from "../../components/element";
+import { WorkGlyph, nonzeroWork } from "../../components/work-suit";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
 const PAIR_PREVIEW = 12;
+
+/** Slots in the game-style food demand meter (matches paldb's 10-pip bar). */
+const FOOD_PIPS = 10;
+
+/** Soft per-stat reference caps (observed pack maxima) for the stat bars. */
+const STAT_MAX = { hp: 180, attack: 150, defense: 200 } as const;
 
 /** A clickable species reference (icon + name + dex #) for in-dex navigation. */
 function SpeciesCell({
@@ -65,6 +72,102 @@ function Section({
       </header>
       <div className="p-4">{children}</div>
     </section>
+  );
+}
+
+/**
+ * Literal `text-rarity-*` utility per tier. Using the generated class (not a raw
+ * `var(--color-rarity-*)`) is what makes Tailwind v4 emit the token to `:root`,
+ * so the badge is self-sufficient and never depends on another component pulling
+ * the rarity utilities into the bundle.
+ */
+const RARITY_TEXT: Record<string, string> = {
+  common: "text-rarity-common",
+  rare: "text-rarity-rare",
+  epic: "text-rarity-epic",
+  legendary: "text-rarity-legendary",
+};
+
+/** Rarity tier as a token-tinted badge (name loud, raw number as a quiet tooltip). */
+function RarityBadge({ rarity }: { rarity: number }) {
+  const tier = rarityTier(rarity);
+  return (
+    <span
+      title={`Rarity ${rarity}`}
+      className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider ${RARITY_TEXT[tier.tokenKey]}`}
+      style={{
+        borderColor: "color-mix(in srgb, currentColor 45%, transparent)",
+        backgroundColor: "color-mix(in srgb, currentColor 14%, transparent)",
+      }}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+      {tier.name}
+    </span>
+  );
+}
+
+/** One base stat: label, right-aligned mono value, and a normalized bar. */
+function StatRow({
+  label,
+  value,
+  max,
+}: {
+  label: string;
+  value: number;
+  max: number;
+}) {
+  const pct = Math.max(4, Math.min(100, Math.round((value / max) * 100)));
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-baseline justify-between">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+          {label}
+        </span>
+        <span className="font-mono text-[15px] font-semibold tabular-nums text-ink">
+          {value}
+        </span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-abyss">
+        <div className="h-full rounded-full bg-amber/80" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** The game-style food demand meter: `amount` filled pips out of {@link FOOD_PIPS}. */
+function FoodMeter({ amount }: { amount: number }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="flex gap-0.5">
+        {Array.from({ length: FOOD_PIPS }, (_, i) => (
+          <span
+            key={i}
+            className={`h-3.5 w-1.5 rounded-[1px] ${i < amount ? "bg-amber" : "bg-abyss ring-1 ring-line/70"}`}
+          />
+        ))}
+      </div>
+      <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+        {amount}/{FOOD_PIPS}
+      </span>
+    </div>
+  );
+}
+
+/** A labelled field-data row: mono eyebrow label on the left, value on the right. */
+function FactRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-b border-line-soft py-2 last:border-b-0">
+      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+        {label}
+      </span>
+      <div className="flex items-center gap-2 text-[13px] text-ink">{children}</div>
+    </div>
   );
 }
 
@@ -166,6 +269,10 @@ export default function PaldexDetail({
   const owned = roster?.[id];
   const ownedTotal = owned ? owned.male + owned.female : 0;
   const uniqueCombos = detail.breeding.unique_combos;
+  const work = nonzeroWork(detail.work_suitability);
+  const [wildMin, wildMax] = detail.wild_levels;
+  const wildCatchable = wildMin > 0 || wildMax > 0;
+  const hasPartner = detail.partner_skill != null;
 
   return (
     <div className="flex h-full flex-col">
@@ -173,29 +280,28 @@ export default function PaldexDetail({
 
       <div className="flex-1 overflow-auto px-6 py-5">
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
-          {/* Header */}
-          <div className="flex flex-wrap items-start gap-5 rounded-lg border border-line bg-panel px-5 py-4">
-            <PalIcon id={detail.id} name={detail.name} size={96} className="!rounded-lg" />
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+          {/* Hero header */}
+          <div className="flex flex-wrap items-start gap-5 rounded-lg border border-line bg-panel px-5 py-5">
+            <PalIcon id={detail.id} name={detail.name} size={120} className="!rounded-lg" />
+            <div className="flex min-w-0 flex-1 flex-col gap-3">
+              <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
                 <span className="tabular-nums text-amber">
                   #{String(detail.paldex_no).padStart(3, "0")}
                 </span>
+                <RarityBadge rarity={detail.stats.rarity} />
                 {detail.is_variant && <Tag tone="boss">Variant</Tag>}
-                <span>Rarity {detail.stats.rarity}</span>
-                <ElementBadges elements={detail.elements} label size={15} />
+                {detail.nocturnal && (
+                  <span className="inline-flex items-center gap-1 rounded-sm border border-el-dark/45 bg-el-dark/12 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-el-dark">
+                    {"\u263e"} Nocturnal
+                  </span>
+                )}
               </div>
-              <h1 className="font-display text-2xl font-bold tracking-wide text-ink">
+              <h1 className="font-display text-3xl font-bold tracking-wide text-ink">
                 {detail.name}
               </h1>
-              <div className="flex items-center gap-4 font-mono text-[12px] text-ink-dim">
-                <span>
-                  <span className="text-ink-faint">Combi rank </span>
-                  <span className="tabular-nums text-ink">{detail.combi_rank}</span>
-                </span>
-              </div>
+              <ElementBanners elements={detail.elements} />
               {/* Gender ratio bar */}
-              <div className="mt-1 max-w-xs">
+              <div className="mt-1 max-w-sm">
                 <div className="mb-1 flex justify-between font-mono text-[10px] tabular-nums">
                   <span className="text-el-water">{"\u2642"} {malePct}%</span>
                   <span className="text-el-dragon">{femalePct}% {"\u2640"}</span>
@@ -214,28 +320,92 @@ export default function PaldexDetail({
             </button>
           </div>
 
-          {/* Stats + guaranteed passives */}
+          {/* Partner skill — only when the pack carries one (~130 species lack it). */}
+          {hasPartner && (
+            <Section eyebrow="Partner skill">
+              <div className="flex flex-col gap-1.5">
+                <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
+                  {detail.partner_skill}
+                </span>
+                {detail.partner_skill_desc && (
+                  <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
+                    {detail.partner_skill_desc}
+                  </p>
+                )}
+              </div>
+            </Section>
+          )}
+
+          {/* Base stats + field data */}
           <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
             <Section eyebrow="Base stats">
-              <div className="grid grid-cols-4 gap-3">
-                {[
-                  { label: "HP", value: detail.stats.hp },
-                  { label: "ATK", value: detail.stats.attack },
-                  { label: "DEF", value: detail.stats.defense },
-                  { label: "Rarity", value: detail.stats.rarity },
-                ].map((s) => (
-                  <div key={s.label} className="flex flex-col gap-1 rounded-md bg-abyss/50 px-3 py-2">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      {s.label}
+              <div className="flex flex-col gap-3.5">
+                <StatRow label="Health" value={detail.stats.hp} max={STAT_MAX.hp} />
+                <StatRow label="Attack" value={detail.stats.attack} max={STAT_MAX.attack} />
+                <StatRow label="Defense" value={detail.stats.defense} max={STAT_MAX.defense} />
+              </div>
+            </Section>
+
+            <Section eyebrow="Field data">
+              <div className="flex flex-col">
+                <FactRow label="Food">
+                  <FoodMeter amount={detail.food_amount} />
+                </FactRow>
+                <FactRow label="Breeding power">
+                  <span className="font-mono font-semibold tabular-nums">
+                    {detail.combi_rank}
+                  </span>
+                </FactRow>
+                {wildCatchable && (
+                  <FactRow label="Wild level">
+                    <span className="font-mono tabular-nums">
+                      {wildMin === wildMax ? wildMin : `${wildMin}\u2013${wildMax}`}
                     </span>
-                    <span className="font-mono text-lg font-semibold tabular-nums text-ink">
-                      {s.value}
+                  </FactRow>
+                )}
+                <FactRow label="Activity">
+                  <span className={detail.nocturnal ? "text-el-dark" : "text-ink-dim"}>
+                    {detail.nocturnal ? "\u263e Nocturnal" : "\u2600 Diurnal"}
+                  </span>
+                </FactRow>
+              </div>
+            </Section>
+          </div>
+
+          {/* Work suitability */}
+          <Section
+            eyebrow="Work suitability"
+            right={
+              work.length > 0 ? (
+                <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+                  {work.length} {work.length === 1 ? "job" : "jobs"}
+                </span>
+              ) : undefined
+            }
+          >
+            {work.length > 0 ? (
+              <div className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
+                {work.map((w) => (
+                  <div key={w.kind} className="flex items-center gap-2">
+                    <WorkGlyph kind={w.kind} size={22} />
+                    <span className="min-w-0 flex-1 truncate text-[13px] text-ink-dim">
+                      {w.label}
+                    </span>
+                    <span className="font-mono text-[12px] font-semibold tabular-nums text-ink">
+                      Lv{w.level}
                     </span>
                   </div>
                 ))}
               </div>
-            </Section>
+            ) : (
+              <p className="text-[13px] text-ink-faint">
+                No work suitability &mdash; not a base worker.
+              </p>
+            )}
+          </Section>
 
+          {/* Guaranteed passives + your roster */}
+          <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr]">
             <Section eyebrow="Guaranteed passives">
               {detail.guaranteed_passives.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
@@ -249,57 +419,56 @@ export default function PaldexDetail({
                 </p>
               )}
             </Section>
-          </div>
 
-          {/* Your roster */}
-          <Section
-            eyebrow="Your roster"
-            right={
-              ownedTotal > 0 ? (
-                <button
-                  onClick={() => setView("save")}
-                  className="font-mono text-[10px] uppercase tracking-wider text-amber transition-colors hover:text-amber-bright"
-                >
-                  View in Roster &rarr;
-                </button>
-              ) : undefined
-            }
-          >
-            {ownedTotal > 0 ? (
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-                <div className="flex items-center gap-5">
-                  <div className="flex flex-col">
+            <Section
+              eyebrow="Your roster"
+              right={
+                ownedTotal > 0 ? (
+                  <button
+                    onClick={() => setView("save")}
+                    className="font-mono text-[10px] uppercase tracking-wider text-amber transition-colors hover:text-amber-bright"
+                  >
+                    View in Roster &rarr;
+                  </button>
+                ) : undefined
+              }
+            >
+              {ownedTotal > 0 ? (
+                <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                  <div className="flex items-center gap-5">
+                    <div className="flex flex-col">
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                        Owned
+                      </span>
+                      <span className="font-mono text-2xl font-semibold tabular-nums text-ink">
+                        {ownedTotal}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-1 font-mono text-[13px] tabular-nums">
+                      <span className="text-el-water">{"\u2642"} {owned!.male} male</span>
+                      <span className="text-el-dragon">{"\u2640"} {owned!.female} female</span>
+                    </div>
+                  </div>
+                  <div className="flex min-w-[220px] flex-1 flex-col gap-1.5">
                     <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      Owned
+                      Best IVs owned
                     </span>
-                    <span className="font-mono text-2xl font-semibold tabular-nums text-ink">
-                      {ownedTotal}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-1 font-mono text-[13px] tabular-nums">
-                    <span className="text-el-water">{"\u2642"} {owned!.male} male</span>
-                    <span className="text-el-dragon">{"\u2640"} {owned!.female} female</span>
+                    <div className="grid grid-cols-3 gap-4">
+                      <BestIv label="HP" value={owned!.best_ivs.hp} />
+                      <BestIv label="ATK" value={owned!.best_ivs.atk} />
+                      <BestIv label="DEF" value={owned!.best_ivs.def} />
+                    </div>
                   </div>
                 </div>
-                <div className="flex min-w-[220px] flex-1 flex-col gap-1.5">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                    Best IVs owned
-                  </span>
-                  <div className="grid grid-cols-3 gap-4">
-                    <BestIv label="HP" value={owned!.best_ivs.hp} />
-                    <BestIv label="ATK" value={owned!.best_ivs.atk} />
-                    <BestIv label="DEF" value={owned!.best_ivs.def} />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-[13px] text-ink-faint">
-                {roster
-                  ? `You don't own any ${detail.name} yet.`
-                  : "Load a save in the Roster view to see how many you own and their best IVs."}
-              </p>
-            )}
-          </Section>
+              ) : (
+                <p className="text-[13px] text-ink-faint">
+                  {roster
+                    ? `You don't own any ${detail.name} yet.`
+                    : "Load a save in the Roster view to see how many you own and their best IVs."}
+                </p>
+              )}
+            </Section>
+          </div>
 
           {/* Breeding */}
           <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">

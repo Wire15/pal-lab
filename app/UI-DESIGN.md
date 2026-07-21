@@ -207,9 +207,16 @@ primitive, no new tokens:
   becomes a quiet `bg-abyss/70` pill (matching the work-badge treatment) whose
   name text is tinted with the element's `--color-el-<key>` token — never a
   hardcoded hex. `ElementBadges {elements}` maps the 1–2 types.
+- **`ElementBanner {element, size?}`** — the loud **detail-header** variant
+  (paldb-style): the full-color type tile beside the element name on a chip whose
+  border and fill are the element's own `el-*` token mixed down with `color-mix`
+  (`40%` border, `13%` fill — never a hardcoded hex), name in `font-display`
+  uppercase tinted the same token. `ElementBanners {elements, size?}` maps the
+  1–2 types (renders null when empty). One banner per type, sized for the hero
+  header (default `20px` tile), not for dense card/hover contexts.
 - **Placement:** icon-only near the dex `#` on the card face and in the hover
-  card header (compact, siblings to the work badges); **labelled** beside rarity
-  in the detail header.
+  card header (compact, siblings to the work badges); **banners** on their own
+  row in the detail hero header (§Detail).
 - **Element filter (index):** a labelled row of 9 icon toggles under the search
   row. Multi-select with **OR** semantics (a pal matches if *any* of its types
   is selected), **AND**-combined with owned-only / hide-variants / search.
@@ -236,22 +243,48 @@ primitive, no new tokens:
   save loaded in Roster/Solver auto-annotates the dex on arrival.
 
 ### Detail
-- Sticky back bar (`← All pals`) + `Pal-dex` eyebrow.
-- **Header card:** PalIcon 96 (`rounded-lg`), mono `#NNN · Rarity R` + labelled
-  **element chips** (§Element types), display-2xl
-  name, combi rank, and a **gender-ratio bar** — a split `el-water`(♂) /
+- Sticky back bar (`← All pals`) + `Pal-dex` eyebrow. Content is centered in a
+  `max-w-5xl` column inside the view's own `overflow-auto` scroller.
+- **Hero header card** (`panel` + `line`): PalIcon 120 (`rounded-lg`); a meta row
+  of mono amber `#NNN`, the **rarity badge**, a `Variant` tag, and — for
+  nocturnal species — a `☾ Nocturnal` pill (`el-dark`, `border/12` tint);
+  `font-display` 3xl name; an **element-banner** row (§Element types, one
+  `ElementBanner` per type); and a **gender-ratio bar** — a split `el-water`(♂) /
   `el-dragon`(♀) fill from `male_probability` with mono % labels. Primary CTA
   `Solve for this pal` (amber) jumps to the Solver pre-filled (shared state).
-- **Panels** use one `Section` shell: `panel/40` + `line`, mono-eyebrow header on
-  `raised` with an optional right-aligned mono stat/link. Sections: Base stats
-  (4 mono stat wells), Guaranteed passives (`PassiveChip`s or empty line), **Your
-  roster** (owned count + ♂/♀ split + best-IV bars via `ivBand`/`QUALITY_*`, with
-  a `View in Roster →` link), and **Breeding**.
+- **Rarity badge (`RarityBadge`):** `rarityTier(rarity)` → the tier **name**
+  (Common/Rare/Epic/Legendary) loud, on a chip whose text, border, fill, and
+  leading dot are the `rarity-<key>` token via `color-mix` (never a hardcoded hex,
+  never the raw number as the label); the raw `Rarity` integer lives only in the
+  chip's `title` tooltip.
+- **Partner skill** is a full-width `Section` shown **only when
+  `partner_skill` is non-null** — ~130 (mostly DLC) species carry none, and the
+  section is then *omitted entirely*, no placeholder. Name in `amber-bright`
+  `font-display`; description below in `ink-dim`, `whitespace-pre-line` to keep
+  the pack's line breaks.
+- **Panels** use one `Section` shell (`panel/40` + `line`, mono-eyebrow header on
+  `raised`, optional right-aligned mono stat/link). Sections, in order:
+  - **Base stats** — `StatRow` per combat stat (Health, Attack, Defense): mono
+    label + right-aligned value + a thin `amber/80` bar normalized to the pack's
+    observed per-stat caps (`STAT_MAX` HP 180 / ATK 150 / DEF 200), floored at 4%.
+  - **Field data** — a `FactRow` table: the **game-style food meter** (10 pips,
+    `food_amount` filled amber, rest `abyss` + `line` ring — paldb's demand bar),
+    Breeding power (`combi_rank`), Wild level range (hidden when `(0,0)` = not
+    wild-catchable), and Activity (`☾ Nocturnal` `el-dark` / `☀ Diurnal`).
+  - **Work suitability** — every nonzero suitability (`nonzeroWork`), highest
+    first, as `WorkGlyph` 22 + label + mono `Lv n` in a 2→3 column grid, with a
+    `N jobs` count; empty line when the species is not a base worker.
+  - **Guaranteed passives** (`PassiveChip`s or empty line) and **Your roster**
+    (owned count + ♂/♀ split + best-IV bars via `ivBand`/`QUALITY_*`, with a
+    `View in Roster →` link) share a two-column row.
 - **Breeding** is two panels: *reverse* ("How to breed this pal") lists parent
   pairs — total count in the header, first 12 as `icon+name × icon+name` cells,
   then "and X more pairs"; *forward* ("Breed with…") is a species autocomplete
   that resolves the child inline (`A + B → child`). Gender-locked combos, when
   the pack pins them, get their own panel.
+- **Omitted, never faked:** active skills by level, drops, tribes, size class,
+  and movement/level-scaling stats are **not** in the pack, so the detail page
+  carries no section for them — no placeholders, no invented numbers.
 - **In-dex navigation:** every species cell anywhere in the detail (parent
   pairs, forward child, combos) is a button that reselects that species — the dex
   browses itself; cross-view jumps go through the lifted App state.
@@ -288,30 +321,53 @@ to four compact chips (`bg-abyss/70`, glyph + mono level) with a faint mono
 read as a dense sparkline of what a pal is *for*, not a full table. Zero-work
 species render nothing (no empty row).
 
-### Species hover card (`<PalHoverCard speciesId>`)
+### Pal hover card (`<PalHoverCard speciesId pal?>`)
 A transient, paldb-inspired info panel that wraps any single trigger element and
-attaches anywhere a species id is known (dex cards; every breeding parent /
-child / gender-locked cell in the detail). It reads the game's **dark
-info-panel** voice through our tokens:
+attaches anywhere a species id is known. It reads the game's **dark info-panel**
+voice through our tokens and comes in **two variants driven by one prop**:
 
+- **Species-only** (`speciesId` alone) — dex cards; every breeding parent /
+  child / gender-locked cell in the detail. Species reference material.
+- **Owned-instance** (`speciesId` + the `pal: OwnedPal`) — every occupied Palbox
+  slot (party rail, box grid, base strips, dimensional). Adds a per-instance
+  strip above the species sections; the species rows stay identical, so the two
+  variants read as one card that simply grows a "your pal" band.
+
+Shared voice:
 - **Surface:** `bg-panel/95` (a slight, deliberate translucency — the nod to the
   game's translucent panel, *not* glassmorphism: no blur, no glow) over a `line`
   border and a dark `abyss/70` ring. Separation comes from the surface step +
   border + ring, per §4 — the one sanctioned floating overlay, still flat.
-- **Layout:** header (PalIcon 40, display name, mono amber `#NNN`, rarity,
-  `Variant`, with compact **element-type icon(s)** at the header's right edge);
-  an optional **partner-skill** row (mono eyebrow + amber-bright
-  name, wraps, *omitted entirely when null* — the shipped pack has none yet); a
-  **work-suitability** block (nonzero only, glyph + label + mono `Lv n`, two
-  columns past six rows); and a footer with a 10-slot amber **food meter**, a
-  `☾` **nocturnal** marker (`el-dark`), and the mono **wild-level** range
-  (hidden when `(0,0)` = not wild-catchable).
+- **Rarity accent:** the header's rarity reads as its **tier name** (`rarityTier`
+  → Common/Rare/Epic/Legendary) tinted with `var(--color-rarity-<tokenKey>)`
+  (§2.Rarity), never the raw integer. **Epic/Legendary** are "prized": the whole
+  card swaps its quiet ring for a 1px rarity-token border **plus a soft outer
+  glow** in the same token, and the display name gets a matching `text-shadow` —
+  the game's rarity-color cue, done with tokens (no hardcoded hex).
+- **Header:** PalIcon 40; **display name** (an owned pal's *nickname* wins the
+  title line, the species name drops to a faint subtitle); mono amber `#NNN` +
+  rarity tier + `Variant`; compact **element-type icon(s)** (`ElementBadges`
+  size 16) at the right edge.
+- **Instance strip** (owned variant only, on `bg-abyss/30`): a wrap row of
+  **`Lv n`** pill, **gender** glyph+label (`genderView`), the real **Alpha**
+  marker (`alphaIconUrl`) when `is_boss`, **condensation** `★n` when `rank>0`,
+  and right-aligned **IVs** (HP/ATK/DEF, `ivBand`-colored, hidden when all 0);
+  then a wrap of **passive chips** (`PassiveChip`), omitted when none.
+- **Partner skill** (species): mono eyebrow + amber-bright **name**, with the
+  effect **description clamped to two lines** (`line-clamp-2`, `ink-dim`) when
+  present. The whole row is *omitted entirely when the pack has no partner skill*
+  (~130 species) — never a placeholder.
+- **Work suitability** (species): nonzero only, glyph + label + mono `Lv n`, two
+  columns past six rows.
+- **Footer** (species): 10-slot amber **food meter**, a `☾` **nocturnal** marker
+  (`el-dark`), and the mono **wild-level** range (hidden when `(0,0)`).
 - **Behavior:** opens ~250 ms after pointer-enter, positions itself with
   hand-rolled `fixed` + measured geometry (no portal lib), prefers the anchor's
   right and **flips left / clamps vertically** to stay in the viewport, never
   captures the pointer (`pointer-events: none`), and closes on leave, scroll, or
-  resize. Species data comes from a module-cached `paldex_species` fetch, so the
-  card is self-sufficient.
+  resize. Species data comes from a module-cached `paldex_species` fetch;
+  instance data rides in on `pal`, so the card renders its instance band even
+  for a pal absent from the pack (fallback: character id as the name).
 
 ## 11. Palbox — full-screen layout & the game-style slot
 
@@ -359,7 +415,10 @@ neutral **humanoid silhouette** (`HumanGlyph`, `text-ink-faint` on `bg-abyss/50`
 with a softer `line-soft` ring). This is distinct from the `?` `UNKNOWN_ICON`
 fallback, which stays reserved for genuinely unknown pals (missing art). The
 alpha badge is the real in-game marker (`assets.ts::alphaIconUrl`,
-`public/ui/alpha.png`), corner-anchored and slot-scaled.
+`public/ui/alpha.png`), corner-anchored and slot-scaled. Human slots carry **no
+hover card** (a human has no species row to look up) — `SlotCell` renders the
+bare `Slot`, never a broken species tooltip; pals get the full instance card
+(§10).
 
 ### Base scoping (per selected player)
 The Bases section is scoped to the selected player tab's **guild**:

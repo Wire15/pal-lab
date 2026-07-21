@@ -11,11 +11,14 @@ import {
   GRID_COLS,
   PARTY_SIZE,
   palKey,
+  isHuman,
   type BaseGroup,
   type GridCell,
 } from "./selectors";
 
-/** One occupied slot wrapped in its species hover card. */
+/** One occupied slot wrapped in its hover card. Pals get the full species +
+ *  instance card; captured humans have no species row, so they render bare
+ *  (never a broken species lookup). */
 function SlotCell({
   pal,
   name,
@@ -30,15 +33,19 @@ function SlotCell({
   size?: number;
 }) {
   const key = palKey(pal);
+  const slot = (
+    <Slot
+      pal={pal}
+      name={name}
+      size={size}
+      selected={key === selectedKey}
+      onClick={() => onSelect(pal)}
+    />
+  );
+  if (isHuman(pal)) return slot;
   return (
-    <PalHoverCard speciesId={pal.character_id}>
-      <Slot
-        pal={pal}
-        name={name}
-        size={size}
-        selected={key === selectedKey}
-        onClick={() => onSelect(pal)}
-      />
+    <PalHoverCard speciesId={pal.character_id} pal={pal}>
+      {slot}
     </PalHoverCard>
   );
 }
