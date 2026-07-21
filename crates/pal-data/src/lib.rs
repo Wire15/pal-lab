@@ -9,5 +9,5 @@
 pub mod gamedata;
 pub mod types;
 
-pub use gamedata::{GameData, PackError};
+pub use gamedata::{GameData, InheritanceWeights, PackError};
 pub use types::*;
