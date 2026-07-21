@@ -44,6 +44,18 @@ export function elementIconUrl(element: string): string {
 }
 
 /**
+ * URL for an element type's in-game **white glyph** — the flat monochrome
+ * symbol used on the loud detail-header {@link ElementBanner}
+ * (`public/elements/glyph/<Kind>_glyph.png`). Matched case-insensitively with
+ * the same aliases as {@link elementIconUrl}; returns `null` for unknown
+ * elements so callers fall back to the full-color tile.
+ */
+export function elementGlyphUrl(element: string): string | null {
+  const key = ELEMENT_ICONS[element.toLowerCase()];
+  return key ? `/elements/glyph/${key}_glyph.png` : null;
+}
+
+/**
  * Design-token suffix for an element type — the `el-*` color key used both as
  * a Tailwind utility (`text-el-fire`) and as the CSS custom property
  * `--color-el-<key>`. Matched case-insensitively with the same aliases as

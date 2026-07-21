@@ -92,6 +92,29 @@ pub struct PalSpecies {
     pub hp: u16,
     pub attack: u16,
     pub defense: u16,
+    // ---- Extended stats (own-install extraction, build 24181527) ----
+    /// In-game merchant sell price (`Price`).
+    pub price: u32,
+    /// Crafting-speed multiplier as a percent (`CraftSpeed`; 100 for every pal).
+    pub craft_speed: u16,
+    /// Slow-walk speed (`SlowWalkSpeed`).
+    pub slow_walk_speed: u16,
+    /// Walk speed (`WalkSpeed`).
+    pub walk_speed: u16,
+    /// Run speed (`RunSpeed`).
+    pub run_speed: u16,
+    /// Mounted sprint speed (`RideSprintSpeed`); `-1` when the species is not
+    /// rideable.
+    pub ride_sprint_speed: i16,
+    /// Hauling speed when assigned to transport (`TransportSpeed`); `-1` when
+    /// the species cannot transport.
+    pub transport_speed: i16,
+    /// Stamina pool (`MaxSP`).
+    pub stamina: u16,
+    /// Maximum food-meter capacity (`MaxFullStomach`).
+    pub max_full_stomach: u16,
+    /// Body-size class (`Size`): one of `"XS"`, `"S"`, `"M"`, `"L"`, `"XL"`.
+    pub size: String,
     /// Passive internal ids every instance of this species is guaranteed to roll
     /// (e.g. Anubis -> `ElementBoost_Earth_2_PAL`).
     pub guaranteed_passives: Vec<String>,
@@ -100,8 +123,10 @@ pub struct PalSpecies {
     /// [`PalSpecies::work_suitabilities`] to read by kind name.
     pub work_suitability: [u8; 12],
     /// Partner-skill display name (e.g. Lamball -> `Fluffy Shield`), sourced
-    /// from `vendor/partner-skills.json`. `None` for the ~130 species (mostly
-    /// DLC) with no permissive partner-skill source.
+    /// from the own-install extraction (`PartnerSkill` name) — populated for
+    /// every species. The paired [`Self::partner_skill_desc`] is `None` unless
+    /// `vendor/partner-skills.json` carries authored text (the game files hold
+    /// no partner-skill descriptions).
     pub partner_skill: Option<String>,
     /// Partner-skill effect description, paired with [`Self::partner_skill`];
     /// `None` when the name is `None` or the source carried no text.
@@ -113,8 +138,9 @@ pub struct PalSpecies {
     /// `(MinWildLevel, MaxWildLevel)` — the wild spawn level range.
     pub wild_levels: (u8, u8),
     /// Element type(s): 1–2 of the 9 canonical [`ElementKind`]s, in the game's
-    /// `ElementType1`/`ElementType2` (primary-then-secondary) order. Sourced
-    /// from `vendor/elements.json`; every shipped species carries at least one.
+    /// `ElementType1`/`ElementType2` (primary-then-secondary) order. Ground
+    /// truth from the own-install extraction (`DT_PalMonsterParameter`); every
+    /// shipped species carries at least one.
     pub elements: Vec<ElementKind>,
 }
 
@@ -236,12 +262,34 @@ impl Default for InheritanceWeights {
     }
 }
 
+/// Game-file `GameSetting` CDO values relevant to breeding — stored as ground-
+/// truth DATA from the own-install extraction (build 24181527). The solver does
+/// NOT consume these this round (its inheritance weights stay empirically
+/// derived; see [`InheritanceWeights`]); they are surfaced for reference and a
+/// future runtime hook.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GameSettings {
+    /// `Combi_TalentInheritNum` weights (`[3, 2, 1]`). NOTE: conflicts with the
+    /// solver's empirically-validated 50/25/25 (`[2, 1, 1]`) model — stored as
+    /// data only, deliberately not wired into breeding.
+    pub combi_talent_inherit_num: Vec<u32>,
+    /// `Combi_PassiveInheritNum` weights (`[4, 3, 2, 1]`).
+    pub combi_passive_inherit_num: Vec<u32>,
+    /// `Combi_PassiveRandomAddNum` weights (`[4, 3, 2, 1]`).
+    pub combi_passive_random_add_num: Vec<u32>,
+    /// `Combi_BossPalRate` — alpha/boss spawn rate (`0.05`).
+    pub combi_boss_pal_rate: f32,
+}
+
 /// The full serialized pack. This is exactly what `bincode` reads/writes; every
 /// field is a `Vec` (deterministic order) — no `HashMap`s cross the wire.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Pack {
     /// palcalc data version (e.g. `"v26"`).
     pub version: String,
+    /// Palworld game build the extended data was extracted from (e.g.
+    /// `"24181527"`).
+    pub game_build: String,
     /// Species in `db.json` order; index is the interned species id.
     pub species: Vec<PalSpecies>,
     pub passives: Vec<PassiveSkill>,
@@ -250,6 +298,8 @@ pub struct Pack {
     /// marks pairs with no known path (palcalc's `10000` sentinel is preserved).
     pub min_steps: Vec<u16>,
     pub inheritance: InheritanceWeights,
+    /// Game-file `GameSetting` CDO values (data only; see [`GameSettings`]).
+    pub game_settings: GameSettings,
 }
 
 /// Sentinel used by palcalc's min-steps matrix for "no path".
@@ -338,6 +388,17 @@ impl GameData {
     /// palcalc data version string.
     pub fn version(&self) -> &str {
         &self.pack.version
+    }
+
+    /// Palworld game build the extended stats/settings were extracted from.
+    pub fn game_build(&self) -> &str {
+        &self.pack.game_build
+    }
+
+    /// Game-file `GameSetting` CDO values (data only — the solver does not
+    /// consume these; see [`GameSettings`]).
+    pub fn game_settings(&self) -> &GameSettings {
+        &self.pack.game_settings
     }
 
     /// Number of species.

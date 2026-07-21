@@ -1,0 +1,8048 @@
+{
+  "meta": {
+    "game_build": "24181527",
+    "extracted_at": "2026-07-21T22:26:58.2270313+00:00",
+    "usmap": "PalworldModding/UsefulFiles@1.0"
+  },
+  "game_settings": {
+    "combi_talent_inherit_num": [
+      3,
+      2,
+      1
+    ],
+    "combi_passive_inherit_num": [
+      4,
+      3,
+      2,
+      1
+    ],
+    "combi_passive_random_add_num": [
+      4,
+      3,
+      2,
+      1
+    ],
+    "combi_boss_pal_rate": 0.05
+  },
+  "species": {
+    "Alpaca": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Pacapaca Wool",
+        "description": null
+      },
+      "stats": {
+        "price": 791,
+        "craft_speed": 100,
+        "slow_walk_speed": 62,
+        "walk_speed": 62,
+        "run_speed": 500,
+        "ride_sprint_speed": 900,
+        "transport_speed": 261,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2720,
+        "nocturnal": false
+      }
+    },
+    "AmaterasuWolf": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Wolf of the Sun",
+        "description": null
+      },
+      "stats": {
+        "price": 1744,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 130,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 415,
+        "stamina": 140,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1670,
+        "nocturnal": false
+      }
+    },
+    "AmaterasuWolf_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Gloomhowl",
+        "description": null
+      },
+      "stats": {
+        "price": 2014,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 130,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 415,
+        "stamina": 140,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 800,
+        "nocturnal": true
+      }
+    },
+    "Anubis": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Guardian of the Desert",
+        "description": null
+      },
+      "stats": {
+        "price": 3217,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 800,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 480,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 540,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 480,
+        "nocturnal": false
+      }
+    },
+    "BadCatgirl": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Shot-Nyan Mode",
+        "description": null
+      },
+      "stats": {
+        "price": 2182,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 560,
+        "rarity": 4,
+        "male_probability": 40,
+        "combi_rank": 1250,
+        "nocturnal": true
+      }
+    },
+    "Baphomet": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Flameclaw Hunter",
+        "description": null
+      },
+      "stats": {
+        "price": 1325,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 700,
+        "ride_sprint_speed": 960,
+        "transport_speed": 320,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1470,
+        "nocturnal": true
+      }
+    },
+    "Baphomet_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Darkclaw Hunter",
+        "description": null
+      },
+      "stats": {
+        "price": 2036,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 700,
+        "ride_sprint_speed": 960,
+        "transport_speed": 320,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1310,
+        "nocturnal": true
+      }
+    },
+    "Bastet": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Gold Digger",
+        "description": null
+      },
+      "stats": {
+        "price": 665,
+        "craft_speed": 100,
+        "slow_walk_speed": 52,
+        "walk_speed": 105,
+        "run_speed": 475,
+        "ride_sprint_speed": 550,
+        "transport_speed": 317,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3040,
+        "nocturnal": true
+      }
+    },
+    "Bastet_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Icy Whispers",
+        "description": null
+      },
+      "stats": {
+        "price": 385,
+        "craft_speed": 100,
+        "slow_walk_speed": 52,
+        "walk_speed": 105,
+        "run_speed": 475,
+        "ride_sprint_speed": 550,
+        "transport_speed": 317,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2750,
+        "nocturnal": false
+      }
+    },
+    "BerryGoat": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Berry Picker",
+        "description": null
+      },
+      "stats": {
+        "price": 1643,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 70,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 235,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2610,
+        "nocturnal": false
+      }
+    },
+    "BerryGoat_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Venom Picker",
+        "description": null
+      },
+      "stats": {
+        "price": 928,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 70,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 235,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1940,
+        "nocturnal": true
+      }
+    },
+    "BirdDragon": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Aerial Marauder",
+        "description": null
+      },
+      "stats": {
+        "price": 1464,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 350,
+        "run_speed": 700,
+        "ride_sprint_speed": 850,
+        "transport_speed": 475,
+        "stamina": 150,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1650,
+        "nocturnal": true
+      }
+    },
+    "BirdDragon_Ice": {
+      "elements": [
+        "Ice",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Aerial Marauder",
+        "description": null
+      },
+      "stats": {
+        "price": 1624,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 350,
+        "run_speed": 700,
+        "ride_sprint_speed": 850,
+        "transport_speed": 475,
+        "stamina": 150,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1430,
+        "nocturnal": true
+      }
+    },
+    "BlackCentaur": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dark Knight of the Abyss",
+        "description": null
+      },
+      "stats": {
+        "price": 4339,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 350,
+        "run_speed": 1300,
+        "ride_sprint_speed": 1900,
+        "transport_speed": 625,
+        "stamina": 350,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 190,
+        "nocturnal": true
+      }
+    },
+    "BlackFurDragon": {
+      "elements": [
+        "Dark",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "-",
+        "description": null
+      },
+      "stats": {
+        "price": 8440,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 110,
+        "run_speed": 560,
+        "ride_sprint_speed": 800,
+        "transport_speed": 335,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 530,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 9999,
+        "nocturnal": true
+      }
+    },
+    "BlackGriffon": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Modified DNA",
+        "description": null
+      },
+      "stats": {
+        "price": 3245,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 80,
+        "run_speed": 850,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 465,
+        "stamina": 250,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 530,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 550,
+        "nocturnal": true
+      }
+    },
+    "BlackMetalDragon": {
+      "elements": [
+        "Dragon",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Black Ankylosaur",
+        "description": null
+      },
+      "stats": {
+        "price": 3794,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 375,
+        "stamina": 300,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 470,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 490,
+        "nocturnal": true
+      }
+    },
+    "BlackPuppy": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dig, Smokie! Dig!",
+        "description": null
+      },
+      "stats": {
+        "price": 1842,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 170,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 1760,
+        "nocturnal": true
+      }
+    },
+    "BlackPuppy_Ice": {
+      "elements": [
+        "Dark",
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Cryo Instincts",
+        "description": null
+      },
+      "stats": {
+        "price": 1628,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 170,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1610,
+        "nocturnal": true
+      }
+    },
+    "BlueDragon": {
+      "elements": [
+        "Water",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Waterwing Dance",
+        "description": null
+      },
+      "stats": {
+        "price": 1831,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 350,
+        "stamina": 160,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1830,
+        "nocturnal": false
+      }
+    },
+    "BlueDragon_Ice": {
+      "elements": [
+        "Ice",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Icewing Dance",
+        "description": null
+      },
+      "stats": {
+        "price": 2109,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 350,
+        "stamina": 160,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1220,
+        "nocturnal": false
+      }
+    },
+    "BluePlatypus": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Surfing Slam",
+        "description": null
+      },
+      "stats": {
+        "price": 376,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 105,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 202,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2980,
+        "nocturnal": false
+      }
+    },
+    "BluePlatypus_Fire": {
+      "elements": [
+        "Water",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Fire Tackle",
+        "description": null
+      },
+      "stats": {
+        "price": 463,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 105,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 202,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2300,
+        "nocturnal": false
+      }
+    },
+    "BlueSkyDragon": {
+      "elements": [
+        "Dragon",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Azure Sovereign",
+        "description": null
+      },
+      "stats": {
+        "price": 4531,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 300,
+        "run_speed": 1400,
+        "ride_sprint_speed": 2800,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 40,
+        "nocturnal": false
+      }
+    },
+    "BlueThunderHorse": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Plasma Dash",
+        "description": null
+      },
+      "stats": {
+        "price": 3079,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 180,
+        "run_speed": 900,
+        "ride_sprint_speed": 1260,
+        "transport_speed": -1,
+        "stamina": 220,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 420,
+        "nocturnal": false
+      }
+    },
+    "BlueberryFairy": {
+      "elements": [
+        "Leaf",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Prayer for Abundant Harvest",
+        "description": null
+      },
+      "stats": {
+        "price": 2063,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 5,
+        "male_probability": 40,
+        "combi_rank": 1390,
+        "nocturnal": true
+      }
+    },
+    "Boar": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Hard Head",
+        "description": null
+      },
+      "stats": {
+        "price": 443,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 150,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2880,
+        "nocturnal": false
+      }
+    },
+    "BrownRabbit": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Friend of Earth",
+        "description": null
+      },
+      "stats": {
+        "price": 777,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 480,
+        "ride_sprint_speed": 720,
+        "transport_speed": 220,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1680,
+        "nocturnal": false
+      }
+    },
+    "CactusDoll": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Hug Me Please",
+        "description": null
+      },
+      "stats": {
+        "price": 702,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 525,
+        "ride_sprint_speed": 630,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2420,
+        "nocturnal": false
+      }
+    },
+    "CactusDoll_Dark": {
+      "elements": [
+        "Dark",
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Hug You So Much",
+        "description": null
+      },
+      "stats": {
+        "price": 749,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 525,
+        "ride_sprint_speed": 630,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1580,
+        "nocturnal": true
+      }
+    },
+    "CandleGhost": {
+      "elements": [
+        "Dark",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Grave Robber",
+        "description": null
+      },
+      "stats": {
+        "price": 2041,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 250,
+        "run_speed": 800,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 980,
+        "nocturnal": true
+      }
+    },
+    "CaptainPenguin": {
+      "elements": [
+        "Water",
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Brave Sailor",
+        "description": null
+      },
+      "stats": {
+        "price": 1442,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 110,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 280,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 270,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2070,
+        "nocturnal": false
+      }
+    },
+    "CaptainPenguin_Black": {
+      "elements": [
+        "Water",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Unyielding Storm Commander",
+        "description": null
+      },
+      "stats": {
+        "price": 1683,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 110,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 280,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 270,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1850,
+        "nocturnal": false
+      }
+    },
+    "Carbunclo": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Lifmunk Recoil",
+        "description": null
+      },
+      "stats": {
+        "price": 480,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 40,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3020,
+        "nocturnal": false
+      }
+    },
+    "CatBat": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Ultrasonic Sensor",
+        "description": null
+      },
+      "stats": {
+        "price": 1147,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 140,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 270,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2340,
+        "nocturnal": true
+      }
+    },
+    "CatMage": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Mystical Black Magic",
+        "description": null
+      },
+      "stats": {
+        "price": 1356,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 145,
+        "run_speed": 440,
+        "ride_sprint_speed": 620,
+        "transport_speed": 292,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2040,
+        "nocturnal": true
+      }
+    },
+    "CatMage_Fire": {
+      "elements": [
+        "Dark",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Blazing Black Magic",
+        "description": null
+      },
+      "stats": {
+        "price": 1675,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 145,
+        "run_speed": 440,
+        "ride_sprint_speed": 620,
+        "transport_speed": 292,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1800,
+        "nocturnal": true
+      }
+    },
+    "CatVampire": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Life Steal",
+        "description": null
+      },
+      "stats": {
+        "price": 1744,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 100,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 325,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 490,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1570,
+        "nocturnal": true
+      }
+    },
+    "ChickenPal": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Egg Layer",
+        "description": null
+      },
+      "stats": {
+        "price": 313,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 50,
+        "run_speed": 375,
+        "ride_sprint_speed": 550,
+        "transport_speed": 212,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3080,
+        "nocturnal": false
+      }
+    },
+    "ClioneTwins": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Magical Twin Powers",
+        "description": null
+      },
+      "stats": {
+        "price": 421,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 150,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 2,
+        "male_probability": 40,
+        "combi_rank": 2520,
+        "nocturnal": false
+      }
+    },
+    "CloverFairy": {
+      "elements": [
+        "Leaf",
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Happy Clover",
+        "description": null
+      },
+      "stats": {
+        "price": 407,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2970,
+        "nocturnal": false
+      }
+    },
+    "ClownRabbit": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Trick-Loving Fluffle",
+        "description": null
+      },
+      "stats": {
+        "price": 3191,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 500,
+        "ride_sprint_speed": 750,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 600,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 520,
+        "nocturnal": false
+      }
+    },
+    "ColorfulBird": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Eggbomb Launcher",
+        "description": null
+      },
+      "stats": {
+        "price": 373,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 300,
+        "ride_sprint_speed": 550,
+        "transport_speed": 170,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2730,
+        "nocturnal": false
+      }
+    },
+    "CowPal": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Milk Maker",
+        "description": null
+      },
+      "stats": {
+        "price": 502,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 55,
+        "run_speed": 580,
+        "ride_sprint_speed": 700,
+        "transport_speed": 317,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 20,
+        "combi_rank": 2800,
+        "nocturnal": false
+      }
+    },
+    "CubeTurtle": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Masonry Archelon",
+        "description": null
+      },
+      "stats": {
+        "price": 2436,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 80,
+        "run_speed": 360,
+        "ride_sprint_speed": 540,
+        "transport_speed": 360,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 580,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 790,
+        "nocturnal": false
+      }
+    },
+    "CubeTurtle_Neutral": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Stone-Chaser Archelon",
+        "description": null
+      },
+      "stats": {
+        "price": 2945,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 80,
+        "run_speed": 360,
+        "ride_sprint_speed": 540,
+        "transport_speed": 360,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 200,
+        "nocturnal": false
+      }
+    },
+    "CuteButterfly": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Mysterious Scales",
+        "description": null
+      },
+      "stats": {
+        "price": 534,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2620,
+        "nocturnal": false
+      }
+    },
+    "CuteFox": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Dig Here!",
+        "description": null
+      },
+      "stats": {
+        "price": 407,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 350,
+        "ride_sprint_speed": 450,
+        "transport_speed": 190,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 3060,
+        "nocturnal": false
+      }
+    },
+    "CuteMole": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Mining Assistance",
+        "description": null
+      },
+      "stats": {
+        "price": 358,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 300,
+        "ride_sprint_speed": 550,
+        "transport_speed": 240,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2790,
+        "nocturnal": false
+      }
+    },
+    "DandelionGirl": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Fuzzy Fairy",
+        "description": null
+      },
+      "stats": {
+        "price": 1610,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 50,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 3,
+        "male_probability": 40,
+        "combi_rank": 2000,
+        "nocturnal": false
+      }
+    },
+    "DarkAlien": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Unknown Invader",
+        "description": null
+      },
+      "stats": {
+        "price": 1543,
+        "craft_speed": 100,
+        "slow_walk_speed": 125,
+        "walk_speed": 245,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1820,
+        "nocturnal": true
+      }
+    },
+    "DarkCrow": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Eerie Nightstreaker",
+        "description": null
+      },
+      "stats": {
+        "price": 770,
+        "craft_speed": 100,
+        "slow_walk_speed": 85,
+        "walk_speed": 170,
+        "run_speed": 920,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 545,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2370,
+        "nocturnal": true
+      }
+    },
+    "DarkFlameFox": {
+      "elements": [
+        "Dark",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Phantasmal Arcana",
+        "description": null
+      },
+      "stats": {
+        "price": 2347,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 500,
+        "ride_sprint_speed": 750,
+        "transport_speed": 150,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 600,
+        "rarity": 5,
+        "male_probability": 40,
+        "combi_rank": 1010,
+        "nocturnal": true
+      }
+    },
+    "DarkMechaDragon": {
+      "elements": [
+        "Dark",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Meteor Wings",
+        "description": null
+      },
+      "stats": {
+        "price": 3622,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 550,
+        "ride_sprint_speed": 660,
+        "transport_speed": -1,
+        "stamina": 300,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 570,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 400,
+        "nocturnal": true
+      }
+    },
+    "DarkMutant": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Teleki Explosion",
+        "description": null
+      },
+      "stats": {
+        "price": 3960,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 530,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 9999,
+        "nocturnal": true
+      }
+    },
+    "DarkScorpion": {
+      "elements": [
+        "Dark",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Steel Scorpion",
+        "description": null
+      },
+      "stats": {
+        "price": 2469,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 600,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 1120,
+        "nocturnal": true
+      }
+    },
+    "DarkScorpion_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Golden Scorpion",
+        "description": null
+      },
+      "stats": {
+        "price": 10000,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 600,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 640,
+        "nocturnal": false
+      }
+    },
+    "Deer": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Guardian of the Forest",
+        "description": null
+      },
+      "stats": {
+        "price": 791,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 120,
+        "run_speed": 700,
+        "ride_sprint_speed": 900,
+        "transport_speed": 390,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2710,
+        "nocturnal": false
+      }
+    },
+    "Deer_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Guardian of the Golden Forest",
+        "description": null
+      },
+      "stats": {
+        "price": 891,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 120,
+        "run_speed": 700,
+        "ride_sprint_speed": 900,
+        "transport_speed": 390,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2580,
+        "nocturnal": false
+      }
+    },
+    "DomeArmorDragon": {
+      "elements": [
+        "Dragon",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Indestructible Fortress",
+        "description": null
+      },
+      "stats": {
+        "price": 4116,
+        "craft_speed": 100,
+        "slow_walk_speed": 115,
+        "walk_speed": 230,
+        "run_speed": 850,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 360,
+        "stamina": 300,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 30,
+        "nocturnal": false
+      }
+    },
+    "DreamDemon": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dream Chaser",
+        "description": null
+      },
+      "stats": {
+        "price": 397,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 140,
+        "run_speed": 300,
+        "ride_sprint_speed": 550,
+        "transport_speed": 220,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2910,
+        "nocturnal": true
+      }
+    },
+    "DrillGame": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Drill Crusher",
+        "description": null
+      },
+      "stats": {
+        "price": 1577,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 120,
+        "run_speed": 300,
+        "ride_sprint_speed": 420,
+        "transport_speed": 190,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 350,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1550,
+        "nocturnal": false
+      }
+    },
+    "Eagle": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Galeclaw Glider",
+        "description": null
+      },
+      "stats": {
+        "price": 502,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 600,
+        "ride_sprint_speed": 700,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2570,
+        "nocturnal": false
+      }
+    },
+    "ElecCat": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Static Electricity",
+        "description": null
+      },
+      "stats": {
+        "price": 410,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 350,
+        "ride_sprint_speed": 500,
+        "transport_speed": 270,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3010,
+        "nocturnal": false
+      }
+    },
+    "ElecLizard": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Chillswitch",
+        "description": null
+      },
+      "stats": {
+        "price": 1611,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 110,
+        "run_speed": 300,
+        "ride_sprint_speed": 390,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1750,
+        "nocturnal": false
+      }
+    },
+    "ElecPanda": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Yellow Tank",
+        "description": null
+      },
+      "stats": {
+        "price": 3524,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 140,
+        "run_speed": 600,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 210,
+        "stamina": 180,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1020,
+        "nocturnal": false
+      }
+    },
+    "ElecPomeranian": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Crackle Booster",
+        "description": null
+      },
+      "stats": {
+        "price": 556,
+        "craft_speed": 100,
+        "slow_walk_speed": 35,
+        "walk_speed": 70,
+        "run_speed": 200,
+        "ride_sprint_speed": 400,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 170,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2360,
+        "nocturnal": false
+      }
+    },
+    "ElecSnail": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Charging Shell",
+        "description": null
+      },
+      "stats": {
+        "price": 1523,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 50,
+        "run_speed": 360,
+        "ride_sprint_speed": 945,
+        "transport_speed": 120,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 1780,
+        "nocturnal": false
+      }
+    },
+    "ElecSnail_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Charging Shell",
+        "description": null
+      },
+      "stats": {
+        "price": 3000,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 50,
+        "run_speed": 360,
+        "ride_sprint_speed": 945,
+        "transport_speed": 120,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 9999,
+        "nocturnal": false
+      }
+    },
+    "ElecSnail_Ground": {
+      "elements": [
+        "Electricity",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Grounding Shell",
+        "description": null
+      },
+      "stats": {
+        "price": 1623,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 50,
+        "run_speed": 360,
+        "ride_sprint_speed": 945,
+        "transport_speed": 120,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1500,
+        "nocturnal": false
+      }
+    },
+    "FairyDragon": {
+      "elements": [
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Amicable Holy Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 1205,
+        "craft_speed": 100,
+        "slow_walk_speed": 83,
+        "walk_speed": 83,
+        "run_speed": 630,
+        "ride_sprint_speed": 800,
+        "transport_speed": 456,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 3,
+        "max_full_stomach": 200,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 2280,
+        "nocturnal": false
+      }
+    },
+    "FairyDragon_Water": {
+      "elements": [
+        "Dragon",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Amicable Water Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 1543,
+        "craft_speed": 100,
+        "slow_walk_speed": 83,
+        "walk_speed": 83,
+        "run_speed": 630,
+        "ride_sprint_speed": 800,
+        "transport_speed": 456,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 3,
+        "max_full_stomach": 200,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1640,
+        "nocturnal": false
+      }
+    },
+    "FeatherOstrich": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Sand Sprint",
+        "description": null
+      },
+      "stats": {
+        "price": 896,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 900,
+        "ride_sprint_speed": 1200,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2210,
+        "nocturnal": false
+      }
+    },
+    "FengyunDeeper": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Wind and Clouds",
+        "description": null
+      },
+      "stats": {
+        "price": 1659,
+        "craft_speed": 100,
+        "slow_walk_speed": 85,
+        "walk_speed": 100,
+        "run_speed": 750,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 417,
+        "stamina": 140,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1960,
+        "nocturnal": false
+      }
+    },
+    "FengyunDeeper_Electric": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Stormcloud",
+        "description": null
+      },
+      "stats": {
+        "price": 2164,
+        "craft_speed": 100,
+        "slow_walk_speed": 85,
+        "walk_speed": 100,
+        "run_speed": 750,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 417,
+        "stamina": 140,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 900,
+        "nocturnal": false
+      }
+    },
+    "FireKirin": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Red Hare",
+        "description": null
+      },
+      "stats": {
+        "price": 1464,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 850,
+        "ride_sprint_speed": 1300,
+        "transport_speed": 500,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1980,
+        "nocturnal": false
+      }
+    },
+    "FireKirin_Dark": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Black Hare",
+        "description": null
+      },
+      "stats": {
+        "price": 2034,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 850,
+        "ride_sprint_speed": 1300,
+        "transport_speed": 500,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1870,
+        "nocturnal": true
+      }
+    },
+    "FlameBambi": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Tiny Spark",
+        "description": null
+      },
+      "stats": {
+        "price": 459,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2870,
+        "nocturnal": false
+      }
+    },
+    "FlameBuffalo": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Warm Body",
+        "description": null
+      },
+      "stats": {
+        "price": 1176,
+        "craft_speed": 100,
+        "slow_walk_speed": 87,
+        "walk_speed": 87,
+        "run_speed": 700,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 343,
+        "stamina": 120,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2320,
+        "nocturnal": false
+      }
+    },
+    "FlowerDinosaur": {
+      "elements": [
+        "Leaf",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Fragrant Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 1315,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 120,
+        "run_speed": 700,
+        "ride_sprint_speed": 1030,
+        "transport_speed": 335,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 270,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2100,
+        "nocturnal": false
+      }
+    },
+    "FlowerDinosaur_Electric": {
+      "elements": [
+        "Electricity",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Thunder Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 1543,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 120,
+        "run_speed": 700,
+        "ride_sprint_speed": 1030,
+        "transport_speed": 335,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 270,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1890,
+        "nocturnal": false
+      }
+    },
+    "FlowerDoll": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Blessing of the Flower Spirit",
+        "description": null
+      },
+      "stats": {
+        "price": 1769,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1720,
+        "nocturnal": false
+      }
+    },
+    "FlowerDoll_Fire": {
+      "elements": [
+        "Leaf",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Passion of the Flower Spirit",
+        "description": null
+      },
+      "stats": {
+        "price": 2357,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 820,
+        "nocturnal": false
+      }
+    },
+    "FlowerPrince": {
+      "elements": [
+        "Leaf",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Mist Stalwart",
+        "description": null
+      },
+      "stats": {
+        "price": 4442,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 160,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 9,
+        "max_full_stomach": 630,
+        "rarity": 8,
+        "male_probability": 60,
+        "combi_rank": 60,
+        "nocturnal": true
+      }
+    },
+    "FlowerRabbit": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Helper Bunny",
+        "description": null
+      },
+      "stats": {
+        "price": 512,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2660,
+        "nocturnal": false
+      }
+    },
+    "FluffyBird": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Fluffy Flutterer",
+        "description": null
+      },
+      "stats": {
+        "price": 385,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 110,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 75,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2480,
+        "nocturnal": false
+      }
+    },
+    "FlyingManta": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Zephyr Glider",
+        "description": null
+      },
+      "stats": {
+        "price": 521,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2740,
+        "nocturnal": false
+      }
+    },
+    "FlyingManta_Thunder": {
+      "elements": [
+        "Water",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Jolt Glider",
+        "description": null
+      },
+      "stats": {
+        "price": 658,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 150,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2380,
+        "nocturnal": false
+      }
+    },
+    "FoxExorcist": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Burning Future",
+        "description": null
+      },
+      "stats": {
+        "price": 3217,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 130,
+        "run_speed": 500,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 600,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 390,
+        "nocturnal": false
+      }
+    },
+    "FoxMage": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Lord Fox",
+        "description": null
+      },
+      "stats": {
+        "price": 1284,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 145,
+        "run_speed": 440,
+        "ride_sprint_speed": 620,
+        "transport_speed": 292,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2080,
+        "nocturnal": false
+      }
+    },
+    "FoxMage_Dark": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Black Fox Lord",
+        "description": null
+      },
+      "stats": {
+        "price": 1509,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 145,
+        "run_speed": 440,
+        "ride_sprint_speed": 620,
+        "transport_speed": 292,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1490,
+        "nocturnal": true
+      }
+    },
+    "Ganesha": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Soothing Shower",
+        "description": null
+      },
+      "stats": {
+        "price": 355,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 180,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3070,
+        "nocturnal": false
+      }
+    },
+    "Garm": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Direhowl Rider",
+        "description": null
+      },
+      "stats": {
+        "price": 611,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 180,
+        "run_speed": 800,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 460,
+        "stamina": 70,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2680,
+        "nocturnal": false
+      }
+    },
+    "GhostAnglerfish": {
+      "elements": [
+        "Dark",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Master of Darkness",
+        "description": null
+      },
+      "stats": {
+        "price": 2263,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 300,
+        "stamina": 320,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 880,
+        "nocturnal": true
+      }
+    },
+    "GhostAnglerfish_Fire": {
+      "elements": [
+        "Fire",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Abyssal Celebrity Chef",
+        "description": null
+      },
+      "stats": {
+        "price": 2424,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 300,
+        "stamina": 320,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 720,
+        "nocturnal": false
+      }
+    },
+    "GhostBeast": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Messenger of Death",
+        "description": null
+      },
+      "stats": {
+        "price": 1110,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 160,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 365,
+        "stamina": 130,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1710,
+        "nocturnal": true
+      }
+    },
+    "GhostBlackCat": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Death-Cheating Feline",
+        "description": null
+      },
+      "stats": {
+        "price": 827,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 360,
+        "ride_sprint_speed": 540,
+        "transport_speed": 240,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2250,
+        "nocturnal": true
+      }
+    },
+    "GhostDragon": {
+      "elements": [
+        "Dragon",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Liberated Pterosaur",
+        "description": null
+      },
+      "stats": {
+        "price": 3323,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 1400,
+        "ride_sprint_speed": 2750,
+        "transport_speed": 400,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 300,
+        "nocturnal": true
+      }
+    },
+    "GhostDragon_Fire": {
+      "elements": [
+        "Dragon",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Resentful Pterosaur",
+        "description": null
+      },
+      "stats": {
+        "price": 3521,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 1400,
+        "ride_sprint_speed": 2750,
+        "transport_speed": 400,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 140,
+        "nocturnal": false
+      }
+    },
+    "GhostRabbit": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Soul Collector",
+        "description": null
+      },
+      "stats": {
+        "price": 2594,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 130,
+        "run_speed": 380,
+        "ride_sprint_speed": 500,
+        "transport_speed": 180,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 6,
+        "max_full_stomach": 510,
+        "rarity": 6,
+        "male_probability": 40,
+        "combi_rank": 1230,
+        "nocturnal": true
+      }
+    },
+    "GhostRabbit_Grass": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Soul Binder",
+        "description": null
+      },
+      "stats": {
+        "price": 2134,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 130,
+        "run_speed": 380,
+        "ride_sprint_speed": 500,
+        "transport_speed": 180,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 6,
+        "max_full_stomach": 510,
+        "rarity": 7,
+        "male_probability": 40,
+        "combi_rank": 1320,
+        "nocturnal": false
+      }
+    },
+    "GoldenHorse": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Sandstorm's Blessing",
+        "description": null
+      },
+      "stats": {
+        "price": 2622,
+        "craft_speed": 100,
+        "slow_walk_speed": 170,
+        "walk_speed": 270,
+        "run_speed": 840,
+        "ride_sprint_speed": 1260,
+        "transport_speed": -1,
+        "stamina": 200,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 730,
+        "nocturnal": false
+      }
+    },
+    "Gorilla": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Full-Power Gorilla Mode",
+        "description": null
+      },
+      "stats": {
+        "price": 1214,
+        "craft_speed": 100,
+        "slow_walk_speed": 66,
+        "walk_speed": 100,
+        "run_speed": 550,
+        "ride_sprint_speed": 720,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2140,
+        "nocturnal": false
+      }
+    },
+    "Gorilla_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Full-Power Gorilla Pound",
+        "description": null
+      },
+      "stats": {
+        "price": 1284,
+        "craft_speed": 100,
+        "slow_walk_speed": 66,
+        "walk_speed": 100,
+        "run_speed": 550,
+        "ride_sprint_speed": 720,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1880,
+        "nocturnal": false
+      }
+    },
+    "GrassGolem": {
+      "elements": [
+        "Earth",
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Forest Laser",
+        "description": null
+      },
+      "stats": {
+        "price": 3113,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 350,
+        "stamina": 210,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 510,
+        "nocturnal": false
+      }
+    },
+    "GrassGolem_Dark": {
+      "elements": [
+        "Earth",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Corruption Laser",
+        "description": null
+      },
+      "stats": {
+        "price": 3234,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 350,
+        "stamina": 210,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 250,
+        "nocturnal": true
+      }
+    },
+    "GrassMammoth": {
+      "elements": [
+        "Leaf",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Gaia Crusher",
+        "description": null
+      },
+      "stats": {
+        "price": 2220,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 135,
+        "run_speed": 600,
+        "ride_sprint_speed": 1030,
+        "transport_speed": 282,
+        "stamina": 180,
+        "size": "XL",
+        "food_amount": 6,
+        "max_full_stomach": 400,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1340,
+        "nocturnal": false
+      }
+    },
+    "GrassMammoth_Ice": {
+      "elements": [
+        "Ice",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Ice Crusher",
+        "description": null
+      },
+      "stats": {
+        "price": 2424,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 135,
+        "run_speed": 600,
+        "ride_sprint_speed": 1030,
+        "transport_speed": 282,
+        "stamina": 180,
+        "size": "XL",
+        "food_amount": 6,
+        "max_full_stomach": 400,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 1070,
+        "nocturnal": false
+      }
+    },
+    "GrassMinotaur": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Mother Nature's Menace",
+        "description": null
+      },
+      "stats": {
+        "price": 2041,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 700,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 6,
+        "male_probability": 60,
+        "combi_rank": 2020,
+        "nocturnal": false
+      }
+    },
+    "GrassMinotaur_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Father Winter's Threat",
+        "description": null
+      },
+      "stats": {
+        "price": 2484,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 700,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 7,
+        "male_probability": 60,
+        "combi_rank": 440,
+        "nocturnal": false
+      }
+    },
+    "GrassPanda": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Grenadier Panda",
+        "description": null
+      },
+      "stats": {
+        "price": 1475,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 275,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2060,
+        "nocturnal": false
+      }
+    },
+    "GrassPanda_Electric": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Grenadier Panda",
+        "description": null
+      },
+      "stats": {
+        "price": 1806,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 275,
+        "stamina": 130,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1440,
+        "nocturnal": false
+      }
+    },
+    "GrassRabbitMan": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Grassland Gymnast",
+        "description": null
+      },
+      "stats": {
+        "price": 1947,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 195,
+        "run_speed": 500,
+        "ride_sprint_speed": 700,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1160,
+        "nocturnal": false
+      }
+    },
+    "GrimGirl": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Blade of Uncontrolled Passion",
+        "description": null
+      },
+      "stats": {
+        "price": 2484,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 550,
+        "ride_sprint_speed": 660,
+        "transport_speed": 180,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 4,
+        "male_probability": 38,
+        "combi_rank": 780,
+        "nocturnal": true
+      }
+    },
+    "GuardianDog": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Birds of a Feather",
+        "description": null
+      },
+      "stats": {
+        "price": 1238,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 110,
+        "run_speed": 750,
+        "ride_sprint_speed": 1080,
+        "transport_speed": 165,
+        "stamina": 140,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 270,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2230,
+        "nocturnal": false
+      }
+    },
+    "HadesBird": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Wings of Death",
+        "description": null
+      },
+      "stats": {
+        "price": 2109,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 100,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 450,
+        "stamina": 170,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1130,
+        "nocturnal": true
+      }
+    },
+    "HadesBird_Electric": {
+      "elements": [
+        "Dark",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Wings of Thunder",
+        "description": null
+      },
+      "stats": {
+        "price": 2469,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 100,
+        "run_speed": 700,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 450,
+        "stamina": 170,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 960,
+        "nocturnal": true
+      }
+    },
+    "HawkBird": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Travel Companion",
+        "description": null
+      },
+      "stats": {
+        "price": 1012,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2560,
+        "nocturnal": false
+      }
+    },
+    "Hedgehog": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Jolt Bomb",
+        "description": null
+      },
+      "stats": {
+        "price": 417,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 215,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3030,
+        "nocturnal": false
+      }
+    },
+    "Hedgehog_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Cold Bomb",
+        "description": null
+      },
+      "stats": {
+        "price": 472,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 215,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2850,
+        "nocturnal": false
+      }
+    },
+    "HerculesBeetle": {
+      "elements": [
+        "Earth",
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Cast-Iron Shell",
+        "description": null
+      },
+      "stats": {
+        "price": 2913,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 110,
+        "run_speed": 500,
+        "ride_sprint_speed": 600,
+        "transport_speed": 110,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 400,
+        "rarity": 8,
+        "male_probability": 85,
+        "combi_rank": 1280,
+        "nocturnal": false
+      }
+    },
+    "HerculesBeetle_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Fullmetal Shell",
+        "description": null
+      },
+      "stats": {
+        "price": 10000,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 110,
+        "run_speed": 500,
+        "ride_sprint_speed": 600,
+        "transport_speed": 110,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 400,
+        "rarity": 9,
+        "male_probability": 85,
+        "combi_rank": 630,
+        "nocturnal": false
+      }
+    },
+    "HoodGhost": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Void-Dweller",
+        "description": null
+      },
+      "stats": {
+        "price": 1656,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1770,
+        "nocturnal": true
+      }
+    },
+    "Horus": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Scorching Predator",
+        "description": null
+      },
+      "stats": {
+        "price": 2685,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 200,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1400,
+        "transport_speed": 500,
+        "stamina": 230,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 500,
+        "nocturnal": false
+      }
+    },
+    "Horus_Water": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Tidal Predator",
+        "description": null
+      },
+      "stats": {
+        "price": 2797,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 200,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1400,
+        "transport_speed": 500,
+        "stamina": 230,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 450,
+        "nocturnal": false
+      }
+    },
+    "IceCrocodile": {
+      "elements": [
+        "Ice",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Icy Maw",
+        "description": null
+      },
+      "stats": {
+        "price": 798,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 40,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 40,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 310,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2130,
+        "nocturnal": false
+      }
+    },
+    "IceDeer": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Cool Body",
+        "description": null
+      },
+      "stats": {
+        "price": 1464,
+        "craft_speed": 100,
+        "slow_walk_speed": 35,
+        "walk_speed": 70,
+        "run_speed": 700,
+        "ride_sprint_speed": 1070,
+        "transport_speed": 310,
+        "stamina": 140,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1930,
+        "nocturnal": false
+      }
+    },
+    "IceFox": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Aurora Guide",
+        "description": null
+      },
+      "stats": {
+        "price": 1543,
+        "craft_speed": 100,
+        "slow_walk_speed": 65,
+        "walk_speed": 130,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 315,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1970,
+        "nocturnal": false
+      }
+    },
+    "IceHorse": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Icy Steed",
+        "description": null
+      },
+      "stats": {
+        "price": 4695,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 120,
+        "run_speed": 1200,
+        "ride_sprint_speed": 1800,
+        "transport_speed": 440,
+        "stamina": 300,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 150,
+        "nocturnal": false
+      }
+    },
+    "IceHorse_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Black Steed",
+        "description": null
+      },
+      "stats": {
+        "price": 5000,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 120,
+        "run_speed": 1200,
+        "ride_sprint_speed": 1800,
+        "transport_speed": 440,
+        "stamina": 300,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 110,
+        "nocturnal": true
+      }
+    },
+    "IceNarwhal": {
+      "elements": [
+        "Ice",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Chilled Whale Cruiser",
+        "description": null
+      },
+      "stats": {
+        "price": 2685,
+        "craft_speed": 100,
+        "slow_walk_speed": 125,
+        "walk_speed": 250,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 400,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 8,
+        "male_probability": 58,
+        "combi_rank": 710,
+        "nocturnal": false
+      }
+    },
+    "IceNarwhal_Fire": {
+      "elements": [
+        "Ice",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Cozy Whale Cruiser",
+        "description": null
+      },
+      "stats": {
+        "price": 3097,
+        "craft_speed": 100,
+        "slow_walk_speed": 125,
+        "walk_speed": 250,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 400,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 8,
+        "male_probability": 42,
+        "combi_rank": 370,
+        "nocturnal": false
+      }
+    },
+    "IceSeal": {
+      "elements": [
+        "Ice",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Rider of the Snowy Mountain",
+        "description": null
+      },
+      "stats": {
+        "price": 1794,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 45,
+        "run_speed": 250,
+        "ride_sprint_speed": 375,
+        "transport_speed": 250,
+        "stamina": 120,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 220,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1660,
+        "nocturnal": false
+      }
+    },
+    "IceSeal_Ground": {
+      "elements": [
+        "Ice",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Snowy Mountain Slider",
+        "description": null
+      },
+      "stats": {
+        "price": 1942,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 45,
+        "run_speed": 250,
+        "ride_sprint_speed": 375,
+        "transport_speed": 250,
+        "stamina": 120,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 220,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1100,
+        "nocturnal": false
+      }
+    },
+    "IceWitch": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Witch's Icy Veil",
+        "description": null
+      },
+      "stats": {
+        "price": 2277,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 400,
+        "ride_sprint_speed": 600,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 270,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1260,
+        "nocturnal": false
+      }
+    },
+    "JellyfishFairy": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Jelliette Drop",
+        "description": null
+      },
+      "stats": {
+        "price": 658,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 240,
+        "ride_sprint_speed": 450,
+        "transport_speed": 160,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 220,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2650,
+        "nocturnal": false
+      }
+    },
+    "JellyfishGhost": {
+      "elements": [
+        "Water",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Jellroy Drop",
+        "description": null
+      },
+      "stats": {
+        "price": 1328,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 400,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 220,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2590,
+        "nocturnal": true
+      }
+    },
+    "JetDragon": {
+      "elements": [
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Aerial Missile",
+        "description": null
+      },
+      "stats": {
+        "price": 4452,
+        "craft_speed": 100,
+        "slow_walk_speed": 200,
+        "walk_speed": 800,
+        "run_speed": 1700,
+        "ride_sprint_speed": 3300,
+        "transport_speed": 1250,
+        "stamina": 110,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 70,
+        "nocturnal": false
+      }
+    },
+    "KabukiMan": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Stage Combat",
+        "description": null
+      },
+      "stats": {
+        "price": 4028,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 400,
+        "ride_sprint_speed": 500,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 7,
+        "male_probability": 60,
+        "combi_rank": 290,
+        "nocturnal": false
+      }
+    },
+    "Kelpie": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Aqua Spout",
+        "description": null
+      },
+      "stats": {
+        "price": 407,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 700,
+        "ride_sprint_speed": 900,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2810,
+        "nocturnal": false
+      }
+    },
+    "Kelpie_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Lava Spout",
+        "description": null
+      },
+      "stats": {
+        "price": 407,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 700,
+        "ride_sprint_speed": 900,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2470,
+        "nocturnal": false
+      }
+    },
+    "KendoFrog": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Leap Stance",
+        "description": null
+      },
+      "stats": {
+        "price": 584,
+        "craft_speed": 100,
+        "slow_walk_speed": 33,
+        "walk_speed": 66,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2600,
+        "nocturnal": false
+      }
+    },
+    "KendoFrog_Dark": {
+      "elements": [
+        "Water",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Shadow Stance",
+        "description": null
+      },
+      "stats": {
+        "price": 1254,
+        "craft_speed": 100,
+        "slow_walk_speed": 33,
+        "walk_speed": 66,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1860,
+        "nocturnal": true
+      }
+    },
+    "KingAlpaca": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "King of Muscles",
+        "description": null
+      },
+      "stats": {
+        "price": 1274,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 80,
+        "run_speed": 700,
+        "ride_sprint_speed": 1040,
+        "transport_speed": 290,
+        "stamina": 170,
+        "size": "XL",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 8,
+        "male_probability": 90,
+        "combi_rank": 2220,
+        "nocturnal": false
+      }
+    },
+    "KingAlpaca_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Coldhearted King",
+        "description": null
+      },
+      "stats": {
+        "price": 1624,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 80,
+        "run_speed": 700,
+        "ride_sprint_speed": 1040,
+        "transport_speed": 290,
+        "stamina": 170,
+        "size": "XL",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 9,
+        "male_probability": 90,
+        "combi_rank": 1530,
+        "nocturnal": false
+      }
+    },
+    "KingBahamut": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Magma Kaiser",
+        "description": null
+      },
+      "stats": {
+        "price": 3470,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 400,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 500,
+        "stamina": 190,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 410,
+        "nocturnal": false
+      }
+    },
+    "KingBahamut_Dragon": {
+      "elements": [
+        "Dragon",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Dragon Kaiser",
+        "description": null
+      },
+      "stats": {
+        "price": 3651,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 400,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 500,
+        "stamina": 190,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 100,
+        "nocturnal": false
+      }
+    },
+    "KingSunfish": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Charming Fish",
+        "description": null
+      },
+      "stats": {
+        "price": 1636,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 50,
+        "run_speed": 500,
+        "ride_sprint_speed": 900,
+        "transport_speed": 150,
+        "stamina": 220,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1370,
+        "nocturnal": false
+      }
+    },
+    "KingSunfish_Thunder": {
+      "elements": [
+        "Water",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Shocking Fish",
+        "description": null
+      },
+      "stats": {
+        "price": 1843,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 50,
+        "run_speed": 500,
+        "ride_sprint_speed": 900,
+        "transport_speed": 150,
+        "stamina": 220,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1000,
+        "nocturnal": false
+      }
+    },
+    "KingWhale": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Resonant Guardian",
+        "description": null
+      },
+      "stats": {
+        "price": 4913,
+        "craft_speed": 100,
+        "slow_walk_speed": 3000,
+        "walk_speed": 3000,
+        "run_speed": 3000,
+        "ride_sprint_speed": 3000,
+        "transport_speed": 3000,
+        "stamina": 100,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 20,
+        "nocturnal": false
+      }
+    },
+    "Kirin": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Swift Deity",
+        "description": null
+      },
+      "stats": {
+        "price": 1388,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 130,
+        "run_speed": 720,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 425,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2270,
+        "nocturnal": false
+      }
+    },
+    "Kirin_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Frigid Deity",
+        "description": null
+      },
+      "stats": {
+        "price": 1974,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 130,
+        "run_speed": 720,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 425,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 540,
+        "nocturnal": false
+      }
+    },
+    "Kitsunebi": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Huggy Fire",
+        "description": null
+      },
+      "stats": {
+        "price": 394,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 240,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2990,
+        "nocturnal": false
+      }
+    },
+    "Kitsunebi_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Huggy Frost",
+        "description": null
+      },
+      "stats": {
+        "price": 472,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 240,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2500,
+        "nocturnal": false
+      }
+    },
+    "LanternButler": {
+      "elements": [
+        "Dark",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Lantern Enchantment",
+        "description": null
+      },
+      "stats": {
+        "price": 2309,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 175,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 890,
+        "nocturnal": true
+      }
+    },
+    "LavaGirl": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Magma Tears",
+        "description": null
+      },
+      "stats": {
+        "price": 436,
+        "craft_speed": 100,
+        "slow_walk_speed": 65,
+        "walk_speed": 98,
+        "run_speed": 250,
+        "ride_sprint_speed": 375,
+        "transport_speed": 140,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2700,
+        "nocturnal": false
+      }
+    },
+    "LazyCatfish": {
+      "elements": [
+        "Earth",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Soil Improver",
+        "description": null
+      },
+      "stats": {
+        "price": 995,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2290,
+        "nocturnal": false
+      }
+    },
+    "LazyCatfish_Gold": {
+      "elements": [
+        "Earth",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Golden Harvest",
+        "description": null
+      },
+      "stats": {
+        "price": 19900,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1620,
+        "nocturnal": false
+      }
+    },
+    "LazyDragon": {
+      "elements": [
+        "Dragon",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Hungry Missile",
+        "description": null
+      },
+      "stats": {
+        "price": 2365,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 60,
+        "run_speed": 650,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 150,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1090,
+        "nocturnal": false
+      }
+    },
+    "LazyDragon_Electric": {
+      "elements": [
+        "Dragon",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Missile Party",
+        "description": null
+      },
+      "stats": {
+        "price": 2685,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 60,
+        "run_speed": 650,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 150,
+        "stamina": 200,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 770,
+        "nocturnal": false
+      }
+    },
+    "LeafMomonga": {
+      "elements": [
+        "Leaf",
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Herbil Pulse",
+        "description": null
+      },
+      "stats": {
+        "price": 541,
+        "craft_speed": 100,
+        "slow_walk_speed": 15,
+        "walk_speed": 30,
+        "run_speed": 350,
+        "ride_sprint_speed": 600,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2630,
+        "nocturnal": false
+      }
+    },
+    "LeafPrincess": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Floral Boost",
+        "description": null
+      },
+      "stats": {
+        "price": 1261,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 800,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 4,
+        "male_probability": 30,
+        "combi_rank": 1990,
+        "nocturnal": false
+      }
+    },
+    "LegendDeer": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Sacred Barrier",
+        "description": null
+      },
+      "stats": {
+        "price": 4256,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 900,
+        "ride_sprint_speed": 1900,
+        "transport_speed": 450,
+        "stamina": 400,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 710,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 90,
+        "nocturnal": false
+      }
+    },
+    "LilyQueen": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Harvest Goddess",
+        "description": null
+      },
+      "stats": {
+        "price": 3427,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 100,
+        "run_speed": 450,
+        "ride_sprint_speed": 550,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 540,
+        "rarity": 9,
+        "male_probability": 30,
+        "combi_rank": 240,
+        "nocturnal": false
+      }
+    },
+    "LilyQueen_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Goddess of the Tranquil Light",
+        "description": null
+      },
+      "stats": {
+        "price": 3540,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 100,
+        "run_speed": 450,
+        "ride_sprint_speed": 550,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 540,
+        "rarity": 10,
+        "male_probability": 30,
+        "combi_rank": 220,
+        "nocturnal": true
+      }
+    },
+    "LittleBriarRose": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Princess Gaze",
+        "description": null
+      },
+      "stats": {
+        "price": 756,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2690,
+        "nocturnal": false
+      }
+    },
+    "LizardMan": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Too Cool to be Seen",
+        "description": null
+      },
+      "stats": {
+        "price": 476,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 140,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 270,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2670,
+        "nocturnal": true
+      }
+    },
+    "LizardMan_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Too Cool to be Seen",
+        "description": null
+      },
+      "stats": {
+        "price": 493,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 140,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 270,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2640,
+        "nocturnal": false
+      }
+    },
+    "LongCat": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Big Stretch",
+        "description": null
+      },
+      "stats": {
+        "price": 1684,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 70,
+        "run_speed": 700,
+        "ride_sprint_speed": 900,
+        "transport_speed": 150,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 230,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 1900,
+        "nocturnal": false
+      }
+    },
+    "LotusDragon": {
+      "elements": [
+        "Leaf",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Glorious Mist",
+        "description": null
+      },
+      "stats": {
+        "price": 3884,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 175,
+        "run_speed": 700,
+        "ride_sprint_speed": 1500,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 230,
+        "nocturnal": false
+      }
+    },
+    "Manticore": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Hellflame Lion",
+        "description": null
+      },
+      "stats": {
+        "price": 1794,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 180,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 465,
+        "stamina": 150,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1360,
+        "nocturnal": false
+      }
+    },
+    "Manticore_Dark": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Darkflame Lion",
+        "description": null
+      },
+      "stats": {
+        "price": 1882,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 90,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 420,
+        "stamina": 150,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1270,
+        "nocturnal": true
+      }
+    },
+    "MimicDog": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Master of Unlocking",
+        "description": null
+      },
+      "stats": {
+        "price": 3500,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 80,
+        "run_speed": 2000,
+        "ride_sprint_speed": -1,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 7,
+        "male_probability": 80,
+        "combi_rank": 1740,
+        "nocturnal": false
+      }
+    },
+    "Monkey": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Cheery Rifle",
+        "description": null
+      },
+      "stats": {
+        "price": 512,
+        "craft_speed": 100,
+        "slow_walk_speed": 48,
+        "walk_speed": 48,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 174,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2900,
+        "nocturnal": false
+      }
+    },
+    "Monkey_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Chipper Chimp Gunfire",
+        "description": null
+      },
+      "stats": {
+        "price": 526,
+        "craft_speed": 100,
+        "slow_walk_speed": 48,
+        "walk_speed": 48,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 174,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2830,
+        "nocturnal": false
+      }
+    },
+    "Monkey_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Cheery Rifle",
+        "description": null
+      },
+      "stats": {
+        "price": 1285,
+        "craft_speed": 100,
+        "slow_walk_speed": 48,
+        "walk_speed": 48,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 174,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 9999,
+        "nocturnal": false
+      }
+    },
+    "MonochromeQueen": {
+      "elements": [
+        "Dark",
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Untainted Maiden",
+        "description": null
+      },
+      "stats": {
+        "price": 3867,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 9,
+        "max_full_stomach": 680,
+        "rarity": 7,
+        "male_probability": 30,
+        "combi_rank": 280,
+        "nocturnal": true
+      }
+    },
+    "MoonChild": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Hidden Dark Energy",
+        "description": null
+      },
+      "stats": {
+        "price": 2421,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 130,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 1180,
+        "nocturnal": true
+      }
+    },
+    "MoonQueen": {
+      "elements": [
+        "Dark",
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Celestial Darkness",
+        "description": null
+      },
+      "stats": {
+        "price": 4095,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 150,
+        "run_speed": 1000,
+        "ride_sprint_speed": 1600,
+        "transport_speed": 275,
+        "stamina": 300,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 680,
+        "rarity": 9,
+        "male_probability": 20,
+        "combi_rank": 360,
+        "nocturnal": true
+      }
+    },
+    "MopBaby": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Fluffy",
+        "description": null
+      },
+      "stats": {
+        "price": 313,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 100,
+        "run_speed": 250,
+        "ride_sprint_speed": 400,
+        "transport_speed": 175,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2840,
+        "nocturnal": false
+      }
+    },
+    "MopKing": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "King of Fluff",
+        "description": null
+      },
+      "stats": {
+        "price": 1244,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 650,
+        "ride_sprint_speed": 1020,
+        "transport_speed": 210,
+        "stamina": 120,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2150,
+        "nocturnal": false
+      }
+    },
+    "Mothman": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Spore Stalwart",
+        "description": null
+      },
+      "stats": {
+        "price": 4436,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 500,
+        "ride_sprint_speed": 750,
+        "transport_speed": 500,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 630,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 80,
+        "nocturnal": false
+      }
+    },
+    "MummyPal": {
+      "elements": [
+        "Dark",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Resurrection",
+        "description": null
+      },
+      "stats": {
+        "price": 2529,
+        "craft_speed": 100,
+        "slow_walk_speed": 75,
+        "walk_speed": 150,
+        "run_speed": 480,
+        "ride_sprint_speed": 720,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1170,
+        "nocturnal": true
+      }
+    },
+    "MushroomDragon": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Rampant Spores",
+        "description": null
+      },
+      "stats": {
+        "price": 1367,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 740,
+        "ride_sprint_speed": 1050,
+        "transport_speed": -1,
+        "stamina": 220,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 450,
+        "rarity": 4,
+        "male_probability": 55,
+        "combi_rank": 1520,
+        "nocturnal": false
+      }
+    },
+    "MushroomDragon_Dark": {
+      "elements": [
+        "Leaf",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Roiling Spores",
+        "description": null
+      },
+      "stats": {
+        "price": 1399,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 740,
+        "ride_sprint_speed": 1050,
+        "transport_speed": -1,
+        "stamina": 220,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 450,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1450,
+        "nocturnal": true
+      }
+    },
+    "MushroomLady": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Charming Spore",
+        "description": null
+      },
+      "stats": {
+        "price": 3087,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 600,
+        "transport_speed": 100,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 6,
+        "male_probability": 30,
+        "combi_rank": 760,
+        "nocturnal": false
+      }
+    },
+    "Mutant": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Antigravity",
+        "description": null
+      },
+      "stats": {
+        "price": 1845,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 130,
+        "run_speed": 500,
+        "ride_sprint_speed": 650,
+        "transport_speed": 315,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2010,
+        "nocturnal": false
+      }
+    },
+    "MysteryMask": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Masquerade Dance",
+        "description": null
+      },
+      "stats": {
+        "price": 2431,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 70,
+        "run_speed": 400,
+        "ride_sprint_speed": 520,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 400,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1140,
+        "nocturnal": true
+      }
+    },
+    "NaughtyCat": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Glaring Cat's Eye",
+        "description": null
+      },
+      "stats": {
+        "price": 1074,
+        "craft_speed": 100,
+        "slow_walk_speed": 32,
+        "walk_speed": 64,
+        "run_speed": 650,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 332,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 300,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2120,
+        "nocturnal": false
+      }
+    },
+    "NegativeKoala": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Caffeine Inoculation",
+        "description": null
+      },
+      "stats": {
+        "price": 436,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 20,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 100,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3000,
+        "nocturnal": true
+      }
+    },
+    "NegativeOctopus": {
+      "elements": [
+        "Dark",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Fried Squid",
+        "description": null
+      },
+      "stats": {
+        "price": 376,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 260,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2770,
+        "nocturnal": true
+      }
+    },
+    "NegativeOctopus_Neutral": {
+      "elements": [
+        "Normal",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Fried Killamari",
+        "description": null
+      },
+      "stats": {
+        "price": 421,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 260,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2540,
+        "nocturnal": false
+      }
+    },
+    "NightBlueHorse": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Night Dancer",
+        "description": null
+      },
+      "stats": {
+        "price": 2014,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 150,
+        "run_speed": 900,
+        "ride_sprint_speed": 1250,
+        "transport_speed": -1,
+        "stamina": 230,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 440,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1150,
+        "nocturnal": true
+      }
+    },
+    "NightBlueHorse_Neutral": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Light Dancer",
+        "description": null
+      },
+      "stats": {
+        "price": 2514,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 150,
+        "run_speed": 900,
+        "ride_sprint_speed": 1250,
+        "transport_speed": -1,
+        "stamina": 230,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 440,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 430,
+        "nocturnal": false
+      }
+    },
+    "NightFox": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Kuudere",
+        "description": null
+      },
+      "stats": {
+        "price": 502,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 300,
+        "ride_sprint_speed": 500,
+        "transport_speed": 164,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2920,
+        "nocturnal": true
+      }
+    },
+    "NightLady": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Nightmare Iris",
+        "description": null
+      },
+      "stats": {
+        "price": 3667,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 20,
+        "male_probability": 10,
+        "combi_rank": 620,
+        "nocturnal": true
+      }
+    },
+    "NightLady_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Nightmare Stare",
+        "description": null
+      },
+      "stats": {
+        "price": 3997,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 20,
+        "male_probability": 10,
+        "combi_rank": 130,
+        "nocturnal": true
+      }
+    },
+    "OctopusGirl": {
+      "elements": [
+        "Water",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Sticky Princess",
+        "description": null
+      },
+      "stats": {
+        "price": 577,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 120,
+        "run_speed": 300,
+        "ride_sprint_speed": 500,
+        "transport_speed": 210,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 280,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2530,
+        "nocturnal": true
+      }
+    },
+    "OctopusGirl_Neutral": {
+      "elements": [
+        "Water",
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Cephalo-Princess",
+        "description": null
+      },
+      "stats": {
+        "price": 1612,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 120,
+        "run_speed": 300,
+        "ride_sprint_speed": 500,
+        "transport_speed": 210,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1630,
+        "nocturnal": false
+      }
+    },
+    "OniGhostGirl": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Grinning Death",
+        "description": null
+      },
+      "stats": {
+        "price": 1625,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 400,
+        "ride_sprint_speed": 600,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 290,
+        "rarity": 4,
+        "male_probability": 40,
+        "combi_rank": 1540,
+        "nocturnal": true
+      }
+    },
+    "POLICE_HawkBird": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "None",
+        "description": null
+      },
+      "stats": {
+        "price": 1012,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 475,
+        "rarity": 3,
+        "male_probability": -1,
+        "combi_rank": 9999,
+        "nocturnal": false
+      }
+    },
+    "POLICE_ThunderDog": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "None",
+        "description": null
+      },
+      "stats": {
+        "price": 1205,
+        "craft_speed": 100,
+        "slow_walk_speed": 110,
+        "walk_speed": 210,
+        "run_speed": 700,
+        "ride_sprint_speed": 1150,
+        "transport_speed": 455,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 350,
+        "rarity": 5,
+        "male_probability": -1,
+        "combi_rank": 9999,
+        "nocturnal": false
+      }
+    },
+    "PandaGirl": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Selfless Discipline",
+        "description": null
+      },
+      "stats": {
+        "price": 1806,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 7,
+        "male_probability": 40,
+        "combi_rank": 1410,
+        "nocturnal": false
+      }
+    },
+    "Penguin": {
+      "elements": [
+        "Water",
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Pengullet Launcher",
+        "description": null
+      },
+      "stats": {
+        "price": 463,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 500,
+        "ride_sprint_speed": 650,
+        "transport_speed": 265,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2960,
+        "nocturnal": false
+      }
+    },
+    "Penguin_Electric": {
+      "elements": [
+        "Water",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Pengullet Lux Launcher",
+        "description": null
+      },
+      "stats": {
+        "price": 561,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 500,
+        "ride_sprint_speed": 650,
+        "transport_speed": 265,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2490,
+        "nocturnal": false
+      }
+    },
+    "PinkCat": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Cat Helper",
+        "description": null
+      },
+      "stats": {
+        "price": 436,
+        "craft_speed": 100,
+        "slow_walk_speed": 30,
+        "walk_speed": 60,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 160,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2760,
+        "nocturnal": false
+      }
+    },
+    "PinkLizard": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Heart Drain",
+        "description": null
+      },
+      "stats": {
+        "price": 1056,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 170,
+        "run_speed": 750,
+        "ride_sprint_speed": 850,
+        "transport_speed": 460,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 5,
+        "male_probability": 30,
+        "combi_rank": 2090,
+        "nocturnal": true
+      }
+    },
+    "PinkRabbit": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Happy-Go-Lucky Bunny",
+        "description": null
+      },
+      "stats": {
+        "price": 421,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 245,
+        "ride_sprint_speed": 350,
+        "transport_speed": 172,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2860,
+        "nocturnal": false
+      }
+    },
+    "PinkRabbit_Grass": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Ground 'n' Pound",
+        "description": null
+      },
+      "stats": {
+        "price": 526,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 245,
+        "ride_sprint_speed": 350,
+        "transport_speed": 172,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2460,
+        "nocturnal": false
+      }
+    },
+    "PlantSlime": {
+      "elements": [
+        "Leaf",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Logging Assistance",
+        "description": null
+      },
+      "stats": {
+        "price": 394,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 175,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2950,
+        "nocturnal": false
+      }
+    },
+    "PlantSlime_Flower": {
+      "elements": [
+        "Leaf",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Logging Assistance",
+        "description": null
+      },
+      "stats": {
+        "price": 394,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 175,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 10,
+        "male_probability": 50,
+        "combi_rank": 2950,
+        "nocturnal": false
+      }
+    },
+    "Plesiosaur": {
+      "elements": [
+        "Leaf",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Balmy Weather",
+        "description": null
+      },
+      "stats": {
+        "price": 2862,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 95,
+        "run_speed": 600,
+        "ride_sprint_speed": 1020,
+        "transport_speed": -1,
+        "stamina": 270,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1030,
+        "nocturnal": false
+      }
+    },
+    "PoseidonOrca": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Sentinel of the Great Sea",
+        "description": null
+      },
+      "stats": {
+        "price": 4277,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 300,
+        "run_speed": 750,
+        "ride_sprint_speed": 1120,
+        "transport_speed": 450,
+        "stamina": 410,
+        "size": "XL",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 160,
+        "nocturnal": false
+      }
+    },
+    "PurpleSpider": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Tarantriss’ Web",
+        "description": null
+      },
+      "stats": {
+        "price": 1806,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 640,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 4,
+        "max_full_stomach": 320,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1730,
+        "nocturnal": true
+      }
+    },
+    "QueenBee": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Queen Bee Command",
+        "description": null
+      },
+      "stats": {
+        "price": 1769,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 250,
+        "run_speed": 450,
+        "ride_sprint_speed": 550,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 8,
+        "male_probability": 10,
+        "combi_rank": 1790,
+        "nocturnal": false
+      }
+    },
+    "RaijinDaughter": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Lady of Lightning",
+        "description": null
+      },
+      "stats": {
+        "price": 616,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 200,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 20,
+        "combi_rank": 2400,
+        "nocturnal": false
+      }
+    },
+    "RaijinDaughter_Water": {
+      "elements": [
+        "Dark",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Lady of Dark Lightning",
+        "description": null
+      },
+      "stats": {
+        "price": 599,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 200,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 20,
+        "combi_rank": 1910,
+        "nocturnal": true
+      }
+    },
+    "RedArmorBird": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Flame Wing",
+        "description": null
+      },
+      "stats": {
+        "price": 2263,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 800,
+        "ride_sprint_speed": 1300,
+        "transport_speed": 375,
+        "stamina": 150,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1050,
+        "nocturnal": false
+      }
+    },
+    "RedFlowerBird": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Flower Dance",
+        "description": null
+      },
+      "stats": {
+        "price": 1844,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 150,
+        "run_speed": 600,
+        "ride_sprint_speed": 600,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1350,
+        "nocturnal": false
+      }
+    },
+    "RobinHood": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Grounded Archer",
+        "description": null
+      },
+      "stats": {
+        "price": 1335,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 2260,
+        "nocturnal": false
+      }
+    },
+    "RobinHood_Ground": {
+      "elements": [
+        "Leaf",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Master Archer",
+        "description": null
+      },
+      "stats": {
+        "price": 1294,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 2050,
+        "nocturnal": false
+      }
+    },
+    "RockBeast": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Power Stone",
+        "description": null
+      },
+      "stats": {
+        "price": 2306,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 140,
+        "run_speed": 350,
+        "ride_sprint_speed": 550,
+        "transport_speed": 230,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 580,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1110,
+        "nocturnal": false
+      }
+    },
+    "RockBeast_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Power Crystal",
+        "description": null
+      },
+      "stats": {
+        "price": 2685,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 140,
+        "run_speed": 350,
+        "ride_sprint_speed": 550,
+        "transport_speed": 230,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 580,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 460,
+        "nocturnal": false
+      }
+    },
+    "Ronin": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Brandish Blade",
+        "description": null
+      },
+      "stats": {
+        "price": 1442,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 320,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1560,
+        "nocturnal": false
+      }
+    },
+    "Ronin_Dark": {
+      "elements": [
+        "Fire",
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Void Blade",
+        "description": null
+      },
+      "stats": {
+        "price": 1857,
+        "craft_speed": 100,
+        "slow_walk_speed": 80,
+        "walk_speed": 160,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 320,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 840,
+        "nocturnal": true
+      }
+    },
+    "SaintCentaur": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Holy Knight of the Firmament",
+        "description": null
+      },
+      "stats": {
+        "price": 4339,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 800,
+        "ride_sprint_speed": 1800,
+        "transport_speed": 450,
+        "stamina": 400,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 20,
+        "male_probability": 50,
+        "combi_rank": 180,
+        "nocturnal": false
+      }
+    },
+    "SakuraSaurus": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Love's First Blossom",
+        "description": null
+      },
+      "stats": {
+        "price": 2014,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 75,
+        "run_speed": 550,
+        "ride_sprint_speed": 1020,
+        "transport_speed": 200,
+        "stamina": 150,
+        "size": "XL",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1380,
+        "nocturnal": false
+      }
+    },
+    "SakuraSaurus_Water": {
+      "elements": [
+        "Leaf",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Purity's Full Bloom",
+        "description": null
+      },
+      "stats": {
+        "price": 2259,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 75,
+        "run_speed": 550,
+        "ride_sprint_speed": 1020,
+        "transport_speed": 200,
+        "stamina": 150,
+        "size": "XL",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1080,
+        "nocturnal": false
+      }
+    },
+    "SamuraiDog": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Best Boy",
+        "description": null
+      },
+      "stats": {
+        "price": 476,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 45,
+        "run_speed": 400,
+        "ride_sprint_speed": 600,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2930,
+        "nocturnal": false
+      }
+    },
+    "ScorpionMan": {
+      "elements": [
+        "Dark",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Phantom Venom",
+        "description": null
+      },
+      "stats": {
+        "price": 1649,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 180,
+        "run_speed": 720,
+        "ride_sprint_speed": -1,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1510,
+        "nocturnal": true
+      }
+    },
+    "ScorpionMan_Electric": {
+      "elements": [
+        "Electricity",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Scorpion Longwave",
+        "description": null
+      },
+      "stats": {
+        "price": 1773,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 180,
+        "run_speed": 720,
+        "ride_sprint_speed": -1,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 850,
+        "nocturnal": false
+      }
+    },
+    "Sekhmet": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Desert Empress",
+        "description": null
+      },
+      "stats": {
+        "price": 2638,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 375,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 5,
+        "male_probability": 30,
+        "combi_rank": 870,
+        "nocturnal": false
+      }
+    },
+    "Serpent": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Swift Swimmer",
+        "description": null
+      },
+      "stats": {
+        "price": 968,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2440,
+        "nocturnal": false
+      }
+    },
+    "Serpent_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Sand Swimmer",
+        "description": null
+      },
+      "stats": {
+        "price": 1205,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1840,
+        "nocturnal": false
+      }
+    },
+    "SharkKid": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Angry Shark",
+        "description": null
+      },
+      "stats": {
+        "price": 850,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 400,
+        "ride_sprint_speed": 500,
+        "transport_speed": 120,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2550,
+        "nocturnal": false
+      }
+    },
+    "SharkKid_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Angry Shark",
+        "description": null
+      },
+      "stats": {
+        "price": 850,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 400,
+        "ride_sprint_speed": 500,
+        "transport_speed": 120,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 150,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2430,
+        "nocturnal": false
+      }
+    },
+    "SheepBall": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Fluffy Shield",
+        "description": null
+      },
+      "stats": {
+        "price": 421,
+        "craft_speed": 100,
+        "slow_walk_speed": 23,
+        "walk_speed": 40,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 160,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 3050,
+        "nocturnal": false
+      }
+    },
+    "SifuDog": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Homeward Prayer",
+        "description": null
+      },
+      "stats": {
+        "price": 1683,
+        "craft_speed": 100,
+        "slow_walk_speed": 45,
+        "walk_speed": 75,
+        "run_speed": 300,
+        "ride_sprint_speed": 550,
+        "transport_speed": 187,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1460,
+        "nocturnal": false
+      }
+    },
+    "SkyDragon": {
+      "elements": [
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Sky Dragon Affection",
+        "description": null
+      },
+      "stats": {
+        "price": 2081,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 240,
+        "run_speed": 800,
+        "ride_sprint_speed": 950,
+        "transport_speed": 470,
+        "stamina": 220,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1210,
+        "nocturnal": false
+      }
+    },
+    "SkyDragon_Grass": {
+      "elements": [
+        "Dragon",
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Grass Dragon Affection",
+        "description": null
+      },
+      "stats": {
+        "price": 2235,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 240,
+        "run_speed": 800,
+        "ride_sprint_speed": 950,
+        "transport_speed": 470,
+        "stamina": 220,
+        "size": "L",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1300,
+        "nocturnal": false
+      }
+    },
+    "SleeveRabbit": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Long-Sleeved Hurray",
+        "description": null
+      },
+      "stats": {
+        "price": 2464,
+        "craft_speed": 100,
+        "slow_walk_speed": 40,
+        "walk_speed": 40,
+        "run_speed": 600,
+        "ride_sprint_speed": 700,
+        "transport_speed": 100,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 400,
+        "rarity": 4,
+        "male_probability": 40,
+        "combi_rank": 810,
+        "nocturnal": false
+      }
+    },
+    "SmallArmadillo": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Sandball Soccer",
+        "description": null
+      },
+      "stats": {
+        "price": 1152,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 800,
+        "ride_sprint_speed": 900,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 3,
+        "max_full_stomach": 340,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2310,
+        "nocturnal": false
+      }
+    },
+    "SmallYeti": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Invisible Eye",
+        "description": null
+      },
+      "stats": {
+        "price": 927,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 85,
+        "run_speed": 400,
+        "ride_sprint_speed": 600,
+        "transport_speed": 100,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2390,
+        "nocturnal": false
+      }
+    },
+    "SnakeGirl": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Snake's Sagacity",
+        "description": null
+      },
+      "stats": {
+        "price": 2680,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 450,
+        "ride_sprint_speed": 600,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 6,
+        "max_full_stomach": 340,
+        "rarity": 5,
+        "male_probability": 40,
+        "combi_rank": 970,
+        "nocturnal": true
+      }
+    },
+    "SnowPeafowl": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Peacock Pounce",
+        "description": null
+      },
+      "stats": {
+        "price": 2382,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 500,
+        "ride_sprint_speed": 750,
+        "transport_speed": -1,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 300,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 860,
+        "nocturnal": false
+      }
+    },
+    "SnowTigerBeastman": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Blizzard Crash",
+        "description": null
+      },
+      "stats": {
+        "price": 4425,
+        "craft_speed": 100,
+        "slow_walk_speed": 120,
+        "walk_speed": 225,
+        "run_speed": 750,
+        "ride_sprint_speed": 1100,
+        "transport_speed": -1,
+        "stamina": 270,
+        "size": "M",
+        "food_amount": 9,
+        "max_full_stomach": 730,
+        "rarity": 8,
+        "male_probability": 60,
+        "combi_rank": 50,
+        "nocturnal": false
+      }
+    },
+    "SoldierBee": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Worker Bee",
+        "description": null
+      },
+      "stats": {
+        "price": 1166,
+        "craft_speed": 100,
+        "slow_walk_speed": 125,
+        "walk_speed": 250,
+        "run_speed": 450,
+        "ride_sprint_speed": 550,
+        "transport_speed": 350,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 4,
+        "male_probability": 10,
+        "combi_rank": 2350,
+        "nocturnal": false
+      }
+    },
+    "StuffedShark": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Water Gun",
+        "description": null
+      },
+      "stats": {
+        "price": 677,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 250,
+        "ride_sprint_speed": 400,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2450,
+        "nocturnal": false
+      }
+    },
+    "StuffedShark_Fire": {
+      "elements": [
+        "Water",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Ember Chamber",
+        "description": null
+      },
+      "stats": {
+        "price": 749,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 250,
+        "ride_sprint_speed": 400,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 140,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2240,
+        "nocturnal": false
+      }
+    },
+    "SumoDog": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Yokozuna's Presence",
+        "description": null
+      },
+      "stats": {
+        "price": 1812,
+        "craft_speed": 100,
+        "slow_walk_speed": 60,
+        "walk_speed": 120,
+        "run_speed": 600,
+        "ride_sprint_speed": 810,
+        "transport_speed": 120,
+        "stamina": 110,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 420,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1190,
+        "nocturnal": false
+      }
+    },
+    "Suzaku": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Wings of Flame",
+        "description": null
+      },
+      "stats": {
+        "price": 2409,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 850,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 450,
+        "stamina": 350,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1200,
+        "nocturnal": false
+      }
+    },
+    "Suzaku_Water": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Wings of Water",
+        "description": null
+      },
+      "stats": {
+        "price": 2732,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 850,
+        "ride_sprint_speed": 1100,
+        "transport_speed": 450,
+        "stamina": 350,
+        "size": "XL",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 740,
+        "nocturnal": false
+      }
+    },
+    "SweetsSheep": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Candy Pop",
+        "description": null
+      },
+      "stats": {
+        "price": 502,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2820,
+        "nocturnal": false
+      }
+    },
+    "SweetsSheep_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Bitter Pop",
+        "description": null
+      },
+      "stats": {
+        "price": 836,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 300,
+        "ride_sprint_speed": 400,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2030,
+        "nocturnal": false
+      }
+    },
+    "SwordCutlassfish": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Fish Fillet",
+        "description": null
+      },
+      "stats": {
+        "price": 1342,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1420,
+        "nocturnal": false
+      }
+    },
+    "SwordCutlassfish_Fire": {
+      "elements": [
+        "Water",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Seared Fish Fillet",
+        "description": null
+      },
+      "stats": {
+        "price": 1442,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 500,
+        "ride_sprint_speed": 800,
+        "transport_speed": 300,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1590,
+        "nocturnal": false
+      }
+    },
+    "TentacleTurtle": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Spikey Carrier",
+        "description": null
+      },
+      "stats": {
+        "price": 661,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 320,
+        "ride_sprint_speed": 500,
+        "transport_speed": 190,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 280,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2410,
+        "nocturnal": false
+      }
+    },
+    "TentacleTurtle_Ground": {
+      "elements": [
+        "Water",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Shiny Hauler",
+        "description": null
+      },
+      "stats": {
+        "price": 14950,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 320,
+        "ride_sprint_speed": 500,
+        "transport_speed": 190,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 280,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 1330,
+        "nocturnal": false
+      }
+    },
+    "ThiefBird": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dark-Nester",
+        "description": null
+      },
+      "stats": {
+        "price": 2263,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 170,
+        "run_speed": 950,
+        "ride_sprint_speed": 1350,
+        "transport_speed": 450,
+        "stamina": 200,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 560,
+        "rarity": 5,
+        "male_probability": 60,
+        "combi_rank": 530,
+        "nocturnal": true
+      }
+    },
+    "ThunderBird": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Thunderous",
+        "description": null
+      },
+      "stats": {
+        "price": 1934,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 750,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 375,
+        "stamina": 160,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1690,
+        "nocturnal": false
+      }
+    },
+    "ThunderBird_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Coldsnap",
+        "description": null
+      },
+      "stats": {
+        "price": 2227,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 200,
+        "run_speed": 750,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 375,
+        "stamina": 160,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 340,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 580,
+        "nocturnal": false
+      }
+    },
+    "ThunderDog": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Lightning Shepherd",
+        "description": null
+      },
+      "stats": {
+        "price": 1205,
+        "craft_speed": 100,
+        "slow_walk_speed": 110,
+        "walk_speed": 210,
+        "run_speed": 700,
+        "ride_sprint_speed": 1150,
+        "transport_speed": 455,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1920,
+        "nocturnal": false
+      }
+    },
+    "ThunderDog_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Snow Shepherd",
+        "description": null
+      },
+      "stats": {
+        "price": 1138,
+        "craft_speed": 100,
+        "slow_walk_speed": 110,
+        "walk_speed": 210,
+        "run_speed": 700,
+        "ride_sprint_speed": 1150,
+        "transport_speed": 455,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 4,
+        "max_full_stomach": 280,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1600,
+        "nocturnal": false
+      }
+    },
+    "ThunderDragonMan": {
+      "elements": [
+        "Dragon",
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Ferocious Thunder Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 4136,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 185,
+        "run_speed": 900,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 620,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 120,
+        "nocturnal": false
+      }
+    },
+    "ThunderFluffyBird": {
+      "elements": [
+        "Electricity"
+      ],
+      "partner_skill": {
+        "name": "Electro-Massage Incubation",
+        "description": null
+      },
+      "stats": {
+        "price": 1963,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 700,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 300,
+        "stamina": 140,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 450,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1400,
+        "nocturnal": false
+      }
+    },
+    "TropicalOstrich": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Samba Step",
+        "description": null
+      },
+      "stats": {
+        "price": 2529,
+        "craft_speed": 100,
+        "slow_walk_speed": 150,
+        "walk_speed": 180,
+        "run_speed": 550,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 400,
+        "stamina": 180,
+        "size": "M",
+        "food_amount": 6,
+        "max_full_stomach": 410,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1240,
+        "nocturnal": false
+      }
+    },
+    "Umihebi": {
+      "elements": [
+        "Dragon",
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Stormbringer Sea Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 3723,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 175,
+        "run_speed": 600,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 350,
+        "stamina": 150,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 590,
+        "nocturnal": false
+      }
+    },
+    "Umihebi_Fire": {
+      "elements": [
+        "Dragon",
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Stormbringer Lava Dragon",
+        "description": null
+      },
+      "stats": {
+        "price": 3577,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 175,
+        "run_speed": 600,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 350,
+        "stamina": 150,
+        "size": "XL",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 170,
+        "nocturnal": false
+      }
+    },
+    "VenusFlytrap": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Entangling Tongue",
+        "description": null
+      },
+      "stats": {
+        "price": 1875,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 750,
+        "transport_speed": 330,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 7,
+        "max_full_stomach": 530,
+        "rarity": 6,
+        "male_probability": 40,
+        "combi_rank": 1700,
+        "nocturnal": false
+      }
+    },
+    "VioletFairy": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Purification of Gaia",
+        "description": null
+      },
+      "stats": {
+        "price": 2095,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 150,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 5,
+        "max_full_stomach": 380,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 1480,
+        "nocturnal": false
+      }
+    },
+    "VolcanicMonster": {
+      "elements": [
+        "Fire",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Ore-Loving Beast",
+        "description": null
+      },
+      "stats": {
+        "price": 2576,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 550,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 235,
+        "stamina": 220,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 490,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 1060,
+        "nocturnal": false
+      }
+    },
+    "VolcanicMonster_Ice": {
+      "elements": [
+        "Ice",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Ice-Loving Beast",
+        "description": null
+      },
+      "stats": {
+        "price": 2797,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 80,
+        "run_speed": 550,
+        "ride_sprint_speed": 1000,
+        "transport_speed": 235,
+        "stamina": 220,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 490,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 600,
+        "nocturnal": false
+      }
+    },
+    "VolcanoDragon": {
+      "elements": [
+        "Fire",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Magma Overload",
+        "description": null
+      },
+      "stats": {
+        "price": 2911,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 220,
+        "run_speed": 650,
+        "ride_sprint_speed": 850,
+        "transport_speed": -1,
+        "stamina": 270,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 530,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 750,
+        "nocturnal": false
+      }
+    },
+    "VolcanoDragon_Ice": {
+      "elements": [
+        "Ice",
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Ice Overload",
+        "description": null
+      },
+      "stats": {
+        "price": 3328,
+        "craft_speed": 100,
+        "slow_walk_speed": 55,
+        "walk_speed": 220,
+        "run_speed": 650,
+        "ride_sprint_speed": 850,
+        "transport_speed": -1,
+        "stamina": 270,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 530,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 380,
+        "nocturnal": false
+      }
+    },
+    "WeaselDragon": {
+      "elements": [
+        "Ice",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Wriggling Weasel",
+        "description": null
+      },
+      "stats": {
+        "price": 1270,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 180,
+        "run_speed": 750,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 390,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 2330,
+        "nocturnal": false
+      }
+    },
+    "WeaselDragon_Fire": {
+      "elements": [
+        "Fire",
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Sparkling Weasel",
+        "description": null
+      },
+      "stats": {
+        "price": 1670,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 180,
+        "run_speed": 750,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 390,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 230,
+        "rarity": 5,
+        "male_probability": 50,
+        "combi_rank": 1950,
+        "nocturnal": false
+      }
+    },
+    "Werewolf": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dark Gleam Strike",
+        "description": null
+      },
+      "stats": {
+        "price": 842,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 175,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 375,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 2110,
+        "nocturnal": true
+      }
+    },
+    "Werewolf_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Frozen Gleam Strike",
+        "description": null
+      },
+      "stats": {
+        "price": 1176,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 175,
+        "run_speed": 600,
+        "ride_sprint_speed": 800,
+        "transport_speed": 375,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 210,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 1290,
+        "nocturnal": false
+      }
+    },
+    "WhiteAlienDragon": {
+      "elements": [
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Unknown Intruder",
+        "description": null
+      },
+      "stats": {
+        "price": 2845,
+        "craft_speed": 100,
+        "slow_walk_speed": 115,
+        "walk_speed": 230,
+        "run_speed": 790,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 500,
+        "stamina": 250,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 470,
+        "rarity": 9,
+        "male_probability": 50,
+        "combi_rank": 990,
+        "nocturnal": false
+      }
+    },
+    "WhiteDeer": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Blessing of Purification",
+        "description": null
+      },
+      "stats": {
+        "price": 2911,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 140,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 400,
+        "stamina": 260,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 570,
+        "nocturnal": false
+      }
+    },
+    "WhiteDeer_Dark": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Blessing of Chaos",
+        "description": null
+      },
+      "stats": {
+        "price": 3528,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 140,
+        "run_speed": 800,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 400,
+        "stamina": 260,
+        "size": "M",
+        "food_amount": 8,
+        "max_full_stomach": 550,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 270,
+        "nocturnal": true
+      }
+    },
+    "WhiteMoth": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Silk Shroud",
+        "description": null
+      },
+      "stats": {
+        "price": 1589,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 350,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1810,
+        "nocturnal": false
+      }
+    },
+    "WhiteMoth_Neutral": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Gilded Shroud",
+        "description": null
+      },
+      "stats": {
+        "price": 2094,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 5,
+        "max_full_stomach": 350,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 650,
+        "nocturnal": false
+      }
+    },
+    "WhiteShieldDragon": {
+      "elements": [
+        "Dragon"
+      ],
+      "partner_skill": {
+        "name": "Aegis Shield",
+        "description": null
+      },
+      "stats": {
+        "price": 3710,
+        "craft_speed": 100,
+        "slow_walk_speed": 90,
+        "walk_speed": 150,
+        "run_speed": 700,
+        "ride_sprint_speed": 1050,
+        "transport_speed": -1,
+        "stamina": 280,
+        "size": "L",
+        "food_amount": 8,
+        "max_full_stomach": 600,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 560,
+        "nocturnal": false
+      }
+    },
+    "WhiteTiger": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Dragon Hunter",
+        "description": null
+      },
+      "stats": {
+        "price": 1987,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 280,
+        "run_speed": 720,
+        "ride_sprint_speed": 900,
+        "transport_speed": 460,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 1040,
+        "nocturnal": false
+      }
+    },
+    "WhiteTiger_Ground": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Explosive Strength",
+        "description": null
+      },
+      "stats": {
+        "price": 2484,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 280,
+        "run_speed": 720,
+        "ride_sprint_speed": 900,
+        "transport_speed": 460,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 480,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 470,
+        "nocturnal": false
+      }
+    },
+    "WindChimes": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Flying Trapeze",
+        "description": null
+      },
+      "stats": {
+        "price": 541,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2780,
+        "nocturnal": false
+      }
+    },
+    "WindChimes_Ice": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Winter Trapeze",
+        "description": null
+      },
+      "stats": {
+        "price": 728,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 100,
+        "run_speed": 400,
+        "ride_sprint_speed": 550,
+        "transport_speed": 250,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 2,
+        "male_probability": 50,
+        "combi_rank": 2510,
+        "nocturnal": false
+      }
+    },
+    "WingGolem": {
+      "elements": [
+        "Earth"
+      ],
+      "partner_skill": {
+        "name": "Steel Guardian Mode",
+        "description": null
+      },
+      "stats": {
+        "price": 3767,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 190,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 9,
+        "male_probability": 70,
+        "combi_rank": 260,
+        "nocturnal": false
+      }
+    },
+    "WingGolem_Fire": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Iron Guardian Mode",
+        "description": null
+      },
+      "stats": {
+        "price": 3895,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 190,
+        "run_speed": 550,
+        "ride_sprint_speed": 700,
+        "transport_speed": 400,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 9,
+        "max_full_stomach": 600,
+        "rarity": 10,
+        "male_probability": 70,
+        "combi_rank": 210,
+        "nocturnal": false
+      }
+    },
+    "WizardOwl": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Dark Knowledge",
+        "description": null
+      },
+      "stats": {
+        "price": 443,
+        "craft_speed": 100,
+        "slow_walk_speed": 26,
+        "walk_speed": 70,
+        "run_speed": 380,
+        "ride_sprint_speed": 550,
+        "transport_speed": 225,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2940,
+        "nocturnal": true
+      }
+    },
+    "WoolFox": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Fluffy Wool",
+        "description": null
+      },
+      "stats": {
+        "price": 489,
+        "craft_speed": 100,
+        "slow_walk_speed": 20,
+        "walk_speed": 40,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 170,
+        "stamina": 100,
+        "size": "XS",
+        "food_amount": 1,
+        "max_full_stomach": 100,
+        "rarity": 1,
+        "male_probability": 50,
+        "combi_rank": 2890,
+        "nocturnal": false
+      }
+    },
+    "YakushimaBoss001": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Mad Eye Lunge",
+        "description": null
+      },
+      "stats": {
+        "price": 3000,
+        "craft_speed": 100,
+        "slow_walk_speed": 100,
+        "walk_speed": 450,
+        "run_speed": 900,
+        "ride_sprint_speed": 1200,
+        "transport_speed": 600,
+        "stamina": 100,
+        "size": "L",
+        "food_amount": 2,
+        "max_full_stomach": 240,
+        "rarity": 6,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": true
+      }
+    },
+    "YakushimaBoss001_Small": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Demonic Sight",
+        "description": null
+      },
+      "stats": {
+        "price": 750,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 150,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 220,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": true
+      }
+    },
+    "YakushimaMonster001": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 500,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 180,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster001_Blue": {
+      "elements": [
+        "Water"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 600,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 210,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster001_Pink": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 900,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 300,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster001_Purple": {
+      "elements": [
+        "Dark"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 800,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 270,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": true
+      }
+    },
+    "YakushimaMonster001_Rainbow": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 1500,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "M",
+        "food_amount": 3,
+        "max_full_stomach": 330,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster001_Red": {
+      "elements": [
+        "Fire"
+      ],
+      "partner_skill": {
+        "name": "Slime Body",
+        "description": null
+      },
+      "stats": {
+        "price": 700,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 50,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 200,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 3,
+        "max_full_stomach": 240,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster002": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Enchant",
+        "description": null
+      },
+      "stats": {
+        "price": 1250,
+        "craft_speed": 100,
+        "slow_walk_speed": 50,
+        "walk_speed": 300,
+        "run_speed": 600,
+        "ride_sprint_speed": 900,
+        "transport_speed": 450,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 180,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster003": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Bat Backup",
+        "description": null
+      },
+      "stats": {
+        "price": 1000,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 150,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 220,
+        "rarity": 3,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "YakushimaMonster003_Purple": {
+      "elements": [
+        "Normal"
+      ],
+      "partner_skill": {
+        "name": "Bat Backup",
+        "description": null
+      },
+      "stats": {
+        "price": 1250,
+        "craft_speed": 100,
+        "slow_walk_speed": 25,
+        "walk_speed": 150,
+        "run_speed": 300,
+        "ride_sprint_speed": 450,
+        "transport_speed": 275,
+        "stamina": 100,
+        "size": "S",
+        "food_amount": 2,
+        "max_full_stomach": 220,
+        "rarity": 4,
+        "male_probability": 50,
+        "combi_rank": 3100,
+        "nocturnal": false
+      }
+    },
+    "Yeti": {
+      "elements": [
+        "Ice"
+      ],
+      "partner_skill": {
+        "name": "Guardian of the Snowy Mountain",
+        "description": null
+      },
+      "stats": {
+        "price": 2591,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 150,
+        "stamina": 240,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 7,
+        "male_probability": 50,
+        "combi_rank": 830,
+        "nocturnal": false
+      }
+    },
+    "Yeti_Grass": {
+      "elements": [
+        "Leaf"
+      ],
+      "partner_skill": {
+        "name": "Guardian of the South",
+        "description": null
+      },
+      "stats": {
+        "price": 2743,
+        "craft_speed": 100,
+        "slow_walk_speed": 70,
+        "walk_speed": 100,
+        "run_speed": 600,
+        "ride_sprint_speed": 1050,
+        "transport_speed": 150,
+        "stamina": 240,
+        "size": "L",
+        "food_amount": 7,
+        "max_full_stomach": 460,
+        "rarity": 8,
+        "male_probability": 50,
+        "combi_rank": 610,
+        "nocturnal": false
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@
 // optional label is tinted with the matching `el-*` design token (§2) via the
 // `--color-el-<key>` custom property, never a hardcoded hex.
 
-import { elementIconUrl, elementTokenKey } from "../lib/assets";
+import { elementGlyphUrl, elementIconUrl, elementTokenKey } from "../lib/assets";
 
 /** The colored type tile for one element, keyed case-insensitively. */
 export function ElementIcon({
@@ -89,11 +89,13 @@ export function ElementBadges({
 }
 
 /**
- * A paldb-style element **banner** for the detail header: the full-color type
- * tile beside the element name, on a chip whose border and fill are the
- * element's own `el-*` token mixed down (`color-mix`, never a hardcoded hex).
- * Larger and louder than {@link ElementChip} — one per type, sized for the hero
- * header rather than dense card/hover contexts.
+ * A paldb/in-game-style element **banner** for the detail header: the flat
+ * **white in-game glyph** on a chip whose background is the element's own `el-*`
+ * token tinted down over `abyss` and whose border is the same token (both via
+ * `color-mix`, never a hardcoded hex) — the loud, dark-tinted banner look the
+ * game uses. Falls back to the full-color {@link ElementIcon} tile when no glyph
+ * exists for the type (unknown element or a missing asset). Larger and louder
+ * than {@link ElementChip} — one per type, sized for the hero header.
  */
 export function ElementBanner({
   element,
@@ -104,15 +106,34 @@ export function ElementBanner({
 }) {
   const key = elementTokenKey(element);
   const color = key ? `var(--color-el-${key})` : "var(--color-ink-dim)";
+  const glyph = elementGlyphUrl(element);
   return (
     <span
-      className="inline-flex items-center gap-2 rounded-md border py-1 pl-1 pr-3"
+      className="inline-flex items-center gap-2 rounded-md border py-1 pl-2 pr-3"
       style={{
-        borderColor: `color-mix(in srgb, ${color} 40%, transparent)`,
-        backgroundColor: `color-mix(in srgb, ${color} 13%, transparent)`,
+        borderColor: `color-mix(in srgb, ${color} 50%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${color} 22%, var(--color-abyss))`,
       }}
     >
-      <ElementIcon element={element} size={size} />
+      {glyph ? (
+        <img
+          src={glyph}
+          alt=""
+          width={size}
+          height={size}
+          loading="lazy"
+          draggable={false}
+          className="shrink-0 object-contain"
+          style={{ width: size, height: size }}
+          onError={(e) => {
+            const img = e.currentTarget;
+            img.onerror = null;
+            img.src = elementIconUrl(element);
+          }}
+        />
+      ) : (
+        <ElementIcon element={element} size={size} />
+      )}
       <span
         className="font-display text-[12px] font-semibold uppercase tracking-[0.12em]"
         style={{ color }}

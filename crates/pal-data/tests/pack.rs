@@ -168,11 +168,14 @@ fn species_metadata_round_trips() {
     assert_eq!(cat.food_amount, 6, "Nyafia food amount");
     assert!(cat.nocturnal, "Nyafia is nocturnal");
     assert_eq!(cat.wild_levels, (30, 60), "Nyafia wild level range");
-    // Partner-skill spot check: BadCatgirl (Nyafia) is a DLC species with no
-    // permissive partner-skill source, so it decodes to None (never an empty
-    // string). Populated species are covered by `partner_skill_spot_checks`.
-    assert_eq!(cat.partner_skill, None, "BadCatgirl partner skill (uncovered)");
-    assert_eq!(cat.partner_skill_desc, None, "BadCatgirl partner desc (uncovered)");
+    // Partner-skill spot check: BadCatgirl (Nyafia) now carries a NAME from the
+    // own-install extraction even though it has no vendored DESCRIPTION.
+    assert_eq!(
+        cat.partner_skill.as_deref(),
+        Some("Shot-Nyan Mode"),
+        "BadCatgirl partner skill name (from extraction)",
+    );
+    assert_eq!(cat.partner_skill_desc, None, "BadCatgirl partner desc (no vendored source)");
     assert!(
         gd.species().all(|s| s.partner_skill.as_deref() != Some("")),
         "partner_skill is never an empty string",
@@ -210,13 +213,11 @@ fn element_spot_checks() {
     assert_eq!(els("Kitsunebi"), ["Fire"], "Foxparks is Fire");
     // Lamball (SheepBall) = Normal (in-game "Neutral"), single-element.
     assert_eq!(els("SheepBall"), ["Normal"], "Lamball is Normal");
-    // Jormuntide (Umihebi) = Water + Dragon (dual; game's ElementType order).
-    let jorm = els("Umihebi");
-    assert_eq!(jorm.len(), 2, "Jormuntide is dual-element, got {jorm:?}");
-    assert!(
-        jorm.contains(&"Water") && jorm.contains(&"Dragon"),
-        "Jormuntide is Water+Dragon, got {jorm:?}",
-    );
+    // Jormuntide (Umihebi) = Dragon + Water (dual; extraction's primary-then-
+    // secondary ElementType order).
+    assert_eq!(els("Umihebi"), ["Dragon", "Water"], "Jormuntide is Dragon+Water");
+    // Fuack (BluePlatypus) = Water, single-element.
+    assert_eq!(els("BluePlatypus"), ["Water"], "Fuack is Water");
 }
 
 #[test]
@@ -240,19 +241,21 @@ fn partner_skill_spot_checks() {
 }
 
 #[test]
-fn partner_skill_coverage_from_vendor() {
+fn partner_skill_name_full_desc_partial() {
     let gd = GameData::get();
-    let covered = gd.species().filter(|s| s.partner_skill.is_some()).count();
-    // 138 exact name matches + 31 game-accurate variant->base inheritances from
-    // mlg404/palworld-paldex-api (see vendor/NOTICE). Locked so a coverage
-    // regression (e.g. a broken merge) is caught.
-    assert_eq!(covered, 169, "partner-skill coverage (of 299)");
-    // A name present implies a description is present in our vendored source.
+    // Own-install extraction populates a NAME for every species.
+    let with_name = gd.species().filter(|s| s.partner_skill.is_some()).count();
+    assert_eq!(with_name, 299, "partner-skill name coverage (all species)");
+    // DESCRIPTIONS still come from vendor/partner-skills.json: 138 exact + 31
+    // variant->base = 169. Locked so a broken desc merge is caught.
+    let with_desc = gd.species().filter(|s| s.partner_skill_desc.is_some()).count();
+    assert_eq!(with_desc, 169, "partner-skill description coverage (of 299)");
+    // A description present implies a name present (never a desc without a name).
     for sp in gd.species() {
-        if sp.partner_skill.is_some() {
+        if sp.partner_skill_desc.is_some() {
             assert!(
-                sp.partner_skill_desc.is_some(),
-                "{} has a partner-skill name but no description",
+                sp.partner_skill.is_some(),
+                "{} has a partner-skill description but no name",
                 sp.internal_name,
             );
         }
@@ -273,4 +276,49 @@ fn species_id_resolves_case_insensitively() {
     assert_eq!(gd.species_by_id("Anubis").unwrap().name, "Anubis");
     // Unknown id is still None.
     assert!(gd.species_by_id("NotARealPalXYZ").is_none());
+}
+
+#[test]
+fn extended_stats_spot_checks() {
+    let gd = GameData::get();
+    // Lamball (SheepBall) extended stats — own-install extraction ground truth.
+    let lam = gd.species_by_id("SheepBall").expect("Lamball exists");
+    assert_eq!(lam.craft_speed, 100, "Lamball craft_speed");
+    assert_eq!(lam.run_speed, 400, "Lamball run_speed");
+    assert_eq!(lam.size, "XS", "Lamball size");
+    assert_eq!(lam.price, 421, "Lamball price");
+    assert_eq!(lam.stamina, 100, "Lamball stamina");
+    // The `-1` sentinel is preserved for non-rideable / non-transport species.
+    let scorp = gd.species_by_id("ScorpionMan").expect("ScorpionMan exists");
+    assert_eq!(scorp.ride_sprint_speed, -1, "ScorpionMan is not rideable");
+    // Every species carries a valid size class.
+    for sp in gd.species() {
+        assert!(
+            matches!(sp.size.as_str(), "XS" | "S" | "M" | "L" | "XL"),
+            "{} has unexpected size {:?}",
+            sp.internal_name,
+            sp.size,
+        );
+    }
+}
+
+#[test]
+fn game_settings_are_extraction_ground_truth() {
+    let gd = GameData::get();
+    let gs = gd.game_settings();
+    // Combi_* inheritance arrays straight from the game-file GameSetting CDO.
+    assert_eq!(gs.combi_talent_inherit_num, vec![3, 2, 1], "CDO talent-inherit");
+    assert_eq!(gs.combi_passive_inherit_num, vec![4, 3, 2, 1], "CDO passive-inherit");
+    assert_eq!(gs.combi_passive_random_add_num, vec![4, 3, 2, 1], "CDO passive-random-add");
+    assert!((gs.combi_boss_pal_rate - 0.05).abs() < 1e-6, "CDO boss-pal-rate");
+    assert_eq!(gd.game_build(), "24181527", "pack game build");
+    // DATA ONLY: the CDO talent weights ([3,2,1]) deliberately differ from the
+    // solver's empirically-validated [2,1,1] (50/25/25) model — the CDO array is
+    // stored for reference but NOT wired into breeding this round.
+    let solver_talent: Vec<u32> =
+        gd.inheritance().talent_inherit.iter().map(|&w| w as u32).collect();
+    assert_ne!(
+        gs.combi_talent_inherit_num, solver_talent,
+        "CDO talent weights must stay decoupled from the solver's empirical model",
+    );
 }

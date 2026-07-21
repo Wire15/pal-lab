@@ -11,7 +11,18 @@
       "hp": 110,
       "attack": 100,
       "defense": 100,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2182,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 560,
+      "size": "M",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -28,7 +39,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Shot-Nyan Mode",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -52,7 +63,18 @@
       "hp": 105,
       "attack": 95,
       "defense": 100,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2063,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -69,7 +91,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Prayer for Abundant Harvest",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -94,7 +116,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 777,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 480,
+      "ride_sprint_speed": 720,
+      "transport_speed": 220,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -111,7 +144,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Friend of Earth",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -135,7 +168,18 @@
       "hp": 120,
       "attack": 110,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2622,
+      "craft_speed": 100,
+      "slow_walk_speed": 170,
+      "walk_speed": 270,
+      "run_speed": 840,
+      "ride_sprint_speed": 1260,
+      "transport_speed": -1,
+      "stamina": 200,
+      "max_full_stomach": 550,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -152,7 +196,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sandstorm's Blessing",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -176,7 +220,18 @@
       "hp": 75,
       "attack": 75,
       "defense": 115,
-      "rarity": 3
+      "rarity": 3,
+      "price": 661,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 320,
+      "ride_sprint_speed": 500,
+      "transport_speed": 190,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -193,7 +248,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Spikey Carrier",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -217,7 +272,18 @@
       "hp": 85,
       "attack": 85,
       "defense": 125,
-      "rarity": 4
+      "rarity": 4,
+      "price": 14950,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 320,
+      "ride_sprint_speed": 500,
+      "transport_speed": 190,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -234,7 +300,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Shiny Hauler",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -259,7 +325,18 @@
       "hp": 120,
       "attack": 130,
       "defense": 100,
-      "rarity": 10
+      "rarity": 10,
+      "price": 3217,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 800,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 480,
+      "stamina": 100,
+      "max_full_stomach": 540,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -306,7 +383,18 @@
       "hp": 95,
       "attack": 100,
       "defense": 85,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1325,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 700,
+      "ride_sprint_speed": 960,
+      "transport_speed": 320,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -348,7 +436,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 85,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2036,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 700,
+      "ride_sprint_speed": 960,
+      "transport_speed": 320,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -389,7 +488,18 @@
       "hp": 70,
       "attack": 60,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 665,
+      "craft_speed": 100,
+      "slow_walk_speed": 52,
+      "walk_speed": 105,
+      "run_speed": 475,
+      "ride_sprint_speed": 550,
+      "transport_speed": 317,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -430,7 +540,18 @@
       "hp": 70,
       "attack": 65,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 385,
+      "craft_speed": 100,
+      "slow_walk_speed": 52,
+      "walk_speed": 105,
+      "run_speed": 475,
+      "ride_sprint_speed": 550,
+      "transport_speed": 317,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -447,7 +568,7 @@
       0,
       1
     ],
-    "partner_skill": "Gold Digger",
+    "partner_skill": "Icy Whispers",
     "partner_skill_desc": "Sometimes digs up Gold Coin when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 1,
@@ -471,7 +592,18 @@
       "hp": 80,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 443,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 150,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -512,7 +644,18 @@
       "hp": 75,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 480,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 40,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -553,7 +696,18 @@
       "hp": 60,
       "attack": 75,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 373,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 300,
+      "ride_sprint_speed": 550,
+      "transport_speed": 170,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -594,7 +748,18 @@
       "hp": 95,
       "attack": 80,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 791,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 120,
+      "run_speed": 700,
+      "ride_sprint_speed": 900,
+      "transport_speed": 390,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -635,7 +800,18 @@
       "hp": 95,
       "attack": 80,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 891,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 120,
+      "run_speed": 700,
+      "ride_sprint_speed": 900,
+      "transport_speed": 390,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -676,7 +852,18 @@
       "hp": 80,
       "attack": 95,
       "defense": 120,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1577,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 120,
+      "run_speed": 300,
+      "ride_sprint_speed": 420,
+      "transport_speed": 190,
+      "stamina": 100,
+      "max_full_stomach": 350,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -723,7 +910,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 60,
-      "rarity": 2
+      "rarity": 2,
+      "price": 502,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 600,
+      "ride_sprint_speed": 700,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -740,7 +938,7 @@
       0,
       0
     ],
-    "partner_skill": "Galeclaw Rider",
+    "partner_skill": "Galeclaw Glider",
     "partner_skill_desc": "While in team, can be summoned and used instead of a glider. Allows you to fire a gun while gliding with this Pal.",
     "nocturnal": false,
     "food_amount": 2,
@@ -764,7 +962,18 @@
       "hp": 120,
       "attack": 105,
       "defense": 105,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3524,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 140,
+      "run_speed": 600,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 210,
+      "stamina": 180,
+      "max_full_stomach": 410,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -805,7 +1014,18 @@
       "hp": 70,
       "attack": 60,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 355,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 180,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -846,7 +1066,18 @@
       "hp": 80,
       "attack": 90,
       "defense": 75,
-      "rarity": 2
+      "rarity": 2,
+      "price": 611,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 180,
+      "run_speed": 800,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 460,
+      "stamina": 70,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -887,7 +1118,18 @@
       "hp": 90,
       "attack": 95,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1214,
+      "craft_speed": 100,
+      "slow_walk_speed": 66,
+      "walk_speed": 100,
+      "run_speed": 550,
+      "ride_sprint_speed": 720,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -910,7 +1152,7 @@
       3,
       0
     ],
-    "partner_skill": "Full-power Gorilla Mode",
+    "partner_skill": "Full-Power Gorilla Mode",
     "partner_skill_desc": "When activated, unleashes a primal fury that increases Gorirat's attack power.",
     "nocturnal": false,
     "food_amount": 3,
@@ -934,7 +1176,18 @@
       "hp": 90,
       "attack": 100,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1284,
+      "craft_speed": 100,
+      "slow_walk_speed": 66,
+      "walk_speed": 100,
+      "run_speed": 550,
+      "ride_sprint_speed": 720,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -957,7 +1210,7 @@
       3,
       0
     ],
-    "partner_skill": "Full-power Gorilla Mode",
+    "partner_skill": "Full-Power Gorilla Pound",
     "partner_skill_desc": "When activated, unleashes a primal fury that increases Gorirat's attack power.",
     "nocturnal": false,
     "food_amount": 3,
@@ -981,7 +1234,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 417,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 215,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1022,7 +1286,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 80,
-      "rarity": 2
+      "rarity": 2,
+      "price": 472,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 215,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1063,7 +1338,18 @@
       "hp": 80,
       "attack": 105,
       "defense": 105,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1388,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 130,
+      "run_speed": 720,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 425,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1104,7 +1390,18 @@
       "hp": 80,
       "attack": 105,
       "defense": 110,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1974,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 130,
+      "run_speed": 720,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 425,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1121,7 +1418,7 @@
       0,
       0
     ],
-    "partner_skill": "Swift Deity",
+    "partner_skill": "Frigid Deity",
     "partner_skill_desc": "Can be ridden. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
@@ -1145,7 +1442,18 @@
       "hp": 65,
       "attack": 75,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 394,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 240,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1186,7 +1494,18 @@
       "hp": 80,
       "attack": 80,
       "defense": 80,
-      "rarity": 1
+      "rarity": 1,
+      "price": 756,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1227,7 +1546,18 @@
       "hp": 90,
       "attack": 100,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1845,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 130,
+      "run_speed": 500,
+      "ride_sprint_speed": 650,
+      "transport_speed": 315,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1268,7 +1598,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 463,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 500,
+      "ride_sprint_speed": 650,
+      "transport_speed": 265,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1285,7 +1626,7 @@
       1,
       0
     ],
-    "partner_skill": "Pengullet Cannon",
+    "partner_skill": "Pengullet Launcher",
     "partner_skill_desc": "When activated, the player equips a Rocket Launcher and fires Pengullet as ammunition. Pengullet explodes on contact and is incapacitated.",
     "nocturnal": false,
     "food_amount": 1,
@@ -1310,7 +1651,18 @@
       "hp": 70,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 561,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 500,
+      "ride_sprint_speed": 650,
+      "transport_speed": 265,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1327,7 +1679,7 @@
       1,
       0
     ],
-    "partner_skill": "Pengullet Cannon",
+    "partner_skill": "Pengullet Lux Launcher",
     "partner_skill_desc": "When activated, the player equips a Rocket Launcher and fires Pengullet as ammunition. Pengullet explodes on contact and is incapacitated.",
     "nocturnal": false,
     "food_amount": 1,
@@ -1352,7 +1704,18 @@
       "hp": 70,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 616,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 200,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 20.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1393,7 +1756,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 75,
-      "rarity": 2
+      "rarity": 2,
+      "price": 850,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 400,
+      "ride_sprint_speed": 500,
+      "transport_speed": 120,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1434,7 +1808,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 75,
-      "rarity": 3
+      "rarity": 3,
+      "price": 850,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 400,
+      "ride_sprint_speed": 500,
+      "transport_speed": 120,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1475,7 +1860,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 421,
+      "craft_speed": 100,
+      "slow_walk_speed": 23,
+      "walk_speed": 40,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 160,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1516,7 +1912,18 @@
       "hp": 130,
       "attack": 120,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3723,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 175,
+      "run_speed": 600,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 350,
+      "stamina": 150,
+      "max_full_stomach": 550,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -1564,7 +1971,18 @@
       "hp": 130,
       "attack": 130,
       "defense": 100,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3577,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 175,
+      "run_speed": 600,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 350,
+      "stamina": 150,
+      "max_full_stomach": 550,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1606,7 +2024,18 @@
       "hp": 80,
       "attack": 100,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 842,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 175,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 375,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1623,7 +2052,7 @@
       0,
       0
     ],
-    "partner_skill": "Claws Glistening in the Dark",
+    "partner_skill": "Dark Gleam Strike",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Jumping Claw.",
     "nocturnal": true,
     "food_amount": 3,
@@ -1647,7 +2076,18 @@
       "hp": 80,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 541,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1688,7 +2128,18 @@
       "hp": 80,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 728,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1729,7 +2180,18 @@
       "hp": 120,
       "attack": 105,
       "defense": 105,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2409,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 850,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 450,
+      "stamina": 350,
+      "max_full_stomach": 460,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1770,7 +2232,18 @@
       "hp": 125,
       "attack": 105,
       "defense": 105,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2732,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 850,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 450,
+      "stamina": 350,
+      "max_full_stomach": 460,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1811,7 +2284,18 @@
       "hp": 100,
       "attack": 95,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1464,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 850,
+      "ride_sprint_speed": 1300,
+      "transport_speed": 500,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1852,7 +2336,18 @@
       "hp": 100,
       "attack": 95,
       "defense": 90,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2034,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 850,
+      "ride_sprint_speed": 1300,
+      "transport_speed": 500,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1894,7 +2389,18 @@
       "hp": 110,
       "attack": 80,
       "defense": 90,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1205,
+      "craft_speed": 100,
+      "slow_walk_speed": 83,
+      "walk_speed": 83,
+      "run_speed": 630,
+      "ride_sprint_speed": 800,
+      "transport_speed": 456,
+      "stamina": 130,
+      "max_full_stomach": 200,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1935,7 +2441,18 @@
       "hp": 115,
       "attack": 80,
       "defense": 95,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1543,
+      "craft_speed": 100,
+      "slow_walk_speed": 83,
+      "walk_speed": 83,
+      "run_speed": 630,
+      "ride_sprint_speed": 800,
+      "transport_speed": 456,
+      "stamina": 130,
+      "max_full_stomach": 200,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1977,7 +2494,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 502,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2018,7 +2546,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 95,
-      "rarity": 4
+      "rarity": 4,
+      "price": 836,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2035,7 +2574,7 @@
       0,
       1
     ],
-    "partner_skill": "Candy Pop",
+    "partner_skill": "Bitter Pop",
     "partner_skill_desc": "Sometimes drops Cotton Candy when assigned to ranch.",
     "nocturnal": false,
     "food_amount": 1,
@@ -2059,7 +2598,18 @@
       "hp": 100,
       "attack": 100,
       "defense": 110,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1987,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 280,
+      "run_speed": 720,
+      "ride_sprint_speed": 900,
+      "transport_speed": 460,
+      "stamina": 100,
+      "max_full_stomach": 480,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2100,7 +2650,18 @@
       "hp": 90,
       "attack": 75,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 791,
+      "craft_speed": 100,
+      "slow_walk_speed": 62,
+      "walk_speed": 62,
+      "run_speed": 500,
+      "ride_sprint_speed": 900,
+      "transport_speed": 261,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2141,7 +2702,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 968,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2182,7 +2754,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 100,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1205,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2223,7 +2806,18 @@
       "hp": 75,
       "attack": 95,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 770,
+      "craft_speed": 100,
+      "slow_walk_speed": 85,
+      "walk_speed": 170,
+      "run_speed": 920,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 545,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2240,7 +2834,7 @@
       0,
       1
     ],
-    "partner_skill": "Telepeck",
+    "partner_skill": "Eerie Nightstreaker",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Phantom Peck.",
     "nocturnal": true,
     "food_amount": 3,
@@ -2264,7 +2858,18 @@
       "hp": 110,
       "attack": 100,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1831,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 350,
+      "stamina": 160,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2306,7 +2911,18 @@
       "hp": 115,
       "attack": 105,
       "defense": 105,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2109,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 350,
+      "stamina": 160,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2323,7 +2939,7 @@
       0,
       0
     ],
-    "partner_skill": "Waterwing Dance",
+    "partner_skill": "Icewing Dance",
     "partner_skill_desc": "Can be ridden to travel on water. Applies Water damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
@@ -2348,7 +2964,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 436,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 160,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -2395,7 +3022,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 436,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 20,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 100,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2436,7 +3074,18 @@
       "hp": 110,
       "attack": 110,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1659,
+      "craft_speed": 100,
+      "slow_walk_speed": 85,
+      "walk_speed": 100,
+      "run_speed": 750,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 417,
+      "stamina": 140,
+      "max_full_stomach": 340,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2477,7 +3126,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 120,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2576,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 550,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 235,
+      "stamina": 220,
+      "max_full_stomach": 490,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -2500,7 +3160,7 @@
       0,
       0
     ],
-    "partner_skill": "Ore-loving Beast",
+    "partner_skill": "Ore-Loving Beast",
     "partner_skill_desc": "Can be ridden. Improves efficiency of mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 7,
@@ -2525,7 +3185,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 130,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2797,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 550,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 235,
+      "stamina": 220,
+      "max_full_stomach": 490,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -2548,7 +3219,7 @@
       0,
       0
     ],
-    "partner_skill": "Ice-loving Beast",
+    "partner_skill": "Ice-Loving Beast",
     "partner_skill_desc": "Can be ridden. Improves efficiency of mining ores while mounted.",
     "nocturnal": false,
     "food_amount": 7,
@@ -2573,7 +3244,18 @@
       "hp": 75,
       "attack": 105,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1110,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 160,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 365,
+      "stamina": 130,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2614,7 +3296,18 @@
       "hp": 90,
       "attack": 105,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1335,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2631,7 +3324,7 @@
       2,
       0
     ],
-    "partner_skill": "Hawk Eye",
+    "partner_skill": "Grounded Archer",
     "partner_skill_desc": "While fighting together, allows you to deal more damage to weak points.",
     "nocturnal": false,
     "food_amount": 3,
@@ -2655,7 +3348,18 @@
       "hp": 90,
       "attack": 105,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1294,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2672,7 +3376,7 @@
       2,
       0
     ],
-    "partner_skill": "Hawk Eye",
+    "partner_skill": "Master Archer",
     "partner_skill_desc": "While fighting together, allows you to deal more damage to weak points.",
     "nocturnal": false,
     "food_amount": 3,
@@ -2697,7 +3401,18 @@
       "hp": 120,
       "attack": 115,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2365,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 60,
+      "run_speed": 650,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 150,
+      "stamina": 200,
+      "max_full_stomach": 480,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -2745,7 +3460,18 @@
       "hp": 120,
       "attack": 120,
       "defense": 110,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2685,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 60,
+      "run_speed": 650,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 150,
+      "stamina": 200,
+      "max_full_stomach": 480,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2787,7 +3513,18 @@
       "hp": 100,
       "attack": 115,
       "defense": 100,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1744,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 130,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 415,
+      "stamina": 140,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2804,7 +3541,7 @@
       0,
       0
     ],
-    "partner_skill": "Clear Mind",
+    "partner_skill": "Wolf of the Sun",
     "partner_skill_desc": "Can be ridden. Unaffected by the cold or heat while riding this Pal.",
     "nocturnal": false,
     "food_amount": 5,
@@ -2828,7 +3565,18 @@
       "hp": 80,
       "attack": 80,
       "defense": 50,
-      "rarity": 2
+      "rarity": 2,
+      "price": 476,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 140,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 270,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2845,7 +3593,7 @@
       1,
       0
     ],
-    "partner_skill": "Sixth Sense",
+    "partner_skill": "Too Cool to be Seen",
     "partner_skill_desc": "When activated, utilizes its sixth sense to detect nearby dungeons.",
     "nocturnal": true,
     "food_amount": 2,
@@ -2869,7 +3617,18 @@
       "hp": 80,
       "attack": 80,
       "defense": 50,
-      "rarity": 3
+      "rarity": 3,
+      "price": 493,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 140,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 270,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2886,7 +3645,7 @@
       1,
       0
     ],
-    "partner_skill": "Sixth Sense",
+    "partner_skill": "Too Cool to be Seen",
     "partner_skill_desc": "When activated, utilizes its sixth sense to detect nearby dungeons.",
     "nocturnal": false,
     "food_amount": 2,
@@ -2910,7 +3669,18 @@
       "hp": 60,
       "attack": 80,
       "defense": 60,
-      "rarity": 1
+      "rarity": 1,
+      "price": 376,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 105,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 202,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2951,7 +3721,18 @@
       "hp": 60,
       "attack": 85,
       "defense": 60,
-      "rarity": 2
+      "rarity": 2,
+      "price": 463,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 105,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 202,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2968,7 +3749,7 @@
       1,
       0
     ],
-    "partner_skill": "Surfing Slam",
+    "partner_skill": "Fire Tackle",
     "partner_skill_desc": "When activated, Fuack body surfs towards an enemy and slams into them.",
     "nocturnal": false,
     "food_amount": 1,
@@ -2993,7 +3774,18 @@
       "hp": 90,
       "attack": 115,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1464,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 350,
+      "run_speed": 700,
+      "ride_sprint_speed": 850,
+      "transport_speed": 475,
+      "stamina": 150,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3035,7 +3827,18 @@
       "hp": 90,
       "attack": 120,
       "defense": 95,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1624,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 350,
+      "run_speed": 700,
+      "ride_sprint_speed": 850,
+      "transport_speed": 475,
+      "stamina": 150,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3077,7 +3880,18 @@
       "hp": 60,
       "attack": 60,
       "defense": 60,
-      "rarity": 1
+      "rarity": 1,
+      "price": 313,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 50,
+      "run_speed": 375,
+      "ride_sprint_speed": 550,
+      "transport_speed": 212,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3118,7 +3932,18 @@
       "hp": 110,
       "attack": 85,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1315,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 120,
+      "run_speed": 700,
+      "ride_sprint_speed": 1030,
+      "transport_speed": 335,
+      "stamina": 130,
+      "max_full_stomach": 270,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3160,7 +3985,18 @@
       "hp": 110,
       "attack": 90,
       "defense": 90,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1543,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 120,
+      "run_speed": 700,
+      "ride_sprint_speed": 1030,
+      "transport_speed": 335,
+      "stamina": 130,
+      "max_full_stomach": 270,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3202,7 +4038,18 @@
       "hp": 60,
       "attack": 75,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 410,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 350,
+      "ride_sprint_speed": 500,
+      "transport_speed": 270,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3243,7 +4090,18 @@
       "hp": 140,
       "attack": 140,
       "defense": 120,
-      "rarity": 20
+      "rarity": 20,
+      "price": 4695,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 120,
+      "run_speed": 1200,
+      "ride_sprint_speed": 1800,
+      "transport_speed": 440,
+      "stamina": 300,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3271,7 +4129,7 @@
       0,
       0
     ],
-    "partner_skill": "Ice Steed",
+    "partner_skill": "Icy Steed",
     "partner_skill_desc": "Can be ridden as a flying mount. Changes the player's attack type to Ice and enhances Ice attacks while mounted.",
     "nocturnal": false,
     "food_amount": 9,
@@ -3295,7 +4153,18 @@
       "hp": 140,
       "attack": 140,
       "defense": 135,
-      "rarity": 20
+      "rarity": 20,
+      "price": 5000,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 120,
+      "run_speed": 1200,
+      "ride_sprint_speed": 1800,
+      "transport_speed": 440,
+      "stamina": 300,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3347,7 +4216,18 @@
       "hp": 150,
       "attack": 85,
       "defense": 90,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2220,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 135,
+      "run_speed": 600,
+      "ride_sprint_speed": 1030,
+      "transport_speed": 282,
+      "stamina": 180,
+      "max_full_stomach": 400,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3395,7 +4275,18 @@
       "hp": 150,
       "attack": 85,
       "defense": 90,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2424,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 135,
+      "run_speed": 600,
+      "ride_sprint_speed": 1030,
+      "transport_speed": 282,
+      "stamina": 180,
+      "max_full_stomach": 400,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3443,7 +4334,18 @@
       "hp": 100,
       "attack": 105,
       "defense": 110,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1744,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 100,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 325,
+      "stamina": 100,
+      "max_full_stomach": 490,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3484,7 +4386,18 @@
       "hp": 120,
       "attack": 90,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2014,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 75,
+      "run_speed": 550,
+      "ride_sprint_speed": 1020,
+      "transport_speed": 200,
+      "stamina": 150,
+      "max_full_stomach": 410,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3507,7 +4420,7 @@
       0,
       0
     ],
-    "partner_skill": "Overaffectionate",
+    "partner_skill": "Love's First Blossom",
     "partner_skill_desc": "Can be ridden. While in team, Broncherry helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 6,
@@ -3531,7 +4444,18 @@
       "hp": 120,
       "attack": 95,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2259,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 75,
+      "run_speed": 550,
+      "ride_sprint_speed": 1020,
+      "transport_speed": 200,
+      "stamina": 150,
+      "max_full_stomach": 410,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3554,7 +4478,7 @@
       0,
       0
     ],
-    "partner_skill": "Overaffectionate",
+    "partner_skill": "Purity's Full Bloom",
     "partner_skill_desc": "Can be ridden. While in team, Broncherry helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 6,
@@ -3579,7 +4503,18 @@
       "hp": 105,
       "attack": 110,
       "defense": 115,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2685,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 200,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1400,
+      "transport_speed": 500,
+      "stamina": 230,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3620,7 +4555,18 @@
       "hp": 100,
       "attack": 125,
       "defense": 120,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3470,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 400,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 500,
+      "stamina": 190,
+      "max_full_stomach": 600,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3667,7 +4613,18 @@
       "hp": 105,
       "attack": 130,
       "defense": 125,
-      "rarity": 10
+      "rarity": 10,
+      "price": 3651,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 400,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 500,
+      "stamina": 190,
+      "max_full_stomach": 600,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -3690,7 +4647,7 @@
       0,
       0
     ],
-    "partner_skill": "Magma Kaiser",
+    "partner_skill": "Dragon Kaiser",
     "partner_skill_desc": "Can be ridden. Enchances Fire attacks while mounted.",
     "nocturnal": false,
     "food_amount": 9,
@@ -3715,7 +4672,18 @@
       "hp": 100,
       "attack": 70,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1643,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 70,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 235,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3756,7 +4724,18 @@
       "hp": 100,
       "attack": 85,
       "defense": 110,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1464,
+      "craft_speed": 100,
+      "slow_walk_speed": 35,
+      "walk_speed": 70,
+      "run_speed": 700,
+      "ride_sprint_speed": 1070,
+      "transport_speed": 310,
+      "stamina": 140,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3797,7 +4776,18 @@
       "hp": 120,
       "attack": 120,
       "defense": 140,
-      "rarity": 10
+      "rarity": 10,
+      "price": 3245,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 80,
+      "run_speed": 850,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 465,
+      "stamina": 250,
+      "max_full_stomach": 530,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3814,7 +4804,7 @@
       0,
       0
     ],
-    "partner_skill": "Modified Dna",
+    "partner_skill": "Modified DNA",
     "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dark attacks while mounted.",
     "nocturnal": true,
     "food_amount": 8,
@@ -3838,7 +4828,18 @@
       "hp": 110,
       "attack": 90,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1589,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 350,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3855,7 +4856,7 @@
       0,
       3
     ],
-    "partner_skill": "Silk Maker",
+    "partner_skill": "Silk Shroud",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Blizzard Spike. Sometimes produces High Quality Cloth when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 5,
@@ -3879,7 +4880,18 @@
       "hp": 115,
       "attack": 90,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2094,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 350,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3896,7 +4908,7 @@
       0,
       4
     ],
-    "partner_skill": "Silk Maker",
+    "partner_skill": "Gilded Shroud",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Blizzard Spike. Sometimes produces High Quality Cloth when assigned to Ranch.",
     "nocturnal": false,
     "food_amount": 5,
@@ -3920,7 +4932,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 407,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 350,
+      "ride_sprint_speed": 450,
+      "transport_speed": 190,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3961,7 +4984,18 @@
       "hp": 90,
       "attack": 110,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1284,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 145,
+      "run_speed": 440,
+      "ride_sprint_speed": 620,
+      "transport_speed": 292,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4002,7 +5036,18 @@
       "hp": 90,
       "attack": 110,
       "defense": 85,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1509,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 145,
+      "run_speed": 440,
+      "ride_sprint_speed": 620,
+      "transport_speed": 292,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4019,7 +5064,7 @@
       2,
       0
     ],
-    "partner_skill": "Lord Fox",
+    "partner_skill": "Black Fox Lord",
     "partner_skill_desc": "When fighting together, applies Fire damage to the player's attacks.",
     "nocturnal": true,
     "food_amount": 4,
@@ -4044,7 +5089,18 @@
       "hp": 120,
       "attack": 70,
       "defense": 70,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1056,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 170,
+      "run_speed": 750,
+      "ride_sprint_speed": 850,
+      "transport_speed": 460,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "L",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [
       {
@@ -4091,7 +5147,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 80,
-      "rarity": 1
+      "rarity": 1,
+      "price": 443,
+      "craft_speed": 100,
+      "slow_walk_speed": 26,
+      "walk_speed": 70,
+      "run_speed": 380,
+      "ride_sprint_speed": 550,
+      "transport_speed": 225,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4132,7 +5199,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 407,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 700,
+      "ride_sprint_speed": 900,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4173,7 +5251,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 407,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 700,
+      "ride_sprint_speed": 900,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4214,7 +5303,18 @@
       "hp": 60,
       "attack": 60,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 376,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 260,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4256,7 +5356,18 @@
       "hp": 70,
       "attack": 60,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 421,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 260,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4273,7 +5384,7 @@
       2,
       0
     ],
-    "partner_skill": "Fried Squid",
+    "partner_skill": "Fried Killamari",
     "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nCan float for long periods of time while gliding.",
     "nocturnal": false,
     "food_amount": 2,
@@ -4298,7 +5409,18 @@
       "hp": 90,
       "attack": 50,
       "defense": 80,
-      "rarity": 2
+      "rarity": 2,
+      "price": 502,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 55,
+      "run_speed": 580,
+      "ride_sprint_speed": 700,
+      "transport_speed": 317,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 20.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4339,7 +5461,18 @@
       "hp": 140,
       "attack": 80,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2591,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 150,
+      "stamina": 240,
+      "max_full_stomach": 460,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -4386,7 +5519,18 @@
       "hp": 140,
       "attack": 80,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2743,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 150,
+      "stamina": 240,
+      "max_full_stomach": 460,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -4409,7 +5553,7 @@
       6,
       0
     ],
-    "partner_skill": "Guardian of the Grassy Fields",
+    "partner_skill": "Guardian of the South",
     "partner_skill_desc": "Can be ridden. While in team, Wumpo Botan helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 7,
@@ -4433,7 +5577,18 @@
       "hp": 100,
       "attack": 100,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2095,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4474,7 +5629,18 @@
       "hp": 100,
       "attack": 95,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1012,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 450,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4515,7 +5681,18 @@
       "hp": 75,
       "attack": 65,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 512,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4556,7 +5733,18 @@
       "hp": 120,
       "attack": 120,
       "defense": 110,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3427,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 100,
+      "run_speed": 450,
+      "ride_sprint_speed": 550,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 540,
+      "size": "L",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [
       {
@@ -4603,7 +5791,18 @@
       "hp": 115,
       "attack": 120,
       "defense": 115,
-      "rarity": 10
+      "rarity": 10,
+      "price": 3540,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 100,
+      "run_speed": 450,
+      "ride_sprint_speed": 550,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 540,
+      "size": "L",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4644,7 +5843,18 @@
       "hp": 90,
       "attack": 105,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1769,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 250,
+      "run_speed": 450,
+      "ride_sprint_speed": 550,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 10.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4685,7 +5895,18 @@
       "hp": 80,
       "attack": 90,
       "defense": 90,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1166,
+      "craft_speed": 100,
+      "slow_walk_speed": 125,
+      "walk_speed": 250,
+      "run_speed": 450,
+      "ride_sprint_speed": 550,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 10.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4726,7 +5947,18 @@
       "hp": 95,
       "attack": 95,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1147,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 140,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 270,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4767,7 +5999,18 @@
       "hp": 100,
       "attack": 90,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1475,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 275,
+      "stamina": 130,
+      "max_full_stomach": 280,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4808,7 +6051,18 @@
       "hp": 100,
       "attack": 100,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1806,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 275,
+      "stamina": 130,
+      "max_full_stomach": 280,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4825,7 +6079,7 @@
       4,
       0
     ],
-    "partner_skill": "Plane Partner",
+    "partner_skill": "Grenadier Panda",
     "partner_skill_desc": "Can be ridden. Can rapidly fire a grenade launcher while mounted.",
     "nocturnal": false,
     "food_amount": 4,
@@ -4849,7 +6103,18 @@
       "hp": 85,
       "attack": 95,
       "defense": 95,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1176,
+      "craft_speed": 100,
+      "slow_walk_speed": 87,
+      "walk_speed": 87,
+      "run_speed": 700,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 343,
+      "stamina": 120,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4890,7 +6155,18 @@
       "hp": 90,
       "attack": 100,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1205,
+      "craft_speed": 100,
+      "slow_walk_speed": 110,
+      "walk_speed": 210,
+      "run_speed": 700,
+      "ride_sprint_speed": 1150,
+      "transport_speed": 455,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4907,7 +6183,7 @@
       0,
       0
     ],
-    "partner_skill": "Jumping Force",
+    "partner_skill": "Lightning Shepherd",
     "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 4,
@@ -4931,7 +6207,18 @@
       "hp": 90,
       "attack": 105,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1138,
+      "craft_speed": 100,
+      "slow_walk_speed": 110,
+      "walk_speed": 210,
+      "run_speed": 700,
+      "ride_sprint_speed": 1150,
+      "transport_speed": 455,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4948,7 +6235,7 @@
       0,
       0
     ],
-    "partner_skill": "Jumping Force",
+    "partner_skill": "Snow Shepherd",
     "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 4,
@@ -4972,7 +6259,18 @@
       "hp": 65,
       "attack": 80,
       "defense": 50,
-      "rarity": 1
+      "rarity": 1,
+      "price": 358,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 300,
+      "ride_sprint_speed": 550,
+      "transport_speed": 240,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4989,7 +6287,7 @@
       1,
       0
     ],
-    "partner_skill": "Ore Detector",
+    "partner_skill": "Mining Assistance",
     "partner_skill_desc": "When activated, generates subtle vibrations to detect nearby ore.",
     "nocturnal": false,
     "food_amount": 2,
@@ -5013,7 +6311,18 @@
       "hp": 100,
       "attack": 125,
       "defense": 125,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3794,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 375,
+      "stamina": 300,
+      "max_full_stomach": 470,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -5036,7 +6345,7 @@
       0,
       0
     ],
-    "partner_skill": "Black Anklyosaur",
+    "partner_skill": "Black Ankylosaur",
     "partner_skill_desc": "Can be ridden a flying mount. Increases damage dealt to ore while mounted.",
     "nocturnal": true,
     "food_amount": 7,
@@ -5061,7 +6370,18 @@
       "hp": 90,
       "attack": 115,
       "defense": 90,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1947,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 195,
+      "run_speed": 500,
+      "ride_sprint_speed": 700,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5078,7 +6398,7 @@
       3,
       0
     ],
-    "partner_skill": "Grassland Speedster",
+    "partner_skill": "Grassland Gymnast",
     "partner_skill_desc": "When fighting together, increases player's movement speed and applies Grass damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
@@ -5102,7 +6422,18 @@
       "hp": 90,
       "attack": 95,
       "defense": 105,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1543,
+      "craft_speed": 100,
+      "slow_walk_speed": 65,
+      "walk_speed": 130,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 315,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5143,7 +6474,18 @@
       "hp": 115,
       "attack": 140,
       "defense": 120,
-      "rarity": 20
+      "rarity": 20,
+      "price": 4452,
+      "craft_speed": 100,
+      "slow_walk_speed": 200,
+      "walk_speed": 800,
+      "run_speed": 1700,
+      "ride_sprint_speed": 3300,
+      "transport_speed": 1250,
+      "stamina": 110,
+      "max_full_stomach": 600,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -5195,7 +6537,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 60,
-      "rarity": 1
+      "rarity": 1,
+      "price": 397,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 140,
+      "run_speed": 300,
+      "ride_sprint_speed": 550,
+      "transport_speed": 220,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5236,7 +6589,18 @@
       "hp": 80,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 512,
+      "craft_speed": 100,
+      "slow_walk_speed": 48,
+      "walk_speed": 48,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 174,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5277,7 +6641,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 526,
+      "craft_speed": 100,
+      "slow_walk_speed": 48,
+      "walk_speed": 48,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 174,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5294,7 +6669,7 @@
       1,
       0
     ],
-    "partner_skill": "Cheery Rifle",
+    "partner_skill": "Chipper Chimp Gunfire",
     "partner_skill_desc": "When activated, Tanzee will mercilessly fire an assault rifle at nearby enemies.",
     "nocturnal": false,
     "food_amount": 1,
@@ -5318,7 +6693,18 @@
       "hp": 105,
       "attack": 110,
       "defense": 80,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1794,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 180,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 465,
+      "stamina": 150,
+      "max_full_stomach": 410,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5359,7 +6745,18 @@
       "hp": 105,
       "attack": 115,
       "defense": 80,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1882,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 90,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 420,
+      "stamina": 150,
+      "max_full_stomach": 410,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5401,7 +6798,18 @@
       "hp": 120,
       "attack": 85,
       "defense": 90,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1274,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 80,
+      "run_speed": 700,
+      "ride_sprint_speed": 1040,
+      "transport_speed": 290,
+      "stamina": 170,
+      "max_full_stomach": 280,
+      "size": "XL",
+      "male_probability": 90.0
     },
     "guaranteed_passives": [
       {
@@ -5448,7 +6856,18 @@
       "hp": 120,
       "attack": 85,
       "defense": 90,
-      "rarity": 9
+      "rarity": 9,
+      "price": 1624,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 80,
+      "run_speed": 700,
+      "ride_sprint_speed": 1040,
+      "transport_speed": 290,
+      "stamina": 170,
+      "max_full_stomach": 280,
+      "size": "XL",
+      "male_probability": 90.0
     },
     "guaranteed_passives": [
       {
@@ -5471,7 +6890,7 @@
       0,
       0
     ],
-    "partner_skill": "King of Muscles",
+    "partner_skill": "Coldhearted King",
     "partner_skill_desc": "Can be ridden. While in team, Kingpaca helps carry supplies, increasing the player's max carrying capacity.",
     "nocturnal": false,
     "food_amount": 4,
@@ -5495,7 +6914,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 394,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 175,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5537,7 +6967,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 70,
-      "rarity": 10
+      "rarity": 10,
+      "price": 394,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 400,
+      "transport_speed": 175,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5579,7 +7020,18 @@
       "hp": 60,
       "attack": 60,
       "defense": 60,
-      "rarity": 1
+      "rarity": 1,
+      "price": 313,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 100,
+      "run_speed": 250,
+      "ride_sprint_speed": 400,
+      "transport_speed": 175,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5620,7 +7072,18 @@
       "hp": 100,
       "attack": 90,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1244,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 650,
+      "ride_sprint_speed": 1020,
+      "transport_speed": 210,
+      "stamina": 120,
+      "max_full_stomach": 300,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5661,7 +7124,18 @@
       "hp": 90,
       "attack": 105,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1356,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 145,
+      "run_speed": 440,
+      "ride_sprint_speed": 620,
+      "transport_speed": 292,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5678,7 +7152,7 @@
       2,
       0
     ],
-    "partner_skill": "Grimoire Collector",
+    "partner_skill": "Mystical Black Magic",
     "partner_skill_desc": "While fighting together, Neutral Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 4,
@@ -5702,7 +7176,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1675,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 145,
+      "run_speed": 440,
+      "ride_sprint_speed": 620,
+      "transport_speed": 292,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5719,7 +7204,7 @@
       2,
       0
     ],
-    "partner_skill": "Grimoire Collector",
+    "partner_skill": "Blazing Black Magic",
     "partner_skill_desc": "While fighting together, Neutral Pals drop more items when defeated.",
     "nocturnal": true,
     "food_amount": 4,
@@ -5744,7 +7229,18 @@
       "hp": 75,
       "attack": 65,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 421,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 245,
+      "ride_sprint_speed": 350,
+      "transport_speed": 172,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5761,7 +7257,7 @@
       1,
       0
     ],
-    "partner_skill": "Skilled Fingers",
+    "partner_skill": "Happy-Go-Lucky Bunny",
     "partner_skill_desc": "While in team, increases attack power of Neutral Pals.\nWhile at base, increases work efficiency if working at Weapon Workbench.",
     "nocturnal": false,
     "food_amount": 1,
@@ -5785,7 +7281,18 @@
       "hp": 105,
       "attack": 115,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1934,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 750,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 375,
+      "stamina": 160,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5826,7 +7333,18 @@
       "hp": 105,
       "attack": 115,
       "defense": 85,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2227,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 750,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 375,
+      "stamina": 160,
+      "max_full_stomach": 340,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5843,7 +7361,7 @@
       5,
       0
     ],
-    "partner_skill": "Thunderous",
+    "partner_skill": "Coldsnap",
     "partner_skill_desc": "Can be ridden as a flying mount. Applies Electric damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 5,
@@ -5867,7 +7385,18 @@
       "hp": 120,
       "attack": 100,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2913,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 110,
+      "run_speed": 500,
+      "ride_sprint_speed": 600,
+      "transport_speed": 110,
+      "stamina": 100,
+      "max_full_stomach": 400,
+      "size": "L",
+      "male_probability": 85.0
     },
     "guaranteed_passives": [
       {
@@ -5890,7 +7419,7 @@
       5,
       0
     ],
-    "partner_skill": "Hard Armor",
+    "partner_skill": "Cast-Iron Shell",
     "partner_skill_desc": "When fighting together, increases player's defense and applies Fire damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
@@ -5915,7 +7444,18 @@
       "hp": 120,
       "attack": 105,
       "defense": 120,
-      "rarity": 9
+      "rarity": 9,
+      "price": 10000,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 110,
+      "run_speed": 500,
+      "ride_sprint_speed": 600,
+      "transport_speed": 110,
+      "stamina": 100,
+      "max_full_stomach": 400,
+      "size": "L",
+      "male_probability": 85.0
     },
     "guaranteed_passives": [
       {
@@ -5938,7 +7478,7 @@
       5,
       0
     ],
-    "partner_skill": "Hard Armor",
+    "partner_skill": "Fullmetal Shell",
     "partner_skill_desc": "When fighting together, increases player's defense and applies Fire damage to the player's attacks.",
     "nocturnal": false,
     "food_amount": 6,
@@ -5962,7 +7502,18 @@
       "hp": 130,
       "attack": 120,
       "defense": 145,
-      "rarity": 20
+      "rarity": 20,
+      "price": 4339,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 800,
+      "ride_sprint_speed": 1800,
+      "transport_speed": 450,
+      "stamina": 400,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -6014,7 +7565,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 70,
-      "rarity": 6
+      "rarity": 6,
+      "price": 502,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 60,
+      "run_speed": 300,
+      "ride_sprint_speed": 500,
+      "transport_speed": 164,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6055,7 +7617,18 @@
       "hp": 95,
       "attack": 95,
       "defense": 95,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1442,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 110,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 280,
+      "stamina": 100,
+      "max_full_stomach": 270,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6097,7 +7670,18 @@
       "hp": 100,
       "attack": 100,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1683,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 110,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 280,
+      "stamina": 100,
+      "max_full_stomach": 270,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6114,7 +7698,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Unyielding Storm Commander",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -6139,7 +7723,18 @@
       "hp": 90,
       "attack": 80,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1270,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 180,
+      "run_speed": 750,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 390,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6181,7 +7776,18 @@
       "hp": 90,
       "attack": 85,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1670,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 180,
+      "run_speed": 750,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 390,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6198,7 +7804,7 @@
       0,
       0
     ],
-    "partner_skill": "Wriggling Weasel",
+    "partner_skill": "Sparkling Weasel",
     "partner_skill_desc": "Can be ridden.\nApplies Dragon Dragon damage to the player's attacks while mounted.",
     "nocturnal": false,
     "food_amount": 3,
@@ -6223,7 +7829,18 @@
       "hp": 105,
       "attack": 100,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2081,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 240,
+      "run_speed": 800,
+      "ride_sprint_speed": 950,
+      "transport_speed": 470,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6240,7 +7857,7 @@
       5,
       0
     ],
-    "partner_skill": "Sky Dragon's Affection",
+    "partner_skill": "Sky Dragon Affection",
     "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dragon attacks while mounted.",
     "nocturnal": false,
     "food_amount": 6,
@@ -6264,7 +7881,18 @@
       "hp": 105,
       "attack": 105,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2235,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 240,
+      "run_speed": 800,
+      "ride_sprint_speed": 950,
+      "transport_speed": 470,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6281,7 +7909,7 @@
       4,
       0
     ],
-    "partner_skill": "Sky Dragon's Affection",
+    "partner_skill": "Grass Dragon Affection",
     "partner_skill_desc": "Can be ridden as a flying mount. Enhances Dragon attacks while mounted.",
     "nocturnal": false,
     "food_amount": 6,
@@ -6306,7 +7934,18 @@
       "hp": 100,
       "attack": 125,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2109,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 100,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 450,
+      "stamina": 170,
+      "max_full_stomach": 460,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6347,7 +7986,18 @@
       "hp": 105,
       "attack": 125,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2469,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 100,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 450,
+      "stamina": 170,
+      "max_full_stomach": 460,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6364,7 +8014,7 @@
       5,
       0
     ],
-    "partner_skill": "Wings of Death",
+    "partner_skill": "Wings of Thunder",
     "partner_skill_desc": "Can be ridden as a flying mount. Applies Dark damage to the player's attacks while mounted.",
     "nocturnal": true,
     "food_amount": 7,
@@ -6389,7 +8039,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 120,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2263,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 800,
+      "ride_sprint_speed": 1300,
+      "transport_speed": 375,
+      "stamina": 150,
+      "max_full_stomach": 480,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6430,7 +8091,18 @@
       "hp": 80,
       "attack": 125,
       "defense": 80,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1442,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 320,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6471,7 +8143,18 @@
       "hp": 80,
       "attack": 130,
       "defense": 80,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1857,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 320,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6488,7 +8171,7 @@
       2,
       0
     ],
-    "partner_skill": "Brandish Blade",
+    "partner_skill": "Void Blade",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Iaigiri.",
     "nocturnal": true,
     "food_amount": 5,
@@ -6513,7 +8196,18 @@
       "hp": 80,
       "attack": 70,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 521,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6554,7 +8248,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 658,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6571,7 +8276,7 @@
       1,
       0
     ],
-    "partner_skill": "Zephyr Glider",
+    "partner_skill": "Jolt Glider",
     "partner_skill_desc": "While in team, can be summoned and used instead of a glider.\nAllows you to move quickly for long periods of time while gliding with this Pal.",
     "nocturnal": false,
     "food_amount": 2,
@@ -6596,7 +8301,18 @@
       "hp": 130,
       "attack": 145,
       "defense": 120,
-      "rarity": 20
+      "rarity": 20,
+      "price": 4339,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 350,
+      "run_speed": 1300,
+      "ride_sprint_speed": 1900,
+      "transport_speed": 625,
+      "stamina": 350,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -6648,7 +8364,18 @@
       "hp": 100,
       "attack": 95,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 1769,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6689,7 +8416,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 100,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2357,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6706,7 +8444,7 @@
       2,
       0
     ],
-    "partner_skill": "Blessing of the Flower Spirit",
+    "partner_skill": "Passion of the Flower Spirit",
     "partner_skill_desc": "When activated, uses medicinal flowers to restore the player's HP.",
     "nocturnal": false,
     "food_amount": 6,
@@ -6731,7 +8469,18 @@
       "hp": 110,
       "attack": 80,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1074,
+      "craft_speed": 100,
+      "slow_walk_speed": 32,
+      "walk_speed": 64,
+      "run_speed": 650,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 332,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6748,7 +8497,7 @@
       0,
       0
     ],
-    "partner_skill": "Plump Body",
+    "partner_skill": "Glaring Cat's Eye",
     "partner_skill_desc": "Can be ridden. Enhances Neutral attacks while mounted.",
     "nocturnal": false,
     "food_amount": 4,
@@ -6772,7 +8521,18 @@
       "hp": 70,
       "attack": 80,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 534,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 150,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6813,7 +8573,18 @@
       "hp": 100,
       "attack": 100,
       "defense": 130,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2469,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 600,
+      "stamina": 100,
+      "max_full_stomach": 410,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6855,7 +8626,18 @@
       "hp": 100,
       "attack": 105,
       "defense": 130,
-      "rarity": 10
+      "rarity": 10,
+      "price": 10000,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 600,
+      "stamina": 100,
+      "max_full_stomach": 410,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6872,7 +8654,7 @@
       0,
       0
     ],
-    "partner_skill": "Steel Scorpion",
+    "partner_skill": "Golden Scorpion",
     "partner_skill_desc": "When fighting together, increases the player's defense and Electric Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 6,
@@ -6896,7 +8678,18 @@
       "hp": 120,
       "attack": 130,
       "defense": 115,
-      "rarity": 9
+      "rarity": 9,
+      "price": 4136,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 185,
+      "run_speed": 900,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -6944,7 +8737,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 75,
-      "rarity": 1
+      "rarity": 1,
+      "price": 489,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 40,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 170,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6985,7 +8789,18 @@
       "hp": 100,
       "attack": 70,
       "defense": 95,
-      "rarity": 4
+      "rarity": 4,
+      "price": 995,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7027,7 +8842,18 @@
       "hp": 105,
       "attack": 75,
       "defense": 100,
-      "rarity": 5
+      "rarity": 5,
+      "price": 19900,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7044,7 +8870,7 @@
       1,
       4
     ],
-    "partner_skill": null,
+    "partner_skill": "Golden Harvest",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -7069,7 +8895,18 @@
       "hp": 60,
       "attack": 70,
       "defense": 80,
-      "rarity": 1
+      "rarity": 1,
+      "price": 436,
+      "craft_speed": 100,
+      "slow_walk_speed": 65,
+      "walk_speed": 98,
+      "run_speed": 250,
+      "ride_sprint_speed": 375,
+      "transport_speed": 140,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7110,7 +8947,18 @@
       "hp": 75,
       "attack": 70,
       "defense": 75,
-      "rarity": 2
+      "rarity": 2,
+      "price": 459,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7151,7 +8999,18 @@
       "hp": 120,
       "attack": 150,
       "defense": 100,
-      "rarity": 20
+      "rarity": 20,
+      "price": 3667,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 10.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7168,7 +9027,7 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Nightmare Iris",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -7192,7 +9051,18 @@
       "hp": 120,
       "attack": 150,
       "defense": 100,
-      "rarity": 20
+      "rarity": 20,
+      "price": 3997,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 10.0
     },
     "guaranteed_passives": [
       {
@@ -7215,7 +9085,7 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Nightmare Stare",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -7239,7 +9109,18 @@
       "hp": 130,
       "attack": 115,
       "defense": 110,
-      "rarity": 9
+      "rarity": 9,
+      "price": 4095,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 150,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1600,
+      "transport_speed": 275,
+      "stamina": 300,
+      "max_full_stomach": 680,
+      "size": "L",
+      "male_probability": 20.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7256,7 +9137,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Celestial Darkness",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -7281,7 +9162,18 @@
       "hp": 80,
       "attack": 100,
       "defense": 85,
-      "rarity": 4
+      "rarity": 4,
+      "price": 584,
+      "craft_speed": 100,
+      "slow_walk_speed": 33,
+      "walk_speed": 66,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7298,7 +9190,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Leap Stance",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -7322,7 +9214,18 @@
       "hp": 85,
       "attack": 110,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1254,
+      "craft_speed": 100,
+      "slow_walk_speed": 33,
+      "walk_speed": 66,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7339,7 +9242,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Shadow Stance",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -7364,7 +9267,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1261,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 800,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7381,7 +9295,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Floral Boost",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -7405,7 +9319,18 @@
       "hp": 110,
       "attack": 80,
       "defense": 90,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1367,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 740,
+      "ride_sprint_speed": 1050,
+      "transport_speed": -1,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "S",
+      "male_probability": 55.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7422,7 +9347,7 @@
       0,
       3
     ],
-    "partner_skill": null,
+    "partner_skill": "Rampant Spores",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -7446,7 +9371,18 @@
       "hp": 110,
       "attack": 85,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1399,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 80,
+      "run_speed": 740,
+      "ride_sprint_speed": 1050,
+      "transport_speed": -1,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7463,7 +9399,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Roiling Spores",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -7488,7 +9424,18 @@
       "hp": 75,
       "attack": 70,
       "defense": 90,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1152,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 800,
+      "ride_sprint_speed": 900,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 340,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7505,7 +9452,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sandball Soccer",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -7529,7 +9476,18 @@
       "hp": 105,
       "attack": 125,
       "defense": 90,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2041,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 250,
+      "run_speed": 800,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 450,
+      "stamina": 100,
+      "max_full_stomach": 480,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7546,7 +9504,7 @@
       0,
       2
     ],
-    "partner_skill": null,
+    "partner_skill": "Grave Robber",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -7571,7 +9529,18 @@
       "hp": 90,
       "attack": 110,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1649,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 180,
+      "run_speed": 720,
+      "ride_sprint_speed": -1,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7588,7 +9557,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Phantom Venom",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -7613,7 +9582,18 @@
       "hp": 90,
       "attack": 115,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1773,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 180,
+      "run_speed": 720,
+      "ride_sprint_speed": -1,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7630,7 +9610,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Scorpion Longwave",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -7655,7 +9635,18 @@
       "hp": 105,
       "attack": 110,
       "defense": 135,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3767,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 190,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 70.0
     },
     "guaranteed_passives": [
       {
@@ -7678,7 +9669,7 @@
       7,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Steel Guardian Mode",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -7702,7 +9693,18 @@
       "hp": 105,
       "attack": 115,
       "defense": 135,
-      "rarity": 10
+      "rarity": 10,
+      "price": 3895,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 190,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 70.0
     },
     "guaranteed_passives": [
       {
@@ -7725,7 +9727,7 @@
       7,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Iron Guardian Mode",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -7749,7 +9751,18 @@
       "hp": 85,
       "attack": 85,
       "defense": 85,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1238,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 110,
+      "run_speed": 750,
+      "ride_sprint_speed": 1080,
+      "transport_speed": 165,
+      "stamina": 140,
+      "max_full_stomach": 270,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7766,7 +9779,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Birds of a Feather",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -7790,7 +9803,18 @@
       "hp": 90,
       "attack": 100,
       "defense": 100,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1683,
+      "craft_speed": 100,
+      "slow_walk_speed": 45,
+      "walk_speed": 75,
+      "run_speed": 300,
+      "ride_sprint_speed": 550,
+      "transport_speed": 187,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7807,7 +9831,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Homeward Prayer",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -7831,7 +9855,18 @@
       "hp": 95,
       "attack": 90,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 896,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 900,
+      "ride_sprint_speed": 1200,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7848,7 +9883,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sand Sprint",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -7872,7 +9907,18 @@
       "hp": 60,
       "attack": 60,
       "defense": 130,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3500,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 2000,
+      "ride_sprint_speed": -1,
+      "transport_speed": 450,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "XS",
+      "male_probability": 80.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7889,7 +9935,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Master of Unlocking",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -7913,7 +9959,18 @@
       "hp": 90,
       "attack": 125,
       "defense": 85,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1543,
+      "craft_speed": 100,
+      "slow_walk_speed": 125,
+      "walk_speed": 245,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": 400,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -7936,7 +9993,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Unknown Invader",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -7960,7 +10017,18 @@
       "hp": 110,
       "attack": 120,
       "defense": 130,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2845,
+      "craft_speed": 100,
+      "slow_walk_speed": 115,
+      "walk_speed": 230,
+      "run_speed": 790,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 500,
+      "stamina": 250,
+      "max_full_stomach": 470,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -7983,7 +10051,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Unknown Intruder",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -8007,7 +10075,18 @@
       "hp": 110,
       "attack": 125,
       "defense": 115,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2911,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 220,
+      "run_speed": 650,
+      "ride_sprint_speed": 850,
+      "transport_speed": -1,
+      "stamina": 270,
+      "max_full_stomach": 530,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8024,7 +10103,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Magma Overload",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8049,7 +10128,18 @@
       "hp": 110,
       "attack": 125,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3328,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 220,
+      "run_speed": 650,
+      "ride_sprint_speed": 850,
+      "transport_speed": -1,
+      "stamina": 270,
+      "max_full_stomach": 530,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8066,7 +10156,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ice Overload",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8091,7 +10181,18 @@
       "hp": 130,
       "attack": 120,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3622,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 550,
+      "ride_sprint_speed": 660,
+      "transport_speed": -1,
+      "stamina": 300,
+      "max_full_stomach": 570,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -8119,7 +10220,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Meteor Wings",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -8144,7 +10245,18 @@
       "hp": 105,
       "attack": 95,
       "defense": 105,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2594,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 130,
+      "run_speed": 380,
+      "ride_sprint_speed": 500,
+      "transport_speed": 180,
+      "stamina": 100,
+      "max_full_stomach": 510,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8161,7 +10273,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Soul Collector",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -8185,7 +10297,18 @@
       "hp": 110,
       "attack": 95,
       "defense": 105,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2134,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 130,
+      "run_speed": 380,
+      "ride_sprint_speed": 500,
+      "transport_speed": 180,
+      "stamina": 100,
+      "max_full_stomach": 510,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8202,7 +10325,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Soul Binder",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -8226,7 +10349,18 @@
       "hp": 110,
       "attack": 100,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2014,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 150,
+      "run_speed": 900,
+      "ride_sprint_speed": 1250,
+      "transport_speed": -1,
+      "stamina": 230,
+      "max_full_stomach": 440,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8243,7 +10377,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Night Dancer",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -8267,7 +10401,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 100,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2514,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 150,
+      "run_speed": 900,
+      "ride_sprint_speed": 1250,
+      "transport_speed": -1,
+      "stamina": 230,
+      "max_full_stomach": 440,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8284,7 +10429,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Light Dancer",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -8308,7 +10453,18 @@
       "hp": 120,
       "attack": 110,
       "defense": 115,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3710,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 150,
+      "run_speed": 700,
+      "ride_sprint_speed": 1050,
+      "transport_speed": -1,
+      "stamina": 280,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -8331,7 +10487,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Aegis Shield",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8355,7 +10511,18 @@
       "hp": 85,
       "attack": 90,
       "defense": 85,
-      "rarity": 2
+      "rarity": 2,
+      "price": 1842,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 170,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8372,7 +10539,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dig, Smokie! Dig!",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -8396,7 +10563,18 @@
       "hp": 85,
       "attack": 90,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1628,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 550,
+      "ride_sprint_speed": 700,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 170,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8413,7 +10591,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cryo Instincts",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -8438,7 +10616,18 @@
       "hp": 120,
       "attack": 110,
       "defense": 100,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2911,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 140,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 400,
+      "stamina": 260,
+      "max_full_stomach": 550,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8455,7 +10644,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blessing of Purification",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8479,7 +10668,18 @@
       "hp": 120,
       "attack": 115,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3528,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 140,
+      "run_speed": 800,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 400,
+      "stamina": 260,
+      "max_full_stomach": 550,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8496,7 +10696,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blessing of Chaos",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -8520,7 +10720,18 @@
       "hp": 180,
       "attack": 120,
       "defense": 200,
-      "rarity": 10
+      "rarity": 10,
+      "price": 4913,
+      "craft_speed": 100,
+      "slow_walk_speed": 3000,
+      "walk_speed": 3000,
+      "run_speed": 3000,
+      "ride_sprint_speed": 3000,
+      "transport_speed": 3000,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8537,7 +10748,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Resonant Guardian",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -8561,7 +10772,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 100,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2431,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 70,
+      "run_speed": 400,
+      "ride_sprint_speed": 520,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 400,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8578,7 +10800,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Masquerade Dance",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -8602,7 +10824,18 @@
       "hp": 70,
       "attack": 85,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1656,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8619,7 +10852,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Void-Dweller",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -8643,7 +10876,18 @@
       "hp": 110,
       "attack": 115,
       "defense": 100,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2638,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 375,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8660,7 +10904,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Desert Empress",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -8684,7 +10928,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 70,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1611,
+      "craft_speed": 100,
+      "slow_walk_speed": 55,
+      "walk_speed": 110,
+      "run_speed": 300,
+      "ride_sprint_speed": 390,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8701,7 +10956,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Chillswitch",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -8725,7 +10980,18 @@
       "hp": 95,
       "attack": 115,
       "defense": 105,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2484,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 550,
+      "ride_sprint_speed": 660,
+      "transport_speed": 180,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 38.0
     },
     "guaranteed_passives": [
       {
@@ -8748,7 +11014,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blade of Uncontrolled Passion",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -8772,7 +11038,18 @@
       "hp": 110,
       "attack": 100,
       "defense": 100,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1806,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 160,
+      "run_speed": 640,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 320,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8789,7 +11066,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Tarantriss’ Web",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -8813,7 +11090,18 @@
       "hp": 130,
       "attack": 120,
       "defense": 110,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3079,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 180,
+      "run_speed": 900,
+      "ride_sprint_speed": 1260,
+      "transport_speed": -1,
+      "stamina": 220,
+      "max_full_stomach": 550,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8830,7 +11118,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Plasma Dash",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8854,7 +11142,18 @@
       "hp": 100,
       "attack": 105,
       "defense": 120,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2306,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 140,
+      "run_speed": 350,
+      "ride_sprint_speed": 550,
+      "transport_speed": 230,
+      "stamina": 100,
+      "max_full_stomach": 580,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -8877,7 +11176,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Power Stone",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8901,7 +11200,18 @@
       "hp": 100,
       "attack": 110,
       "defense": 120,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2685,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 140,
+      "run_speed": 350,
+      "ride_sprint_speed": 550,
+      "transport_speed": 230,
+      "stamina": 100,
+      "max_full_stomach": 580,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -8924,7 +11234,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Power Crystal",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -8948,7 +11258,18 @@
       "hp": 70,
       "attack": 85,
       "defense": 70,
-      "rarity": 5
+      "rarity": 5,
+      "price": 577,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 120,
+      "run_speed": 300,
+      "ride_sprint_speed": 500,
+      "transport_speed": 210,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8965,7 +11286,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sticky Princess",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -8990,7 +11311,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 70,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1612,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 120,
+      "run_speed": 300,
+      "ride_sprint_speed": 500,
+      "transport_speed": 210,
+      "stamina": 100,
+      "max_full_stomach": 280,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9007,7 +11339,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cephalo-Princess",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -9032,7 +11364,18 @@
       "hp": 105,
       "attack": 115,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2685,
+      "craft_speed": 100,
+      "slow_walk_speed": 125,
+      "walk_speed": 250,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 400,
+      "stamina": 200,
+      "max_full_stomach": 560,
+      "size": "XL",
+      "male_probability": 58.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9049,7 +11392,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Chilled Whale Cruiser",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -9074,7 +11417,18 @@
       "hp": 105,
       "attack": 120,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3097,
+      "craft_speed": 100,
+      "slow_walk_speed": 125,
+      "walk_speed": 250,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 400,
+      "stamina": 200,
+      "max_full_stomach": 560,
+      "size": "XL",
+      "male_probability": 42.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9091,7 +11445,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Cozy Whale Cruiser",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -9116,7 +11470,18 @@
       "hp": 75,
       "attack": 90,
       "defense": 70,
-      "rarity": 3
+      "rarity": 3,
+      "price": 658,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 240,
+      "ride_sprint_speed": 450,
+      "transport_speed": 160,
+      "stamina": 100,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9133,7 +11498,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Jelliette Drop",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -9157,7 +11522,18 @@
       "hp": 65,
       "attack": 80,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 472,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 80,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 240,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9174,7 +11550,7 @@
       0,
       0
     ],
-    "partner_skill": "Huggy Fire",
+    "partner_skill": "Huggy Frost",
     "partner_skill_desc": "When activated, equips to the player and transforms into a flamethrower.",
     "nocturnal": false,
     "food_amount": 1,
@@ -9198,7 +11574,18 @@
       "hp": 100,
       "attack": 75,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 928,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 70,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 235,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9215,7 +11602,7 @@
       0,
       1
     ],
-    "partner_skill": "Berry Picker",
+    "partner_skill": "Venom Picker",
     "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.",
     "nocturnal": true,
     "food_amount": 2,
@@ -9239,7 +11626,18 @@
       "hp": 80,
       "attack": 65,
       "defense": 70,
-      "rarity": 1
+      "rarity": 1,
+      "price": 526,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 245,
+      "ride_sprint_speed": 350,
+      "transport_speed": 172,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9256,7 +11654,7 @@
       1,
       0
     ],
-    "partner_skill": "Skilled Fingers",
+    "partner_skill": "Ground 'n' Pound",
     "partner_skill_desc": "While in team, increases attack power of Neutral Pals.\nWhile at base, increases work efficiency if working at Weapon Workbench.",
     "nocturnal": false,
     "food_amount": 1,
@@ -9280,7 +11678,18 @@
       "hp": 80,
       "attack": 105,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1176,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 175,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 375,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9297,7 +11706,7 @@
       0,
       0
     ],
-    "partner_skill": "Claws Glistening in the Dark",
+    "partner_skill": "Frozen Gleam Strike",
     "partner_skill_desc": "When activated, attacks targeted enemy with a powerful Jumping Claw.",
     "nocturnal": false,
     "food_amount": 3,
@@ -9321,7 +11730,18 @@
       "hp": 100,
       "attack": 115,
       "defense": 105,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2014,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 130,
+      "run_speed": 700,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 415,
+      "stamina": 140,
+      "max_full_stomach": 380,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9338,7 +11758,7 @@
       0,
       0
     ],
-    "partner_skill": "Clear Mind",
+    "partner_skill": "Gloomhowl",
     "partner_skill_desc": "Can be ridden. Unaffected by the cold or heat while riding this Pal.",
     "nocturnal": true,
     "food_amount": 5,
@@ -9362,7 +11782,18 @@
       "hp": 70,
       "attack": 80,
       "defense": 75,
-      "rarity": 2
+      "rarity": 2,
+      "price": 599,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 200,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 20.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9379,7 +11810,7 @@
       2,
       0
     ],
-    "partner_skill": "Lady of Lightning",
+    "partner_skill": "Lady of Dark Lightning",
     "partner_skill_desc": "While in team, appears near the player. Follows up player attacks with lightning bolts.",
     "nocturnal": true,
     "food_amount": 2,
@@ -9404,7 +11835,18 @@
       "hp": 100,
       "attack": 105,
       "defense": 110,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2484,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 280,
+      "run_speed": 720,
+      "ride_sprint_speed": 900,
+      "transport_speed": 460,
+      "stamina": 100,
+      "max_full_stomach": 480,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9421,7 +11863,7 @@
       4,
       0
     ],
-    "partner_skill": "Dragon Hunter",
+    "partner_skill": "Explosive Strength",
     "partner_skill_desc": "While fighting together, Dragon Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 7,
@@ -9445,7 +11887,18 @@
       "hp": 110,
       "attack": 115,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 2164,
+      "craft_speed": 100,
+      "slow_walk_speed": 85,
+      "walk_speed": 100,
+      "run_speed": 750,
+      "ride_sprint_speed": 1050,
+      "transport_speed": 417,
+      "stamina": 140,
+      "max_full_stomach": 340,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9462,7 +11915,7 @@
       0,
       0
     ],
-    "partner_skill": "Wind and Clouds",
+    "partner_skill": "Stormcloud",
     "partner_skill_desc": "Can be ridden. Can double jump while mounted.",
     "nocturnal": false,
     "food_amount": 5,
@@ -9486,7 +11939,18 @@
       "hp": 110,
       "attack": 110,
       "defense": 115,
-      "rarity": 9
+      "rarity": 9,
+      "price": 2797,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 200,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1400,
+      "transport_speed": 500,
+      "stamina": 230,
+      "max_full_stomach": 600,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9503,7 +11967,7 @@
       5,
       0
     ],
-    "partner_skill": "Scorching Predator",
+    "partner_skill": "Tidal Predator",
     "partner_skill_desc": "Can be ridden as a flying mount. While fighting together, Ice Pals drop more items when defeated.",
     "nocturnal": false,
     "food_amount": 9,
@@ -9527,7 +11991,18 @@
       "hp": 140,
       "attack": 130,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 4425,
+      "craft_speed": 100,
+      "slow_walk_speed": 120,
+      "walk_speed": 225,
+      "run_speed": 750,
+      "ride_sprint_speed": 1100,
+      "transport_speed": -1,
+      "stamina": 270,
+      "max_full_stomach": 730,
+      "size": "M",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9544,7 +12019,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Blizzard Crash",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -9568,7 +12043,18 @@
       "hp": 80,
       "attack": 85,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2680,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 340,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9585,7 +12071,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Snake's Sagacity",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -9609,7 +12095,18 @@
       "hp": 90,
       "attack": 125,
       "defense": 105,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2263,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 300,
+      "stamina": 320,
+      "max_full_stomach": 480,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9626,7 +12123,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Master of Darkness",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -9651,7 +12148,18 @@
       "hp": 90,
       "attack": 130,
       "defense": 105,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2424,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 300,
+      "stamina": 320,
+      "max_full_stomach": 480,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9668,7 +12176,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Abyssal Celebrity Chef",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -9693,7 +12201,18 @@
       "hp": 95,
       "attack": 115,
       "defense": 105,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2277,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 400,
+      "ride_sprint_speed": 600,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 270,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9710,7 +12229,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Witch's Icy Veil",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -9734,7 +12253,18 @@
       "hp": 100,
       "attack": 110,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3191,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 500,
+      "ride_sprint_speed": 750,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9751,7 +12281,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Trick-Loving Fluffle",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -9775,7 +12305,18 @@
       "hp": 135,
       "attack": 130,
       "defense": 110,
-      "rarity": 10
+      "rarity": 10,
+      "price": 4256,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 900,
+      "ride_sprint_speed": 1900,
+      "transport_speed": 450,
+      "stamina": 400,
+      "max_full_stomach": 710,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -9798,7 +12339,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sacred Barrier",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -9822,7 +12363,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 75,
-      "rarity": 3
+      "rarity": 3,
+      "price": 541,
+      "craft_speed": 100,
+      "slow_walk_speed": 15,
+      "walk_speed": 30,
+      "run_speed": 350,
+      "ride_sprint_speed": 600,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9839,7 +12391,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Herbil Pulse",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -9864,7 +12416,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 85,
-      "rarity": 3
+      "rarity": 3,
+      "price": 927,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 85,
+      "run_speed": 400,
+      "ride_sprint_speed": 600,
+      "transport_speed": 100,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9881,7 +12444,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Invisible Eye",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -9905,7 +12468,18 @@
       "hp": 75,
       "attack": 80,
       "defense": 85,
-      "rarity": 3
+      "rarity": 3,
+      "price": 798,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 40,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 40,
+      "stamina": 100,
+      "max_full_stomach": 310,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9922,7 +12496,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Icy Maw",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -9947,7 +12521,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 702,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 525,
+      "ride_sprint_speed": 630,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9964,7 +12549,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hug Me Please",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -9988,7 +12573,18 @@
       "hp": 75,
       "attack": 90,
       "defense": 70,
-      "rarity": 3
+      "rarity": 3,
+      "price": 749,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 525,
+      "ride_sprint_speed": 630,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 150,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10005,7 +12601,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hug You So Much",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -10030,7 +12626,18 @@
       "hp": 105,
       "attack": 95,
       "defense": 90,
-      "rarity": 6
+      "rarity": 6,
+      "price": 3087,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 600,
+      "transport_speed": 100,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10047,7 +12654,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Charming Spore",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -10071,7 +12678,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 677,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 250,
+      "ride_sprint_speed": 400,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10088,7 +12706,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Water Gun",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -10112,7 +12730,18 @@
       "hp": 75,
       "attack": 90,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 749,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 250,
+      "ride_sprint_speed": 400,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 140,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10129,7 +12758,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Ember Chamber",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -10154,7 +12783,18 @@
       "hp": 110,
       "attack": 125,
       "defense": 105,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3217,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 130,
+      "run_speed": 500,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10171,7 +12811,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Burning Future",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -10195,7 +12835,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 105,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1794,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 45,
+      "run_speed": 250,
+      "ride_sprint_speed": 375,
+      "transport_speed": 250,
+      "stamina": 120,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10212,7 +12863,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Rider of the Snowy Mountain",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -10237,7 +12888,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 110,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1942,
+      "craft_speed": 100,
+      "slow_walk_speed": 20,
+      "walk_speed": 45,
+      "run_speed": 250,
+      "ride_sprint_speed": 375,
+      "transport_speed": 250,
+      "stamina": 120,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10254,7 +12916,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Snowy Mountain Slider",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -10279,7 +12941,18 @@
       "hp": 80,
       "attack": 65,
       "defense": 65,
-      "rarity": 2
+      "rarity": 2,
+      "price": 407,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 400,
+      "ride_sprint_speed": 550,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10296,7 +12969,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Happy Clover",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -10321,7 +12994,18 @@
       "hp": 75,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 556,
+      "craft_speed": 100,
+      "slow_walk_speed": 35,
+      "walk_speed": 70,
+      "run_speed": 200,
+      "ride_sprint_speed": 400,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 170,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10338,7 +13022,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Crackle Booster",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -10362,7 +13046,18 @@
       "hp": 85,
       "attack": 95,
       "defense": 70,
-      "rarity": 5
+      "rarity": 5,
+      "price": 827,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 360,
+      "ride_sprint_speed": 540,
+      "transport_speed": 240,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10379,7 +13074,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Death-Cheating Feline",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -10403,7 +13098,18 @@
       "hp": 110,
       "attack": 115,
       "defense": 95,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2263,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 170,
+      "run_speed": 950,
+      "ride_sprint_speed": 1350,
+      "transport_speed": 450,
+      "stamina": 200,
+      "max_full_stomach": 560,
+      "size": "M",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10420,7 +13126,7 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Dark-Nester",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -10444,7 +13150,18 @@
       "hp": 70,
       "attack": 85,
       "defense": 80,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1625,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 400,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 290,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10461,7 +13178,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grinning Death",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -10485,7 +13202,18 @@
       "hp": 130,
       "attack": 95,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2862,
+      "craft_speed": 100,
+      "slow_walk_speed": 70,
+      "walk_speed": 95,
+      "run_speed": 600,
+      "ride_sprint_speed": 1020,
+      "transport_speed": -1,
+      "stamina": 270,
+      "max_full_stomach": 460,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -10508,7 +13236,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Balmy Weather",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -10533,7 +13261,18 @@
       "hp": 105,
       "attack": 110,
       "defense": 115,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2529,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 180,
+      "run_speed": 550,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 400,
+      "stamina": 180,
+      "max_full_stomach": 410,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10550,7 +13289,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Samba Step",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -10574,7 +13313,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 125,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3113,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 350,
+      "stamina": 210,
+      "max_full_stomach": 550,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -10597,7 +13347,7 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Forest Laser",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -10622,7 +13372,18 @@
       "hp": 110,
       "attack": 110,
       "defense": 125,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3234,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 600,
+      "ride_sprint_speed": 800,
+      "transport_speed": 350,
+      "stamina": 210,
+      "max_full_stomach": 550,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -10645,7 +13406,7 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Corruption Laser",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -10670,7 +13431,18 @@
       "hp": 110,
       "attack": 100,
       "defense": 100,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2382,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 500,
+      "ride_sprint_speed": 750,
+      "transport_speed": -1,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10687,7 +13459,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Peacock Pounce",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -10711,7 +13483,18 @@
       "hp": 95,
       "attack": 100,
       "defense": 135,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2436,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 80,
+      "run_speed": 360,
+      "ride_sprint_speed": 540,
+      "transport_speed": 360,
+      "stamina": 200,
+      "max_full_stomach": 580,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10728,7 +13511,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Masonry Archelon",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -10752,7 +13535,18 @@
       "hp": 95,
       "attack": 100,
       "defense": 140,
-      "rarity": 8
+      "rarity": 8,
+      "price": 2945,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 80,
+      "run_speed": 360,
+      "ride_sprint_speed": 540,
+      "transport_speed": 360,
+      "stamina": 200,
+      "max_full_stomach": 550,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10769,7 +13563,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Stone-Chaser Archelon",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -10793,7 +13587,18 @@
       "hp": 75,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 1684,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 70,
+      "run_speed": 700,
+      "ride_sprint_speed": 900,
+      "transport_speed": 150,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10810,7 +13615,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Big Stretch",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -10834,7 +13639,18 @@
       "hp": 90,
       "attack": 75,
       "defense": 75,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1328,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 400,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10851,7 +13667,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Jellroy Drop",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -10876,7 +13692,18 @@
       "hp": 75,
       "attack": 85,
       "defense": 80,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1963,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 150,
+      "run_speed": 700,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 300,
+      "stamina": 140,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10893,7 +13720,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Electro-Massage Incubation",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -10917,7 +13744,18 @@
       "hp": 80,
       "attack": 90,
       "defense": 60,
-      "rarity": 2
+      "rarity": 2,
+      "price": 2421,
+      "craft_speed": 100,
+      "slow_walk_speed": 90,
+      "walk_speed": 130,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 380,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10934,7 +13772,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Hidden Dark Energy",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -10958,7 +13796,18 @@
       "hp": 70,
       "attack": 80,
       "defense": 70,
-      "rarity": 2
+      "rarity": 2,
+      "price": 476,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 45,
+      "run_speed": 400,
+      "ride_sprint_speed": 600,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 100,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10975,7 +13824,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Best Boy",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -10999,7 +13848,18 @@
       "hp": 105,
       "attack": 145,
       "defense": 125,
-      "rarity": 20
+      "rarity": 20,
+      "price": 4277,
+      "craft_speed": 100,
+      "slow_walk_speed": 150,
+      "walk_speed": 300,
+      "run_speed": 750,
+      "ride_sprint_speed": 1120,
+      "transport_speed": 450,
+      "stamina": 410,
+      "max_full_stomach": 620,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -11027,7 +13887,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Sentinel of the Great Sea",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -11051,7 +13911,18 @@
       "hp": 70,
       "attack": 100,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1342,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 340,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11068,7 +13939,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fish Fillet",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -11092,7 +13963,18 @@
       "hp": 70,
       "attack": 105,
       "defense": 80,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1442,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 500,
+      "ride_sprint_speed": 800,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 340,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11109,7 +13991,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Seared Fish Fillet",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -11134,7 +14016,18 @@
       "hp": 65,
       "attack": 70,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 500,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 180,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11151,7 +14044,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -11175,7 +14068,18 @@
       "hp": 70,
       "attack": 70,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 600,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 210,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11192,7 +14096,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -11216,7 +14120,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 85,
-      "rarity": 3
+      "rarity": 3,
+      "price": 700,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 240,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11233,7 +14148,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -11257,7 +14172,18 @@
       "hp": 75,
       "attack": 70,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 800,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 270,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11274,7 +14200,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -11298,7 +14224,18 @@
       "hp": 80,
       "attack": 75,
       "defense": 85,
-      "rarity": 4
+      "rarity": 4,
+      "price": 900,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11315,7 +14252,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -11339,7 +14276,18 @@
       "hp": 105,
       "attack": 95,
       "defense": 105,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1500,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 330,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11356,7 +14304,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Slime Body",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -11380,7 +14328,18 @@
       "hp": 95,
       "attack": 105,
       "defense": 90,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1250,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 300,
+      "run_speed": 600,
+      "ride_sprint_speed": 900,
+      "transport_speed": 450,
+      "stamina": 100,
+      "max_full_stomach": 180,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11397,7 +14356,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Enchant",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -11421,7 +14380,18 @@
       "hp": 65,
       "attack": 75,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1000,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 150,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11438,7 +14408,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Bat Backup",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -11462,7 +14432,18 @@
       "hp": 80,
       "attack": 80,
       "defense": 95,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1250,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 150,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11479,7 +14460,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Bat Backup",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -11503,7 +14484,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 95,
-      "rarity": 6
+      "rarity": 6,
+      "price": 3000,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 450,
+      "run_speed": 900,
+      "ride_sprint_speed": 1200,
+      "transport_speed": 600,
+      "stamina": 100,
+      "max_full_stomach": 240,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11520,7 +14512,7 @@
       4,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Mad Eye Lunge",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -11544,7 +14536,18 @@
       "hp": 105,
       "attack": 110,
       "defense": 95,
-      "rarity": 3
+      "rarity": 3,
+      "price": 750,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 150,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 275,
+      "stamina": 100,
+      "max_full_stomach": 220,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11561,7 +14564,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Demonic Sight",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -11585,7 +14588,18 @@
       "hp": 105,
       "attack": 120,
       "defense": 105,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2529,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 480,
+      "ride_sprint_speed": 720,
+      "transport_speed": 350,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11602,7 +14616,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Resurrection",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -11627,7 +14641,18 @@
       "hp": 90,
       "attack": 90,
       "defense": 85,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1636,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 50,
+      "run_speed": 500,
+      "ride_sprint_speed": 900,
+      "transport_speed": 150,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11644,7 +14669,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Charming Fish",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -11668,7 +14693,18 @@
       "hp": 90,
       "attack": 95,
       "defense": 85,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1843,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 50,
+      "run_speed": 500,
+      "ride_sprint_speed": 900,
+      "transport_speed": 150,
+      "stamina": 220,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11685,7 +14721,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Shocking Fish",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -11710,7 +14746,18 @@
       "hp": 110,
       "attack": 115,
       "defense": 115,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3867,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 680,
+      "size": "M",
+      "male_probability": 30.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11727,7 +14774,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Untainted Maiden",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -11752,7 +14799,18 @@
       "hp": 65,
       "attack": 70,
       "defense": 75,
-      "rarity": 2
+      "rarity": 2,
+      "price": 1523,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 50,
+      "run_speed": 360,
+      "ride_sprint_speed": 945,
+      "transport_speed": 120,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11769,7 +14827,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Charging Shell",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -11793,7 +14851,18 @@
       "hp": 65,
       "attack": 70,
       "defense": 80,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1623,
+      "craft_speed": 100,
+      "slow_walk_speed": 30,
+      "walk_speed": 50,
+      "run_speed": 360,
+      "ride_sprint_speed": 945,
+      "transport_speed": 120,
+      "stamina": 100,
+      "max_full_stomach": 300,
+      "size": "S",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11810,7 +14879,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Grounding Shell",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -11835,7 +14904,18 @@
       "hp": 90,
       "attack": 100,
       "defense": 95,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2309,
+      "craft_speed": 100,
+      "slow_walk_speed": 25,
+      "walk_speed": 50,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 175,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11852,7 +14932,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Lantern Enchantment",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -11877,7 +14957,18 @@
       "hp": 115,
       "attack": 95,
       "defense": 100,
-      "rarity": 4
+      "rarity": 4,
+      "price": 1812,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 600,
+      "ride_sprint_speed": 810,
+      "transport_speed": 120,
+      "stamina": 110,
+      "max_full_stomach": 420,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11894,7 +14985,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Yokozuna's Presence",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -11918,7 +15009,18 @@
       "hp": 85,
       "attack": 90,
       "defense": 85,
-      "rarity": 6
+      "rarity": 6,
+      "price": 1875,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 330,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "M",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11935,7 +15037,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Entangling Tongue",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -11959,7 +15061,18 @@
       "hp": 60,
       "attack": 80,
       "defense": 55,
-      "rarity": 2
+      "rarity": 2,
+      "price": 385,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 110,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 75,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "XS",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11976,7 +15089,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fluffy Flutterer",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -12000,7 +15113,18 @@
       "hp": 70,
       "attack": 75,
       "defense": 60,
-      "rarity": 3
+      "rarity": 3,
+      "price": 1610,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 300,
+      "ride_sprint_speed": 450,
+      "transport_speed": 50,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12017,7 +15141,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Fuzzy Fairy",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -12041,7 +15165,18 @@
       "hp": 65,
       "attack": 70,
       "defense": 65,
-      "rarity": 2
+      "rarity": 2,
+      "price": 421,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 100,
+      "run_speed": 450,
+      "ride_sprint_speed": 600,
+      "transport_speed": 150,
+      "stamina": 100,
+      "max_full_stomach": 230,
+      "size": "XS",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12058,7 +15193,7 @@
       1,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Magical Twin Powers",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -12082,7 +15217,18 @@
       "hp": 110,
       "attack": 115,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 2347,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 500,
+      "ride_sprint_speed": 750,
+      "transport_speed": 150,
+      "stamina": 100,
+      "max_full_stomach": 600,
+      "size": "M",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12099,7 +15245,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Phantasmal Arcana",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -12124,7 +15270,18 @@
       "hp": 85,
       "attack": 85,
       "defense": 90,
-      "rarity": 5
+      "rarity": 5,
+      "price": 1844,
+      "craft_speed": 100,
+      "slow_walk_speed": 80,
+      "walk_speed": 150,
+      "run_speed": 600,
+      "ride_sprint_speed": 600,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 450,
+      "size": "M",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12141,7 +15298,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Flower Dance",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -12165,7 +15322,18 @@
       "hp": 105,
       "attack": 100,
       "defense": 100,
-      "rarity": 4
+      "rarity": 4,
+      "price": 2464,
+      "craft_speed": 100,
+      "slow_walk_speed": 40,
+      "walk_speed": 40,
+      "run_speed": 600,
+      "ride_sprint_speed": 700,
+      "transport_speed": 100,
+      "stamina": 100,
+      "max_full_stomach": 400,
+      "size": "M",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12182,7 +15350,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Long-Sleeved Hurray",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -12206,7 +15374,18 @@
       "hp": 130,
       "attack": 115,
       "defense": 120,
-      "rarity": 9
+      "rarity": 9,
+      "price": 3884,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 175,
+      "run_speed": 700,
+      "ride_sprint_speed": 1500,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12223,7 +15402,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Glorious Mist",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -12248,7 +15427,18 @@
       "hp": 140,
       "attack": 135,
       "defense": 120,
-      "rarity": 9
+      "rarity": 9,
+      "price": 4531,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 300,
+      "run_speed": 1400,
+      "ride_sprint_speed": 2800,
+      "transport_speed": 450,
+      "stamina": 100,
+      "max_full_stomach": 620,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12265,7 +15455,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Azure Sovereign",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -12290,7 +15480,18 @@
       "hp": 100,
       "attack": 115,
       "defense": 95,
-      "rarity": 7
+      "rarity": 7,
+      "price": 1806,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 600,
+      "ride_sprint_speed": 750,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 530,
+      "size": "S",
+      "male_probability": 40.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12307,7 +15508,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Selfless Discipline",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -12331,7 +15532,18 @@
       "hp": 110,
       "attack": 105,
       "defense": 105,
-      "rarity": 6
+      "rarity": 6,
+      "price": 2041,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 700,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 560,
+      "size": "L",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12348,7 +15560,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Mother Nature's Menace",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -12372,7 +15584,18 @@
       "hp": 120,
       "attack": 100,
       "defense": 105,
-      "rarity": 7
+      "rarity": 7,
+      "price": 2484,
+      "craft_speed": 100,
+      "slow_walk_speed": 75,
+      "walk_speed": 150,
+      "run_speed": 700,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 200,
+      "stamina": 100,
+      "max_full_stomach": 560,
+      "size": "L",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12389,7 +15612,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Father Winter's Threat",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -12413,7 +15636,18 @@
       "hp": 140,
       "attack": 120,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 4436,
+      "craft_speed": 100,
+      "slow_walk_speed": 60,
+      "walk_speed": 120,
+      "run_speed": 500,
+      "ride_sprint_speed": 750,
+      "transport_speed": 500,
+      "stamina": 100,
+      "max_full_stomach": 630,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12430,7 +15664,7 @@
       2,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Spore Stalwart",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -12454,7 +15688,18 @@
       "hp": 115,
       "attack": 125,
       "defense": 120,
-      "rarity": 7
+      "rarity": 7,
+      "price": 3323,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 1400,
+      "ride_sprint_speed": 2750,
+      "transport_speed": 400,
+      "stamina": 130,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12471,7 +15716,7 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Liberated Pterosaur",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -12496,7 +15741,18 @@
       "hp": 115,
       "attack": 130,
       "defense": 120,
-      "rarity": 8
+      "rarity": 8,
+      "price": 3521,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 1400,
+      "ride_sprint_speed": 2750,
+      "transport_speed": 400,
+      "stamina": 130,
+      "max_full_stomach": 620,
+      "size": "L",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12513,7 +15769,7 @@
       6,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Resentful Pterosaur",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -12538,7 +15794,18 @@
       "hp": 125,
       "attack": 135,
       "defense": 110,
-      "rarity": 8
+      "rarity": 8,
+      "price": 4442,
+      "craft_speed": 100,
+      "slow_walk_speed": 50,
+      "walk_speed": 160,
+      "run_speed": 1000,
+      "ride_sprint_speed": 1000,
+      "transport_speed": 300,
+      "stamina": 100,
+      "max_full_stomach": 630,
+      "size": "M",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12555,7 +15822,7 @@
       3,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Mist Stalwart",
     "partner_skill_desc": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -12580,7 +15847,18 @@
       "hp": 105,
       "attack": 120,
       "defense": 100,
-      "rarity": 7
+      "rarity": 7,
+      "price": 4028,
+      "craft_speed": 100,
+      "slow_walk_speed": 100,
+      "walk_speed": 200,
+      "run_speed": 400,
+      "ride_sprint_speed": 500,
+      "transport_speed": 250,
+      "stamina": 100,
+      "max_full_stomach": 560,
+      "size": "L",
+      "male_probability": 60.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12597,7 +15875,7 @@
       5,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Stage Combat",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -12621,7 +15899,18 @@
       "hp": 105,
       "attack": 125,
       "defense": 140,
-      "rarity": 8
+      "rarity": 8,
+      "price": 4116,
+      "craft_speed": 100,
+      "slow_walk_speed": 115,
+      "walk_speed": 230,
+      "run_speed": 850,
+      "ride_sprint_speed": 1100,
+      "transport_speed": 360,
+      "stamina": 300,
+      "max_full_stomach": 600,
+      "size": "XL",
+      "male_probability": 50.0
     },
     "guaranteed_passives": [
       {
@@ -12644,7 +15933,7 @@
       0,
       0
     ],
-    "partner_skill": null,
+    "partner_skill": "Indestructible Fortress",
     "partner_skill_desc": null,
     "nocturnal": false,
     "food_amount": 9,

@@ -30,13 +30,34 @@ fn passive_ref(gd: &GameData, id: &str) -> PassiveRef {
     }
 }
 
-/// Base stats the pack carries for a species.
+/// Base + extended stats the pack carries for a species. Extended fields
+/// (price, speeds, stamina, size, …) come from the own-install extraction;
+/// mirrors the frozen `SpeciesStats` TS contract.
 #[derive(Debug, Clone, Serialize)]
 pub struct SpeciesStats {
     pub hp: u16,
     pub attack: u16,
     pub defense: u16,
     pub rarity: u8,
+    /// Merchant sell price.
+    pub price: u32,
+    /// Crafting-speed multiplier (percent; 100 for every pal).
+    pub craft_speed: u16,
+    pub slow_walk_speed: u16,
+    pub walk_speed: u16,
+    pub run_speed: u16,
+    /// Mounted sprint speed; `-1` when the species is not rideable.
+    pub ride_sprint_speed: i16,
+    /// Transport hauling speed; `-1` when the species cannot transport.
+    pub transport_speed: i16,
+    pub stamina: u16,
+    pub max_full_stomach: u16,
+    /// Body-size class: `"XS"`, `"S"`, `"M"`, `"L"`, `"XL"`.
+    pub size: String,
+    /// P(male) as a percent (0-100). NOTE: `SpeciesEntry.male_probability` is
+    /// the 0-1 fraction the gender bar reads; this percent copy exists per the
+    /// frozen `SpeciesStats` contract.
+    pub male_probability: f32,
 }
 
 /// A lightweight species reference (`{id, name, paldex_no}`) for parent/child
@@ -96,6 +117,17 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
             attack: sp.attack,
             defense: sp.defense,
             rarity: sp.rarity,
+            price: sp.price,
+            craft_speed: sp.craft_speed,
+            slow_walk_speed: sp.slow_walk_speed,
+            walk_speed: sp.walk_speed,
+            run_speed: sp.run_speed,
+            ride_sprint_speed: sp.ride_sprint_speed,
+            transport_speed: sp.transport_speed,
+            stamina: sp.stamina,
+            max_full_stomach: sp.max_full_stomach,
+            size: sp.size.clone(),
+            male_probability: (sp.male_probability * 100.0).round(),
         },
         guaranteed_passives: sp
             .guaranteed_passives

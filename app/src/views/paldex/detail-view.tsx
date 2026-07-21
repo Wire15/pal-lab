@@ -24,6 +24,16 @@ const FOOD_PIPS = 10;
 /** Soft per-stat reference caps (observed pack maxima) for the stat bars. */
 const STAT_MAX = { hp: 180, attack: 150, defense: 200 } as const;
 
+/** Soft per-metric caps (~p95 of the pack) for the movement bars; the fastest
+ * legendaries saturate (clamped), so a common pal's bar stays readable. */
+const MOVE_MAX = {
+  walk: 300,
+  run: 1000,
+  sprint: 1600,
+  transport: 600,
+  slow: 150,
+} as const;
+
 /** A clickable species reference (icon + name + dex #) for in-dex navigation. */
 function SpeciesCell({
   sp,
@@ -153,8 +163,42 @@ function FoodMeter({ amount }: { amount: number }) {
   );
 }
 
-/** A labelled field-data row: mono eyebrow label on the left, value on the right. */
-function FactRow({
+/** One movement metric: mono label, right-aligned value, thin cool bar. A
+ * negative value means the pal can't do it (not rideable / can't haul) → an em
+ * dash and no bar, never a fake `0`. */
+function MoveRow({
+  label,
+  value,
+  max,
+}: {
+  label: string;
+  value: number;
+  max: number;
+}) {
+  const na = value < 0;
+  const pct = na ? 0 : Math.max(4, Math.min(100, Math.round((value / max) * 100)));
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-baseline justify-between">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+          {label}
+        </span>
+        <span className="font-mono text-[13px] font-semibold tabular-nums text-ink">
+          {na ? "\u2014" : value}
+        </span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-abyss">
+        {!na && (
+          <div className="h-full rounded-full bg-ink-dim/70" style={{ width: `${pct}%` }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** A compact field-data cell: mono eyebrow label above its value, for the
+ * Field-data spec grid. */
+function FactCell({
   label,
   children,
 }: {
@@ -162,11 +206,11 @@ function FactRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-line-soft py-2 last:border-b-0">
+    <div className="flex flex-col gap-1">
       <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
         {label}
       </span>
-      <div className="flex items-center gap-2 text-[13px] text-ink">{children}</div>
+      <div className="flex items-baseline gap-1.5 text-[13px] text-ink">{children}</div>
     </div>
   );
 }
@@ -273,6 +317,7 @@ export default function PaldexDetail({
   const [wildMin, wildMax] = detail.wild_levels;
   const wildCatchable = wildMin > 0 || wildMax > 0;
   const hasPartner = detail.partner_skill != null;
+  const s = detail.stats;
 
   return (
     <div className="flex h-full flex-col">
@@ -289,6 +334,10 @@ export default function PaldexDetail({
                   #{String(detail.paldex_no).padStart(3, "0")}
                 </span>
                 <RarityBadge rarity={detail.stats.rarity} />
+                <span className="inline-flex items-center gap-1.5 rounded-sm border border-line bg-raised px-2 py-0.5">
+                  <span className="text-ink-faint">Size</span>
+                  <span className="text-ink">{s.size}</span>
+                </span>
                 {detail.is_variant && <Tag tone="boss">Variant</Tag>}
                 {detail.nocturnal && (
                   <span className="inline-flex items-center gap-1 rounded-sm border border-el-dark/45 bg-el-dark/12 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-el-dark">
@@ -336,41 +385,66 @@ export default function PaldexDetail({
             </Section>
           )}
 
-          {/* Base stats + field data */}
-          <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+          {/* Base stats + movement */}
+          <div className="grid gap-5 lg:grid-cols-2">
             <Section eyebrow="Base stats">
               <div className="flex flex-col gap-3.5">
-                <StatRow label="Health" value={detail.stats.hp} max={STAT_MAX.hp} />
-                <StatRow label="Attack" value={detail.stats.attack} max={STAT_MAX.attack} />
-                <StatRow label="Defense" value={detail.stats.defense} max={STAT_MAX.defense} />
+                <StatRow label="Health" value={s.hp} max={STAT_MAX.hp} />
+                <StatRow label="Attack" value={s.attack} max={STAT_MAX.attack} />
+                <StatRow label="Defense" value={s.defense} max={STAT_MAX.defense} />
               </div>
             </Section>
 
-            <Section eyebrow="Field data">
-              <div className="flex flex-col">
-                <FactRow label="Food">
-                  <FoodMeter amount={detail.food_amount} />
-                </FactRow>
-                <FactRow label="Breeding power">
-                  <span className="font-mono font-semibold tabular-nums">
-                    {detail.combi_rank}
-                  </span>
-                </FactRow>
-                {wildCatchable && (
-                  <FactRow label="Wild level">
-                    <span className="font-mono tabular-nums">
-                      {wildMin === wildMax ? wildMin : `${wildMin}\u2013${wildMax}`}
-                    </span>
-                  </FactRow>
-                )}
-                <FactRow label="Activity">
-                  <span className={detail.nocturnal ? "text-el-dark" : "text-ink-dim"}>
-                    {detail.nocturnal ? "\u263e Nocturnal" : "\u2600 Diurnal"}
-                  </span>
-                </FactRow>
+            <Section eyebrow="Movement">
+              <div className="flex flex-col gap-3">
+                <MoveRow label="Walk" value={s.walk_speed} max={MOVE_MAX.walk} />
+                <MoveRow label="Run" value={s.run_speed} max={MOVE_MAX.run} />
+                <MoveRow label="Ride sprint" value={s.ride_sprint_speed} max={MOVE_MAX.sprint} />
+                <MoveRow label="Transport" value={s.transport_speed} max={MOVE_MAX.transport} />
+                <MoveRow label="Slow walk" value={s.slow_walk_speed} max={MOVE_MAX.slow} />
               </div>
             </Section>
           </div>
+
+          {/* Field data — spec sheet */}
+          <Section eyebrow="Field data">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
+              <div className="col-span-2 sm:col-span-3">
+                <FactCell label="Food">
+                  <FoodMeter amount={detail.food_amount} />
+                </FactCell>
+              </div>
+              <FactCell label="Stamina">
+                <span className="font-mono font-semibold tabular-nums">{s.stamina}</span>
+              </FactCell>
+              <FactCell label="Breeding power">
+                <span className="font-mono font-semibold tabular-nums">{detail.combi_rank}</span>
+              </FactCell>
+              <FactCell label="Craft speed">
+                <span className="font-mono font-semibold tabular-nums">{s.craft_speed}</span>
+              </FactCell>
+              <FactCell label="Price">
+                <span className="font-mono font-semibold tabular-nums text-amber">
+                  {s.price.toLocaleString()}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                  gold
+                </span>
+              </FactCell>
+              {wildCatchable && (
+                <FactCell label="Wild level">
+                  <span className="font-mono tabular-nums">
+                    {wildMin === wildMax ? wildMin : `${wildMin}\u2013${wildMax}`}
+                  </span>
+                </FactCell>
+              )}
+              <FactCell label="Activity">
+                <span className={detail.nocturnal ? "text-el-dark" : "text-ink-dim"}>
+                  {detail.nocturnal ? "\u263e Nocturnal" : "\u2600 Diurnal"}
+                </span>
+              </FactCell>
+            </div>
+          </Section>
 
           {/* Work suitability */}
           <Section

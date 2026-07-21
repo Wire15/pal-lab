@@ -1,5 +1,9 @@
-//! Converts palcalc's vendored JSON (`vendor/db.json`, `vendor/breeding.json`)
-//! into the compact bincode pack embedded by the library (`pack/paldata.pack`).
+//! Converts the vendored JSON (`vendor/db.json`, `vendor/breeding.json`,
+//! `vendor/extracted-game-data.json`, `vendor/partner-skills.json`) into the
+//! compact bincode pack embedded by the library (`pack/paldata.pack`). Elements,
+//! partner-skill names, and extended stats come from the own-install extraction;
+//! partner-skill descriptions from partner-skills.json; everything else from
+//! palcalc's db.json/breeding.json.
 //!
 //! Run with: `cargo run -p pal-data --bin build-pack`
 //!
@@ -13,8 +17,8 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 use pal_data::gamedata::{
-    BreedingEntry, ElementKind, InheritanceWeights, Pack, PalSpecies, ParentGender, PassiveSkill,
-    UNREACHABLE,
+    BreedingEntry, ElementKind, GameSettings, InheritanceWeights, Pack, PalSpecies, ParentGender,
+    PassiveSkill, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -72,10 +76,12 @@ struct RawWork {
     farming: u8,
 }
 
-/// One entry of `vendor/partner-skills.json` (lowercase keys, no PascalCase).
+/// One entry of `vendor/partner-skills.json` (lowercase keys). Only the authored
+/// `description` is consumed now — the partner-skill NAME comes from the
+/// own-install extraction. `#[serde(default)]` tolerates the `name` key.
 #[derive(Deserialize)]
 struct RawPartnerSkill {
-    name: String,
+    #[serde(default)]
     description: Option<String>,
 }
 
@@ -105,6 +111,56 @@ struct RawBreedRow {
     child_internal_name: String,
 }
 
+// ---- own-install extraction (vendor/extracted-game-data.json) ----
+// Authoritative source for elements, partner-skill names, and extended stats.
+// Keys are snake_case (no PascalCase rename).
+
+#[derive(Deserialize)]
+struct RawExtract {
+    meta: RawExtractMeta,
+    game_settings: RawGameSettings,
+    species: HashMap<String, RawExtractSpecies>,
+}
+
+#[derive(Deserialize)]
+struct RawExtractMeta {
+    game_build: String,
+}
+
+#[derive(Deserialize)]
+struct RawGameSettings {
+    combi_talent_inherit_num: Vec<u32>,
+    combi_passive_inherit_num: Vec<u32>,
+    combi_passive_random_add_num: Vec<u32>,
+    combi_boss_pal_rate: f32,
+}
+
+#[derive(Deserialize)]
+struct RawExtractSpecies {
+    elements: Vec<String>,
+    partner_skill: RawExtractPartner,
+    stats: RawExtractStats,
+}
+
+#[derive(Deserialize)]
+struct RawExtractPartner {
+    name: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct RawExtractStats {
+    price: u32,
+    craft_speed: u32,
+    slow_walk_speed: u32,
+    walk_speed: u32,
+    run_speed: u32,
+    ride_sprint_speed: i32,
+    transport_speed: i32,
+    stamina: u32,
+    max_full_stomach: u32,
+    size: String,
+}
+
 fn parse_gender(s: &str) -> ParentGender {
     match s {
         "MALE" => ParentGender::Male,
@@ -126,22 +182,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let db: RawDb = serde_json::from_slice(&db_bytes)?;
     let br: RawBreeding = serde_json::from_slice(&breeding_bytes)?;
 
-    // Per-species element types (internal_name -> canonical kind names), derived
-    // from oMaN-Rod/palworld-save-pal's data/json/pals.json (see vendor/NOTICE).
-    let elements_bytes = std::fs::read(vendor.join("elements.json"))?;
-    let raw_elements: HashMap<String, Vec<String>> = serde_json::from_slice(&elements_bytes)?;
-    let elements: HashMap<String, Vec<ElementKind>> = raw_elements
+    // Own-install extraction (build 24181527): authoritative source for
+    // elements, partner-skill names, and extended stats (see vendor/NOTICE +
+    // DESIGN.md). Replaces the former elements.json element source.
+    let extract_bytes = std::fs::read(vendor.join("extracted-game-data.json"))?;
+    let extract: RawExtract = serde_json::from_slice(&extract_bytes)?;
+    // Case-insensitive join on InternalName (our db.json ids match exactly, but
+    // extraction casing may drift across builds).
+    let extract_ci: HashMap<String, &RawExtractSpecies> = extract
+        .species
         .iter()
-        .map(|(name, kinds)| {
-            let parsed = kinds
-                .iter()
-                .map(|k| {
-                    ElementKind::parse(k)
-                        .unwrap_or_else(|| panic!("elements.json: unknown kind {k:?} for {name}"))
-                })
-                .collect();
-            (name.clone(), parsed)
-        })
+        .map(|(k, v)| (k.to_ascii_lowercase(), v))
         .collect();
 
     // Per-species partner skill (internal_name -> {name, description}), sourced
@@ -174,6 +225,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     );
                     0.5
                 });
+            // Extended data (elements, partner name, extended stats) is a hard
+            // contract: every pack species MUST be present in the extraction.
+            let ex = extract_ci
+                .get(&p.internal_name.to_ascii_lowercase())
+                .unwrap_or_else(|| {
+                    panic!(
+                        "extracted-game-data.json missing pack species {} — reconcile before building",
+                        p.internal_name
+                    )
+                });
+            let st = &ex.stats;
             PalSpecies {
                 internal_name: p.internal_name.clone(),
                 name: p.name.clone(),
@@ -186,6 +248,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 hp: p.hp.min(u16::MAX as u32) as u16,
                 attack: p.attack.min(u16::MAX as u32) as u16,
                 defense: p.defense.min(u16::MAX as u32) as u16,
+                // Extended stats — own-install extraction ground truth.
+                price: st.price,
+                craft_speed: st.craft_speed.min(u16::MAX as u32) as u16,
+                slow_walk_speed: st.slow_walk_speed.min(u16::MAX as u32) as u16,
+                walk_speed: st.walk_speed.min(u16::MAX as u32) as u16,
+                run_speed: st.run_speed.min(u16::MAX as u32) as u16,
+                // `-1` sentinel = not rideable / cannot transport; preserved.
+                ride_sprint_speed: st.ride_sprint_speed.clamp(i16::MIN as i32, i16::MAX as i32) as i16,
+                transport_speed: st.transport_speed.clamp(i16::MIN as i32, i16::MAX as i32) as i16,
+                stamina: st.stamina.min(u16::MAX as u32) as u16,
+                max_full_stomach: st.max_full_stomach.min(u16::MAX as u32) as u16,
+                size: st.size.clone(),
                 guaranteed_passives: p.guaranteed_passives_internal_ids.clone(),
                 work_suitability: {
                     let w = &p.work_suitability;
@@ -205,9 +279,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         w.farming,
                     ]
                 },
-                partner_skill: partner_skills
-                    .get(&p.internal_name)
-                    .map(|ps| ps.name.clone()),
+                // Partner-skill NAME from the extraction (authoritative, all
+                // species); "-"/empty normalized to None.
+                partner_skill: ex
+                    .partner_skill
+                    .name
+                    .clone()
+                    .filter(|nm| !nm.trim().is_empty() && nm != "-"),
+                // DESCRIPTION from partner-skills.json when present, else None
+                // (game files carry no partner-skill descriptions).
                 partner_skill_desc: partner_skills
                     .get(&p.internal_name)
                     .and_then(|ps| ps.description.clone()),
@@ -219,7 +299,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     p.min_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
                     p.max_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
                 ),
-                elements: elements.get(&p.internal_name).cloned().unwrap_or_default(),
+                // Elements: own-install extraction ground truth.
+                elements: ex
+                    .elements
+                    .iter()
+                    .map(|k| {
+                        ElementKind::parse(k).unwrap_or_else(|| {
+                            panic!("extraction: unknown element {k:?} for {}", p.internal_name)
+                        })
+                    })
+                    .collect(),
             }
         })
         .collect();
@@ -237,6 +326,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             missing_elements
         );
     }
+
+    // Reconciliation (extraction vs pack). Extra extraction species are
+    // cut / NPC-only content we intentionally do not carry (no icons/breeding);
+    // any pack species absent from the extraction would have panicked above, so
+    // the reverse direction is guaranteed empty here.
+    let pack_ci: std::collections::HashSet<String> =
+        species.iter().map(|s| s.internal_name.to_ascii_lowercase()).collect();
+    let mut extra: Vec<&str> = extract
+        .species
+        .keys()
+        .filter(|k| !pack_ci.contains(&k.to_ascii_lowercase()))
+        .map(|k| k.as_str())
+        .collect();
+    extra.sort_unstable();
+    println!(
+        "reconciliation: {} extraction species not in pack (dropped): {:?}",
+        extra.len(),
+        extra
+    );
 
     let passives: Vec<PassiveSkill> = db
         .passive_skills
@@ -291,11 +399,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let pack = Pack {
         version: db.version.clone(),
+        game_build: extract.meta.game_build.clone(),
         species,
         passives,
         breeding,
         min_steps,
         inheritance: InheritanceWeights::default(),
+        game_settings: GameSettings {
+            combi_talent_inherit_num: extract.game_settings.combi_talent_inherit_num.clone(),
+            combi_passive_inherit_num: extract.game_settings.combi_passive_inherit_num.clone(),
+            combi_passive_random_add_num: extract.game_settings.combi_passive_random_add_num.clone(),
+            combi_boss_pal_rate: extract.game_settings.combi_boss_pal_rate,
+        },
     };
 
     let bytes = bincode::serialize(&pack)?;
@@ -304,17 +419,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let out = out_dir.join("paldata.pack");
     std::fs::write(&out, &bytes)?;
 
-    let json_total = db_bytes.len() + breeding_bytes.len();
+    let json_total = db_bytes.len() + breeding_bytes.len() + extract_bytes.len();
     let with_elements = pack.species.iter().filter(|s| !s.elements.is_empty()).count();
     let with_partner = pack.species.iter().filter(|s| s.partner_skill.is_some()).count();
+    let with_partner_desc = pack.species.iter().filter(|s| s.partner_skill_desc.is_some()).count();
     println!(
-        "wrote {} ({} bytes) | species={} (elements {}/{}, partner {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
+        "wrote {} ({} bytes) | build={} | species={} (elements {}/{}, partner name {}/{} desc {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
         out.display(),
         bytes.len(),
+        pack.game_build,
         pack.species.len(),
         with_elements,
         pack.species.len(),
         with_partner,
+        pack.species.len(),
+        with_partner_desc,
         pack.species.len(),
         pack.passives.len(),
         pack.breeding.len(),

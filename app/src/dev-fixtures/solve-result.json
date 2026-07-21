@@ -10,114 +10,6 @@
         "(random)"
       ],
       "source": "Bred",
-      "probability": 0.42000000000000004,
-      "est_time_secs": 9000.0,
-      "children": [
-        {
-          "species": 78,
-          "species_name": "Frostallion Noct",
-          "gender": "Male",
-          "passives": [
-            "MoveSpeed_up_2"
-          ],
-          "source": "Bred",
-          "probability": 0.4,
-          "est_time_secs": 10800.0,
-          "children": [
-            {
-              "species": 77,
-              "species_name": "Frostallion",
-              "gender": "Female",
-              "passives": [],
-              "source": {
-                "Wild": {
-                  "captures": 2
-                }
-              },
-              "probability": 1.0,
-              "est_time_secs": 7800.0,
-              "children": []
-            },
-            {
-              "species": 148,
-              "species_name": "Helzephyr",
-              "gender": "Male",
-              "passives": [
-                "MoveSpeed_up_2"
-              ],
-              "source": {
-                "Owned": {
-                  "location": "Palbox"
-                }
-              },
-              "probability": 1.0,
-              "est_time_secs": 0.0,
-              "children": []
-            }
-          ]
-        },
-        {
-          "species": 287,
-          "species_name": "Lapure",
-          "gender": "Female",
-          "passives": [
-            "PAL_Sanity_Up_1"
-          ],
-          "source": "Bred",
-          "probability": 0.4,
-          "est_time_secs": 3600.0,
-          "children": [
-            {
-              "species": 203,
-              "species_name": "Sekhmet",
-              "gender": "Female",
-              "passives": [],
-              "source": {
-                "Owned": {
-                  "location": "Palbox"
-                }
-              },
-              "probability": 1.0,
-              "est_time_secs": 0.0,
-              "children": []
-            },
-            {
-              "species": 188,
-              "species_name": "Moldron",
-              "gender": "Male",
-              "passives": [
-                "PAL_Sanity_Up_1"
-              ],
-              "source": {
-                "Owned": {
-                  "location": "Palbox"
-                }
-              },
-              "probability": 1.0,
-              "est_time_secs": 0.0,
-              "children": []
-            }
-          ]
-        }
-      ]
-    },
-    "total_time_secs": 27600.0,
-    "total_steps": 3,
-    "total_wild_pals": 1,
-    "cake": "Normal",
-    "cake_count": 0
-  },
-  {
-    "root": {
-      "species": 6,
-      "species_name": "Anubis",
-      "gender": null,
-      "passives": [
-        "MoveSpeed_up_2",
-        "PAL_Sanity_Up_1",
-        "(random)"
-      ],
-      "source": "Bred",
       "probability": 0.19000000000000003,
       "est_time_secs": 10800.0,
       "children": [
@@ -177,6 +69,22 @@
           "est_time_secs": 16800.0,
           "children": [
             {
+              "species": 188,
+              "species_name": "Moldron",
+              "gender": "Male",
+              "passives": [
+                "PAL_Sanity_Up_1"
+              ],
+              "source": {
+                "Owned": {
+                  "location": "Palbox"
+                }
+              },
+              "probability": 1.0,
+              "est_time_secs": 0.0,
+              "children": []
+            },
+            {
               "species": 60,
               "species_name": "Reptyro Cryst",
               "gender": "Female",
@@ -193,7 +101,42 @@
               "probability": 1.0,
               "est_time_secs": 0.0,
               "children": []
-            },
+            }
+          ]
+        }
+      ]
+    },
+    "total_time_secs": 27600.0,
+    "total_steps": 3,
+    "total_wild_pals": 1,
+    "cake": "Normal",
+    "cake_count": 0
+  },
+  {
+    "root": {
+      "species": 6,
+      "species_name": "Anubis",
+      "gender": null,
+      "passives": [
+        "MoveSpeed_up_2",
+        "PAL_Sanity_Up_1",
+        "(random)"
+      ],
+      "source": "Bred",
+      "probability": 0.42000000000000004,
+      "est_time_secs": 9000.0,
+      "children": [
+        {
+          "species": 287,
+          "species_name": "Lapure",
+          "gender": "Male",
+          "passives": [
+            "PAL_Sanity_Up_1"
+          ],
+          "source": "Bred",
+          "probability": 0.4,
+          "est_time_secs": 5400.0,
+          "children": [
             {
               "species": 188,
               "species_name": "Moldron",
@@ -208,6 +151,63 @@
               },
               "probability": 1.0,
               "est_time_secs": 0.0,
+              "children": []
+            },
+            {
+              "species": 203,
+              "species_name": "Sekhmet",
+              "gender": "Female",
+              "passives": [],
+              "source": {
+                "Owned": {
+                  "location": "Palbox"
+                }
+              },
+              "probability": 1.0,
+              "est_time_secs": 0.0,
+              "children": []
+            }
+          ]
+        },
+        {
+          "species": 78,
+          "species_name": "Frostallion Noct",
+          "gender": "Female",
+          "passives": [
+            "MoveSpeed_up_2"
+          ],
+          "source": "Bred",
+          "probability": 0.4,
+          "est_time_secs": 10800.0,
+          "children": [
+            {
+              "species": 148,
+              "species_name": "Helzephyr",
+              "gender": "Male",
+              "passives": [
+                "MoveSpeed_up_2"
+              ],
+              "source": {
+                "Owned": {
+                  "location": "Palbox"
+                }
+              },
+              "probability": 1.0,
+              "est_time_secs": 0.0,
+              "children": []
+            },
+            {
+              "species": 77,
+              "species_name": "Frostallion",
+              "gender": "Female",
+              "passives": [],
+              "source": {
+                "Wild": {
+                  "captures": 2
+                }
+              },
+              "probability": 1.0,
+              "est_time_secs": 7800.0,
               "children": []
             }
           ]
@@ -247,52 +247,9 @@
           "est_time_secs": 9600.0,
           "children": [
             {
-              "species": 251,
-              "species_name": "Frostplume",
-              "gender": "Male",
-              "passives": [
-                "PAL_Sanity_Up_1"
-              ],
-              "source": "Bred",
-              "probability": 0.4,
-              "est_time_secs": 4200.0,
-              "children": [
-                {
-                  "species": 276,
-                  "species_name": "Solenne",
-                  "gender": "Female",
-                  "passives": [],
-                  "source": {
-                    "Wild": {
-                      "captures": 1
-                    }
-                  },
-                  "probability": 1.0,
-                  "est_time_secs": 1950.0,
-                  "children": []
-                },
-                {
-                  "species": 72,
-                  "species_name": "Vanwyrm Cryst",
-                  "gender": "Male",
-                  "passives": [
-                    "PAL_Sanity_Up_1"
-                  ],
-                  "source": {
-                    "Owned": {
-                      "location": "Palbox"
-                    }
-                  },
-                  "probability": 1.0,
-                  "est_time_secs": 0.0,
-                  "children": []
-                }
-              ]
-            },
-            {
               "species": 25,
               "species_name": "Univolt",
-              "gender": "Female",
+              "gender": "Male",
               "passives": [
                 "MoveSpeed_up_2"
               ],
@@ -320,6 +277,49 @@
                   "gender": "Female",
                   "passives": [
                     "MoveSpeed_up_2"
+                  ],
+                  "source": {
+                    "Owned": {
+                      "location": "Palbox"
+                    }
+                  },
+                  "probability": 1.0,
+                  "est_time_secs": 0.0,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "species": 251,
+              "species_name": "Frostplume",
+              "gender": "Female",
+              "passives": [
+                "PAL_Sanity_Up_1"
+              ],
+              "source": "Bred",
+              "probability": 0.4,
+              "est_time_secs": 4200.0,
+              "children": [
+                {
+                  "species": 276,
+                  "species_name": "Solenne",
+                  "gender": "Female",
+                  "passives": [],
+                  "source": {
+                    "Wild": {
+                      "captures": 1
+                    }
+                  },
+                  "probability": 1.0,
+                  "est_time_secs": 1950.0,
+                  "children": []
+                },
+                {
+                  "species": 72,
+                  "species_name": "Vanwyrm Cryst",
+                  "gender": "Male",
+                  "passives": [
+                    "PAL_Sanity_Up_1"
                   ],
                   "source": {
                     "Owned": {

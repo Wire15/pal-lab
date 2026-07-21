@@ -16,26 +16,28 @@ here under that license as a day-one data contract; pal-calc converts them to
 a compact binary pack (pack/paldata.pack) at build time and credits the
 original authors. See the palcalc repository for the full license text.
 
-Per-species element types
-=========================
+Own-install extraction (Palworld build 24181527)
+================================================
 
-  elements.json - internal_name -> [element kinds] (1-2 of the 9 canonical
-                  kinds: Normal, Fire, Water, Leaf, Electricity, Ice, Earth,
-                  Dark, Dragon), in the game's ElementType1/ElementType2 order.
+  extracted-game-data.json - per-species { elements, partner_skill {name,
+                  description}, stats } plus top-level game_settings
+                  (Combi_* inheritance arrays + Combi_BossPalRate) and meta.
 
-This is a DERIVED mapping: the element lists were extracted from the
-`element_types` field of `data/json/pals.json` and keyed to palcalc's internal
-species ids (the game `CharacterID`s that our db.json already uses). It reflects
-the current Palworld 1.0 element assignments (e.g. Lovander = Dark, Dumud =
-Earth+Water), verified against the game's DT_PalMonsterParameter data table.
+This file was extracted directly from a legitimately-owned Palworld 1.0 install
+(build 24181527) using the tools/pal-extract utility (CUE4Parse + PalworldModding
+usmap). It is the AUTHORITATIVE source for:
 
-Source:  https://github.com/oMaN-Rod/palworld-save-pal  (data/json/pals.json)
-Author:  oMaN-Rod and Palworld Save Pal contributors
-License: MIT
+  - element types (replaces the former vendored elements.json, now removed);
+  - partner-skill NAMES (populated for every species);
+  - extended stats (price, craft/slow-walk/walk/run/ride-sprint/transport
+    speeds, stamina, max-full-stomach, size).
 
-build-pack merges elements.json into the pack (PalSpecies.elements). The
-underlying element facts are game data from Palworld (c) Pocketpair, Inc.,
-included here for personal, non-commercial use only.
+Partner-skill DESCRIPTIONS are NOT present in the game files, so they continue
+to come from partner-skills.json below (merged by internal name).
+
+These facts are game data from Palworld (c) Pocketpair, Inc., extracted from a
+personal copy and included here for personal, non-commercial use only. All
+rights to the underlying data remain with Pocketpair.
 
 Icon assets
 ===========
@@ -78,19 +80,22 @@ title-cased to "Fluffy Shield" (articles/prepositions kept lowercase, e.g.
 their base form's partner skill (game-accurate: Palworld variants share the
 base PartnerSkill), resolved via palcalc's `Base_Suffix` internal-name scheme.
 
-Coverage: 169 / 299 species (138 exact name matches + 31 variant->base
+Description coverage: 169 / 299 species (138 exact name matches + 31 variant->base
 inheritances). The remaining ~130 (Sakurajima + Feybreak DLC and the Terraria
-collab pals) have no permissive partner-skill source and carry null; the UI
-omits the partner-skill section gracefully for those.
+collab pals) have no permissive description source and carry null descriptions;
+their partner-skill NAME still comes from the own-install extraction, so every
+species now has a name. The UI shows the name and omits the description
+gracefully when null.
 
 Source:  https://github.com/mlg404/palworld-paldex-api  (src/pals.json)
 Author:  Victor Eyer and palworld-paldex-api contributors
 License: MIT
 
-build-pack merges partner-skills.json into the pack (PalSpecies.partner_skill
-and partner_skill_desc). The underlying partner-skill facts are game data from
-Palworld (c) Pocketpair, Inc., included here for personal, non-commercial use
-only.
+build-pack merges only the `description` from partner-skills.json into the pack
+(PalSpecies.partner_skill_desc); the partner-skill NAME (PalSpecies.partner_skill)
+comes from the own-install extraction instead. The underlying partner-skill facts
+are game data from Palworld (c) Pocketpair, Inc., included here for personal,
+non-commercial use only.
 
 Alpha / UI marker icon
 ======================

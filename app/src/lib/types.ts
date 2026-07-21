@@ -142,12 +142,31 @@ export interface PassiveRef {
   rank: number;
 }
 
-/** Base stats the pack carries for a species. */
+/** Base + extended stats the pack carries for a species. Extended fields come
+ * from the own-install extraction (Palworld build 24181527). */
 export interface SpeciesStats {
   hp: number;
   attack: number;
   defense: number;
   rarity: number;
+  /** Merchant sell price. */
+  price: number;
+  /** Crafting-speed multiplier (percent; 100 for every pal). */
+  craft_speed: number;
+  slow_walk_speed: number;
+  walk_speed: number;
+  run_speed: number;
+  /** Mounted sprint speed; -1 when the species is not rideable. */
+  ride_sprint_speed: number;
+  /** Transport hauling speed; -1 when the species cannot transport. */
+  transport_speed: number;
+  stamina: number;
+  max_full_stomach: number;
+  /** Body-size class: "XS" | "S" | "M" | "L" | "XL". */
+  size: string;
+  /** P(male) as a percent (0-100). NOTE: SpeciesEntry.male_probability is the
+   * 0-1 fraction the gender bar reads; this percent copy exists per contract. */
+  male_probability: number;
 }
 
 /** Lightweight species reference for parent/child links. */

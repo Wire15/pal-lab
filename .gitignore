@@ -13,6 +13,12 @@ testdata/
 data/extracted/
 *.usmap
 
+# pal-extract dev tool (build output + generated extracts; run locally against your own install)
+tools/pal-extract/bin/
+tools/pal-extract/obj/
+tools/pal-extract/out/
+tools/pal-extract/*.dll
+
 # OS
 Thumbs.db
 .DS_Store

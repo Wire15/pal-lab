@@ -208,12 +208,17 @@ primitive, no new tokens:
   name text is tinted with the element's `--color-el-<key>` token — never a
   hardcoded hex. `ElementBadges {elements}` maps the 1–2 types.
 - **`ElementBanner {element, size?}`** — the loud **detail-header** variant
-  (paldb-style): the full-color type tile beside the element name on a chip whose
-  border and fill are the element's own `el-*` token mixed down with `color-mix`
-  (`40%` border, `13%` fill — never a hardcoded hex), name in `font-display`
-  uppercase tinted the same token. `ElementBanners {elements, size?}` maps the
-  1–2 types (renders null when empty). One banner per type, sized for the hero
-  header (default `20px` tile), not for dense card/hover contexts.
+  (in-game/paldb-style): the flat **white in-game glyph**
+  (`public/elements/glyph/<Kind>_glyph.png`, via `lib/assets.ts::elementGlyphUrl`)
+  beside the element name on a chip whose border and background are the element's
+  own `el-*` token via `color-mix` (`50%` border, `22%` over `abyss` fill — never
+  a hardcoded hex), name in `font-display` uppercase tinted the same token. The
+  dark-tinted surface keeps the white glyph and colored name legible where a
+  fully-saturated bar would fail contrast for the light types (ice, electricity,
+  normal). Falls back to the full-color `ElementIcon` tile when a glyph is
+  missing (unknown element / absent asset). `ElementBanners {elements, size?}`
+  maps the 1–2 types (null when empty). One banner per type, sized for the hero
+  header (default `20px` glyph), not dense card/hover contexts.
 - **Placement:** icon-only near the dex `#` on the card face and in the hover
   card header (compact, siblings to the work badges); **banners** on their own
   row in the detail hero header (§Detail).
@@ -246,31 +251,43 @@ primitive, no new tokens:
 - Sticky back bar (`← All pals`) + `Pal-dex` eyebrow. Content is centered in a
   `max-w-5xl` column inside the view's own `overflow-auto` scroller.
 - **Hero header card** (`panel` + `line`): PalIcon 120 (`rounded-lg`); a meta row
-  of mono amber `#NNN`, the **rarity badge**, a `Variant` tag, and — for
-  nocturnal species — a `☾ Nocturnal` pill (`el-dark`, `border/12` tint);
+  of mono amber `#NNN`, the **rarity badge**, a **size chip** (`XS–XL` class — a
+  quiet `raised`/`line` pill with a faint `Size` label), a `Variant` tag, and —
+  for nocturnal species — a `☾ Nocturnal` pill (`el-dark`, `border/12` tint);
   `font-display` 3xl name; an **element-banner** row (§Element types, one
   `ElementBanner` per type); and a **gender-ratio bar** — a split `el-water`(♂) /
-  `el-dragon`(♀) fill from `male_probability` with mono % labels. Primary CTA
-  `Solve for this pal` (amber) jumps to the Solver pre-filled (shared state).
+  `el-dragon`(♀) fill from `male_probability` (0–1 fraction) with mono % labels.
+  Primary CTA `Solve for this pal` (amber) jumps to the Solver pre-filled (shared state).
 - **Rarity badge (`RarityBadge`):** `rarityTier(rarity)` → the tier **name**
   (Common/Rare/Epic/Legendary) loud, on a chip whose text, border, fill, and
   leading dot are the `rarity-<key>` token via `color-mix` (never a hardcoded hex,
   never the raw number as the label); the raw `Rarity` integer lives only in the
   chip's `title` tooltip.
-- **Partner skill** is a full-width `Section` shown **only when
-  `partner_skill` is non-null** — ~130 (mostly DLC) species carry none, and the
-  section is then *omitted entirely*, no placeholder. Name in `amber-bright`
-  `font-display`; description below in `ink-dim`, `whitespace-pre-line` to keep
-  the pack's line breaks.
+- **Partner skill** is a full-width `Section`; the ground-truth pack now carries a
+  partner-skill **name for every species**, so it renders for all — name in
+  `amber-bright` `font-display`. The **description is optional** (authored text
+  for ~169 species, else null): when present it sits below in `ink-dim`,
+  `whitespace-pre-line`; when absent the name-only layout stands on its own under
+  the eyebrow — intentional, never a placeholder. (Still guarded on non-null for
+  any species the pack lacks entirely.)
 - **Panels** use one `Section` shell (`panel/40` + `line`, mono-eyebrow header on
   `raised`, optional right-aligned mono stat/link). Sections, in order:
   - **Base stats** — `StatRow` per combat stat (Health, Attack, Defense): mono
     label + right-aligned value + a thin `amber/80` bar normalized to the pack's
     observed per-stat caps (`STAT_MAX` HP 180 / ATK 150 / DEF 200), floored at 4%.
-  - **Field data** — a `FactRow` table: the **game-style food meter** (10 pips,
-    `food_amount` filled amber, rest `abyss` + `line` ring — paldb's demand bar),
-    Breeding power (`combi_rank`), Wild level range (hidden when `(0,0)` = not
-    wild-catchable), and Activity (`☾ Nocturnal` `el-dark` / `☀ Diurnal`).
+    Paired two-up with **Movement**.
+  - **Movement** — the five ground-truth speeds (`MoveRow`: Walk, Run, Ride
+    sprint, Transport, Slow walk) as mono label + value + a thin **cool
+    `ink-dim/70`** bar (deliberately distinct from the amber combat bars),
+    normalized to soft ~p95 caps (`MOVE_MAX`), floored at 4% and clamped so the
+    fastest legendaries (Jetragon) saturate. A `-1` value (not rideable / can't
+    haul) shows an em dash and no bar — never a faked `0`.
+  - **Field data** — a spec-sheet grid (`FactCell`, 2→3 columns): the
+    **game-style food meter** (10 pips, `food_amount` filled amber, rest `abyss` +
+    `line` ring — spans full width), then **Stamina**, **Breeding power**
+    (`combi_rank`), **Craft speed**, **Price** (amber gold value), **Wild level**
+    range (hidden when `(0,0)` = not wild-catchable), and **Activity** (`☾
+    Nocturnal` `el-dark` / `☀ Diurnal`).
   - **Work suitability** — every nonzero suitability (`nonzeroWork`), highest
     first, as `WorkGlyph` 22 + label + mono `Lv n` in a 2→3 column grid, with a
     `N jobs` count; empty line when the species is not a base worker.
@@ -282,9 +299,10 @@ primitive, no new tokens:
   then "and X more pairs"; *forward* ("Breed with…") is a species autocomplete
   that resolves the child inline (`A + B → child`). Gender-locked combos, when
   the pack pins them, get their own panel.
-- **Omitted, never faked:** active skills by level, drops, tribes, size class,
-  and movement/level-scaling stats are **not** in the pack, so the detail page
-  carries no section for them — no placeholders, no invented numbers.
+- **Omitted, never faked:** active skills by level, drops, and tribes are **not**
+  in the pack, so the detail page carries no section for them — no placeholders,
+  no invented numbers. (Size class and movement/utility stats, once omitted, are
+  now real ground-truth data and shown above.)
 - **In-dex navigation:** every species cell anywhere in the detail (parent
   pairs, forward child, combos) is a button that reselects that species — the dex
   browses itself; cross-view jumps go through the lifted App state.
