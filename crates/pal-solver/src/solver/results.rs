@@ -1,0 +1,103 @@
+//! Serializable breeding-plan tree returned to callers (a Tauri command wraps
+//! this next phase, so every node is `Serialize`/`Deserialize`).
+
+use pal_data::types::Gender;
+use pal_data::GameData;
+use serde::{Deserialize, Serialize};
+
+use crate::solver::refs::{EffPassive, PalRef, RefGender};
+
+/// How a plan node is obtained.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PlanSource {
+    /// An owned pal, at a storage location.
+    Owned { location: String },
+    /// A wild pal to catch; `captures` = estimated catches for the needed gender.
+    Wild { captures: u32 },
+    /// A bred child of the two `children`.
+    Bred,
+}
+
+/// One node of a breeding plan.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PlanNode {
+    pub species: u16,
+    pub species_name: String,
+    /// `None` = unresolved/wildcard gender.
+    pub gender: Option<Gender>,
+    /// Human-readable passive slots (target internal ids and `"(random)"`).
+    pub passives: Vec<String>,
+    pub source: PlanSource,
+    /// Per-node success probability (bred: passives*IVs; owned/wild: 1.0).
+    pub probability: f64,
+    /// Estimated seconds for THIS node's own step (self effort).
+    pub est_time_secs: f64,
+    pub children: Vec<PlanNode>,
+}
+
+/// A full plan, best-first orderable by `total_time_secs`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BreedingPlan {
+    pub root: PlanNode,
+    pub total_time_secs: f64,
+    pub total_steps: u32,
+    pub total_wild_pals: u32,
+}
+
+fn gender_opt(g: RefGender) -> Option<Gender> {
+    g.concrete()
+}
+
+fn passive_labels(passives: &[EffPassive]) -> Vec<String> {
+    passives
+        .iter()
+        .map(|p| match p {
+            EffPassive::Desired(id) => id.clone(),
+            EffPassive::Random => "(random)".to_string(),
+        })
+        .collect()
+}
+
+fn node_of(gd: &GameData, r: &PalRef) -> PlanNode {
+    let species = r.species();
+    let species_name = gd
+        .species_at(species)
+        .map(|s| s.name.clone())
+        .unwrap_or_else(|| format!("#{species}"));
+    let passives = passive_labels(r.effective_passives());
+    let (source, probability, children) = match r {
+        PalRef::Owned(o) => (
+            PlanSource::Owned { location: format!("{:?}", o.primary.container) },
+            1.0,
+            Vec::new(),
+        ),
+        PalRef::Wild(w) => (PlanSource::Wild { captures: w.captures_required }, 1.0, Vec::new()),
+        PalRef::Bred(b) => (
+            PlanSource::Bred,
+            b.passives_prob * b.ivs_prob,
+            vec![node_of(gd, &b.parent1), node_of(gd, &b.parent2)],
+        ),
+    };
+    PlanNode {
+        species,
+        species_name,
+        gender: gender_opt(r.gender()),
+        passives,
+        source,
+        probability,
+        est_time_secs: r.self_effort(),
+        children,
+    }
+}
+
+impl BreedingPlan {
+    /// Build a plan from a solved reference.
+    pub fn from_ref(gd: &GameData, r: &PalRef) -> BreedingPlan {
+        BreedingPlan {
+            root: node_of(gd, r),
+            total_time_secs: r.total_effort(),
+            total_steps: r.num_breeding_steps(),
+            total_wild_pals: r.num_wild_pals(),
+        }
+    }
+}

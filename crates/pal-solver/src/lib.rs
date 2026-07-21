@@ -3,5 +3,7 @@
 //! Algorithm lineage: palcalc's PalCalc.Solver (MIT), see DESIGN.md.
 
 pub mod probabilities;
+pub mod solver;
 
 pub use probabilities::*;
+pub use solver::*;

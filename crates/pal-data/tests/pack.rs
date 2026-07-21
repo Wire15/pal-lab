@@ -136,5 +136,6 @@ fn inheritance_weights_default_to_shipped_arrays() {
     let w = gd.inheritance();
     assert_eq!(w.passive_inherit, vec![4.0, 3.0, 2.0, 1.0]);
     assert_eq!(w.passive_random_add, vec![4.0, 3.0, 2.0, 1.0]);
-    assert_eq!(w.talent_inherit, vec![4.0, 3.0, 2.0, 1.0]);
+    // IV inheritance 50/25/25 (palcalc IVProbabilityDirect); owned by Slice A.
+    assert_eq!(w.talent_inherit, vec![2.0, 1.0, 1.0]);
 }

@@ -137,8 +137,10 @@ name = "pal-solver"
 version = "0.1.0"
 dependencies = [
  "pal-data",
+ "pal-save",
  "rayon",
  "serde",
+ "serde_json",
  "thiserror",
 ]
 

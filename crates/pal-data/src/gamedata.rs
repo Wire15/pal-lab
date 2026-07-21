@@ -104,12 +104,20 @@ pub struct InheritanceWeights {
 
 impl Default for InheritanceWeights {
     fn default() -> Self {
-        // [4,3,2,1] -> 40/30/20/10%. Kept as raw weights so an extractor can
-        // drop in the true CDO arrays without changing normalization logic.
+        // Passives: [4,3,2,1] -> 40/30/20/10%. Kept as raw weights so an
+        // extractor can drop in the true CDO arrays without changing the
+        // normalization logic.
+        //
+        // Talents (IVs): [2,1,1] -> 50/25/25% for 1/2/3 IVs inherited. This
+        // matches palcalc's manually-sampled `IVProbabilityDirect` table
+        // ({1:0.5, 2:0.25, 3:0.25}); the game's `Combi_TalentInheritNum` CDO
+        // ships [3,2,1] but palcalc's reverse-engineered model (and our oracle
+        // fixtures) use the [2,1,1]-equivalent distribution. See DESIGN.md
+        // "Mechanics ground truth" (weakest-verified parameter).
         InheritanceWeights {
             passive_inherit: vec![4.0, 3.0, 2.0, 1.0],
             passive_random_add: vec![4.0, 3.0, 2.0, 1.0],
-            talent_inherit: vec![4.0, 3.0, 2.0, 1.0],
+            talent_inherit: vec![2.0, 1.0, 1.0],
         }
     }
 }

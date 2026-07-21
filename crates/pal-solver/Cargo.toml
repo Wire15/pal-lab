@@ -6,6 +6,10 @@ license.workspace = true
 
 [dependencies]
 pal-data = { path = "../pal-data" }
+pal-save = { path = "../pal-save" }
 rayon = "1.10"
 serde.workspace = true
 thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
