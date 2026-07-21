@@ -54,6 +54,10 @@ pub struct OwnedPal {
     /// Condensation rank (0 = base).
     pub rank: u32,
     pub passives: Vec<PassiveId>,
+    /// Equipped active skills (waza), internal ids with the `EPalWazaID::`
+    /// enum prefix stripped. Defaults to empty for older serialized data.
+    #[serde(default)]
+    pub active_skills: Vec<String>,
     pub ivs: IvSet,
     pub nickname: Option<String>,
     pub owner_player_uid: Option<Guid>,

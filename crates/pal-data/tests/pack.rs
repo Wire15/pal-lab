@@ -139,3 +139,41 @@ fn inheritance_weights_default_to_shipped_arrays() {
     // IV inheritance 50/25/25 (palcalc IVProbabilityDirect); owned by Slice A.
     assert_eq!(w.talent_inherit, vec![2.0, 1.0, 1.0]);
 }
+
+#[test]
+fn work_suitability_decodes_by_kind() {
+    let gd = GameData::get();
+    let cat = gd.species_by_id("BadCatgirl").expect("BadCatgirl exists");
+    // Nyafia's known work profile (palcalc db.json).
+    assert_eq!(cat.work_level("Handiwork"), Some(4), "Handiwork");
+    assert_eq!(cat.work_level("Gathering"), Some(4), "Gathering");
+    assert_eq!(cat.work_level("Transporting"), Some(3), "Transporting");
+    assert_eq!(cat.work_level("Lumbering"), Some(2), "Lumbering");
+    assert_eq!(cat.work_level("Kindling"), Some(0), "Kindling (unset)");
+    // Accessor rejects unknown kinds.
+    assert_eq!(cat.work_level("Fishing"), None, "unknown kind");
+    // The compact array and canonical order agree.
+    assert_eq!(cat.work_suitability.len(), pal_data::gamedata::WORK_KINDS.len());
+    let handi = cat
+        .work_suitabilities()
+        .find(|(k, _)| *k == "Handiwork")
+        .map(|(_, v)| v);
+    assert_eq!(handi, Some(4), "iterator agrees with work_level");
+}
+
+#[test]
+fn species_metadata_round_trips() {
+    let gd = GameData::get();
+    let cat = gd.species_by_id("BadCatgirl").expect("BadCatgirl exists");
+    assert_eq!(cat.food_amount, 6, "Nyafia food amount");
+    assert!(cat.nocturnal, "Nyafia is nocturnal");
+    assert_eq!(cat.wild_levels, (30, 60), "Nyafia wild level range");
+    // Partner-skill spot check: the shipped db.json has PartnerSkill=null for
+    // every species, so it decodes to None (never an empty string) — but the
+    // Option round-trips so it lights up when data lands.
+    assert_eq!(cat.partner_skill, None, "BadCatgirl partner skill");
+    assert!(
+        gd.species().all(|s| s.partner_skill != Some(String::new())),
+        "partner_skill is never an empty string",
+    );
+}

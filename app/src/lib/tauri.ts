@@ -50,7 +50,7 @@ function loadDev(): Promise<DevFixtures> {
       import("../dev-fixtures/breeding-parents.json"),
       import("../dev-fixtures/breeding-child.json"),
     ]).then(([species, roster, save, solve, passives, detail, parents, child]) => {
-      const speciesData = species.default as SpeciesEntry[];
+      const speciesData = species.default as unknown as SpeciesEntry[];
       return {
         simple: {
           load_save: save.default,
@@ -60,7 +60,7 @@ function loadDev(): Promise<DevFixtures> {
           paldex_species: speciesData,
           roster_counts: roster.default,
         },
-        detail: detail.default as Record<string, SpeciesDetail>,
+        detail: detail.default as unknown as Record<string, SpeciesDetail>,
         parents: parents.default as Record<string, ParentsResult>,
         child: child.default as DevFixtures["child"],
         species: speciesData,

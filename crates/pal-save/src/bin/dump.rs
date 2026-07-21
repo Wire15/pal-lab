@@ -68,7 +68,7 @@ fn main() {
             .map(|n| format!(" \"{n}\""))
             .unwrap_or_default();
         println!(
-            "  {boss}{id}{nick}  L{lvl} rank{rank} {gender}  IV(hp {hp}, atk {atk}, def {def})  passives[{np}]: {passives}",
+            "  {boss}{id}{nick}  L{lvl} rank{rank} {gender}  IV(hp {hp}, atk {atk}, def {def})  passives[{np}]: {passives}  skills[{ns}]: {skills}",
             boss = if pal.is_boss { "BOSS " } else { "" },
             id = pal.character_id,
             lvl = pal.level,
@@ -78,6 +78,8 @@ fn main() {
             def = pal.ivs.defense,
             np = pal.passives.len(),
             passives = pal.passives.join(", "),
+            ns = pal.active_skills.len(),
+            skills = pal.active_skills.join(", "),
         );
     }
 

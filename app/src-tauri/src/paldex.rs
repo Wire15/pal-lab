@@ -66,6 +66,15 @@ pub struct SpeciesEntry {
     pub male_probability: f32,
     pub stats: SpeciesStats,
     pub guaranteed_passives: Vec<PassiveRef>,
+    /// Work-suitability levels in `pal_data::gamedata::WORK_KINDS` canonical
+    /// order (12 entries; the client filters to nonzero for display).
+    pub work_suitability: Vec<u8>,
+    /// Partner-skill display name, when the pack carries one (`null` today).
+    pub partner_skill: Option<String>,
+    pub nocturnal: bool,
+    pub food_amount: u8,
+    /// `(min, max)` wild spawn level; `(0, 0)` means not found in the wild.
+    pub wild_levels: (u8, u8),
 }
 
 fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
@@ -88,6 +97,11 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
             .iter()
             .map(|p| passive_ref(gd, p))
             .collect(),
+        work_suitability: sp.work_suitability.to_vec(),
+        partner_skill: sp.partner_skill.clone(),
+        nocturnal: sp.nocturnal,
+        food_amount: sp.food_amount,
+        wild_levels: sp.wild_levels,
     }
 }
 

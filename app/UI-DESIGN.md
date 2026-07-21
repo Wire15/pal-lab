@@ -235,3 +235,53 @@ A single small context (`AppStateProvider`/`useAppState`), no store: shared
 `saveDir` (Roster · Solver · Pal-dex read/write one path), the active `view`, and
 a one-shot `solveTarget` the Solver consumes on arrival. `requestSolve(name)`
 sets the target and switches view; `View in Roster` just flips `view`.
+
+## 10. Round 2 — Work suitability & the species hover card
+
+Two additions carry the species' **work profile** — the twelve Palworld job
+ratings — plus a paldb-style at-a-glance info panel, without a new visual
+language: they compose the existing surfaces, ink ramp, amber accent, and mono
+labels.
+
+### Work-suitability data & glyphs
+The pack carries a compact `work_suitability` per species — a 12-int array in a
+fixed canonical order (`Kindling, Watering, Planting, GenerateElectricity,
+Handiwork, Gathering, Lumbering, Mining, MedicineProduction, Cooling,
+Transporting, Farming`), mirrored by `pal_data::gamedata::WORK_KINDS` and the
+`WORK_META` table in `components/work-suit.tsx`. Levels run 0–5 in-game (the
+pack tolerates higher). The categorical **glyphs** are palcalc's own job icons,
+bundled under `public/work/<Kind>.png` (see `vendor/NOTICE`;
+`GenerateElectricity` is palcalc's `ElectricityGeneration.png`). `WorkGlyph`
+degrades to a tinted mono **two-letter code chip** (`bg-raised`, `text-ink-dim`)
+if an icon fails to load — never an emoji.
+
+### Work badges on the dex card (`CardWorkBadges`)
+The card face shows the species' **nonzero** suitabilities, highest first, as up
+to four compact chips (`bg-abyss/70`, glyph + mono level) with a faint mono
+`+n` overflow. Capped deliberately: the grid stays scannable and the badges
+read as a dense sparkline of what a pal is *for*, not a full table. Zero-work
+species render nothing (no empty row).
+
+### Species hover card (`<PalHoverCard speciesId>`)
+A transient, paldb-inspired info panel that wraps any single trigger element and
+attaches anywhere a species id is known (dex cards; every breeding parent /
+child / gender-locked cell in the detail). It reads the game's **dark
+info-panel** voice through our tokens:
+
+- **Surface:** `bg-panel/95` (a slight, deliberate translucency — the nod to the
+  game's translucent panel, *not* glassmorphism: no blur, no glow) over a `line`
+  border and a dark `abyss/70` ring. Separation comes from the surface step +
+  border + ring, per §4 — the one sanctioned floating overlay, still flat.
+- **Layout:** header (PalIcon 40, display name, mono amber `#NNN`, rarity,
+  `Variant`); an optional **partner-skill** row (mono eyebrow + amber-bright
+  name, wraps, *omitted entirely when null* — the shipped pack has none yet); a
+  **work-suitability** block (nonzero only, glyph + label + mono `Lv n`, two
+  columns past six rows); and a footer with a 10-slot amber **food meter**, a
+  `☾` **nocturnal** marker (`el-dark`), and the mono **wild-level** range
+  (hidden when `(0,0)` = not wild-catchable).
+- **Behavior:** opens ~250 ms after pointer-enter, positions itself with
+  hand-rolled `fixed` + measured geometry (no portal lib), prefers the anchor's
+  right and **flips left / clamps vertically** to stay in the viewport, never
+  captures the pointer (`pointer-events: none`), and closes on leave, scroll, or
+  resize. Species data comes from a module-cached `paldex_species` fetch, so the
+  card is self-sufficient.

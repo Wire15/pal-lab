@@ -40,6 +40,58 @@ pub struct PalSpecies {
     /// Passive internal ids every instance of this species is guaranteed to roll
     /// (e.g. Anubis -> `ElementBoost_Earth_2_PAL`).
     pub guaranteed_passives: Vec<String>,
+    /// Work-suitability levels indexed by [`WORK_KINDS`] canonical order.
+    /// Stored compact (12 bytes); use [`PalSpecies::work_level`] /
+    /// [`PalSpecies::work_suitabilities`] to read by kind name.
+    pub work_suitability: [u8; 12],
+    /// Partner-skill display name (`PartnerSkill`), when the pack carries one.
+    /// Currently `None` for every species in the shipped `db.json` — the field
+    /// is `null` there — but wired through so it lights up when data lands.
+    pub partner_skill: Option<String>,
+    /// Active only at night (`Nocturnal`).
+    pub nocturnal: bool,
+    /// Food-meter cost per feeding (`FoodAmount`, ~1..=10).
+    pub food_amount: u8,
+    /// `(MinWildLevel, MaxWildLevel)` — the wild spawn level range.
+    pub wild_levels: (u8, u8),
+}
+
+/// Canonical order of the 12 work-suitability kinds, matching `db.json`'s
+/// `WorkSuitability` object-key order. [`PalSpecies::work_suitability`] is a
+/// `[u8; 12]` indexed by this array; `work[i]` is the level for `WORK_KINDS[i]`.
+pub const WORK_KINDS: [&str; 12] = [
+    "Kindling",
+    "Watering",
+    "Planting",
+    "GenerateElectricity",
+    "Handiwork",
+    "Gathering",
+    "Lumbering",
+    "Mining",
+    "MedicineProduction",
+    "Cooling",
+    "Transporting",
+    "Farming",
+];
+
+impl PalSpecies {
+    /// Work-suitability level for a named kind, or `None` when `kind` is not one
+    /// of the 12 canonical [`WORK_KINDS`].
+    #[inline]
+    pub fn work_level(&self, kind: &str) -> Option<u8> {
+        WORK_KINDS
+            .iter()
+            .position(|k| *k == kind)
+            .map(|i| self.work_suitability[i])
+    }
+
+    /// Iterate `(kind, level)` in canonical order (includes zero levels).
+    pub fn work_suitabilities(&self) -> impl Iterator<Item = (&'static str, u8)> + '_ {
+        WORK_KINDS
+            .iter()
+            .copied()
+            .zip(self.work_suitability.iter().copied())
+    }
 }
 
 /// A passive skill definition.

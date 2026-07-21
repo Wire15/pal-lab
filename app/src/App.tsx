@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import SaveInspector from "./views/SaveInspector";
 import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
@@ -48,8 +50,162 @@ const NAV: { id: View; label: string; hint: string }[] = [
   { id: "paldex", label: "Pal-dex", hint: "Reference" },
 ];
 
+/** Two-arrow swap glyph for the "switch save" affordance. */
+function SwapIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5" />
+    </svg>
+  );
+}
+
+/** Folder glyph for the empty "load save" button. */
+function FolderIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4l2 2.5h9A1.5 1.5 0 0 1 21 9v8.5A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" />
+    </svg>
+  );
+}
+
+/**
+ * Startup / switch-save dialog. Prefilled from the last-used folder, loads the
+ * save through the shared app state (which caches it), and closes once the save
+ * lands. "Skip for now" dismisses it — the app is fully usable without a save.
+ */
+function SaveModal({ onClose }: { onClose: () => void }) {
+  const { lastSaveDir, loadSave, saveLoading, saveError } = useAppState();
+  const [path, setPath] = useState(lastSaveDir);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  async function browse() {
+    try {
+      const picked = await open({ directory: true, multiple: false });
+      if (typeof picked === "string") setPath(picked);
+    } catch {
+      // No dialog plugin outside the Tauri webview (plain-browser dev) — ignore.
+    }
+  }
+
+  const canLoad = !saveLoading && path.trim() !== "";
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
+      onMouseDown={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="save-modal-title"
+        className="w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="border-b border-line px-5 py-4">
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+            Palworld save
+          </div>
+          <h2
+            id="save-modal-title"
+            className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
+          >
+            Load your Palworld save
+          </h2>
+        </div>
+
+        <div className="px-5 py-4">
+          <label className="flex flex-col gap-1.5">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+              Save folder
+            </span>
+            <div className="flex gap-2">
+              <input
+                autoFocus
+                className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/60"
+                placeholder={"\u2026/Saved/SaveGames/<id>/<world>"}
+                value={path}
+                onChange={(e) => setPath(e.currentTarget.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && canLoad) {
+                    e.preventDefault();
+                    loadSave(path);
+                  }
+                }}
+              />
+              <button
+                className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
+                onClick={browse}
+              >
+                Browse
+              </button>
+            </div>
+          </label>
+          <p className="mt-2.5 text-[12px] leading-relaxed text-ink-faint">
+            Point at the world folder that contains{" "}
+            <span className="font-mono text-ink-dim">Level.sav</span>. Nothing is
+            written &mdash; the save is read only.
+          </p>
+          {saveError && (
+            <div className="mt-3 rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-[12px] text-bad">
+              {saveError}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-3.5">
+          <button
+            onClick={onClose}
+            className="rounded-md px-2 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
+          >
+            Skip for now
+          </button>
+          <button
+            onClick={() => loadSave(path)}
+            disabled={!canLoad}
+            className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {saveLoading ? "Loading\u2026" : "Load save"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Shell() {
-  const { view, setView } = useAppState();
+  const { view, setView, saveSummary } = useAppState();
+  const [modalOpen, setModalOpen] = useState(() => saveSummary === null);
+
+  // Close the startup modal automatically once a save has loaded.
+  useEffect(() => {
+    if (saveSummary) setModalOpen(false);
+  }, [saveSummary]);
 
   return (
     <div className="flex h-full bg-abyss text-ink">
@@ -107,8 +263,47 @@ function Shell() {
           })}
         </ul>
 
-        <div className="mt-auto px-4 py-4">
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+        <div className="mt-auto px-3 pb-4 pt-3">
+          {saveSummary ? (
+            <div className="rounded-md border border-line bg-raised/50 p-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div
+                    className="truncate text-[13px] font-medium text-ink"
+                    title={saveSummary.world_name}
+                  >
+                    {saveSummary.world_name}
+                  </div>
+                  <div className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                    <span className="text-ink-dim">
+                      {saveSummary.players.length}
+                    </span>{" "}
+                    {saveSummary.players.length === 1 ? "player" : "players"}
+                    <span className="mx-1 text-line">&middot;</span>
+                    <span className="text-amber">{saveSummary.pals.length}</span>{" "}
+                    pals
+                  </div>
+                </div>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  title="Switch save"
+                  aria-label="Switch save"
+                  className="shrink-0 rounded-md border border-line bg-raised p-1.5 text-ink-faint transition-colors hover:bg-hover hover:text-ink"
+                >
+                  <SwapIcon />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-2 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink"
+            >
+              <FolderIcon />
+              Load save
+            </button>
+          )}
+          <div className="mt-2.5 flex items-center gap-2 px-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
             <span className="h-1.5 w-1.5 rounded-full bg-good" />
             Offline &middot; v0.1
           </div>
@@ -120,6 +315,7 @@ function Shell() {
         {view === "solver" && <Solver />}
         {view === "paldex" && <Paldex />}
       </main>
+      {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
     </div>
   );
 }

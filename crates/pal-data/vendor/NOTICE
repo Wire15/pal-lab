@@ -25,6 +25,13 @@ app/public/elements/ are sourced, unmodified, from palcalc's bundled art
 each pal icon from palcalc's display-name key to the internal species id
 (e.g. "Lamball.png" -> "SheepBall.png") but does not alter the image bytes.
 
+The work-suitability icons in app/public/work/ (12 kinds: Kindling, Watering,
+Planting, GenerateElectricity, Handiwork, Gathering, Lumbering, Mining,
+MedicineProduction, Cooling, Transporting, Farming) are sourced, unmodified,
+from palcalc's bundled art (PalCalc.UI/Resources/). The GenerateElectricity
+glyph is palcalc's "ElectricityGeneration.png" renamed to match the
+WorkSuitability key; the other eleven keep their palcalc filenames.
+
 Source:  https://github.com/tylercamp/palcalc  (PalCalc.UI/Resources/)
 Author:  Tyler Camp and palcalc contributors
 License: MIT (for palcalc's redistribution)

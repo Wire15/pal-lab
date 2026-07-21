@@ -13,7 +13,28 @@
       "defense": 100,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      4,
+      2,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      30,
+      60
+    ]
   },
   {
     "id": "BlueberryFairy",
@@ -29,7 +50,28 @@
       "defense": 100,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      1,
+      2,
+      0,
+      0,
+      3,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      30,
+      66
+    ]
   },
   {
     "id": "BrownRabbit",
@@ -45,7 +87,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      4,
+      0,
+      2,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "GoldenHorse",
@@ -61,7 +124,28 @@
       "defense": 110,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      53,
+      66
+    ]
   },
   {
     "id": "TentacleTurtle",
@@ -77,7 +161,28 @@
       "defense": 115,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      5,
+      50
+    ]
   },
   {
     "id": "TentacleTurtle_Ground",
@@ -93,7 +198,28 @@
       "defense": 125,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      40,
+      65
+    ]
   },
   {
     "id": "Anubis",
@@ -115,6 +241,27 @@
         "name": "Earth Emperor",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      6,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      55,
+      80
     ]
   },
   {
@@ -131,7 +278,28 @@
       "defense": 85,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      30,
+      44
+    ]
   },
   {
     "id": "Baphomet_Dark",
@@ -147,7 +315,28 @@
       "defense": 85,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      4,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      37,
+      39
+    ]
   },
   {
     "id": "Bastet",
@@ -163,7 +352,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 1,
+    "wild_levels": [
+      5,
+      25
+    ]
   },
   {
     "id": "Bastet_Ice",
@@ -179,7 +389,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      45
+    ]
   },
   {
     "id": "Boar",
@@ -195,7 +426,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      5,
+      25
+    ]
   },
   {
     "id": "Carbunclo",
@@ -211,7 +463,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      14
+    ]
   },
   {
     "id": "ColorfulBird",
@@ -227,7 +500,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      47
+    ]
   },
   {
     "id": "Deer",
@@ -243,7 +537,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      6,
+      80
+    ]
   },
   {
     "id": "Deer_Ground",
@@ -259,7 +574,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      20,
+      80
+    ]
   },
   {
     "id": "DrillGame",
@@ -281,6 +617,27 @@
         "name": "Hard Skin",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      17,
+      44
     ]
   },
   {
@@ -297,7 +654,28 @@
       "defense": 60,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      11,
+      29
+    ]
   },
   {
     "id": "ElecPanda",
@@ -313,7 +691,28 @@
       "defense": 105,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      5,
+      4,
+      0,
+      3,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      30,
+      80
+    ]
   },
   {
     "id": "Ganesha",
@@ -329,7 +728,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      2,
+      25
+    ]
   },
   {
     "id": "Garm",
@@ -345,7 +765,28 @@
       "defense": 75,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      6,
+      14
+    ]
   },
   {
     "id": "Gorilla",
@@ -367,6 +808,27 @@
         "name": "Hooligan",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      3,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      22,
+      80
     ]
   },
   {
@@ -389,6 +851,27 @@
         "name": "Hooligan",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      80
     ]
   },
   {
@@ -405,7 +888,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      13
+    ]
   },
   {
     "id": "Hedgehog_Ice",
@@ -421,7 +925,28 @@
       "defense": 80,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      24
+    ]
   },
   {
     "id": "Kirin",
@@ -437,7 +962,28 @@
       "defense": 105,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      14,
+      80
+    ]
   },
   {
     "id": "Kirin_Ice",
@@ -453,7 +999,28 @@
       "defense": 110,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      6,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "Kitsunebi",
@@ -469,7 +1036,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      5,
+      18
+    ]
   },
   {
     "id": "LittleBriarRose",
@@ -485,7 +1073,28 @@
       "defense": 80,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      2,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      29
+    ]
   },
   {
     "id": "Mutant",
@@ -501,7 +1110,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      25,
+      49
+    ]
   },
   {
     "id": "Penguin",
@@ -517,7 +1147,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      45
+    ]
   },
   {
     "id": "Penguin_Electric",
@@ -533,7 +1184,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      50,
+      55
+    ]
   },
   {
     "id": "RaijinDaughter",
@@ -549,7 +1221,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      3,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      55
+    ]
   },
   {
     "id": "SharkKid",
@@ -565,7 +1258,28 @@
       "defense": 75,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      14,
+      34
+    ]
   },
   {
     "id": "SharkKid_Fire",
@@ -581,7 +1295,28 @@
       "defense": 75,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      20,
+      50
+    ]
   },
   {
     "id": "SheepBall",
@@ -597,7 +1332,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      20
+    ]
   },
   {
     "id": "Umihebi",
@@ -619,6 +1375,27 @@
         "name": "Lord of the Sea",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      55,
+      80
     ]
   },
   {
@@ -635,7 +1412,28 @@
       "defense": 100,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      66,
+      80
+    ]
   },
   {
     "id": "Werewolf",
@@ -651,7 +1449,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      14,
+      38
+    ]
   },
   {
     "id": "WindChimes",
@@ -667,7 +1486,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      9,
+      40
+    ]
   },
   {
     "id": "WindChimes_Ice",
@@ -683,7 +1523,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      2,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      25,
+      60
+    ]
   },
   {
     "id": "Suzaku",
@@ -699,7 +1560,28 @@
       "defense": 105,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      40,
+      80
+    ]
   },
   {
     "id": "Suzaku_Water",
@@ -715,7 +1597,28 @@
       "defense": 105,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      42,
+      80
+    ]
   },
   {
     "id": "FireKirin",
@@ -731,7 +1634,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      29,
+      80
+    ]
   },
   {
     "id": "FireKirin_Dark",
@@ -747,7 +1671,28 @@
       "defense": 90,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      32,
+      80
+    ]
   },
   {
     "id": "FairyDragon",
@@ -763,7 +1708,28 @@
       "defense": 90,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      20,
+      80
+    ]
   },
   {
     "id": "FairyDragon_Water",
@@ -779,7 +1745,28 @@
       "defense": 95,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      33,
+      80
+    ]
   },
   {
     "id": "SweetsSheep",
@@ -795,7 +1782,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      9,
+      19
+    ]
   },
   {
     "id": "SweetsSheep_Ground",
@@ -811,7 +1819,28 @@
       "defense": 95,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      55,
+      60
+    ]
   },
   {
     "id": "WhiteTiger",
@@ -827,7 +1856,28 @@
       "defense": 110,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      4,
+      0,
+      0,
+      4,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      42,
+      49
+    ]
   },
   {
     "id": "Alpaca",
@@ -843,7 +1893,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      5,
+      17
+    ]
   },
   {
     "id": "Serpent",
@@ -859,7 +1930,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      12,
+      35
+    ]
   },
   {
     "id": "Serpent_Ground",
@@ -875,7 +1967,28 @@
       "defense": 100,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      31,
+      63
+    ]
   },
   {
     "id": "DarkCrow",
@@ -891,7 +2004,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      14,
+      57
+    ]
   },
   {
     "id": "BlueDragon",
@@ -907,7 +2041,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      35,
+      80
+    ]
   },
   {
     "id": "BlueDragon_Ice",
@@ -923,7 +2078,28 @@
       "defense": 105,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      50,
+      80
+    ]
   },
   {
     "id": "PinkCat",
@@ -945,6 +2121,27 @@
         "name": "Coward",
         "rank": -1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      20
     ]
   },
   {
@@ -961,7 +2158,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      35
+    ]
   },
   {
     "id": "FengyunDeeper",
@@ -977,7 +2195,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      25,
+      80
+    ]
   },
   {
     "id": "VolcanicMonster",
@@ -999,6 +2238,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      36,
+      50
     ]
   },
   {
@@ -1021,6 +2281,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      5,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      42,
+      67
     ]
   },
   {
@@ -1037,7 +2318,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      38,
+      60
+    ]
   },
   {
     "id": "RobinHood",
@@ -1053,7 +2355,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      3,
+      3,
+      2,
+      0,
+      1,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      22,
+      34
+    ]
   },
   {
     "id": "RobinHood_Ground",
@@ -1069,7 +2392,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      2,
+      0,
+      2,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      55
+    ]
   },
   {
     "id": "LazyDragon",
@@ -1091,6 +2435,27 @@
         "name": "Glutton",
         "rank": -1
       }
+    ],
+    "work_suitability": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      30,
+      80
     ]
   },
   {
@@ -1107,7 +2472,28 @@
       "defense": 110,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      48,
+      80
+    ]
   },
   {
     "id": "AmaterasuWolf",
@@ -1123,7 +2509,28 @@
       "defense": 100,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      34,
+      38
+    ]
   },
   {
     "id": "LizardMan",
@@ -1139,7 +2546,28 @@
       "defense": 50,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      21,
+      40
+    ]
   },
   {
     "id": "LizardMan_Fire",
@@ -1155,7 +2583,28 @@
       "defense": 50,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      0,
+      0,
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      28,
+      40
+    ]
   },
   {
     "id": "BluePlatypus",
@@ -1171,7 +2620,28 @@
       "defense": 60,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      6,
+      20
+    ]
   },
   {
     "id": "BluePlatypus_Fire",
@@ -1187,7 +2657,28 @@
       "defense": 60,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      2,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      32,
+      50
+    ]
   },
   {
     "id": "BirdDragon",
@@ -1203,7 +2694,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      20,
+      63
+    ]
   },
   {
     "id": "BirdDragon_Ice",
@@ -1219,7 +2731,28 @@
       "defense": 95,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      23,
+      67
+    ]
   },
   {
     "id": "ChickenPal",
@@ -1235,7 +2768,28 @@
       "defense": 60,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      25
+    ]
   },
   {
     "id": "FlowerDinosaur",
@@ -1251,7 +2805,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      10,
+      35
+    ]
   },
   {
     "id": "FlowerDinosaur_Electric",
@@ -1267,7 +2842,28 @@
       "defense": 90,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      15,
+      47
+    ]
   },
   {
     "id": "ElecCat",
@@ -1283,7 +2879,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      12
+    ]
   },
   {
     "id": "IceHorse",
@@ -1310,6 +2927,27 @@
         "name": "Ice Emperor",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      60,
+      60
     ]
   },
   {
@@ -1337,6 +2975,27 @@
         "name": "Lord of the Underworld",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      65,
+      65
     ]
   },
   {
@@ -1359,6 +3018,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      4,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      26,
+      80
     ]
   },
   {
@@ -1381,6 +3061,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      4,
+      0,
+      5,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      36,
+      80
     ]
   },
   {
@@ -1397,7 +3098,28 @@
       "defense": 110,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      20,
+      66
+    ]
   },
   {
     "id": "SakuraSaurus",
@@ -1419,6 +3141,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      23,
+      80
     ]
   },
   {
@@ -1441,6 +3184,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      30,
+      80
     ]
   },
   {
@@ -1457,7 +3221,28 @@
       "defense": 115,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      76,
+      80
+    ]
   },
   {
     "id": "KingBahamut",
@@ -1479,6 +3264,27 @@
         "name": "Flame Emperor",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      46,
+      80
     ]
   },
   {
@@ -1501,6 +3307,27 @@
         "name": "Eternal Flame",
         "rank": 4
       }
+    ],
+    "work_suitability": [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      0,
+      0
     ]
   },
   {
@@ -1517,7 +3344,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      6,
+      30
+    ]
   },
   {
     "id": "IceDeer",
@@ -1533,7 +3381,28 @@
       "defense": 110,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      32,
+      80
+    ]
   },
   {
     "id": "BlackGriffon",
@@ -1549,7 +3418,28 @@
       "defense": 140,
       "rarity": 10
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      50,
+      80
+    ]
   },
   {
     "id": "WhiteMoth",
@@ -1565,7 +3455,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      0,
+      3
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      25,
+      45
+    ]
   },
   {
     "id": "WhiteMoth_Neutral",
@@ -1581,7 +3492,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      4
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      75,
+      78
+    ]
   },
   {
     "id": "CuteFox",
@@ -1597,7 +3529,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      25
+    ]
   },
   {
     "id": "FoxMage",
@@ -1613,7 +3566,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      20,
+      38
+    ]
   },
   {
     "id": "FoxMage_Dark",
@@ -1629,7 +3603,28 @@
       "defense": 85,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      30,
+      55
+    ]
   },
   {
     "id": "PinkLizard",
@@ -1651,6 +3646,27 @@
         "name": "Abnormal",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      2,
+      3,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      30,
+      42
     ]
   },
   {
@@ -1667,7 +3683,28 @@
       "defense": 80,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      22
+    ]
   },
   {
     "id": "Kelpie",
@@ -1683,7 +3720,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      9,
+      20
+    ]
   },
   {
     "id": "Kelpie_Fire",
@@ -1699,7 +3757,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      20,
+      38
+    ]
   },
   {
     "id": "NegativeOctopus",
@@ -1715,7 +3794,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      5,
+      62
+    ]
   },
   {
     "id": "NegativeOctopus_Neutral",
@@ -1731,7 +3831,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      24,
+      55
+    ]
   },
   {
     "id": "CowPal",
@@ -1747,7 +3868,28 @@
       "defense": 80,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      9,
+      19
+    ]
   },
   {
     "id": "Yeti",
@@ -1769,6 +3911,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      5,
+      0,
+      0,
+      5,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      42,
+      80
     ]
   },
   {
@@ -1791,6 +3954,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      0,
+      5,
+      0,
+      0,
+      0,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      38,
+      80
     ]
   },
   {
@@ -1807,7 +3991,28 @@
       "defense": 120,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      3,
+      0,
+      0,
+      3,
+      0,
+      2,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      20,
+      57
+    ]
   },
   {
     "id": "HawkBird",
@@ -1823,7 +4028,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      12,
+      40
+    ]
   },
   {
     "id": "FlowerRabbit",
@@ -1839,7 +4065,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      35
+    ]
   },
   {
     "id": "LilyQueen",
@@ -1861,6 +4108,27 @@
         "name": "Spirit Emperor",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      7,
+      0,
+      5,
+      6,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      58,
+      80
     ]
   },
   {
@@ -1877,7 +4145,28 @@
       "defense": 115,
       "rarity": 10
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      5,
+      6,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      49,
+      80
+    ]
   },
   {
     "id": "QueenBee",
@@ -1893,7 +4182,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      4,
+      0,
+      4,
+      4,
+      3,
+      0,
+      4,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      34,
+      39
+    ]
   },
   {
     "id": "SoldierBee",
@@ -1909,7 +4219,28 @@
       "defense": 90,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      2,
+      3,
+      2,
+      0,
+      2,
+      0,
+      2,
+      3
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      20,
+      34
+    ]
   },
   {
     "id": "CatBat",
@@ -1925,7 +4256,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      3,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      10,
+      45
+    ]
   },
   {
     "id": "GrassPanda",
@@ -1941,7 +4293,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      2,
+      0,
+      4,
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      27,
+      80
+    ]
   },
   {
     "id": "GrassPanda_Electric",
@@ -1957,7 +4330,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      3,
+      0,
+      4,
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      15,
+      80
+    ]
   },
   {
     "id": "FlameBuffalo",
@@ -1973,7 +4367,28 @@
       "defense": 95,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      1,
+      34
+    ]
   },
   {
     "id": "ThunderDog",
@@ -1989,7 +4404,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      20,
+      58
+    ]
   },
   {
     "id": "ThunderDog_Ice",
@@ -2005,7 +4441,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      35,
+      77
+    ]
   },
   {
     "id": "CuteMole",
@@ -2021,7 +4478,28 @@
       "defense": 50,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      40
+    ]
   },
   {
     "id": "BlackMetalDragon",
@@ -2043,6 +4521,27 @@
         "name": "Hard Skin",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      55,
+      80
     ]
   },
   {
@@ -2059,7 +4558,28 @@
       "defense": 90,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      4,
+      0,
+      5,
+      5,
+      3,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      35,
+      53
+    ]
   },
   {
     "id": "IceFox",
@@ -2075,7 +4595,28 @@
       "defense": 105,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      3
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      15,
+      37
+    ]
   },
   {
     "id": "JetDragon",
@@ -2102,6 +4643,27 @@
         "name": "Divine Dragon",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      60,
+      70
     ]
   },
   {
@@ -2118,7 +4680,28 @@
       "defense": 60,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      16
+    ]
   },
   {
     "id": "Monkey",
@@ -2134,7 +4717,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      20
+    ]
   },
   {
     "id": "Monkey_Fire",
@@ -2150,7 +4754,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      10,
+      12
+    ]
   },
   {
     "id": "Manticore",
@@ -2166,7 +4791,28 @@
       "defense": 80,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      30,
+      80
+    ]
   },
   {
     "id": "Manticore_Dark",
@@ -2182,7 +4828,28 @@
       "defense": 80,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      34,
+      80
+    ]
   },
   {
     "id": "KingAlpaca",
@@ -2204,6 +4871,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      23,
+      80
     ]
   },
   {
@@ -2226,6 +4914,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      46,
+      46
     ]
   },
   {
@@ -2242,7 +4951,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      2,
+      13
+    ]
   },
   {
     "id": "PlantSlime_Flower",
@@ -2258,7 +4988,28 @@
       "defense": 70,
       "rarity": 10
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      2,
+      4
+    ]
   },
   {
     "id": "MopBaby",
@@ -2274,7 +5025,28 @@
       "defense": 60,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      34
+    ]
   },
   {
     "id": "MopKing",
@@ -2290,7 +5062,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      11,
+      40
+    ]
   },
   {
     "id": "CatMage",
@@ -2306,7 +5099,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      3,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      20,
+      46
+    ]
   },
   {
     "id": "CatMage_Fire",
@@ -2322,7 +5136,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      3,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      30,
+      52
+    ]
   },
   {
     "id": "PinkRabbit",
@@ -2338,7 +5173,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      35
+    ]
   },
   {
     "id": "ThunderBird",
@@ -2354,7 +5210,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      30,
+      80
+    ]
   },
   {
     "id": "ThunderBird_Ice",
@@ -2370,7 +5247,28 @@
       "defense": 85,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      5,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "HerculesBeetle",
@@ -2392,6 +5290,27 @@
         "name": "Hard Skin",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      0,
+      4,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      34,
+      80
     ]
   },
   {
@@ -2414,6 +5333,27 @@
         "name": "Hard Skin",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      5,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      30,
+      64
     ]
   },
   {
@@ -2441,6 +5381,27 @@
         "name": "Celestial Emperor",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      60,
+      60
     ]
   },
   {
@@ -2457,7 +5418,28 @@
       "defense": 70,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      25
+    ]
   },
   {
     "id": "CaptainPenguin",
@@ -2473,7 +5455,28 @@
       "defense": 95,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      2,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      15,
+      44
+    ]
   },
   {
     "id": "CaptainPenguin_Black",
@@ -2489,7 +5492,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      3,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "WeaselDragon",
@@ -2505,7 +5529,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      11,
+      80
+    ]
   },
   {
     "id": "WeaselDragon_Fire",
@@ -2521,7 +5566,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      80
+    ]
   },
   {
     "id": "SkyDragon",
@@ -2537,7 +5603,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      4,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      40,
+      80
+    ]
   },
   {
     "id": "SkyDragon_Grass",
@@ -2553,7 +5640,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      5,
+      0,
+      2,
+      4,
+      0,
+      3,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      45,
+      80
+    ]
   },
   {
     "id": "HadesBird",
@@ -2569,7 +5677,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      24,
+      80
+    ]
   },
   {
     "id": "HadesBird_Electric",
@@ -2585,7 +5714,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      47,
+      80
+    ]
   },
   {
     "id": "RedArmorBird",
@@ -2601,7 +5751,28 @@
       "defense": 120,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      32,
+      80
+    ]
   },
   {
     "id": "Ronin",
@@ -2617,7 +5788,28 @@
       "defense": 80,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      0,
+      0,
+      0,
+      2,
+      1,
+      3,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      25,
+      59
+    ]
   },
   {
     "id": "Ronin_Dark",
@@ -2633,7 +5825,28 @@
       "defense": 80,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      0,
+      0,
+      0,
+      2,
+      1,
+      5,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      46,
+      67
+    ]
   },
   {
     "id": "FlyingManta",
@@ -2649,7 +5862,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      2,
+      20
+    ]
   },
   {
     "id": "FlyingManta_Thunder",
@@ -2665,7 +5899,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      26,
+      55
+    ]
   },
   {
     "id": "BlackCentaur",
@@ -2692,6 +5947,27 @@
         "name": "Lord of the Underworld",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      60,
+      60
     ]
   },
   {
@@ -2708,7 +5984,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      4,
+      0,
+      3,
+      3,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      28,
+      57
+    ]
   },
   {
     "id": "FlowerDoll_Fire",
@@ -2724,7 +6021,28 @@
       "defense": 100,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      3,
+      3,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      71,
+      73
+    ]
   },
   {
     "id": "NaughtyCat",
@@ -2740,7 +6058,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      17,
+      48
+    ]
   },
   {
     "id": "CuteButterfly",
@@ -2756,7 +6095,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      16,
+      29
+    ]
   },
   {
     "id": "DarkScorpion",
@@ -2772,7 +6132,28 @@
       "defense": 130,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      31,
+      44
+    ]
   },
   {
     "id": "DarkScorpion_Ground",
@@ -2788,7 +6169,28 @@
       "defense": 130,
       "rarity": 10
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      48,
+      55
+    ]
   },
   {
     "id": "ThunderDragonMan",
@@ -2810,6 +6212,27 @@
         "name": "Lord of Lightning",
         "rank": 3
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      8,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      74,
+      80
     ]
   },
   {
@@ -2826,7 +6249,28 @@
       "defense": 75,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      13
+    ]
   },
   {
     "id": "LazyCatfish",
@@ -2842,7 +6286,28 @@
       "defense": 95,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      1,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      1,
+      50
+    ]
   },
   {
     "id": "LazyCatfish_Gold",
@@ -2858,7 +6323,28 @@
       "defense": 100,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      1,
+      4
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      25,
+      65
+    ]
   },
   {
     "id": "LavaGirl",
@@ -2874,7 +6360,28 @@
       "defense": 80,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      50
+    ]
   },
   {
     "id": "FlameBambi",
@@ -2890,7 +6397,28 @@
       "defense": 75,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      4,
+      30
+    ]
   },
   {
     "id": "NightLady",
@@ -2906,7 +6434,28 @@
       "defense": 100,
       "rarity": 20
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      5,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "NightLady_Dark",
@@ -2928,6 +6477,27 @@
         "name": "Siren of the Void",
         "rank": 4
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      7,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      0,
+      0
     ]
   },
   {
@@ -2944,7 +6514,28 @@
       "defense": 110,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      6,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      76,
+      80
+    ]
   },
   {
     "id": "KendoFrog",
@@ -2960,7 +6551,28 @@
       "defense": 85,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      4,
+      65
+    ]
   },
   {
     "id": "KendoFrog_Dark",
@@ -2976,7 +6588,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      61,
+      80
+    ]
   },
   {
     "id": "LeafPrincess",
@@ -2992,7 +6625,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      30,
+      65
+    ]
   },
   {
     "id": "MushroomDragon",
@@ -3008,7 +6662,28 @@
       "defense": 90,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      2,
+      3,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      30,
+      77
+    ]
   },
   {
     "id": "MushroomDragon_Dark",
@@ -3024,7 +6699,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      3,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      39,
+      77
+    ]
   },
   {
     "id": "SmallArmadillo",
@@ -3040,7 +6736,28 @@
       "defense": 90,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      49
+    ]
   },
   {
     "id": "CandleGhost",
@@ -3056,7 +6773,28 @@
       "defense": 90,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      0,
+      0,
+      0,
+      3,
+      2,
+      0,
+      3,
+      0,
+      0,
+      0,
+      2
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      45,
+      67
+    ]
   },
   {
     "id": "ScorpionMan",
@@ -3072,7 +6810,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      4,
+      0,
+      2,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      48,
+      49
+    ]
   },
   {
     "id": "ScorpionMan_Electric",
@@ -3088,7 +6847,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      2,
+      4,
+      0,
+      2,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      65,
+      70
+    ]
   },
   {
     "id": "WingGolem",
@@ -3110,6 +6890,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      7,
+      0,
+      0,
+      7,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      55,
+      80
     ]
   },
   {
@@ -3132,6 +6933,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      7,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      65,
+      73
     ]
   },
   {
@@ -3148,7 +6970,28 @@
       "defense": 85,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      65
+    ]
   },
   {
     "id": "SifuDog",
@@ -3164,7 +7007,28 @@
       "defense": 100,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      3,
+      3,
+      0,
+      2,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      51,
+      56
+    ]
   },
   {
     "id": "FeatherOstrich",
@@ -3180,7 +7044,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      31,
+      49
+    ]
   },
   {
     "id": "MimicDog",
@@ -3196,7 +7081,28 @@
       "defense": 130,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      5,
+      80
+    ]
   },
   {
     "id": "DarkAlien",
@@ -3218,6 +7124,27 @@
         "name": "Otherworldly Cells",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      25,
+      30
     ]
   },
   {
@@ -3240,6 +7167,27 @@
         "name": "Otherworldly Cells",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      0,
+      0
     ]
   },
   {
@@ -3256,7 +7204,28 @@
       "defense": 115,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      32,
+      80
+    ]
   },
   {
     "id": "VolcanoDragon_Ice",
@@ -3272,7 +7241,28 @@
       "defense": 120,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      5,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      78,
+      78
+    ]
   },
   {
     "id": "DarkMechaDragon",
@@ -3299,6 +7289,27 @@
         "name": "Otherworldly Cells",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      0,
+      0
     ]
   },
   {
@@ -3315,7 +7326,28 @@
       "defense": 105,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      50,
+      67
+    ]
   },
   {
     "id": "GhostRabbit_Grass",
@@ -3331,7 +7363,28 @@
       "defense": 105,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      50,
+      54
+    ]
   },
   {
     "id": "NightBlueHorse",
@@ -3347,7 +7400,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      42,
+      80
+    ]
   },
   {
     "id": "NightBlueHorse_Neutral",
@@ -3363,7 +7437,28 @@
       "defense": 100,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      74,
+      76
+    ]
   },
   {
     "id": "WhiteShieldDragon",
@@ -3385,6 +7480,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      59,
+      80
     ]
   },
   {
@@ -3401,7 +7517,28 @@
       "defense": 85,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      66
+    ]
   },
   {
     "id": "BlackPuppy_Ice",
@@ -3417,7 +7554,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      62,
+      64
+    ]
   },
   {
     "id": "WhiteDeer",
@@ -3433,7 +7591,28 @@
       "defense": 100,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      54,
+      80
+    ]
   },
   {
     "id": "WhiteDeer_Dark",
@@ -3449,7 +7628,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      79,
+      79
+    ]
   },
   {
     "id": "KingWhale",
@@ -3465,7 +7665,28 @@
       "defense": 200,
       "rarity": 10
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "MysteryMask",
@@ -3481,7 +7702,28 @@
       "defense": 100,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      50,
+      66
+    ]
   },
   {
     "id": "HoodGhost",
@@ -3497,7 +7739,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      65,
+      69
+    ]
   },
   {
     "id": "Sekhmet",
@@ -3513,7 +7776,28 @@
       "defense": 100,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      3,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      37,
+      80
+    ]
   },
   {
     "id": "ElecLizard",
@@ -3529,7 +7813,28 @@
       "defense": 70,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      65,
+      66
+    ]
   },
   {
     "id": "GrimGirl",
@@ -3551,6 +7856,27 @@
         "name": "Sadist",
         "rank": 1
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      3,
+      0,
+      5,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      52,
+      80
     ]
   },
   {
@@ -3567,7 +7893,28 @@
       "defense": 100,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      0,
+      0,
+      2,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 4,
+    "wild_levels": [
+      20,
+      58
+    ]
   },
   {
     "id": "BlueThunderHorse",
@@ -3583,7 +7930,28 @@
       "defense": 110,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      57,
+      80
+    ]
   },
   {
     "id": "RockBeast",
@@ -3605,6 +7973,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      42,
+      50
     ]
   },
   {
@@ -3627,6 +8016,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      6,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      68,
+      69
     ]
   },
   {
@@ -3643,7 +8053,28 @@
       "defense": 70,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      10,
+      80
+    ]
   },
   {
     "id": "OctopusGirl_Neutral",
@@ -3659,7 +8090,28 @@
       "defense": 70,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      65,
+      66
+    ]
   },
   {
     "id": "IceNarwhal",
@@ -3675,7 +8127,28 @@
       "defense": 110,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      42,
+      80
+    ]
   },
   {
     "id": "IceNarwhal_Fire",
@@ -3691,7 +8164,28 @@
       "defense": 110,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      58,
+      80
+    ]
   },
   {
     "id": "JellyfishFairy",
@@ -3707,7 +8201,28 @@
       "defense": 70,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      6,
+      80
+    ]
   },
   {
     "id": "Kitsunebi_Ice",
@@ -3723,7 +8238,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      15,
+      58
+    ]
   },
   {
     "id": "BerryGoat_Dark",
@@ -3739,7 +8275,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      23,
+      58
+    ]
   },
   {
     "id": "PinkRabbit_Grass",
@@ -3755,7 +8312,28 @@
       "defense": 70,
       "rarity": 1
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      18,
+      58
+    ]
   },
   {
     "id": "Werewolf_Ice",
@@ -3771,7 +8349,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      30,
+      66
+    ]
   },
   {
     "id": "AmaterasuWolf_Dark",
@@ -3787,7 +8386,28 @@
       "defense": 105,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      56,
+      66
+    ]
   },
   {
     "id": "RaijinDaughter_Water",
@@ -3803,7 +8423,28 @@
       "defense": 75,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      20,
+      66
+    ]
   },
   {
     "id": "WhiteTiger_Ground",
@@ -3819,7 +8460,28 @@
       "defense": 110,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      6,
+      5,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      56,
+      64
+    ]
   },
   {
     "id": "FengyunDeeper_Electric",
@@ -3835,7 +8497,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      57,
+      80
+    ]
   },
   {
     "id": "Horus_Water",
@@ -3851,7 +8534,28 @@
       "defense": 115,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      56,
+      80
+    ]
   },
   {
     "id": "SnowTigerBeastman",
@@ -3867,7 +8571,28 @@
       "defense": 120,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      5,
+      0,
+      8,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      75,
+      80
+    ]
   },
   {
     "id": "SnakeGirl",
@@ -3883,7 +8608,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      6,
+      0,
+      0,
+      5,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "GhostAnglerfish",
@@ -3899,7 +8645,28 @@
       "defense": 105,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      30,
+      80
+    ]
   },
   {
     "id": "GhostAnglerfish_Fire",
@@ -3915,7 +8682,28 @@
       "defense": 105,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      5,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "IceWitch",
@@ -3931,7 +8719,28 @@
       "defense": 105,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      4,
+      5,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "ClownRabbit",
@@ -3947,7 +8756,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      7,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      55,
+      74
+    ]
   },
   {
     "id": "LegendDeer",
@@ -3969,6 +8799,27 @@
         "name": "Savior",
         "rank": 4
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      7,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      0,
+      0
     ]
   },
   {
@@ -3985,7 +8836,28 @@
       "defense": 75,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      1,
+      50
+    ]
   },
   {
     "id": "SmallYeti",
@@ -4001,7 +8873,28 @@
       "defense": 85,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      3,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      32,
+      34
+    ]
   },
   {
     "id": "IceCrocodile",
@@ -4017,7 +8910,28 @@
       "defense": 85,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      10,
+      60
+    ]
   },
   {
     "id": "CactusDoll",
@@ -4033,7 +8947,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      31,
+      40
+    ]
   },
   {
     "id": "CactusDoll_Dark",
@@ -4049,7 +8984,28 @@
       "defense": 70,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      33,
+      36
+    ]
   },
   {
     "id": "MushroomLady",
@@ -4065,7 +9021,28 @@
       "defense": 90,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      6,
+      0,
+      4,
+      4,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      75,
+      78
+    ]
   },
   {
     "id": "StuffedShark",
@@ -4081,7 +9058,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      1,
+      40
+    ]
   },
   {
     "id": "StuffedShark_Fire",
@@ -4097,7 +9095,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "FoxExorcist",
@@ -4113,7 +9132,28 @@
       "defense": 105,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      7,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      65,
+      80
+    ]
   },
   {
     "id": "IceSeal",
@@ -4129,7 +9169,28 @@
       "defense": 105,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      33,
+      60
+    ]
   },
   {
     "id": "IceSeal_Ground",
@@ -4145,7 +9206,28 @@
       "defense": 110,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      55,
+      60
+    ]
   },
   {
     "id": "CloverFairy",
@@ -4161,7 +9243,28 @@
       "defense": 65,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      3,
+      13
+    ]
   },
   {
     "id": "ElecPomeranian",
@@ -4177,7 +9280,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      18,
+      69
+    ]
   },
   {
     "id": "GhostBlackCat",
@@ -4193,7 +9317,28 @@
       "defense": 70,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      11,
+      73
+    ]
   },
   {
     "id": "ThiefBird",
@@ -4209,7 +9354,28 @@
       "defense": 95,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      74,
+      78
+    ]
   },
   {
     "id": "OniGhostGirl",
@@ -4225,7 +9391,28 @@
       "defense": 80,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      65,
+      69
+    ]
   },
   {
     "id": "Plesiosaur",
@@ -4247,6 +9434,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      5,
+      0,
+      0,
+      5,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      33,
+      80
     ]
   },
   {
@@ -4263,7 +9471,28 @@
       "defense": 115,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      4,
+      0,
+      0,
+      4,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      32,
+      50
+    ]
   },
   {
     "id": "GrassGolem",
@@ -4285,6 +9514,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      5,
+      6,
+      0,
+      0,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      46,
+      80
     ]
   },
   {
@@ -4307,6 +9557,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      3,
+      5,
+      6,
+      0,
+      0,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      70,
+      77
     ]
   },
   {
@@ -4323,7 +9594,28 @@
       "defense": 100,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      39,
+      68
+    ]
   },
   {
     "id": "CubeTurtle",
@@ -4339,7 +9631,28 @@
       "defense": 135,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      48,
+      80
+    ]
   },
   {
     "id": "CubeTurtle_Neutral",
@@ -4355,7 +9668,28 @@
       "defense": 140,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      60,
+      78
+    ]
   },
   {
     "id": "LongCat",
@@ -4371,7 +9705,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "JellyfishGhost",
@@ -4387,7 +9742,28 @@
       "defense": 75,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      2,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      14,
+      80
+    ]
   },
   {
     "id": "ThunderFluffyBird",
@@ -4403,7 +9779,28 @@
       "defense": 80,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      6,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "MoonChild",
@@ -4419,7 +9816,28 @@
       "defense": 60,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      6,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 5,
+    "wild_levels": [
+      66,
+      78
+    ]
   },
   {
     "id": "SamuraiDog",
@@ -4435,7 +9853,28 @@
       "defense": 70,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 1,
+    "wild_levels": [
+      2,
+      4
+    ]
   },
   {
     "id": "PoseidonOrca",
@@ -4462,6 +9901,27 @@
         "name": "Lunker",
         "rank": 4
       }
+    ],
+    "work_suitability": [
+      0,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      60,
+      60
     ]
   },
   {
@@ -4478,7 +9938,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      1,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      30,
+      66
+    ]
   },
   {
     "id": "SwordCutlassfish_Fire",
@@ -4494,7 +9975,28 @@
       "defense": 80,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      3,
+      2,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 5,
+    "wild_levels": [
+      40,
+      44
+    ]
   },
   {
     "id": "YakushimaMonster001",
@@ -4510,7 +10012,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      33,
+      35
+    ]
   },
   {
     "id": "YakushimaMonster001_Blue",
@@ -4526,7 +10049,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      33,
+      35
+    ]
   },
   {
     "id": "YakushimaMonster001_Red",
@@ -4542,7 +10086,28 @@
       "defense": 85,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      36,
+      41
+    ]
   },
   {
     "id": "YakushimaMonster001_Purple",
@@ -4558,7 +10123,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 3,
+    "wild_levels": [
+      36,
+      41
+    ]
   },
   {
     "id": "YakushimaMonster001_Pink",
@@ -4574,7 +10160,28 @@
       "defense": 85,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      42,
+      44
+    ]
   },
   {
     "id": "YakushimaMonster001_Rainbow",
@@ -4590,7 +10197,28 @@
       "defense": 105,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      42,
+      44
+    ]
   },
   {
     "id": "YakushimaMonster002",
@@ -4606,7 +10234,28 @@
       "defense": 90,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      42,
+      44
+    ]
   },
   {
     "id": "YakushimaMonster003",
@@ -4622,7 +10271,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      36,
+      41
+    ]
   },
   {
     "id": "YakushimaMonster003_Purple",
@@ -4638,7 +10308,28 @@
       "defense": 95,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 2,
+    "wild_levels": [
+      42,
+      44
+    ]
   },
   {
     "id": "YakushimaBoss001",
@@ -4654,7 +10345,28 @@
       "defense": 95,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      45,
+      45
+    ]
   },
   {
     "id": "YakushimaBoss001_Small",
@@ -4670,7 +10382,28 @@
       "defense": 95,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 2,
+    "wild_levels": [
+      33,
+      35
+    ]
   },
   {
     "id": "MummyPal",
@@ -4686,7 +10419,28 @@
       "defense": 105,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      4,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 6,
+    "wild_levels": [
+      39,
+      80
+    ]
   },
   {
     "id": "KingSunfish",
@@ -4702,7 +10456,28 @@
       "defense": 85,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      66,
+      67
+    ]
   },
   {
     "id": "KingSunfish_Thunder",
@@ -4718,7 +10493,28 @@
       "defense": 85,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      4,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      76,
+      78
+    ]
   },
   {
     "id": "MonochromeQueen",
@@ -4734,7 +10530,28 @@
       "defense": 115,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      8,
+      4,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      76,
+      78
+    ]
   },
   {
     "id": "ElecSnail",
@@ -4750,7 +10567,28 @@
       "defense": 75,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "ElecSnail_Ground",
@@ -4766,7 +10604,28 @@
       "defense": 80,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 4,
+    "wild_levels": [
+      74,
+      76
+    ]
   },
   {
     "id": "LanternButler",
@@ -4782,7 +10641,28 @@
       "defense": 95,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 7,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "SumoDog",
@@ -4798,7 +10678,28 @@
       "defense": 100,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      53,
+      56
+    ]
   },
   {
     "id": "VenusFlytrap",
@@ -4814,7 +10715,28 @@
       "defense": 85,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      6,
+      0,
+      4,
+      4,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      45,
+      48
+    ]
   },
   {
     "id": "FluffyBird",
@@ -4830,7 +10752,28 @@
       "defense": 55,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      15,
+      65
+    ]
   },
   {
     "id": "DandelionGirl",
@@ -4846,7 +10789,28 @@
       "defense": 60,
       "rarity": 3
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "ClioneTwins",
@@ -4862,7 +10826,28 @@
       "defense": 65,
       "rarity": 2
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 3,
+    "wild_levels": [
+      9,
+      65
+    ]
   },
   {
     "id": "DarkFlameFox",
@@ -4878,7 +10863,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      4,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      3,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 8,
+    "wild_levels": [
+      35,
+      77
+    ]
   },
   {
     "id": "RedFlowerBird",
@@ -4894,7 +10900,28 @@
       "defense": 90,
       "rarity": 5
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      5,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 6,
+    "wild_levels": [
+      63,
+      69
+    ]
   },
   {
     "id": "SleeveRabbit",
@@ -4910,7 +10937,28 @@
       "defense": 100,
       "rarity": 4
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      65,
+      69
+    ]
   },
   {
     "id": "LotusDragon",
@@ -4926,7 +10974,28 @@
       "defense": 120,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      5,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      69,
+      80
+    ]
   },
   {
     "id": "BlueSkyDragon",
@@ -4942,7 +11011,28 @@
       "defense": 120,
       "rarity": 9
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      8,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      76,
+      78
+    ]
   },
   {
     "id": "PandaGirl",
@@ -4958,7 +11048,28 @@
       "defense": 95,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      3,
+      3,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 7,
+    "wild_levels": [
+      28,
+      69
+    ]
   },
   {
     "id": "GrassMinotaur",
@@ -4974,7 +11085,28 @@
       "defense": 105,
       "rarity": 6
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      3,
+      0,
+      0,
+      2,
+      3,
+      2,
+      0,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      24,
+      80
+    ]
   },
   {
     "id": "GrassMinotaur_Ice",
@@ -4990,7 +11122,28 @@
       "defense": 105,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      0,
+      5,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "Mothman",
@@ -5006,7 +11159,28 @@
       "defense": 110,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      6,
+      0,
+      6,
+      4,
+      0,
+      0,
+      8,
+      0,
+      2,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "GhostDragon",
@@ -5022,7 +11196,28 @@
       "defense": 120,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      65,
+      80
+    ]
   },
   {
     "id": "GhostDragon_Fire",
@@ -5038,7 +11233,28 @@
       "defense": 120,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      75,
+      77
+    ]
   },
   {
     "id": "FlowerPrince",
@@ -5054,7 +11270,28 @@
       "defense": 110,
       "rarity": 8
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      0,
+      0,
+      8,
+      0,
+      6,
+      5,
+      0,
+      0,
+      6,
+      0,
+      3,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": true,
+    "food_amount": 9,
+    "wild_levels": [
+      0,
+      0
+    ]
   },
   {
     "id": "KabukiMan",
@@ -5070,7 +11307,28 @@
       "defense": 100,
       "rarity": 7
     },
-    "guaranteed_passives": []
+    "guaranteed_passives": [],
+    "work_suitability": [
+      8,
+      0,
+      0,
+      0,
+      6,
+      5,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 8,
+    "wild_levels": [
+      78,
+      80
+    ]
   },
   {
     "id": "DomeArmorDragon",
@@ -5092,6 +11350,27 @@
         "name": "Heavyweight",
         "rank": 2
       }
+    ],
+    "work_suitability": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+    ],
+    "partner_skill": null,
+    "nocturnal": false,
+    "food_amount": 9,
+    "wild_levels": [
+      79,
+      79
     ]
   }
 ]

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { invoke } from "../lib/tauri";
-import { open } from "@tauri-apps/plugin-dialog";
 import type {
   BreedingPlan,
   NamedEntry,
@@ -123,7 +122,7 @@ function TreeNode({
 }
 
 export default function Solver() {
-  const { saveDir, setSaveDir, solveTarget, clearSolveTarget } = useAppState();
+  const { saveDir, solveTarget, clearSolveTarget } = useAppState();
   const [species, setSpecies] = useState("");
   const [passiveInput, setPassiveInput] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
@@ -159,11 +158,6 @@ export default function Solver() {
     [speciesList],
   );
   const targetId = nameToId.get(species) ?? null;
-
-  async function pickFolder() {
-    const picked = await open({ directory: true, multiple: false });
-    if (typeof picked === "string") setSaveDir(picked);
-  }
 
   function addPassive() {
     const v = passiveInput.trim();
@@ -212,26 +206,6 @@ export default function Solver() {
             Breeding plan
           </h1>
         </div>
-
-        <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Save folder
-          </span>
-          <div className="flex gap-2">
-            <input
-              className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-2.5 py-1.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-              placeholder="Path to save..."
-              value={saveDir}
-              onChange={(e) => setSaveDir(e.currentTarget.value)}
-            />
-            <button
-              className="rounded-md border border-line bg-raised px-2.5 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-              onClick={pickFolder}
-            >
-              Browse
-            </button>
-          </div>
-        </label>
 
         <label className="flex flex-col gap-1.5">
           <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
@@ -343,6 +317,11 @@ export default function Solver() {
         >
           {solving ? "Solving\u2026" : "Solve breeding path"}
         </button>
+        {!saveDir.trim() && (
+          <p className="-mt-2 text-[12px] leading-relaxed text-ink-faint">
+            Load a save from the sidebar to solve for a target.
+          </p>
+        )}
       </aside>
 
       {/* Results */}

@@ -198,6 +198,20 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
         })
         .unwrap_or_default();
 
+    // Equipped active skills. cheahjs rawdata/character.py exposes `EquipWaza`
+    // (equipped) and `MasteredWaza` (learned); we surface only the equipped
+    // set. Values are `EPalWazaID::*` enum labels; strip the prefix for display.
+    let active_skills = find(param, "EquipWaza")
+        .and_then(Value::as_array)
+        .map(|a| {
+            a.iter()
+                .filter_map(Value::as_str)
+                .filter(|s| !s.is_empty() && *s != "None")
+                .map(strip_waza_prefix)
+                .collect()
+        })
+        .unwrap_or_default();
+
     let nickname = find(param, "NickName")
         .and_then(Value::as_str)
         .filter(|s| !s.is_empty())
@@ -214,6 +228,7 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
         level,
         rank,
         passives,
+        active_skills,
         ivs,
         nickname,
         owner_player_uid,
@@ -290,6 +305,13 @@ fn strip_species_prefix(id: &str) -> (String, bool) {
         }
     }
     (id.to_string(), false)
+}
+
+/// Strip the `EPalWazaID::` enum prefix from an equipped-waza id, leaving the
+/// internal skill name (e.g. `EPalWazaID::FireBall` -> `FireBall`). A proper
+/// skill-name DB is out of scope; the cleaned id is shown as a chip.
+fn strip_waza_prefix(id: &str) -> String {
+    id.strip_prefix("EPalWazaID::").unwrap_or(id).to_string()
 }
 
 fn parse_gender(s: &str) -> Gender {

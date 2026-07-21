@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { open } from "@tauri-apps/plugin-dialog";
 import type { RosterCounts, SpeciesEntry } from "../../lib/types";
 import { PalIcon } from "../../components/primitives";
+import { PalHoverCard } from "../../components/pal-hover-card";
+import { CardWorkBadges } from "../../components/work-suit";
 
 type SortKey = "paldex" | "name" | "rank";
 type SortDir = "asc" | "desc";
@@ -15,20 +16,10 @@ const SORTS: { key: SortKey; label: string }[] = [
 export default function PaldexIndex({
   species,
   roster,
-  saveDir,
-  setSaveDir,
-  loadRoster,
-  rosterLoading,
-  rosterError,
   onSelect,
 }: {
   species: SpeciesEntry[];
   roster: RosterCounts | null;
-  saveDir: string;
-  setSaveDir: (dir: string) => void;
-  loadRoster: (dir: string) => void;
-  rosterLoading: boolean;
-  rosterError: string | null;
   onSelect: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
@@ -36,14 +27,6 @@ export default function PaldexIndex({
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [hideVariants, setHideVariants] = useState(false);
-
-  async function pickFolder() {
-    const picked = await open({ directory: true, multiple: false });
-    if (typeof picked === "string") {
-      setSaveDir(picked);
-      loadRoster(picked);
-    }
-  }
 
   function toggleSort(key: SortKey) {
     if (key === sortKey) {
@@ -56,10 +39,6 @@ export default function PaldexIndex({
 
   const ownedSpecies = useMemo(
     () => (roster ? Object.values(roster).filter((c) => c.male + c.female > 0).length : 0),
-    [roster],
-  );
-  const ownedPals = useMemo(
-    () => (roster ? Object.values(roster).reduce((n, c) => n + c.male + c.female, 0) : 0),
     [roster],
   );
 
@@ -164,42 +143,6 @@ export default function PaldexIndex({
             Hide variants
           </label>
         </div>
-
-        {/* Roster annotation source */}
-        <div className="mt-3 flex items-center gap-2 rounded-md bg-raised/60 px-2.5 py-1.5">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Roster
-          </span>
-          <input
-            className="min-w-0 flex-1 rounded border border-line bg-abyss px-2 py-1 font-mono text-[11px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-            placeholder="Path to save folder to annotate owned pals..."
-            value={saveDir}
-            onChange={(e) => setSaveDir(e.currentTarget.value)}
-          />
-          <button
-            className="rounded border border-line bg-panel px-2 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-            onClick={pickFolder}
-          >
-            Browse
-          </button>
-          <button
-            className="rounded bg-amber px-2.5 py-1 text-[11px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
-            onClick={() => loadRoster(saveDir)}
-            disabled={rosterLoading || saveDir.trim() === ""}
-          >
-            {rosterLoading ? "Loading\u2026" : "Load"}
-          </button>
-          {roster && !rosterLoading && (
-            <span className="whitespace-nowrap font-mono text-[10px] text-ink-faint">
-              <span className="text-good">{ownedPals}</span> owned
-            </span>
-          )}
-        </div>
-        {rosterError && (
-          <div className="mt-2 rounded-md border border-bad/40 bg-bad/10 px-3 py-1.5 text-[12px] text-bad">
-            {rosterError}
-          </div>
-        )}
       </header>
 
       {/* Grid */}
@@ -221,36 +164,38 @@ export default function PaldexIndex({
               const owned = roster ? roster[s.id] : undefined;
               const total = owned ? owned.male + owned.female : 0;
               return (
-                <button
-                  key={s.id}
-                  onClick={() => onSelect(s.id)}
-                  className="group flex flex-col gap-2 rounded-md border border-line bg-panel p-3 text-left transition-colors hover:border-amber/40 hover:bg-hover"
-                >
-                  <div className="flex items-start justify-between font-mono text-[10px] leading-none">
-                    <span className="text-ink-faint tabular-nums">
-                      #{String(s.paldex_no).padStart(3, "0")}
-                      {s.is_variant && <span className="ml-1 text-el-dragon">B</span>}
-                    </span>
-                    {total > 0 && (
-                      <span className="tabular-nums">
-                        {owned!.male > 0 && <span className="text-el-water">{"\u2642"}{owned!.male}</span>}
-                        {owned!.male > 0 && owned!.female > 0 && " "}
-                        {owned!.female > 0 && <span className="text-el-dragon">{"\u2640"}{owned!.female}</span>}
+                <PalHoverCard key={s.id} speciesId={s.id}>
+                  <button
+                    onClick={() => onSelect(s.id)}
+                    className="group flex flex-col gap-2 rounded-md border border-line bg-panel p-3 text-left transition-colors hover:border-amber/40 hover:bg-hover"
+                  >
+                    <div className="flex items-start justify-between font-mono text-[10px] leading-none">
+                      <span className="text-ink-faint tabular-nums">
+                        #{String(s.paldex_no).padStart(3, "0")}
+                        {s.is_variant && <span className="ml-1 text-el-dragon">B</span>}
                       </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <PalIcon id={s.id} name={s.name} size={44} />
-                    <div className="min-w-0">
-                      <div className="truncate text-[13px] font-medium text-ink group-hover:text-ink">
-                        {s.name}
-                      </div>
-                      <div className="font-mono text-[11px] tabular-nums text-ink-faint">
-                        rank {s.combi_rank}
+                      {total > 0 && (
+                        <span className="tabular-nums">
+                          {owned!.male > 0 && <span className="text-el-water">{"\u2642"}{owned!.male}</span>}
+                          {owned!.male > 0 && owned!.female > 0 && " "}
+                          {owned!.female > 0 && <span className="text-el-dragon">{"\u2640"}{owned!.female}</span>}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <PalIcon id={s.id} name={s.name} size={44} />
+                      <div className="min-w-0">
+                        <div className="truncate text-[13px] font-medium text-ink group-hover:text-ink">
+                          {s.name}
+                        </div>
+                        <div className="font-mono text-[11px] tabular-nums text-ink-faint">
+                          rank {s.combi_rank}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </button>
+                    <CardWorkBadges work={s.work_suitability} />
+                  </button>
+                </PalHoverCard>
               );
             })}
           </div>

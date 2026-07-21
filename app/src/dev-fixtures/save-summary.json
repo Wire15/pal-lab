@@ -46,6 +46,9 @@
       "passives": [
         "SalePrice_Down_1"
       ],
+      "active_skills": [
+        "AirCanon"
+      ],
       "ivs": {
         "hp": 84,
         "attack": 64,
@@ -118,6 +121,10 @@
       "passives": [
         "Stamina_Up_1"
       ],
+      "active_skills": [
+        "MudShot",
+        "SpreadPulse"
+      ],
       "ivs": {
         "hp": 42,
         "attack": 52,
@@ -172,6 +179,11 @@
       "rank": 0,
       "passives": [
         "Nocturnal"
+      ],
+      "active_skills": [
+        "PowerShot",
+        "PowerBall",
+        "SandTornado"
       ],
       "ivs": {
         "hp": 36,
@@ -246,6 +258,10 @@
         "CraftSpeed_up2",
         "Deffence_up2_2"
       ],
+      "active_skills": [
+        "AirCanon",
+        "Unique_ChickenPal_ChickenPeck"
+      ],
       "ivs": {
         "hp": 87,
         "attack": 50,
@@ -317,6 +333,9 @@
       "rank": 0,
       "passives": [
         "ElementResist_Leaf_1_PAL"
+      ],
+      "active_skills": [
+        "Unique_SheepBall_Roll"
       ],
       "ivs": {
         "hp": 79,
@@ -391,6 +410,11 @@
         "PAL_ALLAttack_down1",
         "Stamina_Down_1"
       ],
+      "active_skills": [
+        "Unique_PinkCat_CatPunch",
+        "AirCanon",
+        "MudShot"
+      ],
       "ivs": {
         "hp": 40,
         "attack": 83,
@@ -463,6 +487,9 @@
       "passives": [
         "PAL_ALLAttack_down1",
         "CraftSpeed_down2"
+      ],
+      "active_skills": [
+        "Unique_PinkCat_CatPunch"
       ],
       "ivs": {
         "hp": 45,
@@ -537,6 +564,11 @@
         "PAL_ALLAttack_down2",
         "PAL_Sanity_Up_1"
       ],
+      "active_skills": [
+        "Unique_SamuraiDog_BiteV2",
+        "Unique_SamuraiDog_Bite",
+        "StoneShotgun"
+      ],
       "ivs": {
         "hp": 23,
         "attack": 89,
@@ -609,6 +641,11 @@
       "passives": [
         "PAL_FullStomach_Down_1"
       ],
+      "active_skills": [
+        "WindCutter",
+        "AirCanon",
+        "PowerShot"
+      ],
       "ivs": {
         "hp": 69,
         "attack": 79,
@@ -679,6 +716,9 @@
       "level": 6,
       "rank": 0,
       "passives": [],
+      "active_skills": [
+        "Unique_SheepBall_Roll"
+      ],
       "ivs": {
         "hp": 87,
         "attack": 98,
@@ -750,6 +790,9 @@
       "rank": 0,
       "passives": [
         "ElementBoost_Thunder_1_PAL"
+      ],
+      "active_skills": [
+        "MudShot"
       ],
       "ivs": {
         "hp": 22,
@@ -823,6 +866,11 @@
       "passives": [
         "SwimSpeed_up_1"
       ],
+      "active_skills": [
+        "ThunderBall",
+        "ElecWave",
+        "Unique_ElecPomeranian_Bite"
+      ],
       "ivs": {
         "hp": 98,
         "attack": 40,
@@ -894,6 +942,10 @@
       "rank": 0,
       "passives": [
         "ElementBoost_Dark_1_PAL"
+      ],
+      "active_skills": [
+        "MudShot",
+        "WindCutter"
       ],
       "ivs": {
         "hp": 4,
@@ -967,6 +1019,9 @@
       "passives": [
         "TrainerWorkSpeed_UP_1"
       ],
+      "active_skills": [
+        "WaterGun"
+      ],
       "ivs": {
         "hp": 42,
         "attack": 54,
@@ -1038,6 +1093,9 @@
       "rank": 0,
       "passives": [
         "CoolTimeReduction_Up_1"
+      ],
+      "active_skills": [
+        "Unique_SheepBall_Roll"
       ],
       "ivs": {
         "hp": 64,
@@ -1113,6 +1171,11 @@
         "PAL_ALLAttack_up2",
         "PAL_CorporateSlave"
       ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck",
+        "AirCanon",
+        "PowerShot"
+      ],
       "ivs": {
         "hp": 23,
         "attack": 53,
@@ -1167,6 +1230,10 @@
       "rank": 0,
       "passives": [
         "ElementResist_Fire_1_PAL"
+      ],
+      "active_skills": [
+        "Unique_Alpaca_Tackle",
+        "AirCanon"
       ],
       "ivs": {
         "hp": 37,
@@ -1223,6 +1290,10 @@
       "passives": [
         "Stamina_Up_2"
       ],
+      "active_skills": [
+        "MudShot",
+        "PoisonShot"
+      ],
       "ivs": {
         "hp": 30,
         "attack": 51,
@@ -1277,6 +1348,10 @@
       "rank": 0,
       "passives": [
         "PAL_Sanity_Down_1"
+      ],
+      "active_skills": [
+        "MudShot",
+        "SpreadPulse"
       ],
       "ivs": {
         "hp": 87,
@@ -1333,6 +1408,11 @@
       "passives": [
         "CoolTimeReduction_Down_1"
       ],
+      "active_skills": [
+        "Unique_CaptainPenguin_BodySlide",
+        "FrostBreath",
+        "WaterBall"
+      ],
       "ivs": {
         "hp": 61,
         "attack": 91,
@@ -1387,6 +1467,11 @@
       "rank": 0,
       "passives": [
         "ElementBoost_Leaf_1_PAL"
+      ],
+      "active_skills": [
+        "BubbleShot",
+        "AquaJet",
+        "LineGeyser"
       ],
       "ivs": {
         "hp": 40,
@@ -1443,6 +1528,11 @@
       "passives": [
         "CraftSpeed_down2"
       ],
+      "active_skills": [
+        "BubbleShot",
+        "AquaJet",
+        "LineGeyser"
+      ],
       "ivs": {
         "hp": 4,
         "attack": 17,
@@ -1497,6 +1587,11 @@
       "rank": 0,
       "passives": [
         "ElementBoost_Dark_1_PAL"
+      ],
+      "active_skills": [
+        "SeedMachinegun",
+        "BubbleShot",
+        "GrassTornado"
       ],
       "ivs": {
         "hp": 16,
@@ -1555,6 +1650,11 @@
         "ElementResist_Earth_1_PAL",
         "SwimSpeed_up_1"
       ],
+      "active_skills": [
+        "Unique_Grassmammoth_Earthquake",
+        "GrassTornado",
+        "PowerBall"
+      ],
       "ivs": {
         "hp": 65,
         "attack": 57,
@@ -1609,6 +1709,11 @@
       "rank": 0,
       "passives": [
         "SalePrice_Up_2"
+      ],
+      "active_skills": [
+        "AcidRain",
+        "PoisonShot",
+        "SelfDestruct_Bee"
       ],
       "ivs": {
         "hp": 58,
@@ -1665,6 +1770,11 @@
       "passives": [
         "Deffence_up2"
       ],
+      "active_skills": [
+        "Unique_GrassMinotaur_BullRush_Lower",
+        "Tremor",
+        "RootLance"
+      ],
       "ivs": {
         "hp": 38,
         "attack": 15,
@@ -1719,6 +1829,11 @@
       "rank": 0,
       "passives": [
         "TrainerATK_UP_1"
+      ],
+      "active_skills": [
+        "PowerBall",
+        "SandTornado",
+        "RockLance"
       ],
       "ivs": {
         "hp": 75,
@@ -1792,6 +1907,11 @@
       "passives": [
         "TrainerDEF_UP_1"
       ],
+      "active_skills": [
+        "WaterBall",
+        "IcicleThrow",
+        "HyperBeam"
+      ],
       "ivs": {
         "hp": 67,
         "attack": 87,
@@ -1864,6 +1984,11 @@
       "passives": [
         "CoolTimeReduction_Up_2"
       ],
+      "active_skills": [
+        "ShadowBall",
+        "IcicleThrow",
+        "DarkLaser"
+      ],
       "ivs": {
         "hp": 18,
         "attack": 84,
@@ -1935,6 +2060,11 @@
       "rank": 0,
       "passives": [
         "Stamina_Down_1"
+      ],
+      "active_skills": [
+        "HydroPump",
+        "DragonBreath",
+        "DragonMeteor"
       ],
       "ivs": {
         "hp": 85,
@@ -2009,6 +2139,11 @@
         "MoveSpeed_up_2",
         "Stamina_Up_2"
       ],
+      "active_skills": [
+        "DragonMeteor",
+        "WaterBall",
+        "GrassTornado"
+      ],
       "ivs": {
         "hp": 4,
         "attack": 38,
@@ -2080,6 +2215,11 @@
       "rank": 0,
       "passives": [
         "CraftSpeed_up1"
+      ],
+      "active_skills": [
+        "FlareTornado",
+        "Flamethrower",
+        "FireBall"
       ],
       "ivs": {
         "hp": 83,
@@ -2155,6 +2295,11 @@
         "PAL_FullStomach_Down_1",
         "ElementBoost_Earth_1_PAL"
       ],
+      "active_skills": [
+        "DragonBreath",
+        "FlareTornado",
+        "Unique_RedArmorBird_TriplePeck"
+      ],
       "ivs": {
         "hp": 90,
         "attack": 54,
@@ -2227,6 +2372,11 @@
       "passives": [
         "SalePrice_Up_1"
       ],
+      "active_skills": [
+        "AirCanon",
+        "DarkBall",
+        "DarkWave"
+      ],
       "ivs": {
         "hp": 45,
         "attack": 5,
@@ -2298,6 +2448,9 @@
       "rank": 0,
       "passives": [
         "ElementResist_Ice_1_PAL"
+      ],
+      "active_skills": [
+        "Weapon_Use"
       ],
       "ivs": {
         "hp": 71,
@@ -2372,6 +2525,11 @@
         "PAL_CorporateSlave",
         "SelfDeathAddItemDrop_up_2"
       ],
+      "active_skills": [
+        "DragonWave",
+        "IceBlade",
+        "DragonBreath"
+      ],
       "ivs": {
         "hp": 95,
         "attack": 96,
@@ -2443,6 +2601,11 @@
       "rank": 0,
       "passives": [
         "ElementBoost_Dark_1_PAL"
+      ],
+      "active_skills": [
+        "DarkWave",
+        "GhostFlame",
+        "ShadowBall"
       ],
       "ivs": {
         "hp": 67,
@@ -2516,6 +2679,10 @@
       "passives": [
         "PAL_FullStomach_Up_2"
       ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck",
+        "AirCanon"
+      ],
       "ivs": {
         "hp": 65,
         "attack": 95,
@@ -2586,6 +2753,9 @@
       "level": 3,
       "rank": 1,
       "passives": [],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck"
+      ],
       "ivs": {
         "hp": 42,
         "attack": 93,
@@ -2658,6 +2828,9 @@
       "passives": [
         "SalePrice_Up_2"
       ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck"
+      ],
       "ivs": {
         "hp": 2,
         "attack": 14,
@@ -2729,6 +2902,9 @@
       "rank": 1,
       "passives": [
         "Deffence_down1"
+      ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck"
       ],
       "ivs": {
         "hp": 0,
@@ -2803,6 +2979,9 @@
         "Deffence_up2_2",
         "CoolTimeReduction_Up_1"
       ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck"
+      ],
       "ivs": {
         "hp": 100,
         "attack": 31,
@@ -2874,6 +3053,9 @@
       "rank": 1,
       "passives": [
         "WorkSuitabilityAddRank_MonsterFarm_1"
+      ],
+      "active_skills": [
+        "Unique_ChickenPal_ChickenPeck"
       ],
       "ivs": {
         "hp": 48,
@@ -2947,6 +3129,10 @@
       "passives": [
         "CraftSpeed_down1"
       ],
+      "active_skills": [
+        "MudShot",
+        "FireBlast"
+      ],
       "ivs": {
         "hp": 97,
         "attack": 65,
@@ -3018,6 +3204,10 @@
       "rank": 1,
       "passives": [
         "TrainerWorkSpeed_UP_1"
+      ],
+      "active_skills": [
+        "FireBlast",
+        "MudShot"
       ],
       "ivs": {
         "hp": 94,
@@ -3091,6 +3281,11 @@
       "passives": [
         "Deffence_up1"
       ],
+      "active_skills": [
+        "FireBlast",
+        "Flamethrower",
+        "MudShot"
+      ],
       "ivs": {
         "hp": 75,
         "attack": 26,
@@ -3163,6 +3358,9 @@
       "passives": [
         "ElementBoost_Fire_1_PAL"
       ],
+      "active_skills": [
+        "FireBlast"
+      ],
       "ivs": {
         "hp": 89,
         "attack": 65,
@@ -3234,6 +3432,10 @@
       "rank": 1,
       "passives": [
         "PAL_rude"
+      ],
+      "active_skills": [
+        "MudShot",
+        "FireBlast"
       ],
       "ivs": {
         "hp": 28,

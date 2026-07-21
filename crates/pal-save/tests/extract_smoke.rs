@@ -67,6 +67,20 @@ fn reads_players_and_pals() {
         "no pal has non-zero IVs"
     );
 
+    // Some pals must carry equipped active skills (EquipWaza really decoded),
+    // with the EPalWazaID:: enum prefix stripped.
+    assert!(
+        save.pals.iter().any(|p| !p.active_skills.is_empty()),
+        "no pal has any equipped active skills"
+    );
+    assert!(
+        save.pals
+            .iter()
+            .flat_map(|p| &p.active_skills)
+            .all(|s| !s.starts_with("EPalWazaID::")),
+        "EPalWazaID:: prefix should be stripped from active skills"
+    );
+
     // Gender should decode to both variants across a big roster.
     assert!(
         save.pals.iter().any(|p| p.gender.is_some()),

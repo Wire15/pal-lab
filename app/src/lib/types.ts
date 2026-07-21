@@ -31,6 +31,8 @@ export interface OwnedPal {
   /** Condensation rank (0 = base). */
   rank: number;
   passives: string[];
+  /** Equipped active skills (waza), internal ids, enum prefix stripped. */
+  active_skills: string[];
   ivs: IvSet;
   nickname: string | null;
   owner_player_uid: Guid | null;
@@ -145,6 +147,18 @@ export interface SpeciesEntry {
   male_probability: number;
   stats: SpeciesStats;
   guaranteed_passives: PassiveRef[];
+  /** Work-suitability levels (12 ints, canonical order: Kindling, Watering,
+   * Planting, GenerateElectricity, Handiwork, Gathering, Lumbering, Mining,
+   * MedicineProduction, Cooling, Transporting, Farming). */
+  work_suitability: number[];
+  /** Partner-skill display name, or null when the pack has none. */
+  partner_skill: string | null;
+  /** Whether the species is nocturnal. */
+  nocturnal: boolean;
+  /** Food-bowl demand (bars). */
+  food_amount: number;
+  /** Wild spawn level range [min, max]. */
+  wild_levels: [number, number];
 }
 
 /** A gender-pinned "unique combo" this species takes part in. */

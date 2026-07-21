@@ -47,6 +47,29 @@ struct RawPal {
     attack: u32,
     defense: u32,
     guaranteed_passives_internal_ids: Vec<String>,
+    partner_skill: Option<String>,
+    nocturnal: bool,
+    food_amount: u32,
+    min_wild_level: Option<u32>,
+    max_wild_level: Option<u32>,
+    work_suitability: RawWork,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "PascalCase")]
+struct RawWork {
+    kindling: u8,
+    watering: u8,
+    planting: u8,
+    generate_electricity: u8,
+    handiwork: u8,
+    gathering: u8,
+    lumbering: u8,
+    mining: u8,
+    medicine_production: u8,
+    cooling: u8,
+    transporting: u8,
+    farming: u8,
 }
 
 #[derive(Deserialize)]
@@ -131,6 +154,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 attack: p.attack.min(u16::MAX as u32) as u16,
                 defense: p.defense.min(u16::MAX as u32) as u16,
                 guaranteed_passives: p.guaranteed_passives_internal_ids.clone(),
+                work_suitability: {
+                    let w = &p.work_suitability;
+                    // Must match gamedata::WORK_KINDS order.
+                    [
+                        w.kindling,
+                        w.watering,
+                        w.planting,
+                        w.generate_electricity,
+                        w.handiwork,
+                        w.gathering,
+                        w.lumbering,
+                        w.mining,
+                        w.medicine_production,
+                        w.cooling,
+                        w.transporting,
+                        w.farming,
+                    ]
+                },
+                partner_skill: p.partner_skill.clone().filter(|s| !s.is_empty()),
+                nocturnal: p.nocturnal,
+                food_amount: p.food_amount.min(u8::MAX as u32) as u8,
+                // 13 uncatchable pals (bosses/quest) have null wild levels ->
+                // (0, 0), read by the UI as "not found in the wild".
+                wild_levels: (
+                    p.min_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
+                    p.max_wild_level.unwrap_or(0).min(u8::MAX as u32) as u8,
+                ),
             }
         })
         .collect();

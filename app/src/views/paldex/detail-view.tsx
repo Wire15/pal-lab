@@ -10,6 +10,7 @@ import type {
 } from "../../lib/types";
 import { ivBand, QUALITY_FILL, QUALITY_TEXT } from "../../lib/ui";
 import { PalIcon, PassiveChip, Tag } from "../../components/primitives";
+import { PalHoverCard } from "../../components/pal-hover-card";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
@@ -26,18 +27,20 @@ function SpeciesCell({
   size?: number;
 }) {
   return (
-    <button
-      onClick={() => onNavigate(sp.id)}
-      className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-hover"
-    >
-      <PalIcon id={sp.id} name={sp.name} size={size} />
-      <div className="min-w-0">
-        <div className="truncate text-[12px] text-ink">{sp.name}</div>
-        <div className="font-mono text-[10px] tabular-nums text-ink-faint">
-          #{String(sp.paldex_no).padStart(3, "0")}
+    <PalHoverCard speciesId={sp.id}>
+      <button
+        onClick={() => onNavigate(sp.id)}
+        className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1.5 py-1 text-left transition-colors hover:bg-hover"
+      >
+        <PalIcon id={sp.id} name={sp.name} size={size} />
+        <div className="min-w-0">
+          <div className="truncate text-[12px] text-ink">{sp.name}</div>
+          <div className="font-mono text-[10px] tabular-nums text-ink-faint">
+            #{String(sp.paldex_no).padStart(3, "0")}
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </PalHoverCard>
   );
 }
 
