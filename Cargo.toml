@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/pal-data", "crates/pal-save"]
+members = ["crates/pal-data", "crates/pal-save", "crates/pal-solver"]
 exclude = ["app/src-tauri"]
 
 [workspace.package]
