@@ -14,6 +14,7 @@ pub fn run() {
             solver::list_passives,
             solver::list_active_skills,
             solver::get_world_options,
+            solver::list_breeding_boosts,
             paldex::paldex_species,
             paldex::paldex_species_detail,
             paldex::breeding_child,

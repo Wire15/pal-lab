@@ -9,7 +9,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use pal_data::gamedata::PassiveTier;
+use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
     resolve_passive, resolve_species, solve_with_catching, BreedingPlan, BreedingSetup, CakeKind,
@@ -221,6 +221,55 @@ pub fn list_passives() -> Vec<PassiveEntry> {
         .collect()
 }
 
+/// A breeding-boost row for the Solver's BREEDING SETUP panel. Mechanical mirror
+/// of the pack's [`pal_data::gamedata::BreedingBoost`] with one added field:
+/// `display_name`, the source resolved to a localized label — a species name for
+/// partner skills (`Plesiosaur` -> `Braloha`), a passive name for passives
+/// (`MutationPal_Babysitter` -> `Babysitter`, `Test_PalEgg_HatchingSpeed_Up` ->
+/// `Philanthropist`), falling back to the raw id when the pack lacks the entry.
+#[derive(Debug, Clone, Serialize)]
+pub struct BreedingBoostEntry {
+    /// Species internal name (partner skills) or passive id (passives).
+    pub source: String,
+    pub source_kind: BreedingBoostSource,
+    pub effect: BreedingEffect,
+    /// Per-rank magnitude fractions (partner: one per condensation rank 0..N-1;
+    /// passive: a single flat value).
+    pub values_per_rank: Vec<f32>,
+    /// Localized display label resolved from the source id.
+    pub display_name: String,
+}
+
+/// Every breeding/egg/incubation boost the pack carries, each with a resolved
+/// display name. Mechanical mirror of [`list_passives`] over `breeding_boosts()`;
+/// ALL entries are emitted (including cosmetic `alpha_egg_chance`) — the UI
+/// filters cosmetics out of the BOOSTERS list.
+#[tauri::command]
+pub fn list_breeding_boosts() -> Vec<BreedingBoostEntry> {
+    let gd = GameData::get();
+    gd.breeding_boosts()
+        .iter()
+        .map(|b| {
+            let display_name = match b.source_kind {
+                BreedingBoostSource::Passive => {
+                    gd.passive_by_id(&b.source).map(|p| p.name.clone())
+                }
+                BreedingBoostSource::PartnerBase | BreedingBoostSource::PartnerParty => {
+                    gd.species_by_id(&b.source).map(|s| s.name.clone())
+                }
+            }
+            .unwrap_or_else(|| b.source.clone());
+            BreedingBoostEntry {
+                source: b.source.clone(),
+                source_kind: b.source_kind,
+                effect: b.effect,
+                values_per_rank: b.values_per_rank.clone(),
+                display_name,
+            }
+        })
+        .collect()
+}
+
 /// Active-skill (waza) definitions keyed by the save-side waza id
 /// (enum-prefix-stripped, e.g. `"Unique_SheepBall_Roll"`, `"AirCanon"`). The UI
 /// resolves raw active-skill ids from a save to their localized names + stats
@@ -356,5 +405,30 @@ mod tests {
         // A save dir with no WorldOption.sav => null (never an error).
         let none = get_world_options(testdata_dir()).expect("missing file is not an error");
         assert!(none.egg_hatch_hours.is_none());
+    }
+
+    /// `list_breeding_boosts` mirrors the pack and resolves display names:
+    /// partner species -> localized name, passives -> their (prefix-stripped)
+    /// passive name. Every entry carries a non-empty label.
+    #[test]
+    fn list_breeding_boosts_resolves_display_names() {
+        let boosts = list_breeding_boosts();
+        assert_eq!(
+            boosts.len(),
+            GameData::get().breeding_boosts().len(),
+            "one entry per pack boost (nothing dropped)"
+        );
+        assert!(
+            boosts.iter().all(|b| !b.display_name.is_empty()),
+            "every boost resolves a non-empty display name"
+        );
+        let find = |source: &str| boosts.iter().find(|b| b.source == source).expect(source);
+        // Partner species localize to their in-game names.
+        assert_eq!(find("Plesiosaur").display_name, "Braloha");
+        assert_eq!(find("ThunderFluffyBird").display_name, "Dynamoff");
+        assert_eq!(find("NaughtyCat").display_name, "Grintale");
+        // Passives resolve to the pack's clean names, prefix already stripped.
+        assert_eq!(find("MutationPal_Babysitter").display_name, "Babysitter");
+        assert_eq!(find("Test_PalEgg_HatchingSpeed_Up").display_name, "Philanthropist");
     }
 }

@@ -19,9 +19,14 @@ import {
   useState,
 } from "react";
 import { invoke } from "./lib/tauri";
-import type { RosterCounts, SaveSummary } from "./lib/types";
+import type {
+  BreedingSetup,
+  CakeToken,
+  RosterCounts,
+  SaveSummary,
+} from "./lib/types";
 
-export type View = "save" | "solver" | "paldex";
+export type View = "save" | "solver" | "paldex" | "ivlab";
 
 /** localStorage key for the last successfully loaded save folder. */
 const SAVE_DIR_KEY = "pal-calc.saveDir";
@@ -31,6 +36,53 @@ function readLastSaveDir(): string {
     return localStorage.getItem(SAVE_DIR_KEY) ?? "";
   } catch {
     return "";
+  }
+}
+
+/** localStorage keys for the persisted breeding-setup store (§ useBreedingSetup).
+ * The composed farm/incubation/egg fractions + world egg-hatch hours, and the
+ * selected cake, survive reloads and view switches so the Solver and IV Lab
+ * share one setup. */
+const BREEDING_SETUP_KEY = "pal-calc.breedingSetup";
+const CAKE_KEY = "pal-calc.cake";
+
+/** Neutral vanilla farm setup: no boosts, vanilla 72h hatch. */
+const DEFAULT_SETUP: BreedingSetup = {
+  farm_speed_bonus: 0,
+  incubation_reduction: 0,
+  extra_egg_chance: 0,
+  egg_hatch_hours: 72,
+};
+
+function readBreedingSetup(): BreedingSetup {
+  try {
+    const raw = localStorage.getItem(BREEDING_SETUP_KEY);
+    if (!raw) return DEFAULT_SETUP;
+    const p = JSON.parse(raw) as Partial<BreedingSetup>;
+    return {
+      farm_speed_bonus: Number(p.farm_speed_bonus) || 0,
+      incubation_reduction: Number(p.incubation_reduction) || 0,
+      extra_egg_chance: Number(p.extra_egg_chance) || 0,
+      egg_hatch_hours: Number(p.egg_hatch_hours) || 72,
+    };
+  } catch {
+    return DEFAULT_SETUP;
+  }
+}
+
+function readCake(): CakeToken {
+  try {
+    const raw = localStorage.getItem(CAKE_KEY);
+    const valid: CakeToken[] = [
+      "normal",
+      "mushroom",
+      "vegetable",
+      "deluxe_vegetable",
+      "special",
+    ];
+    return valid.includes(raw as CakeToken) ? (raw as CakeToken) : "normal";
+  } catch {
+    return "normal";
   }
 }
 
@@ -75,6 +127,16 @@ export interface AppState {
   requestDex: (speciesId: string, instanceId?: string) => void;
   /** Pal-dex clears the pending target + instance once it has consumed them. */
   clearDexTarget: () => void;
+  /** Shared breeding-farm setup: composed farm/incubation/egg fractions + world
+   * egg-hatch hours. Consumed by the Solver (rides the solve request) and the IV
+   * Lab. Persisted. */
+  setup: BreedingSetup;
+  /** Shared breeding-cake selection (`normal` = none). Persisted. */
+  cake: CakeToken;
+  /** Replace the whole breeding setup (the BREEDING SETUP panel composes it). */
+  setSetup: (setup: BreedingSetup) => void;
+  /** Set the selected breeding cake. */
+  setCake: (cake: CakeToken) => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -89,6 +151,26 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [solveTarget, setSolveTarget] = useState<string | null>(null);
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
+  const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
+  const [cake, setCakeState] = useState<CakeToken>(readCake);
+
+  const setSetup = useCallback((next: BreedingSetup) => {
+    setSetupState(next);
+    try {
+      localStorage.setItem(BREEDING_SETUP_KEY, JSON.stringify(next));
+    } catch {
+      // Ignore storage failures (private mode, quota) — non-fatal.
+    }
+  }, []);
+
+  const setCake = useCallback((next: CakeToken) => {
+    setCakeState(next);
+    try {
+      localStorage.setItem(CAKE_KEY, next);
+    } catch {
+      // Ignore storage failures (private mode, quota) — non-fatal.
+    }
+  }, []);
 
   const loadSave = useCallback(async (dir: string) => {
     const trimmed = dir.trim();
@@ -177,6 +259,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       dexInstance,
       requestDex,
       clearDexTarget,
+      setup,
+      cake,
+      setSetup,
+      setCake,
     }),
     [
       saveDir,
@@ -195,6 +281,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       dexInstance,
       requestDex,
       clearDexTarget,
+      setup,
+      cake,
+      setSetup,
+      setCake,
     ],
   );
 
@@ -206,4 +296,20 @@ export function useAppState(): AppState {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error("useAppState must be used within AppStateProvider");
   return ctx;
+}
+
+/** The shared breeding-setup slice of {@link AppState}: the composed farm setup
+ * fractions + egg-hatch hours and the selected cake, with their setters. The
+ * Solver's BREEDING SETUP panel writes it; the Solver request and the IV Lab
+ * read it. Same provider instance, so it stays in sync across views. */
+export interface BreedingSetupState {
+  setup: BreedingSetup;
+  cake: CakeToken;
+  setSetup: (setup: BreedingSetup) => void;
+  setCake: (cake: CakeToken) => void;
+}
+
+export function useBreedingSetup(): BreedingSetupState {
+  const { setup, cake, setSetup, setCake } = useAppState();
+  return { setup, cake, setSetup, setCake };
 }

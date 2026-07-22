@@ -455,6 +455,14 @@ mod tests {
             serde_json::to_string_pretty(&crate::solver::list_passives()).unwrap(),
         );
 
+        // breeding-boosts.json — the Solver BREEDING SETUP panel's booster list
+        // (source + resolved display name + per-rank fractions). Mechanical mirror
+        // of the pack; ALL entries emitted, the UI filters cosmetics.
+        write(
+            "breeding-boosts.json",
+            serde_json::to_string_pretty(&crate::solver::list_breeding_boosts()).unwrap(),
+        );
+
         // active-skills.json — waza id -> ActiveSkill (name/element/power/cool_time/
         // description), sorted by id for determinism.
         let active_skills: std::collections::BTreeMap<String, pal_data::ActiveSkill> =

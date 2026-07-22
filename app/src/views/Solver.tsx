@@ -11,7 +11,12 @@ import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
 import { PassivePicker } from "../components/passive-picker";
-import { useAppState } from "../state";
+import { useAppState, useBreedingSetup } from "../state";
+import {
+  BreedingSetupPanel,
+  describeSetup,
+  isNeutralSetup,
+} from "../components/breeding-setup";
 import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
 
@@ -186,6 +191,7 @@ function TreeNode({
 
 export default function Solver() {
   const { saveDir, solveTarget, clearSolveTarget, requestDex } = useAppState();
+  const { setup, cake } = useBreedingSetup();
   const [species, setSpecies] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
@@ -258,12 +264,15 @@ export default function Solver() {
     setFallbackUsed(false);
     try {
       // `catching` only matters with include_wild; harmless when owned-only.
+      // `setup`/`cake` ride the shared BREEDING SETUP store (contract #3).
       const spec: SolveRequest = {
         target_species: species,
         required_passives: passives,
         max_steps: maxSteps,
         include_wild: includeWild,
         catching,
+        setup,
+        cake,
       };
       const resp = await invoke<SolveResponse>("solve", { saveDir, spec });
       setPlans(resp.plans);
@@ -443,6 +452,8 @@ export default function Solver() {
           )}
         </div>
 
+        <BreedingSetupPanel />
+
         <button
           className="mt-1 rounded-md bg-amber px-4 py-2.5 text-sm font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-40"
           onClick={runSolve}
@@ -583,6 +594,19 @@ export default function Solver() {
                     </div>
                   </>
                 )}
+              </div>
+            )}
+            {!isNeutralSetup(setup, cake) && (
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-amber/20 bg-amber/[0.05] px-4 py-1.5">
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-amber">
+                  Setup
+                </span>
+                <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+                  {describeSetup(setup, cake).join("\u00a0\u00a0/\u00a0\u00a0")}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                  &middot; est.
+                </span>
               </div>
             )}
 

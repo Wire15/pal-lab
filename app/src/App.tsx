@@ -3,6 +3,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 import SaveInspector from "./views/SaveInspector";
 import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
+import IvLab from "./views/IvLab";
 import { AppStateProvider, useAppState } from "./state";
 import type { View } from "./state";
 
@@ -34,6 +35,17 @@ function NavIcon({ view }: { view: View }) {
         <path d="M6 16.5v-2a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v2M12 7.4v4" />
       </svg>
     );
+  if (view === "ivlab")
+    return (
+      <svg {...common}>
+        <line x1="4" y1="7" x2="20" y2="7" />
+        <circle cx="9" cy="7" r="2" fill="currentColor" stroke="none" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <circle cx="15" cy="12" r="2" fill="currentColor" stroke="none" />
+        <line x1="4" y1="17" x2="20" y2="17" />
+        <circle cx="8" cy="17" r="2" fill="currentColor" stroke="none" />
+      </svg>
+    );
   return (
     <svg {...common}>
       <rect x="3.5" y="3.5" width="7" height="7" rx="1.4" />
@@ -47,6 +59,7 @@ function NavIcon({ view }: { view: View }) {
 const NAV: { id: View; label: string; hint: string }[] = [
   { id: "save", label: "Save Inspector", hint: "Roster" },
   { id: "solver", label: "Solver", hint: "Breeding plans" },
+  { id: "ivlab", label: "IV Lab", hint: "Stat breeding" },
   { id: "paldex", label: "Pal-dex", hint: "Reference" },
 ];
 
@@ -313,6 +326,7 @@ function Shell() {
       <main className="flex-1 overflow-hidden">
         {view === "save" && <SaveInspector />}
         {view === "solver" && <Solver />}
+        {view === "ivlab" && <IvLab />}
         {view === "paldex" && <Paldex />}
       </main>
       {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}

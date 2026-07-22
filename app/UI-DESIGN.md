@@ -921,3 +921,136 @@ each time this pair breeds." An empty list reads "No passives carried."
 **Dex action.** A footer "View in Pal-dex →" button (shown only when the species
 id resolved) calls `onNavigateDex(species)`, reusing the shared `requestDex`
 state path (§9) — the same navigation the palbox slots and dex cells use.
+
+## 17. Wave 2 — Breeding Setup panel (`components/breeding-setup.tsx`)
+
+A section in the Solver's left briefing, **below `CATCHING`**, that surfaces the
+three farm knobs bending a plan's real-world time and composes them into the
+shared `useBreedingSetup` store (`state.tsx`) the solve request and the IV Lab
+both read. It is set apart by a `border-t border-line-soft` rule and the mono
+amber eyebrow `BREEDING SETUP`, under a single honesty line: every value here is
+an **estimate** from extracted game data.
+
+- **Egg hatch time.** On save load the panel calls `get_world_options`. A scanned
+  value renders as a big mono `Nh` in a `bg-abyss` well with an amber
+  `SCANNED FROM WORLD` chip (dot + mono microcaps). A `null` result (dedicated
+  server / no `WorldOption.sav`) becomes a mono numeric `hours per egg` input
+  (default 72) with the microcopy "Dedicated servers keep this in
+  PalWorldSettings.ini — enter your world's Egg Incubation setting." Either way it
+  feeds `setup.egg_hatch_hours`.
+- **Boosters.** One toggle row per non-cosmetic booster **source** (cosmetic
+  `alpha_egg_chance` is dropped), from `list_breeding_boosts`. A source's effects
+  toggle together (Babysitter carries both farm + incubation), so each row is one
+  `role="switch"`: a `PalIcon` (partner) or an amber diamond **band** (passive),
+  the display name, and a mono effect summary tinted `good` (idle) / `amber-bright`
+  (on) — `-33% breed time` (farm speed as `1 − 1/(1+v)`), `-40% hatch time`
+  (incubation), `+75% eggs` (extra-egg). Ownership comes from the loaded roster:
+  partner sources match `character_id` (case-insensitive) and use the owner's best
+  condensation rank; passive sources match any pal carrying the passive. **Unowned**
+  rows are grayed (`opacity-55`), marked `not owned`, and stay toggleable as
+  max-rank **what-ifs** (`N★ max` / `what-if`). Toggling composes fractions
+  additively per effect into the store; a mono `APPLIED` line echoes the running
+  total, and one line of microcopy warns that mixed-source stacking is untested
+  in-game.
+- **Cake.** The §6 stacked segmented control (leading dot, `bg-raised`+amber
+  active, `role="radiogroup"`) over None / Mushroom / Vegetable / Deluxe Veg /
+  Special (mapping to the `CakeToken`s), with the selected option's one-line effect
+  note below (Vegetable → two eggs per cycle; Mushroom/Deluxe → +IV floor; Special
+  → all passives inherit). Writes `cake` on the shared store.
+- **Solve summary strip.** When the setup+cake are non-neutral, a slim
+  `border-amber/20 bg-amber/[0.05]` band renders **once** below the plan tabs and
+  above the stats header / canvas / cards (like the §8 catch callout, so it reads
+  in **both Graph and List**): a mono `SETUP` eyebrow, the `describeSetup` parts
+  joined with ` / ` (`-33% breed time / +60% eggs / 1h hatch / Vegetable cake`),
+  and a trailing `· est.` — so a plan's time is always explainable. `describeSetup`
+  / `isNeutralSetup` are shared by the panel's applied line and this strip.
+
+## 18. Wave 2 — IV Lab (`views/IvLab.tsx`, `views/ivlab/donors.ts`)
+
+A dedicated **stat-breeding** companion to the passive Solver, reached from a new
+sidebar nav entry (`IV Lab` · `STAT BREEDING`, a three-slider mixer glyph). Same
+`solve` backend and the same **read-only** `PlanGraph` + `PlanNodePanel` hero, but
+the briefing is IV-shaped and the workspace is a **three-column lab bench**:
+briefing · your stock · the plan.
+
+### Layout
+
+- **Left briefing** (`w-80`, `bg-panel`, the §6 form treatment shared with the
+  Solver): target species well (the Solver's icon+`datalist` autocomplete),
+  **Target IVs** (three sliders), Required passives (the §17-referenced
+  `PassivePicker`, reused verbatim), Max steps, Breeding cake, an **Advanced**
+  disclosure, then the amber Solve CTA.
+- **Middle donors column** (`w-72`, `bg-panel/60`, `border-r`) — the **BEST
+  DONORS** scan. Rendered only when a save is loaded **and** a target is set, so
+  it never shows an empty rail.
+- **Right results** (`flex-1`) — the plan tabs, the IV results header, and the
+  `PlanGraph`/`PlanNodePanel` pair, or the empty/edge states.
+
+### IV threshold sliders
+
+Three native `range` inputs (`accent-amber`, `bg-line` track), one per breedable
+talent (HP/ATK/DEF, 0–100). Each carries a mono value **chip**: `0` renders as
+`any` in `ink-faint`; a set value renders in its §5 `ivBand` color
+(`good`/`fair`/`ink-dim`/`ink-faint`). All-zero shows an inline `ink-faint` hint
+("Set at least one stat floor above 0…") — the IV Lab optimizes for floors, so
+all-zero is called out as a degenerate passive-only solve rather than blocked.
+
+### Breeding cake + IV-floor note
+
+A 5-cell grid (`None`/`Mushroom`/`Vegetable`/`Deluxe Veg`/`Special`) writing the
+**shared** `cake` (`useBreedingSetup`, §17) — source of truth, so the Solver and
+IV Lab always agree. Cake is **never** silently mutated: the note beneath adapts.
+- **Floor-covered** (`good`): when the cake grants a +5 IV floor (Mushroom /
+  Deluxe Veg — mirrors `CakeKind::iv_floor_bonus`) **and** any threshold is 1–5,
+  "This cake guarantees a +5 IV floor, so your 1–5 thresholds are already covered
+  — the solver drops them." (matches backend `apply_iv_floor`).
+- **Suggestion**: when cake is `None` and any threshold is set, a one-click amber
+  CTA "Mushroom adds a +5 IV floor — use it" writes `mushroom` explicitly (no
+  surprise cross-view flip).
+- **Generic** otherwise: a one-line reminder of each cake's effect.
+
+### Advanced disclosure
+
+A `line-soft`-topped `> ADVANCED` toggle (chevron rotates on open) reveals:
+- **IV MODEL** — an `empirical | cdo` segmented control (§6) with honest
+  microcopy: empirical = community-measured 50/25/25 (the safe default); cdo =
+  game-data 50/33/17, "Unverified consumption — experimental." Rides the request
+  as `iv_model`.
+- **FARM SETUP** — a compact mono readout of the shared `setup`
+  (farm speed / incubation / extra egg as `±N%`, hatch time as `Nh`). **Read-only
+  here** — a `ink-faint` line points to the Solver's Breeding Setup panel (§17)
+  as the editor; the value stays live via the shared store.
+
+### BEST DONORS panel (`views/ivlab/donors.ts`)
+
+The owned parents most worth breeding from. **Pool** = owned pals (excluding
+humans) whose `character_id` is the target's internal id **or** appears in the
+returned plans (each plan node's `species_name` → internal id via `nameToId` →
+matched against owned `character_id`), so before a solve it's the target species,
+after a solve it grows to the plan's kin. **Ranking** (`rankDonors`): four
+buckets — **Top HP / ATK / DEF** (by that IV) and **Top overall** (by IV sum) —
+each the best 3, ties broken by IV sum then level so a well-rounded pal outranks
+a one-trick one. Each **donor row** is a clickable card (`hover:border-amber/40`):
+`PalIcon 26`, display name + §2 gender glyph, `Lv N` mono, then the three IVs as
+mono numerals with the **ranked stat highlighted** in its `ivBand` color (the
+overall bucket highlights an amber `sum` instead). Click → `requestDex(character_id,
+hexGuid(instance_id))`, the same dex navigation the roster slots use. No owned
+stock → a single `ink-faint` "catch or breed one to seed the line" note.
+
+### Results — IV-focused header
+
+Plan tabs read `Line 1…` (a `Fastest` badge on the quickest). The active plan's
+`raised` header leads with the big amber total time, then mono
+**`~N eggs`** · steps · cake stats, and a right-aligned `ink-faint`
+**`ESTIMATES · <model> IV MODEL`** footnote. Expected eggs is derived
+client-side — `Σ round(1/probability)` over the plan's bred nodes (the geometric
+eggs-to-success expectation, mirroring the solver's internal `num_eggs`, which
+the frozen plan payload doesn't surface) — so it is always labelled an estimate.
+The graph/inspector below are the untouched §7/§16 components.
+
+### States
+
+No save → the Solver's "Load a save…" hint (CTA disabled). Thresholds all 0 →
+the inline set-a-floor hint (solve still allowed). No plan → "No line found"
+with loosen-threshold / raise-steps / try-a-cake guidance. Pre-solve → an
+"Engineer an IV line" invitation. All follow §8's guide-the-next-action voice.

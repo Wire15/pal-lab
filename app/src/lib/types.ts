@@ -145,6 +145,36 @@ export interface WorldOptionsResponse {
   egg_hatch_hours: number | null;
 }
 
+/** Where a breeding boost comes from and when it applies (from
+ * `list_breeding_boosts`). `partner_base`/`partner_party` are partner-skill
+ * boosts active at a base or in the party; `passive` is a passive skill carrying
+ * the effect inline. */
+export type BreedingBoostSource = "partner_base" | "partner_party" | "passive";
+
+/** The breeding-relevant effect a boost applies. `alpha_egg_chance` is cosmetic
+ * (alpha egg conversion) with no breeding-effort impact — the setup panel filters
+ * it out of the BOOSTERS list. The other three compose into `BreedingSetup`:
+ * `farm_speed` -> `farm_speed_bonus`, `incubation_speed` -> `incubation_reduction`,
+ * `extra_egg_chance` -> `extra_egg_chance`. */
+export type BreedingEffect =
+  | "farm_speed"
+  | "incubation_speed"
+  | "extra_egg_chance"
+  | "alpha_egg_chance";
+
+/** One breeding-boost row from `list_breeding_boosts`: the pack's boost plus a
+ * resolved `display_name` (species localized name for partner sources, passive
+ * name for passive sources). `values_per_rank` holds one fraction per
+ * condensation rank for partner skills (index by `OwnedPal.rank`, 0-based) or a
+ * single flat value for passives. */
+export interface BreedingBoostEntry {
+  source: string;
+  source_kind: BreedingBoostSource;
+  effect: BreedingEffect;
+  values_per_rank: number[];
+  display_name: string;
+}
+
 /** `{id, name}` from `list_species`. */
 export interface NamedEntry {
   id: string;
