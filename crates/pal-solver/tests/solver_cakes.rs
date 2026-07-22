@@ -255,7 +255,7 @@ fn golden_normal_plan_and_special_collapse() {
     spec.required_passives = vec![swift, runner];
 
     // Golden: Normal cake, no wild pals (deterministic min-effort plan).
-    let normal_cfg = SolverConfig { allow_wild: false, ..SolverConfig::default() };
+    let normal_cfg = SolverConfig { include_wild: false, ..SolverConfig::default() };
     let normal = solve(gd, &spec, &save.pals, &normal_cfg);
     assert!(!normal.is_empty(), "Normal cake must find a plan");
     let n0 = &normal[0];
@@ -276,7 +276,7 @@ fn golden_normal_plan_and_special_collapse() {
     // plan's root success probability jumps to the ceiling and the plan reports
     // the cakes it needs.
     let special_cfg =
-        SolverConfig { cake: CakeKind::Special, allow_wild: false, ..SolverConfig::default() };
+        SolverConfig { cake: CakeKind::Special, include_wild: false, ..SolverConfig::default() };
     let special = solve(gd, &spec, &save.pals, &special_cfg);
     assert!(!special.is_empty(), "Special cake must find a plan");
     let s0 = &special[0];

@@ -13,8 +13,10 @@ use crate::solver::refs::{EffPassive, PalRef, RefGender};
 pub enum PlanSource {
     /// An owned pal, at a storage location.
     Owned { location: String },
-    /// A wild pal to catch; `captures` = estimated catches for the needed gender.
-    Wild { captures: u32 },
+    /// A wild pal to catch. `captures` = estimated catches for the needed
+    /// gender; `min_wild_level` = the species' minimum wild spawn level (0 when
+    /// the pack has no wild-spawn record).
+    Wild { captures: u32, min_wild_level: u16 },
     /// A bred child of the two `children`.
     Bred,
 }
@@ -78,7 +80,11 @@ fn node_of(gd: &GameData, r: &PalRef) -> PlanNode {
             1.0,
             Vec::new(),
         ),
-        PalRef::Wild(w) => (PlanSource::Wild { captures: w.captures_required }, 1.0, Vec::new()),
+        PalRef::Wild(w) => (
+            PlanSource::Wild { captures: w.captures_required, min_wild_level: w.min_wild_level },
+            1.0,
+            Vec::new(),
+        ),
         PalRef::Bred(b) => (
             PlanSource::Bred,
             b.passives_prob * b.ivs_prob,

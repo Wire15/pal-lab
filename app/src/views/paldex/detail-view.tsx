@@ -24,6 +24,7 @@ import { PalHoverCard } from "../../components/pal-hover-card";
 import { ElementBanners } from "../../components/element";
 import { WorkGlyph, nonzeroWork } from "../../components/work-suit";
 import { PartnerIcon } from "../../components/partner";
+import { PartnerSkillDescription, partnerLevels } from "../../components/partner-value";
 import { hexGuid } from "../../components/palbox/selectors";
 import { ActiveSkillRow } from "../../components/active-skill";
 import { loadActiveSkills, type ActiveSkills } from "../../lib/active-skills";
@@ -441,9 +442,14 @@ export default function PaldexDetail({
   const [secondName, setSecondName] = useState("");
   const [child, setChild] = useState<ChildResult | null>(null);
   const [childLoading, setChildLoading] = useState(false);
+  const [activeMap, setActiveMap] = useState<ActiveSkills>({});
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species").then(setNames).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadActiveSkills().then(setActiveMap).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -504,6 +510,9 @@ export default function PaldexDetail({
   const [wildMin, wildMax] = detail.wild_levels;
   const wildCatchable = wildMin > 0 || wildMax > 0;
   const hasPartner = detail.partner_skill != null;
+  // Level-up learnable actives, pre-sorted ascending by the pack (rendered
+  // as-is, stable); empty array when the species has none.
+  const learnset = detail.learnset;
   const s = detail.stats;
   // The your-pal band renders only for the owned instance whose species this
   // page is — guarded so a stale/mismatched instance never shows here.
@@ -577,11 +586,24 @@ export default function PaldexDetail({
                   <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
                     {detail.partner_skill}
                   </span>
-                  {detail.partner_skill_desc && (
-                    <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
-                      {detail.partner_skill_desc}
-                    </p>
-                  )}
+                  {(() => {
+                    const levels = partnerLevels(detail);
+                    if (levels)
+                      return (
+                        <PartnerSkillDescription
+                          template={levels.template}
+                          values={levels.values}
+                          className="max-w-3xl text-[13px] leading-relaxed text-ink-dim"
+                        />
+                      );
+                    return (
+                      detail.partner_skill_desc && (
+                        <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
+                          {detail.partner_skill_desc}
+                        </p>
+                      )
+                    );
+                  })()}
                 </div>
               </div>
             </Section>
@@ -679,6 +701,31 @@ export default function PaldexDetail({
               </p>
             )}
           </Section>
+
+          {/* Learnable moves — level-up actives, omitted when the species has
+              none (no empty shell). Rows reuse the equipped-actives strip with a
+              leading "Lv N" condition chip, in the same 2-col grid. */}
+          {learnset.length > 0 && (
+            <Section
+              eyebrow="Learnable moves"
+              right={
+                <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+                  {learnset.length} {learnset.length === 1 ? "move" : "moves"}
+                </span>
+              }
+            >
+              <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                {learnset.map((m, i) => (
+                  <ActiveSkillRow
+                    key={`${m.id}-${m.level}-${i}`}
+                    id={m.id}
+                    skill={activeMap[m.id] ?? null}
+                    level={m.level}
+                  />
+                ))}
+              </div>
+            </Section>
+          )}
 
           {/* Guaranteed passives + your roster */}
           <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr]">

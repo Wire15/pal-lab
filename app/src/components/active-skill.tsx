@@ -25,9 +25,14 @@ import { elementGlyphUrl, elementIconUrl, elementTokenKey } from "../lib/assets"
 export function ActiveSkillRow({
   id,
   skill,
+  level,
 }: {
   id: string;
   skill: ActiveSkill | null;
+  /** Optional level-up condition — renders a mono "Lv N" chip prefixing the
+   *  name (matches the CT chip style). Used by the pal-dex LEARNABLE MOVES
+   *  list; equipped-skill call sites omit it so their rows are unchanged. */
+  level?: number;
 }) {
   const name = skill?.name ?? humanizeWaza(id);
   const key = skill ? elementTokenKey(skill.element) : null;
@@ -54,6 +59,11 @@ export function ActiveSkillRow({
             style={{ transform: open ? "rotate(90deg)" : "none" }}
           >
             {"\u25B8"}
+          </span>
+        )}
+        {level !== undefined && (
+          <span className="shrink-0 rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">
+            Lv {level}
           </span>
         )}
         <span className="min-w-0 truncate font-display font-semibold tracking-wide text-ink">

@@ -175,11 +175,26 @@ The breeding plan tree is the hero and the thing the app is remembered by.
 - Collapsible via `<details open>`; the chevron rotates on open
   (`group-open/n:rotate-90`). Stays legible past depth 4 because the card is
   self-contained and only the rail indents.
-- Wild leaves read as capture goals (leaf tag, no odds); owned leaves are
-  terminal facts (neutral tag, 100%/instant).
+- **Wild / CATCH leaves** — a wild-caught source renders as a **catch step**,
+  not a breed step. Same node chassis, but with an **`el-leaf` accent** (green
+  border + `el-leaf/[0.06]` fill) — deliberately the leaf/green family, distinct
+  from the amber bred-root tint and the neutral owned tag. Its right cluster is a
+  mono-uppercase **`CATCH`** badge (`el-leaf`; `\u00d7N` appended only when more
+  than one capture is needed to concentrate passives) plus a mono **`Lv N+`**
+  pill sourced from the species' `min_wild_level` (omitted when `0`/unknown).
+  **No odds pill and no step time** — a catch is a goal, not a breed. It is
+  always a **leaf** (no children, no connector below it), like an owned pal.
+  Read from the externally-tagged `source.Wild: {captures, min_wild_level}`.
+- Owned leaves are terminal facts (neutral tag, 100%/instant).
 - Each plan is wrapped in a container with a summary header: plan number,
   "Fastest" tag on the quickest, big amber total time, then mono stats
   (steps · wild · cake).
+- **Source pool** control (solver form) — a stacked segmented control (the §6
+  segmented treatment: active = `amber` on `raised`, muted `ink-faint`
+  otherwise, each row led by a radio dot) toggling **Only pals I own** (default)
+  vs **Include pals I don't own**. The second mode sets `include_wild: true` on
+  the solve request and reveals a one-line `ink-faint` hint ("Plans may include
+  pals you'd need to catch first."). It is what surfaces the CATCH leaves above.
 
 ## 8. Window chrome & quality floor
 
@@ -303,6 +318,22 @@ primitive, no new tokens:
   - **Work suitability** — every nonzero suitability (`nonzeroWork`), highest
     first, as `WorkGlyph` 22 + label + mono `Lv n` in a 2→3 column grid, with a
     `N jobs` count; empty line when the species is not a base worker.
+  - **Learnable moves** — the species' level-up learnable active skills
+    (`learnset: {id, level}[]`, sorted ascending by level; pack ground-truth,
+    DataRank-owned). Rendered directly under Work suitability, one row per move
+    reusing the **`ActiveSkillRow`** strip (§— equipped actives: dark bar,
+    element left-accent + right power segment, `CT Ns` chip, collapsible
+    description button) in the same `grid-cols-1 sm:grid-cols-2` 2-column grid as
+    the equipped-actives list. Each row carries a leading **`Lv N` condition
+    chip** — mono, `bg-abyss/70`, matching the CT-chip treatment exactly — so the
+    unlock level reads before the skill name (`Lv 1` for starter moves up through
+    the species' top level). Header shows an `N moves` count. Rows resolve stats
+    via the cached `list_active_skills` map (`lib/active-skills.ts`), falling back
+    to the humanized name (no stats) for any id the map lacks — never a fabricated
+    value. **Empty learnset omits the whole section** (no empty shell). The list
+    runs 10–20+ rows for many species; it flows in the page's own scroller (no
+    nested scroll trap). `ActiveSkillRow` gained one additive optional `level?`
+    prop for the chip — equipped-skill call sites omit it and render unchanged.
   - **Guaranteed passives** (`PassiveChip`s or empty line) and **Your roster**
     (owned count + ♂/♀ split + best-IV bars via `ivBand`/`QUALITY_*`, with a
     `View in Roster →` link) share a two-column row.
@@ -311,10 +342,10 @@ primitive, no new tokens:
   then "and X more pairs"; *forward* ("Breed with…") is a species autocomplete
   that resolves the child inline (`A + B → child`). Gender-locked combos, when
   the pack pins them, get their own panel.
-- **Omitted, never faked:** active skills by level, drops, and tribes are **not**
-  in the pack, so the detail page carries no section for them — no placeholders,
-  no invented numbers. (Size class and movement/utility stats, once omitted, are
-  now real ground-truth data and shown above.)
+- **Omitted, never faked:** drops and tribes are **not** in the pack, so the
+  detail page carries no section for them — no placeholders, no invented numbers.
+  (Size class, movement/utility stats, and level-up learnable moves, once
+  omitted, are now real ground-truth data and shown above.)
 - **In-dex navigation:** every species cell anywhere in the detail (parent
   pairs, forward child, combos) is a button that reselects that species — the dex
   browses itself; cross-view jumps go through the lifted App state.
@@ -618,3 +649,79 @@ title-casing camelCase/underscores. Never a raw id, never a fake number.
 ### Layout
 `grid grid-cols-1 gap-1.5 sm:grid-cols-2` in the your-pal section — one column on
 narrow, two on `>=sm` where the short rows stay legible side by side.
+
+## 14. Round 5 — Partner-skill per-level values (`components/partner-value.tsx`)
+
+Partner-skill descriptions now show the **actual per-rank numbers** instead of a
+baked `(100~200)` range. The pack ships two additive fields per species
+(`partner_skill_template: string|null`, `partner_skill_values: string[][]`); the
+template carries `{0}`..`{N}` slots **only where a value varies across the five
+partner-skill ranks** (constants stay literal in the text, units like `%`/`x`
+stay in the template beside the slot). `partner_skill_values[slot][rank]` is the
+display string per rank, ascending (rank 1 first). `partnerLevels(entry)` reads
+both off any species entry/detail.
+
+### Value token
+Each slot renders as its **Lv 1 (first) value** in a quiet **water-element**
+token (`text-el-water`, background `color-mix(--color-el-water 14%, transparent)`,
+`rounded-sm px-1`, `font-mono`) — blue per the round brief, distinct from the
+`ink-dim` body text but never shouty. Numeric, so it wears the mono face like
+every other value in the app. Literal template text (newlines included) renders
+under `white-space: pre-line`, so multi-line descriptions keep their breaks.
+
+### Per-level tooltip (detail page)
+Hovering (250ms delay, matching §10's hover card) or **focusing** the token
+(keyboard focus opens immediately — a deliberate act) reveals a small fixed
+tooltip: a mono `PER LEVEL` eyebrow over `Lv n — value` rows for every rank, the
+current **Lv 1** row marked (water text + faint water tint). Placed below the
+token, flipped above when it would overflow, clamped horizontally; dismissed on
+scroll/resize. Fully keyboard-accessible — token is `tabIndex=0`, `role=button`,
+`aria-describedby` the live tooltip, `Escape`/blur closes. Each slot owns its own
+token and tooltip.
+
+### Hover card (compact)
+In the §10 pal hover card the tokens still highlight the Lv 1 value, but grow
+**no tooltip** (`interactive={false}`): the card is itself a pointer-inert
+tooltip, so a nested one would be unreachable and noisy. The partner line keeps
+its `line-clamp-2`, so a token is visible only when its value falls within the
+first two lines.
+
+### Fallback (zero regression)
+When `partner_skill_template` is null (the ~130 templateless species, and any
+with no authored description) the original resolved `partner_skill_desc` renders
+exactly as before — plain `whitespace-pre-line` `ink-dim` text, no tokens. Values
+are never fabricated: the token set comes straight from the pack's rank tables.
+
+## 15. Round 6 — Solver wild-pal seeding & catch-effort model (backend)
+
+"Include pals I don't own" (`SolverConfig.include_wild`, default off; the Solver
+form's toggle → Tauri `solve` `include_wild` param). When on, the search is
+seeded with one hypothetical to-be-caught pal per **wild-spawnable** species
+(`PalSpecies.wild_levels.0 > 0`), wildcard gender, no guaranteed passives beyond
+the species' innate ones, random IVs. This is a data note, not a visual one — it
+explains which plans the Lineage Ladder (§7) shows.
+
+**Catch effort** (`refs.rs::catch_secs`, mirroring palcalc `PalReference` /
+`GameConstants`): `CATCH_MIN_SECS(180) + rarity·30 + variant?300`, divided by the
+wild random-passive probability `0.2·(num_random+1)` (palcalc
+`PassivesWildAtMostN`). Palcalc scales catch time off the pal's sell price; our
+pack carries none, so rarity is the documented stand-in. A gender-specific catch
+multiplies by the captures needed to hit that gender (`1/genderProb`, rounded).
+
+**Budget** (`SolverConfig.max_wild_pals`, default 10 — only consulted when
+`include_wild` is set; owned-only forces it to 0). palcalc's UI default is a
+conservative 1; we raise it because a same-species-only legendary (Jetragon,
+Frostallion, …) breeds *exclusively* from a same-species pair, so any plan that
+concentrates it needs ≥ 2 catches. Owned pals are always preferred at equal
+effort (zero-effort owned refs dominate wild seeds of the same key).
+
+**What the tree shows, and why.** A directly wild-catchable target (Jetragon,
+`wild_levels 60–70`) resolves to a **single catch** — strictly cheaper than
+catch-two-then-breed, so no chain. The multi-catch **catch→breed chain** appears
+for targets that are *not* wild-catchable but *are* breedable from catchable
+parents (e.g. Icelyn ← catch Mycora + catch Smokie → breed), where breeding is
+the only route. Targets that are both non-catchable *and* same-species-only
+breeders (raid/quest pals: Blazamut Ryu, Bellanoir, the Xeno line, …) stay
+"no plan" even with wild on — they are genuinely unobtainable by catch+breed.
+Wild plan nodes carry `source:{Wild:{captures,min_wild_level}}`; owned/bred node
+shapes are unchanged.

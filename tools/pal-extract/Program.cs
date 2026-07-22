@@ -50,6 +50,7 @@ static class Program
         Console.WriteLine($"[mount] files={provider.Files.Count} ({sw.Elapsed.TotalSeconds:F1}s)");
 
         if (args.Contains("--discover")) { Discover(provider); return 0; }
+        if (args.Contains("--discover-learnset")) { DiscoverLearnset(provider); return 0; }
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -70,6 +71,7 @@ static class Program
         var partnerTemplateMiss = new SortedSet<string>(StringComparer.Ordinal);
         var partnerTemplateFam = new SortedDictionary<string, int>(StringComparer.Ordinal);
         int partnerTemplatedDescs = 0, partnerTemplatedDescsClean = 0;
+        int partnerTemplatesEmitted = 0, partnerTemplateSlotTotal = 0;
         var iconTab = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PartnerSkill/DT_partnerSkillIconDataTable");
         var iconTexField = iconTab.RowMap.First().Value.Properties.First(p => p.Name.Text.StartsWith("TextureID")).Name.Text;
         var iconInfo = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -130,8 +132,10 @@ static class Program
                 var paramRow = paramKey != null ? partnerParamByName[paramKey] : null;
                 bool hadTemplate = descKey != null && firstActRaw[descKey].Contains('{');
                 var descMiss = new SortedSet<string>(StringComparer.Ordinal);
+                string pTemplate = null; List<List<string>> pTemplateValues = null;
                 string pDesc = descKey != null ? CleanPartnerDesc(firstActRaw[descKey], palNames, itemNames, mapObjNames, uiCommon,
-                    skillNames, paramRow, passiveRowByName, partnerAppend, descMiss, partnerTemplateFam) : null;
+                    skillNames, paramRow, passiveRowByName, partnerAppend, descMiss, partnerTemplateFam,
+                    out pTemplate, out pTemplateValues) : null;
                 if (pDesc != null) partnerDescHit++; else partnerDescMiss.Add(name);
                 if (hadTemplate)
                 {
@@ -143,7 +147,8 @@ static class Program
                 string icon = null;
                 if (iconKey != null && iconInfo[iconKey] >= 0) { icon = iconInfo[iconKey].ToString(); partnerIconIds.Add(iconInfo[iconKey]); }
                 else partnerIconMiss.Add(name);
-                partner = new { name = Clean(pName), description = pDesc, icon };
+                partner = new { name = Clean(pName), description = pDesc, icon, template = pTemplate, values = pTemplateValues };
+                if (pTemplate != null) { partnerTemplatesEmitted++; partnerTemplateSlotTotal += pTemplateValues.Count; }
             }
             else partnerMisses.Add(name);
 
@@ -176,6 +181,7 @@ static class Program
         if (partnerDescMiss.Count > 0) Console.WriteLine($"[partner-desc misses] {string.Join(" | ", partnerDescMiss)}");
         Console.WriteLine($"[partner-templates] templatedDescs={partnerTemplatedDescs} fullyResolved={partnerTemplatedDescsClean} unresolved={partnerTemplateMiss.Count}");
         Console.WriteLine($"[partner-templates by family] {string.Join(", ", partnerTemplateFam.Select(kv => $"{kv.Key}={kv.Value}"))}");
+        Console.WriteLine($"[partner-per-level] speciesWithTemplate={partnerTemplatesEmitted} totalSlots={partnerTemplateSlotTotal}");
         if (partnerTemplateMiss.Count > 0) Console.WriteLine($"[partner-template UNRESOLVED] {string.Join(" | ", partnerTemplateMiss)}");
         if (partnerIconMiss.Count > 0) Console.WriteLine($"[partner-icon species w/o icon-table row {partnerIconMiss.Count}] {string.Join(" | ", partnerIconMiss)}");
 
@@ -326,6 +332,43 @@ static class Program
         Console.WriteLine($"[active-skills] regressions vs old set ({regressions.Count}): {string.Join(", ", regressions)}");
         Console.WriteLine($"[active-skills] waza-only additions ({wazaOnlyAdds.Count}): {string.Join(", ", wazaOnlyAdds.Take(40))}");
 
+        // ---- learnsets (level-up learnable actives) ----
+        // DT_WazaMasterLevel: one row per (PalId, WazaID, Level) level-up entry, keyed
+        // by species internal name. Filter to waza ids present in the active-skills set
+        // (never fabricate — report misses); emit the canonical active-skills id casing
+        // so the pack/paldex join is exact. Element-swap variants carry their own rows
+        // and are grouped independently by PalId.
+        var wazaMaster = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Waza/DT_WazaMasterLevel");
+        var wazaCanon = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var id in activeSkills.Keys) wazaCanon[id] = id;
+        var learnRaw = new Dictionary<string, List<(int level, string waza)>>(StringComparer.Ordinal);
+        var learnWazaMiss = new SortedSet<string>(StringComparer.Ordinal);
+        int learnKept = 0, learnSkippedNonSpecies = 0;
+        foreach (var r in wazaMaster.RowMap)
+        {
+            var lv = Vals(r.Value);
+            var palId = S(lv, "PalId");
+            var wazaId = StripEnum(S(lv, "WazaID"));
+            int level = I(lv, "Level");
+            if (string.IsNullOrEmpty(palId) || string.IsNullOrEmpty(wazaId) || wazaId == "None") continue;
+            if (!species.ContainsKey(palId)) { learnSkippedNonSpecies++; continue; } // BOSS_/summon/cut PalIds
+            if (!wazaCanon.TryGetValue(wazaId, out var canon)) { learnWazaMiss.Add($"{palId}:{wazaId}"); continue; }
+            (learnRaw.TryGetValue(palId, out var l) ? l : (learnRaw[palId] = new List<(int, string)>())).Add((level, canon));
+            learnKept++;
+        }
+        var learnsets = new SortedDictionary<string, object>(StringComparer.Ordinal);
+        foreach (var kv in learnRaw)
+        {
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var rows = kv.Value.OrderBy(x => x.level)
+                .Where(x => seen.Add(x.level + ":" + x.waza))
+                .Select(x => (object)new { waza_id = x.waza, level = x.level })
+                .ToList();
+            learnsets[kv.Key] = rows;
+        }
+        Console.WriteLine($"[learnsets] table=DT_WazaMasterLevel rows={wazaMaster.RowMap.Count} kept={learnKept} speciesCovered={learnsets.Count}/{kept} skippedNonSpecies={learnSkippedNonSpecies} wazaMisses={learnWazaMiss.Count}");
+        if (learnWazaMiss.Count > 0) Console.WriteLine($"[learnset waza misses {learnWazaMiss.Count}] {string.Join(" | ", learnWazaMiss.Take(60))}");
+
         // ---- assemble + write ----
         var root = new
         {
@@ -339,6 +382,7 @@ static class Program
             species,
             passives,
             active_skills = activeSkills,
+            learnsets,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -393,6 +437,27 @@ static class Program
         string cattivaDesc = cattiva == null ? null : (string)GetProp(GetProp(cattiva, "partner_skill"), "description");
         Gate(cattivaDesc != null && cattivaDesc.Contains("100~200"),
             $"Cattiva(PinkCat) partner desc missing carry-capacity range '100~200': '{cattivaDesc}'");
+        // Cattiva per-LEVEL template: 1 varying slot, 5 ascending values 100..200.
+        string cattivaTpl = cattiva == null ? null : (string)GetProp(GetProp(cattiva, "partner_skill"), "template");
+        var cattivaVals = cattiva == null ? null : (List<List<string>>)GetProp(GetProp(cattiva, "partner_skill"), "values");
+        Gate(cattivaTpl != null && cattivaTpl.Contains("{0}"), $"Cattiva(PinkCat) partner template missing '{{0}}' slot: '{cattivaTpl}'");
+        Gate(cattivaVals != null && cattivaVals.Count == 1, $"Cattiva(PinkCat) expected 1 template slot, got {(cattivaVals?.Count.ToString() ?? "null")}");
+        if (cattivaVals != null && cattivaVals.Count == 1)
+            Gate(cattivaVals[0].SequenceEqual(new[] { "100", "120", "140", "160", "200" }),
+                $"Cattiva(PinkCat) slot values [{string.Join(",", cattivaVals[0])}] != [100,120,140,160,200]");
+
+        // Learnsets: coverage + spot-checks (never fabricated — only ids in the active-skills set).
+        Gate(learnsets.Count >= 200, $"learnset species coverage {learnsets.Count} unexpectedly low");
+        Gate(learnWazaMiss.Count == 0, $"{learnWazaMiss.Count} learnset waza ids not in active-skills set: {string.Join(" | ", learnWazaMiss.Take(20))}");
+        var anubisLearn = learnsets.TryGetValue("Anubis", out var alo) ? (List<object>)alo : null;
+        Gate(anubisLearn != null && anubisLearn.Count > 0, "Anubis learnset missing/empty");
+        if (anubisLearn != null && anubisLearn.Count > 0)
+        {
+            int lvl1 = (int)GetProp(anubisLearn[0], "level");
+            Gate(lvl1 == 1, $"Anubis first learnset entry level {lvl1} != 1");
+        }
+        var sheepLearn = learnsets.TryGetValue(LamballKey, out var slo) ? (List<object>)slo : null;
+        Gate(sheepLearn != null && sheepLearn.Count > 0, $"Lamball ({LamballKey}) learnset missing/empty");
 
         // passives sanity
         object FindPassive(string dn) => passives.Values.FirstOrDefault(p => (string)GetProp(p, "name") == dn);
@@ -443,6 +508,11 @@ static class Program
         }
         if (lamball != null)
             Console.WriteLine("Lamball partner desc: " + JsonConvert.SerializeObject(lamballDesc));
+        Console.WriteLine("Cattiva(PinkCat) partner template: " + JsonConvert.SerializeObject(cattivaTpl));
+        Console.WriteLine("Cattiva(PinkCat) partner values:   " + JsonConvert.SerializeObject(cattivaVals));
+        Console.WriteLine($"learnsets: table=DT_WazaMasterLevel speciesCovered={learnsets.Count}/{kept} kept={learnKept} wazaMisses={learnWazaMiss.Count}");
+        Console.WriteLine("Anubis learnset: " + JsonConvert.SerializeObject(anubisLearn));
+        Console.WriteLine($"per-level partner: speciesWithTemplate={partnerTemplatesEmitted} totalSlots={partnerTemplateSlotTotal}");
         Console.WriteLine($"passives kept={passKept} (filtered noName={passFilteredNoName} stub={passFilteredStub}); is_pal(anyPool)={passPalAny} is_pal(AddPal)={passAddPal} is_player={passPlayer}");
         Console.WriteLine($"partner-desc coverage={partnerDescHit}/{kept}; partner-icon distinct={partnerIconIds.Count} pngExported={iconExported}");
         Console.WriteLine("sample passive Lucky:   " + JsonConvert.SerializeObject(FindPassive("Lucky")));
@@ -490,6 +560,54 @@ static class Program
             }
         }
         Console.WriteLine($"[discover] scanned={scanned} datatables hits={hits}");
+    }
+
+    // Reusable discovery pass (`--discover-learnset`): find the level-up learnset
+    // data table and dump its row schema. Prints every .uasset whose name mentions
+    // MasterLevel/WazaMaster/Learn/LevelUp, then loads each as a UDataTable and
+    // dumps row count, first few keys, and the first row's property names + a
+    // shallow value preview so the emit path can be written against real shape.
+    static void DiscoverLearnset(IFileProvider provider)
+    {
+        var needles = new[] { "masterlevel", "wazamaster", "learnset", "learnwaza", "wazalearn", "levelup" };
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => needles.Any(n => Path.GetFileNameWithoutExtension(f).Contains(n, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[discover-learnset] candidate files ({cands.Count}):");
+        foreach (var f in cands) Console.WriteLine($"  {f}");
+        foreach (var f in cands)
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            UDataTable dt;
+            try { if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable d) { Console.WriteLine($"[skip non-datatable] {pkgPath}"); continue; } dt = d; }
+            catch (Exception e) { Console.WriteLine($"[load fail] {pkgPath}: {e.Message}"); continue; }
+            Console.WriteLine($"==== {pkgPath} rows={dt.RowMap.Count} ====");
+            int shown = 0;
+            foreach (var r in dt.RowMap)
+            {
+                if (shown++ >= 4) break;
+                Console.WriteLine($"  row '{r.Key.Text}': props=[{string.Join(", ", r.Value.Properties.Select(p => p.Name.Text))}]");
+                foreach (var p in r.Value.Properties)
+                {
+                    var gv = p.Tag?.GenericValue;
+                    string preview;
+                    if (gv is UScriptArray arr)
+                        preview = $"array[{arr.Properties.Count}] first=" + (arr.Properties.Count > 0 ? DumpStruct(arr.Properties[0].GenericValue) : "(empty)");
+                    else preview = gv?.ToString() ?? "null";
+                    if (preview.Length > 300) preview = preview.Substring(0, 300) + "...";
+                    Console.WriteLine($"      {p.Name.Text} = {preview}");
+                }
+            }
+        }
+    }
+
+    static string DumpStruct(object v)
+    {
+        var s = AsStruct(v);
+        if (s == null) return v?.ToString() ?? "null";
+        return "{" + string.Join(", ", s.Properties.Select(p => $"{p.Name.Text}={p.Tag?.GenericValue}")) + "}";
     }
 
     // ---- partner-skill template resolution ----
@@ -552,14 +670,78 @@ static class Program
     { if (resolved == null) { unresolved.Add(original); return original; } Bump(fam, family); return resolved; }
     static void Bump(IDictionary<string, int> fam, string k) => fam[k] = fam.TryGetValue(k, out var c) ? c + 1 : 1;
 
-    // For placeholder {PassiveN_EffectValueM}/{ReferencePassiveN_EffectValueM}: gather EffectValueM of the
-    // rank-r passive N across all ranks r; single number if constant, else "(min~max)". null if none resolve.
-    static string ResolveRankPassive(FStructFallback param, string arrayField, string innerField,
+    // ---- partner-skill TEMPLATE builder (per-LEVEL values) ----
+    // Same substitution graph as Sub(), but emits {0}..{N} slot markers where a placeholder's value
+    // VARIES across ranks, baking the literal where it's constant. Returns (slotted template, per-slot
+    // per-rank display values) or (null, null) when there are no varying slots or any placeholder is
+    // unresolvable (honest: never half-templated). Element-swap variants reuse the base pal's param
+    // row (same as the description path) and so inherit its template automatically.
+    sealed class TplCtx
+    {
+        public FStructFallback Param;
+        public Dictionary<string, FStructFallback> Rows;
+        public Dictionary<string, string> Append;
+        public List<List<string>> Values = new();
+        public bool Failed;
+        public HashSet<string> SeenMsg = new(StringComparer.Ordinal);
+    }
+
+    static (string template, List<List<string>> values) BuildPartnerTemplate(string s,
+        FStructFallback param, Dictionary<string, FStructFallback> passiveRows, Dictionary<string, string> append)
+    {
+        if (s == null) return (null, null);
+        var c = new TplCtx { Param = param, Rows = passiveRows, Append = append };
+        var slotted = SubTemplate(s, c);
+        if (c.Failed || c.Values.Count == 0) return (null, null);
+        return (slotted, c.Values);
+    }
+
+    static string SubTemplate(string s, TplCtx c)
+    {
+        s = TplRefPassive.Replace(s, m => SlotOrConst(
+            RankPassiveVals(c.Param, "TextReferencePassiveSkills", "PassiveSkillIds",
+                int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), c.Rows), c));
+        s = TplPassive.Replace(s, m => SlotOrConst(
+            RankPassiveVals(c.Param, "PassiveSkills", "SkillAndParametersArray",
+                int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), c.Rows), c));
+        s = ReplaceActiveTpl(s, "{ActiveSkillMainValueByRank}", "ActiveSkill_MainValueByRank", c);
+        s = ReplaceActiveTpl(s, "{ActiveSkillOverWriteEffectTime}", "ActiveSkill_OverWriteEffectTimeByRank", c);
+        s = TplRefMsg.Replace(s, m =>
+        {
+            var id = m.Groups[1].Value;
+            if (!c.SeenMsg.Add(id)) return "";                       // cycle guard (matches Sub)
+            if (!c.Append.TryGetValue(id + "_Rank_1", out var txt) || txt == null) { c.Failed = true; return ""; }
+            return SubTemplate(txt, c);                              // recurse (append rows are blank today)
+        });
+        return s;
+    }
+
+    // A resolved placeholder: bake the literal when constant across ranks, else consume a fresh slot.
+    static string SlotOrConst(List<double> vals, TplCtx c)
+    {
+        if (vals == null || vals.Count == 0) { c.Failed = true; return ""; }
+        var formatted = vals.Select(FmtNum).ToList();
+        if (formatted.Distinct().Count() == 1) return formatted[0];  // constant across ranks -> literal
+        int slot = c.Values.Count;
+        c.Values.Add(formatted);
+        return "{" + slot + "}";
+    }
+
+    static string ReplaceActiveTpl(string s, string token, string field, TplCtx c)
+    {
+        if (!s.Contains(token)) return s;
+        var vals = ActiveArrayVals(c.Param, field);
+        return new Regex(Regex.Escape(token)).Replace(s, _ => SlotOrConst(vals, c));
+    }
+
+    // Per-rank numeric values for {PassiveN_EffectValueM}/{ReferencePassiveN_EffectValueM}: EffectValueM
+    // of the rank-r passive N across all ranks r (ascending), skipping ranks that don't resolve.
+    static List<double> RankPassiveVals(FStructFallback param, string arrayField, string innerField,
         int n, int m, Dictionary<string, FStructFallback> passiveRows)
     {
         var ranks = AsArray(Prop(param, arrayField));
-        if (ranks == null) return null;
         var vals = new List<double>();
+        if (ranks == null) return vals;
         foreach (var rankEl in ranks.Properties)
         {
             var inner = AsArray(Prop(AsStruct(rankEl.GenericValue), innerField));
@@ -573,14 +755,24 @@ static class Program
                 if (ev != null) vals.Add(Convert.ToDouble(ev));
             }
         }
-        return FmtRange(vals);
+        return vals;
+    }
+
+    // Single number if constant across ranks, else "(min~max)". null if none resolve.
+    static string ResolveRankPassive(FStructFallback param, string arrayField, string innerField,
+        int n, int m, Dictionary<string, FStructFallback> passiveRows)
+        => FmtRange(RankPassiveVals(param, arrayField, innerField, n, m, passiveRows));
+
+    static List<double> ActiveArrayVals(FStructFallback param, string field)
+    {
+        var arr = AsArray(Prop(AsStruct(Prop(param, "ActiveSkill")), field));
+        return arr == null ? new List<double>() : arr.Properties.Select(p => Convert.ToDouble(p.GenericValue)).ToList();
     }
 
     static string ResolveActiveArray(FStructFallback param, string field)
     {
-        var arr = AsArray(Prop(AsStruct(Prop(param, "ActiveSkill")), field));
-        if (arr == null || arr.Properties.Count == 0) return null;
-        return FmtRange(arr.Properties.Select(p => Convert.ToDouble(p.GenericValue)).ToList());
+        var vals = ActiveArrayVals(param, field);
+        return vals.Count == 0 ? null : FmtRange(vals);
     }
 
     static string ReplaceActive(string s, string token, FStructFallback param, string field, string family, ISet<string> unresolved, IDictionary<string, int> fam)
@@ -624,8 +816,10 @@ static class Program
     static string CleanPartnerDesc(string raw, Dictionary<string, string> pal, Dictionary<string, string> item,
         Dictionary<string, string> mapobj, Dictionary<string, string> ui, Dictionary<string, string> skill,
         FStructFallback param, Dictionary<string, FStructFallback> passiveRows, Dictionary<string, string> append,
-        ISet<string> unresolved, IDictionary<string, int> fam)
+        ISet<string> unresolved, IDictionary<string, int> fam,
+        out string template, out List<List<string>> templateValues)
     {
+        template = null; templateValues = null;
         if (raw == null) return null;
         string s = IdTag.Replace(raw, m =>
         {
@@ -641,6 +835,16 @@ static class Program
                 _ => skill.TryGetValue("ACTION_SKILL_" + id, out var x) ? x : id,
             };
         });
+        // Per-LEVEL template from the SAME id-resolved text (before the range substitution mutates it):
+        // slot markers where a value varies across ranks, literals where constant. Emitted only when at
+        // least one varying slot exists and every placeholder resolved (BuildPartnerTemplate returns null
+        // otherwise). Clean() leaves the {N} markers intact (they are not rich tags).
+        var (tpl, vals) = BuildPartnerTemplate(s, param, passiveRows, append);
+        if (tpl != null)
+        {
+            var cleanedTpl = Clean(tpl);
+            if (!string.IsNullOrEmpty(cleanedTpl)) { template = cleanedTpl; templateValues = vals; }
+        }
         s = ResolvePartnerTemplates(s, param, passiveRows, append, unresolved, fam);
         var cleaned = Clean(s);
         return string.IsNullOrEmpty(cleaned) ? null : cleaned;

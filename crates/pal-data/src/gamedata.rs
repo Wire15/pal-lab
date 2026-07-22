@@ -137,6 +137,19 @@ pub struct PalSpecies {
     /// `app/public/partner/<id>.png`; `None` when unresolved (UI falls back to
     /// a generic glyph).
     pub partner_skill_icon: Option<String>,
+    /// Partner-skill description with `{0}`..`{N}` slot markers where the value
+    /// varies across partner-skill ranks (Lv1..LvN); constants stay baked in as
+    /// literals. `None` when the description has no rank-varying value (nothing
+    /// per-level to show) or a placeholder was unresolvable. Paired with
+    /// [`Self::partner_skill_values`]. Sourced from the own-install extraction
+    /// (`DT_PalFirstActivatedInfoText` + `DT_PartnerSkillParameter` per-rank arrays).
+    pub partner_skill_template: Option<String>,
+    /// Per-slot display values for [`Self::partner_skill_template`]: outer index
+    /// = slot (`{0}`, `{1}`, …), inner = display string per rank ascending
+    /// (rank 1 first). Empty when there is no template. Numbers are formatted
+    /// exactly as the description's range path formats them (bare, unit baked
+    /// into the template text).
+    pub partner_skill_values: Vec<Vec<String>>,
     /// Active only at night (`Nocturnal`).
     pub nocturnal: bool,
     /// Food-meter cost per feeding (`FoodAmount`, ~1..=10).
@@ -344,6 +357,19 @@ pub struct ActiveSkill {
     pub description: Option<String>,
 }
 
+/// One level-up learnable active skill (waza) for a species, from the game's
+/// `DT_WazaMasterLevel` table (see `tools/pal-extract`). `waza_id` is the
+/// enum-prefix-stripped save-side id that keys [`Pack::active_skills`]; every
+/// stored id is guaranteed present in that set (extraction filters + reports
+/// misses, never fabricates). Stored per-species in [`Pack::learnsets`].
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LearnMove {
+    /// Save-side waza id (joins [`Pack::active_skills`]).
+    pub waza_id: String,
+    /// Level at which the species learns it.
+    pub level: u16,
+}
+
 /// The full serialized pack. This is exactly what `bincode` reads/writes; every
 /// field is a `Vec` (deterministic order) — no `HashMap`s cross the wire.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -367,6 +393,10 @@ pub struct Pack {
     pub inheritance: InheritanceWeights,
     /// Game-file `GameSetting` CDO values (data only; see [`GameSettings`]).
     pub game_settings: GameSettings,
+    /// Level-up learnable actives per species (parallel to [`Self::species`] by
+    /// interned index), each sorted by level ascending. Empty vec for species
+    /// with no level-up rows. From the own-install extraction (`DT_WazaMasterLevel`).
+    pub learnsets: Vec<Vec<LearnMove>>,
 }
 
 /// Sentinel used by palcalc's min-steps matrix for "no path".
@@ -497,6 +527,13 @@ impl GameData {
     /// Look up a species by interned index.
     pub fn species_at(&self, idx: u16) -> Option<&PalSpecies> {
         self.pack.species.get(idx as usize)
+    }
+
+    /// Level-up learnable actives for a species by interned index, sorted by
+    /// level ascending. Empty slice for an out-of-range index or a species with
+    /// no level-up rows. See [`Pack::learnsets`].
+    pub fn learnset(&self, idx: u16) -> &[LearnMove] {
+        self.pack.learnsets.get(idx as usize).map(Vec::as_slice).unwrap_or(&[])
     }
 
     /// All passive-skill definitions.

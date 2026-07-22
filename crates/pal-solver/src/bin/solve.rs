@@ -2,7 +2,11 @@
 //! print the best breeding plans as an indented tree.
 //!
 //! Usage:
-//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--wild] [--cake <kind>]
+//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--include-wild] [--cake <kind>]
+//!
+//! `--include-wild` (alias `--wild`) seeds the search with catchable wild pals
+//! ("include pals I don't own"), so self-only legendaries and non-catchable
+//! breed targets get catch / catch->breed plans.
 //!
 //! `--cake` accepts normal (default), mushroom, vegetable, deluxe, special.
 //!
@@ -41,7 +45,7 @@ fn run(args: &[String]) -> Result<(), String> {
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
-            "--wild" => wild = true,
+            "--wild" | "--include-wild" => wild = true,
             "--max-steps" => {
                 i += 1;
                 let v = args.get(i).ok_or("--max-steps needs a value")?;
@@ -73,7 +77,7 @@ fn run(args: &[String]) -> Result<(), String> {
         .map(|n| resolve_passive(gd, n).ok_or_else(|| format!("unknown passive: {n}")))
         .collect::<Result<_, _>>()?;
 
-    let mut cfg = SolverConfig { allow_wild: wild, cake, ..SolverConfig::default() };
+    let mut cfg = SolverConfig { include_wild: wild, cake, ..SolverConfig::default() };
     if let Some(n) = max_steps {
         cfg.max_breeding_steps = n;
         cfg.max_solver_iterations = n;
@@ -134,7 +138,9 @@ fn print_node(node: &PlanNode, depth: usize) {
     };
     let source = match &node.source {
         PlanSource::Owned { location } => format!("owned @ {location}"),
-        PlanSource::Wild { captures } => format!("wild (~{captures} catches)"),
+        PlanSource::Wild { captures, min_wild_level } => {
+            format!("wild (~{captures} catches, Lv{min_wild_level}+)")
+        }
         PlanSource::Bred => format!(
             "bred p={:.4}, self {}",
             node.probability,

@@ -195,7 +195,7 @@ fn min_steps_budget_gates_initial_content() {
     let spec = TargetSpec::new(TargetPal::Species(target));
 
     let cfg_ok = SolverConfig {
-        allow_wild: false,
+        include_wild: false,
         max_breeding_steps: dist,
         ..Default::default()
     };
@@ -206,7 +206,7 @@ fn min_steps_budget_gates_initial_content() {
     );
 
     let cfg_no = SolverConfig {
-        allow_wild: false,
+        include_wild: false,
         max_breeding_steps: dist - 1,
         ..Default::default()
     };

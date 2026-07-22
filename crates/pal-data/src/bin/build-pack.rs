@@ -18,8 +18,8 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 use pal_data::gamedata::{
-    ActiveSkill, BreedingEntry, ElementKind, GameSettings, InheritanceWeights, Pack, PalSpecies,
-    ParentGender, PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
+    ActiveSkill, BreedingEntry, ElementKind, GameSettings, InheritanceWeights, LearnMove, Pack,
+    PalSpecies, ParentGender, PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -117,6 +117,10 @@ struct RawExtract {
     /// Active-skill (waza) definitions keyed by prefix-stripped save-side id.
     #[serde(default)]
     active_skills: HashMap<String, RawExtractActive>,
+    /// Level-up learnsets keyed by species internal name (`DT_WazaMasterLevel`),
+    /// each already sorted by level ascending in the extraction.
+    #[serde(default)]
+    learnsets: HashMap<String, Vec<RawLearnMove>>,
 }
 
 /// One extraction active-skill entry (see `tools/pal-extract`). Field names match
@@ -161,6 +165,21 @@ struct RawExtractPartner {
     /// Numeric `TextureID` string (partner-skill icon key), when present.
     #[serde(default)]
     icon: Option<String>,
+    /// Per-LEVEL description template (`{0}`..`{N}` slots), `None` when nothing
+    /// varies across ranks or a placeholder was unresolvable.
+    #[serde(default)]
+    template: Option<String>,
+    /// Per-slot per-rank display values, parallel to `template`'s slots. Absent
+    /// (`null`)/empty when there is no template.
+    #[serde(default)]
+    values: Option<Vec<Vec<String>>>,
+}
+
+/// One level-up learnset row from the extraction (`DT_WazaMasterLevel`).
+#[derive(Deserialize)]
+struct RawLearnMove {
+    waza_id: String,
+    level: u16,
 }
 
 /// One extraction passive entry (additive display metadata; joined by internal
@@ -364,6 +383,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .icon
                     .clone()
                     .filter(|id| partner_pngs.contains(id)),
+                // Per-LEVEL template + per-slot per-rank values (own-install extraction).
+                // Element-swap variant stubs inherit the base pal's row in the extractor,
+                // so both carry the base's template/values already.
+                partner_skill_template: ex.partner_skill.template.clone(),
+                partner_skill_values: ex.partner_skill.values.clone().unwrap_or_default(),
                 nocturnal: p.nocturnal,
                 food_amount: p.food_amount.min(u8::MAX as u32) as u8,
                 // 13 uncatchable pals (bosses/quest) have null wild levels ->
@@ -571,6 +595,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Learnsets parallel to `species` (interned index order), joined case-insensitively
+    // by internal name. Stable sort by level preserves the extraction's per-level order.
+    let learn_ci: HashMap<String, &Vec<RawLearnMove>> = extract
+        .learnsets
+        .iter()
+        .map(|(k, v)| (k.to_ascii_lowercase(), v))
+        .collect();
+    let mut learn_total = 0usize;
+    let mut learn_species = 0usize;
+    let learnsets: Vec<Vec<LearnMove>> = species
+        .iter()
+        .map(|s| {
+            let mut moves: Vec<LearnMove> = learn_ci
+                .get(&s.internal_name.to_ascii_lowercase())
+                .map(|rows| {
+                    rows.iter()
+                        .map(|r| LearnMove { waza_id: r.waza_id.clone(), level: r.level })
+                        .collect()
+                })
+                .unwrap_or_default();
+            moves.sort_by(|a, b| a.level.cmp(&b.level));
+            if !moves.is_empty() {
+                learn_species += 1;
+                learn_total += moves.len();
+            }
+            moves
+        })
+        .collect();
+
     let pack = Pack {
         version: db.version.clone(),
         game_build: extract.meta.game_build.clone(),
@@ -586,6 +639,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             combi_passive_random_add_num: extract.game_settings.combi_passive_random_add_num.clone(),
             combi_boss_pal_rate: extract.game_settings.combi_boss_pal_rate,
         },
+        learnsets,
     };
 
     let bytes = bincode::serialize(&pack)?;
@@ -618,6 +672,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         skipped,
         json_total,
         100.0 * bytes.len() as f64 / json_total as f64,
+    );
+    let with_template = pack.species.iter().filter(|s| s.partner_skill_template.is_some()).count();
+    let template_slots: usize = pack.species.iter().map(|s| s.partner_skill_values.len()).sum();
+    println!(
+        "partner per-level: {}/{} species have a template ({} total slots) | learnsets: {}/{} species, {} moves total",
+        with_template,
+        pack.species.len(),
+        template_slots,
+        learn_species,
+        pack.species.len(),
+        learn_total,
     );
     Ok(())
 }

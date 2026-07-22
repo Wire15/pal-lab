@@ -173,14 +173,19 @@ pub fn build_initial_content(
         }
     }
 
-    // Optional wild pals.
+    // Wild seeds: one hypothetical to-be-caught pal per wild-spawnable species
+    // (min wild level > 0), gated on the target being reachable within the step
+    // budget. Owned pals are NOT excluded here — working-set dominance drops any
+    // wild seed whose (species, gender, passives, IV) key an owned zero-effort
+    // pal already fills, while wild seeds of an unowned gender survive. That last
+    // case is what makes self-only-breeding legendaries reachable: owning one
+    // gender of a Jetragon is not enough (it breeds only from a Jetragon pair),
+    // so the search still needs a wild seed for the missing side.
     let max_wild = cfg.effective_max_wild();
     if max_wild > 0 {
-        let owned_species: HashSet<u16> =
-            owned.iter().filter_map(|p| gd.species_index(&p.character_id)).collect();
         for sp in gd.species() {
             let Some(species) = gd.species_index(&sp.internal_name) else { continue };
-            if owned_species.contains(&species) || !within_steps(species) {
+            if sp.wild_levels.0 == 0 || !within_steps(species) {
                 continue;
             }
             let guaranteed_desired: Vec<PassiveId> =

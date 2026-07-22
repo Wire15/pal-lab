@@ -425,3 +425,98 @@ fn passive_tiers_classify_special_pools() {
     let lucky = gd.passive_by_id("Rare").expect("Lucky/Rare exists");
     assert_eq!(lucky.tier, None, "ordinary passive has no tier");
 }
+
+#[test]
+fn partner_skill_per_level_template() {
+    let gd = GameData::get();
+    // Cattiva (PinkCat) "Cat Helper": one rank-varying slot (carry capacity),
+    // five ascending values from the game's per-rank param arrays.
+    let cattiva = gd.species_by_id("PinkCat").expect("Cattiva exists");
+    assert_eq!(cattiva.partner_skill.as_deref(), Some("Cat Helper"), "Cattiva partner name");
+    let tpl = cattiva
+        .partner_skill_template
+        .as_deref()
+        .expect("Cattiva has a per-level template");
+    assert!(tpl.contains("{0}"), "Cattiva template has a {{0}} slot: {tpl:?}");
+    assert!(!tpl.contains("(100~200)"), "the varying value is a slot, not a baked range: {tpl:?}");
+    assert_eq!(cattiva.partner_skill_values.len(), 1, "Cattiva has exactly one slot");
+    assert_eq!(
+        cattiva.partner_skill_values[0],
+        vec!["100", "120", "140", "160", "200"],
+        "Cattiva carry-capacity values per rank (ascending)",
+    );
+    // A partner skill whose description carries no rank-varying value has no
+    // template (Lamball's shield text is constant across ranks).
+    let lamball = gd.species_by_id("SheepBall").expect("Lamball exists");
+    assert!(
+        lamball.partner_skill_template.is_none() && lamball.partner_skill_values.is_empty(),
+        "Lamball partner skill has no per-level template",
+    );
+    // Every emitted slot value list is non-empty and every template species has
+    // at least one slot (no half-templated rows).
+    for sp in gd.species() {
+        if sp.partner_skill_template.is_some() {
+            assert!(!sp.partner_skill_values.is_empty(), "{} template but no values", sp.internal_name);
+            for slot in &sp.partner_skill_values {
+                assert!(!slot.is_empty(), "{} has an empty value slot", sp.internal_name);
+            }
+        } else {
+            assert!(sp.partner_skill_values.is_empty(), "{} values but no template", sp.internal_name);
+        }
+    }
+}
+
+#[test]
+fn learnsets_are_sorted_and_join_active_skills() {
+    let gd = GameData::get();
+    let active_ids: std::collections::HashSet<&str> =
+        gd.active_skills().iter().map(|(id, _)| id.as_str()).collect();
+
+    // Lamball (SheepBall) learns its exclusive roll at level 1.
+    let lamball_idx = gd.species_index("SheepBall").expect("Lamball index");
+    let lamball_moves = gd.learnset(lamball_idx);
+    assert!(!lamball_moves.is_empty(), "Lamball has a learnset");
+    assert_eq!(lamball_moves[0].waza_id, "Unique_SheepBall_Roll", "Lamball first learn");
+    assert_eq!(lamball_moves[0].level, 1, "Lamball learns its roll at level 1");
+
+    // Anubis learnset starts at level 1 with StoneShotgun.
+    let anubis_idx = gd.species_index("Anubis").expect("Anubis index");
+    let anubis_moves = gd.learnset(anubis_idx);
+    assert!(anubis_moves.len() >= 5, "Anubis has several level-up moves");
+    assert_eq!(anubis_moves[0].waza_id, "StoneShotgun");
+    assert_eq!(anubis_moves[0].level, 1);
+
+    // Global invariants: sorted by level asc, and every waza id resolves to a
+    // real active skill (extraction never fabricates ids).
+    let mut species_with = 0usize;
+    for (i, sp) in gd.species().enumerate() {
+        let moves = gd.learnset(i as u16);
+        if !moves.is_empty() {
+            species_with += 1;
+        }
+        for w in moves.windows(2) {
+            assert!(w[0].level <= w[1].level, "{} learnset not sorted by level", sp.internal_name);
+        }
+        for m in moves {
+            assert!(
+                active_ids.contains(m.waza_id.as_str()),
+                "{} learns unknown waza {}",
+                sp.internal_name,
+                m.waza_id,
+            );
+        }
+    }
+    assert!(species_with >= 250, "learnset coverage unexpectedly low: {species_with}");
+}
+
+#[test]
+fn wild_levels_gate_wild_seeding() {
+    let gd = GameData::get();
+    // Jetragon (JetDragon) is wild-catchable: a nonzero min wild level.
+    let jet = gd.species_by_id("JetDragon").expect("Jetragon exists");
+    assert!(jet.wild_levels.0 > 0, "Jetragon min wild level > 0, got {:?}", jet.wild_levels);
+    // A raid/bred-only species is not wild-spawnable: (0, 0). KingBahamut_Dragon
+    // (Bellanoir Libero) is a raid boss with no wild spawn.
+    let raid = gd.species_by_id("KingBahamut_Dragon").expect("Bellanoir Libero exists");
+    assert_eq!(raid.wild_levels.0, 0, "raid-only species has no wild spawn");
+}

@@ -83,7 +83,9 @@ export interface SolveRequest {
   target_species: string;
   required_passives: string[];
   max_steps?: number;
-  allow_wild?: boolean;
+  /** "Include pals I don't own": seed the search with wild-catchable species as
+   * CATCH steps so same-species-only legendaries (Jetragon, …) get plans. */
+  include_wild?: boolean;
   max_irrelevant?: number;
 }
 
@@ -135,11 +137,11 @@ export type ActiveSkills = Record<string, ActiveSkill>;
 
 /**
  * How a plan node is obtained. serde emits an externally-tagged enum:
- * `{ Owned: { location } }` | `{ Wild: { captures } }` | `"Bred"`.
+ * `{ Owned: { location } }` | `{ Wild: { captures, min_wild_level } }` | `"Bred"`.
  */
 export type PlanSource =
   | { Owned: { location: string } }
-  | { Wild: { captures: number } }
+  | { Wild: { captures: number; min_wild_level: number } }
   | "Bred";
 
 export interface PlanNode {
@@ -235,8 +237,17 @@ export interface SpeciesEntry {
   /** Partner-skill display name (every species has one, from the extraction). */
   partner_skill: string | null;
   /** Partner-skill effect description (real in-game text, from the extraction;
-   * 299/299). */
+   * 299/299). Numeric values shown as a "(min~max)" range across ranks. */
   partner_skill_desc: string | null;
+  /** Partner-skill description with `{0}`..`{N}` slot markers where a value
+   * varies across partner-skill ranks (Lv1..LvN); constants baked in as
+   * literals. null when nothing varies across ranks. Paired with
+   * `partner_skill_values`. */
+  partner_skill_template: string | null;
+  /** Per-slot display values for `partner_skill_template`: outer index = slot
+   * (`{0}`, `{1}`, …), inner = value per rank ascending (rank 1 first). Bare
+   * numbers (unit is baked into the template text). Empty when no template. */
+  partner_skill_values: string[][];
   /** Partner-skill icon key: numeric TextureID string when a PNG exists at
    * `public/partner/<id>.png`, else null (UI shows a generic fallback glyph). */
   partner_skill_icon: string | null;
@@ -267,9 +278,18 @@ export interface BreedingNotes {
   unique_combos: UniqueCombo[];
 }
 
-/** Full detail (`paldex_species_detail`): the grid row plus breeding notes. */
+/** One resolved level-up learnable move: save-side waza `id` (joins
+ * `list_active_skills`) + the `level` it is learned at. */
+export interface LearnMoveEntry {
+  id: string;
+  level: number;
+}
+
+/** Full detail (`paldex_species_detail`): the grid row plus breeding notes and
+ * the level-up learnset (sorted by level ascending; empty when none). */
 export interface SpeciesDetail extends SpeciesEntry {
   breeding: BreedingNotes;
+  learnset: LearnMoveEntry[];
 }
 
 /** A canonical parent pair that breeds into a target child. */

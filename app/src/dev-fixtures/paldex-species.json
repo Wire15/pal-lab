@@ -41,6 +41,16 @@
     ],
     "partner_skill": "Shot-Nyan Mode",
     "partner_skill_desc": "When activated,\nNyafia will fire a shotgun at nearby enemies for a limited time.\nWhile in party,\nincreases the player's shotgun damage by (10~35)%. (Does not stack)",
+    "partner_skill_template": "When activated,\nNyafia will fire a shotgun at nearby enemies for a limited time.\nWhile in party,\nincreases the player's shotgun damage by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "10",
+        "15",
+        "20",
+        "25",
+        "35"
+      ]
+    ],
     "partner_skill_icon": "3",
     "nocturnal": true,
     "food_amount": 6,
@@ -94,6 +104,16 @@
     ],
     "partner_skill": "Prayer for Abundant Harvest",
     "partner_skill_desc": "While at a base,\nPrunelia's prayers bless the crops, increasing their harvest by (18~35)%.",
+    "partner_skill_template": "While at a base,\nPrunelia's prayers bless the crops, increasing their harvest by {0}%.",
+    "partner_skill_values": [
+      [
+        "18",
+        "22",
+        "26",
+        "30",
+        "35"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -148,6 +168,16 @@
     ],
     "partner_skill": "Friend of Earth",
     "partner_skill_desc": "While in party,\nincreases the player's Defense by (50~65)% while sprinting. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's Defense by {0}% while sprinting. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "52",
+        "55",
+        "59",
+        "65"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -201,6 +231,16 @@
     ],
     "partner_skill": "Sandstorm's Blessing",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ground and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ground and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -254,6 +294,16 @@
     ],
     "partner_skill": "Spikey Carrier",
     "partner_skill_desc": "While in party,\nreduces Ore weight by (80~100)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nreduces Ore weight by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "80",
+        "84",
+        "88",
+        "92",
+        "100"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -307,6 +357,23 @@
     ],
     "partner_skill": "Shiny Hauler",
     "partner_skill_desc": "While in party,\nreduces weight of Sulfur and Coal by (80~100)%.\nAlso improves player's and Pals' Ground damage to enemy weak points by (80~100)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nreduces weight of Sulfur and Coal by {0}%.\nAlso improves player's and Pals' Ground damage to enemy weak points by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "80",
+        "84",
+        "88",
+        "92",
+        "100"
+      ],
+      [
+        "80",
+        "84",
+        "88",
+        "92",
+        "100"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -367,6 +434,16 @@
     ],
     "partner_skill": "Guardian of the Desert",
     "partner_skill_desc": "When activated,\nAnubis changes the player's attack type to\nGround and increases Attack by (30~50)%.\nOccasionally evades attacks with a flash sidestep during battle.",
+    "partner_skill_template": "When activated,\nAnubis changes the player's attack type to\nGround and increases Attack by {0}%.\nOccasionally evades attacks with a flash sidestep during battle.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -420,6 +497,16 @@
     ],
     "partner_skill": "Flameclaw Hunter",
     "partner_skill_desc": "When activated,\nattacks the targeted enemy with Hellfire Claw.\nWhen this Pal uses Hellfire Claw,\nit has a x(1.1~2.5) damage multiplier.",
+    "partner_skill_template": "When activated,\nattacks the targeted enemy with Hellfire Claw.\nWhen this Pal uses Hellfire Claw,\nit has a x{0} damage multiplier.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -474,6 +561,16 @@
     ],
     "partner_skill": "Darkclaw Hunter",
     "partner_skill_desc": "When activated,\nattacks the targeted enemy with Nightmare Claw.\nWhen this Pal uses Nightmare Claw,\nit has a x(1.1~2.5) damage multiplier.",
+    "partner_skill_template": "When activated,\nattacks the targeted enemy with Nightmare Claw.\nWhen this Pal uses Nightmare Claw,\nit has a x{0} damage multiplier.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -527,6 +624,8 @@
     ],
     "partner_skill": "Gold Digger",
     "partner_skill_desc": "Sometimes digs up Gold Coin\nwhen assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "15",
     "nocturnal": true,
     "food_amount": 1,
@@ -580,6 +679,8 @@
     ],
     "partner_skill": "Icy Whispers",
     "partner_skill_desc": "Sometimes drops Ice Organ\nwhen assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 1,
@@ -633,6 +734,16 @@
     ],
     "partner_skill": "Hard Head",
     "partner_skill_desc": "Can be ridden.\nWhile mounted, increases efficiency of destroying Stone by (500~2000)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted, increases efficiency of destroying Stone by {0}%.",
+    "partner_skill_values": [
+      [
+        "500",
+        "750",
+        "1100",
+        "1500",
+        "2000"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 1,
@@ -686,6 +797,8 @@
     ],
     "partner_skill": "Lifmunk Recoil",
     "partner_skill_desc": "When activated,\nleaps onto the player's head and uses a submachine gun to follows up player attacks.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "3",
     "nocturnal": false,
     "food_amount": 1,
@@ -739,6 +852,8 @@
     ],
     "partner_skill": "Eggbomb Launcher",
     "partner_skill_desc": "When activated,\nequips to the player and transforms into\nan egg launcher.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 2,
@@ -792,6 +907,16 @@
     ],
     "partner_skill": "Guardian of the Forest",
     "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted and increases lumbering efficiency by (220~500)%.",
+    "partner_skill_template": "Can be ridden.\nCan perform a double jump while mounted and increases lumbering efficiency by {0}%.",
+    "partner_skill_values": [
+      [
+        "220",
+        "260",
+        "320",
+        "400",
+        "500"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -845,6 +970,8 @@
     ],
     "partner_skill": "Guardian of the Golden Forest",
     "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nWhile at a base,\nincreases the Lumbering Work Suitability Level for all other Base Pals by +1\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -904,6 +1031,16 @@
     ],
     "partner_skill": "Drill Crusher",
     "partner_skill_desc": "When activated,\nenters the Shell Spin state.\nFollows the player while spinning, increasing ore mining efficiency by (800~2000)%.",
+    "partner_skill_template": "When activated,\nenters the Shell Spin state.\nFollows the player while spinning, increasing ore mining efficiency by {0}%.",
+    "partner_skill_values": [
+      [
+        "800",
+        "1000",
+        "1200",
+        "1500",
+        "2000"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -957,6 +1094,8 @@
     ],
     "partner_skill": "Galeclaw Glider",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nEnables high-speed gliding and allows shooting with the right hand.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 2,
@@ -1010,6 +1149,8 @@
     ],
     "partner_skill": "Yellow Tank",
     "partner_skill_desc": "Can be ridden.\nCan rapidly fire a minigun while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -1063,6 +1204,16 @@
     ],
     "partner_skill": "Soothing Shower",
     "partner_skill_desc": "While in party,\nrestores (20~40)% of the player's Health when Health falls below 30%. (Does not stack)\n(120-second cooldown after activation)",
+    "partner_skill_template": "While in party,\nrestores {0}% of the player's Health when Health falls below 30%. (Does not stack)\n(120-second cooldown after activation)",
+    "partner_skill_values": [
+      [
+        "20",
+        "24",
+        "28",
+        "32",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "4",
     "nocturnal": false,
     "food_amount": 1,
@@ -1116,6 +1267,8 @@
     ],
     "partner_skill": "Direhowl Rider",
     "partner_skill_desc": "Can be ridden.\nMoves slightly faster than most mounts.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -1175,6 +1328,16 @@
     ],
     "partner_skill": "Full-Power Gorilla Mode",
     "partner_skill_desc": "When activated,\nunleashes a primal fury that increases Gorirat's Attack by (75~300)% for a limited time.",
+    "partner_skill_template": "When activated,\nunleashes a primal fury that increases Gorirat's Attack by {0}% for a limited time.",
+    "partner_skill_values": [
+      [
+        "75",
+        "115",
+        "165",
+        "225",
+        "300"
+      ]
+    ],
     "partner_skill_icon": "6",
     "nocturnal": false,
     "food_amount": 3,
@@ -1234,6 +1397,16 @@
     ],
     "partner_skill": "Full-Power Gorilla Pound",
     "partner_skill_desc": "While in party,\nincreases the player's climbing speed by (50~100)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's climbing speed by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "60",
+        "70",
+        "85",
+        "100"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -1287,6 +1460,8 @@
     ],
     "partner_skill": "Jolt Bomb",
     "partner_skill_desc": "When activated,\nequips Jolthog to the player to be thrown at an enemy, causing an Electric explosion upon impact.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -1340,6 +1515,8 @@
     ],
     "partner_skill": "Cold Bomb",
     "partner_skill_desc": "When activated,\nequips Jolthog Cryst to the player to be thrown at an enemy, causing an Ice explosion upon impact.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -1393,6 +1570,16 @@
     ],
     "partner_skill": "Swift Deity",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Electric damage to weak points by (25~40)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Electric damage to weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -1446,6 +1633,16 @@
     ],
     "partner_skill": "Frigid Deity",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -1499,6 +1696,8 @@
     ],
     "partner_skill": "Huggy Fire",
     "partner_skill_desc": "When activated,\nequips to the player and transforms into a flamethrower.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -1552,6 +1751,16 @@
     ],
     "partner_skill": "Princess Gaze",
     "partner_skill_desc": "While in party,\nincreases Attack of Grass Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Attack of Grass Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -1605,6 +1814,16 @@
     ],
     "partner_skill": "Antigravity",
     "partner_skill_desc": "While in party,\nspheres home in on Pals, and carrying capacity increases by (300~600). (Does not stack)",
+    "partner_skill_template": "While in party,\nspheres home in on Pals, and carrying capacity increases by {0}. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "300",
+        "339",
+        "399",
+        "480",
+        "600"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -1658,6 +1877,8 @@
     ],
     "partner_skill": "Pengullet Launcher",
     "partner_skill_desc": "When activated,\nthe player equips a Rocket Launcher to fire Pengullet as ammunition.\nPengullet explodes on impact and is incapacitated.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -1712,6 +1933,8 @@
     ],
     "partner_skill": "Pengullet Lux Launcher",
     "partner_skill_desc": "When activated,\nthe player equips Pengullet Lux to fire Rocket Launcher as ammunition.\nPengullet Lux explodes on impact and is incapacitated.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -1766,6 +1989,8 @@
     ],
     "partner_skill": "Lady of Lightning",
     "partner_skill_desc": "While in party,\nappears near the player.\nAttacks hostile enemies with\nElectric bolts.\nThese bolts will not reduce the target's Health below 1.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": false,
     "food_amount": 2,
@@ -1819,6 +2044,23 @@
     ],
     "partner_skill": "Angry Shark",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Aqua Gun.\nWhen this Pal uses Aqua Gun,\nit has a x(1.1~2.5) damage multiplier.\nWhile in party,\nincreases the player's Attack by (10~20)%.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Aqua Gun.\nWhen this Pal uses Aqua Gun,\nit has a x{1} damage multiplier.\nWhile in party,\nincreases the player's Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "10",
+        "11",
+        "13",
+        "16",
+        "20"
+      ],
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": "1",
     "nocturnal": false,
     "food_amount": 2,
@@ -1872,6 +2114,23 @@
     ],
     "partner_skill": "Angry Shark",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Spirit Fire.\nWhen this Pal uses Spirit Fire,\nit has a x(1.1~2.5) damage multiplier.\nWhile in party,\nincreases the player's Attack by (10~20)%.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Spirit Fire.\nWhen this Pal uses Spirit Fire,\nit has a x{1} damage multiplier.\nWhile in party,\nincreases the player's Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "10",
+        "11",
+        "13",
+        "16",
+        "20"
+      ],
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": "1",
     "nocturnal": false,
     "food_amount": 2,
@@ -1925,6 +2184,8 @@
     ],
     "partner_skill": "Fluffy Shield",
     "partner_skill_desc": "When activated,\nequips to the player and becomes a shield.\nSometimes drops Wool when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "5",
     "nocturnal": false,
     "food_amount": 1,
@@ -1984,6 +2245,16 @@
     ],
     "partner_skill": "Stormbringer Sea Dragon",
     "partner_skill_desc": "Can be ridden to travel on water.\nWhile in party,\nincreases player's and Pals' damage to enemies afflicted with Soak by (50~65)%.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden to travel on water.\nWhile in party,\nincreases player's and Pals' damage to enemies afflicted with Soak by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 8,
@@ -2038,6 +2309,16 @@
     ],
     "partner_skill": "Stormbringer Lava Dragon",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nnullifies lava damage and increases player's and Pals' damage to enemies afflicted with Burn by (50~65)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nnullifies lava damage and increases player's and Pals' damage to enemies afflicted with Burn by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -2092,6 +2373,23 @@
     ],
     "partner_skill": "Dark Gleam Strike",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Jumping Claw.\nWhen this Pal uses Jumping Claw,\nit has a x(1.1~2.5) damage multiplier.\nWhile in party,\nincreases the player's melee weapon attack speed by (15~30)%. (Does not stack)",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Jumping Claw.\nWhen this Pal uses Jumping Claw,\nit has a x{1} damage multiplier.\nWhile in party,\nincreases the player's melee weapon attack speed by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ],
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -2145,6 +2443,8 @@
     ],
     "partner_skill": "Flying Trapeze",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nEnables slow ascension while gliding.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 1,
@@ -2198,6 +2498,8 @@
     ],
     "partner_skill": "Winter Trapeze",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nEnables slow ascension while gliding.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 1,
@@ -2251,6 +2553,16 @@
     ],
     "partner_skill": "Wings of Flame",
     "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by (5~25)% for each other Fire Pal in your party.\n(Excluding Suzaku)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by {0}% for each other Fire Pal in your party.\n(Excluding Suzaku)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 7,
@@ -2304,6 +2616,16 @@
     ],
     "partner_skill": "Wings of Water",
     "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by (5~25)% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by {0}% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 7,
@@ -2357,6 +2679,16 @@
     ],
     "partner_skill": "Red Hare",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -2410,6 +2742,16 @@
     ],
     "partner_skill": "Black Hare",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type toDark and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type toDark and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 4,
@@ -2464,6 +2806,16 @@
     ],
     "partner_skill": "Amicable Holy Dragon",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile flying,\nMovement Speed is increased.\nWhile in party,\nDark Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile flying,\nMovement Speed is increased.\nWhile in party,\nDark Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 3,
@@ -2517,6 +2869,16 @@
     ],
     "partner_skill": "Amicable Water Dragon",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile flying, Movement Speed is increased.\nWhile in party,\nplayer and party Pals take (15~30)% less Fire damage and are immune to Burn.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile flying, Movement Speed is increased.\nWhile in party,\nplayer and party Pals take {0}% less Fire damage and are immune to Burn.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 3,
@@ -2571,6 +2933,16 @@
     ],
     "partner_skill": "Candy Pop",
     "partner_skill_desc": "Sometimes drops Cotton Candy when assigned to Ranch.\nWhile at a base,\nreduces Hunger depletion rate of Base Pals by (-20~-10)%. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Cotton Candy when assigned to Ranch.\nWhile at a base,\nreduces Hunger depletion rate of Base Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "-10",
+        "-12",
+        "-14",
+        "-16",
+        "-20"
+      ]
+    ],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 1,
@@ -2624,6 +2996,16 @@
     ],
     "partner_skill": "Bitter Pop",
     "partner_skill_desc": "Sometimes drops Caramel Cotton Candy when assigned to Ranch.\nWhile at a base,\nreduces Hunger depletion rate of Base Pals by (-25~-15)%. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Caramel Cotton Candy when assigned to Ranch.\nWhile at a base,\nreduces Hunger depletion rate of Base Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "-15",
+        "-17",
+        "-19",
+        "-21",
+        "-25"
+      ]
+    ],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 1,
@@ -2677,6 +3059,16 @@
     ],
     "partner_skill": "Dragon Hunter",
     "partner_skill_desc": "While in party,\nDragon Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "While in party,\nDragon Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 7,
@@ -2730,6 +3122,8 @@
     ],
     "partner_skill": "Pacapaca Wool",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincreases Kingpaca's Defense and Movement Speed.\nSometimes drops Wool when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -2783,6 +3177,8 @@
     ],
     "partner_skill": "Swift Swimmer",
     "partner_skill_desc": "Can be ridden to travel on water.\nSometimes drops Leather when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 3,
@@ -2836,6 +3232,16 @@
     ],
     "partner_skill": "Sand Swimmer",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nthe player's attacks inflict Muddy (2~6). (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nthe player's attacks inflict Muddy {0}. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -2889,6 +3295,8 @@
     ],
     "partner_skill": "Eerie Nightstreaker",
     "partner_skill_desc": "When activated,\ngrants Night Vision to see in dark places.\nActivate again to turn off.\nSometimes digs up Bone when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -2942,6 +3350,16 @@
     ],
     "partner_skill": "Waterwing Dance",
     "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player's attack type to Water and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player's attack type to Water and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 5,
@@ -2996,6 +3414,16 @@
     ],
     "partner_skill": "Icewing Dance",
     "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 5,
@@ -3056,6 +3484,16 @@
     ],
     "partner_skill": "Cat Helper",
     "partner_skill_desc": "While in party,\nCattiva helps carry supplies, increasing the player's max carrying capacity by (100~200).\n(Does not stack)",
+    "partner_skill_template": "While in party,\nCattiva helps carry supplies, increasing the player's max carrying capacity by {0}.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "120",
+        "140",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -3109,6 +3547,16 @@
     ],
     "partner_skill": "Caffeine Inoculation",
     "partner_skill_desc": "When activated,\nDepresso chugs an entire energy drink, increasing its Movement Speed and Work Speed by (100~900)%.\nSometimes drops Venom Gland when assigned to Ranch.",
+    "partner_skill_template": "When activated,\nDepresso chugs an entire energy drink, increasing its Movement Speed and Work Speed by {0}%.\nSometimes drops Venom Gland when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "100",
+        "200",
+        "400",
+        "600",
+        "900"
+      ]
+    ],
     "partner_skill_icon": "6",
     "nocturnal": true,
     "food_amount": 1,
@@ -3162,6 +3610,8 @@
     ],
     "partner_skill": "Wind and Clouds",
     "partner_skill_desc": "Can be ridden.\nCan double jump while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 5,
@@ -3221,6 +3671,16 @@
     ],
     "partner_skill": "Ore-Loving Beast",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nreduces weight of all types of ore by (30~60)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nreduces weight of all types of ore by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "50",
+        "60"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -3281,6 +3741,16 @@
     ],
     "partner_skill": "Ice-Loving Beast",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nreduces weight of all types of ore by (35~65)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nreduces weight of all types of ore by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "35",
+        "40",
+        "45",
+        "55",
+        "65"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -3335,6 +3805,16 @@
     ],
     "partner_skill": "Messenger of Death",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nall Party Pals' Active Skill cooldowns are reduced by (30~60)% whenever you defeat an enemy. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nall Party Pals' Active Skill cooldowns are reduced by {0}% whenever you defeat an enemy. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "34",
+        "40",
+        "48",
+        "60"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 5,
@@ -3388,6 +3868,16 @@
     ],
     "partner_skill": "Grounded Archer",
     "partner_skill_desc": "While in party,\nincreases the player's bow damage by (10~35)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's bow damage by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "10",
+        "15",
+        "20",
+        "25",
+        "35"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -3441,6 +3931,16 @@
     ],
     "partner_skill": "Master Archer",
     "partner_skill_desc": "While in party,\nincreases the player's bow charge speed by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's bow charge speed by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -3501,6 +4001,8 @@
     ],
     "partner_skill": "Hungry Missile",
     "partner_skill_desc": "Can be ridden.\nCan rapidly fire a missile launcher while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -3555,6 +4057,8 @@
     ],
     "partner_skill": "Missile Party",
     "partner_skill_desc": "Can be ridden.\nCan rapidly fire a missile launcher while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -3609,6 +4113,16 @@
     ],
     "partner_skill": "Wolf of the Sun",
     "partner_skill_desc": "Can be ridden.\nWhile in party, player and party Pals take (15~30)% less Ice damage and are immune to Freeze. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party, player and party Pals take {0}% less Ice damage and are immune to Freeze. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 5,
@@ -3662,6 +4176,16 @@
     ],
     "partner_skill": "Too Cool to be Seen",
     "partner_skill_desc": "When activated,\nLeezpunk and the player become invisible, making them undetectable to enemies for (10~20) seconds.",
+    "partner_skill_template": "When activated,\nLeezpunk and the player become invisible, making them undetectable to enemies for {0} seconds.",
+    "partner_skill_values": [
+      [
+        "10",
+        "12",
+        "14",
+        "16",
+        "20"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -3715,6 +4239,16 @@
     ],
     "partner_skill": "Too Cool to be Seen",
     "partner_skill_desc": "When activated,\nLeezpunk Ignis and the player become invisible, making them undetectable to enemies for (10~20) seconds.",
+    "partner_skill_template": "When activated,\nLeezpunk Ignis and the player become invisible, making them undetectable to enemies for {0} seconds.",
+    "partner_skill_values": [
+      [
+        "10",
+        "12",
+        "14",
+        "16",
+        "20"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -3768,6 +4302,8 @@
     ],
     "partner_skill": "Surfing Slam",
     "partner_skill_desc": "When activated,\nFuack body surfs towards an enemy and slams into them.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -3821,6 +4357,8 @@
     ],
     "partner_skill": "Fire Tackle",
     "partner_skill_desc": "When activated,\nFuack Ignis fire surfs towards an enemy and slams into them.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -3875,6 +4413,16 @@
     ],
     "partner_skill": "Aerial Marauder",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nincreases damage player deals to enemy weak points by (20~40)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nincreases damage player deals to enemy weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "22",
+        "26",
+        "32",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 5,
@@ -3929,6 +4477,16 @@
     ],
     "partner_skill": "Aerial Marauder",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nincreases damage player deals to enemy weak points by (30~50)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nincreases damage player deals to enemy weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "32",
+        "36",
+        "42",
+        "50"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 5,
@@ -3983,6 +4541,8 @@
     ],
     "partner_skill": "Egg Layer",
     "partner_skill_desc": "Sometimes lays an Egg when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 1,
@@ -4036,6 +4596,16 @@
     ],
     "partner_skill": "Fragrant Dragon",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincrease Defense of Dragon Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nincrease Defense of Dragon Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -4090,6 +4660,16 @@
     ],
     "partner_skill": "Thunder Dragon",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincreases Defense of Electric Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nincreases Defense of Electric Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -4144,6 +4724,16 @@
     ],
     "partner_skill": "Static Electricity",
     "partner_skill_desc": "While in party,\nincreases Attack of Electric Pals by (15~30)%. (Does not stack)\nSometimes drops Electric Organ when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Electric Pals by {0}%. (Does not stack)\nSometimes drops Electric Organ when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -4208,6 +4798,23 @@
     ],
     "partner_skill": "Icy Steed",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice, inflict Freeze (2~6), increases Attack by (10~40)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice, inflict Freeze {0}, increases Attack by {1}%.",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      [
+        "10",
+        "14",
+        "20",
+        "28",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -4272,6 +4879,23 @@
     ],
     "partner_skill": "Black Steed",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Dark, inflict Blind (2~6), increases Attack by (10~40)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Dark, inflict Blind {0}, increases Attack by {1}%.",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      [
+        "10",
+        "14",
+        "20",
+        "28",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 9,
@@ -4331,6 +4955,23 @@
     ],
     "partner_skill": "Gaia Crusher",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nincreases logging efficiency by (220~500)% and mining efficiency by (500~2000)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nincreases logging efficiency by {0}% and mining efficiency by {1}%.",
+    "partner_skill_values": [
+      [
+        "220",
+        "260",
+        "320",
+        "400",
+        "500"
+      ],
+      [
+        "500",
+        "750",
+        "1100",
+        "1500",
+        "2000"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -4391,6 +5032,23 @@
     ],
     "partner_skill": "Ice Crusher",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nincreases logging efficiency by (220~500)% and mining efficiency by (500~2000)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nincreases logging efficiency by {0}% and mining efficiency by {1}%.",
+    "partner_skill_values": [
+      [
+        "220",
+        "260",
+        "320",
+        "400",
+        "500"
+      ],
+      [
+        "500",
+        "750",
+        "1100",
+        "1500",
+        "2000"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -4445,6 +5103,16 @@
     ],
     "partner_skill": "Life Steal",
     "partner_skill_desc": "While fighting together,\ngrants the player and Felbat a life steal effect that restores (5~9)% of damage dealt as Health.",
+    "partner_skill_template": "While fighting together,\ngrants the player and Felbat a life steal effect that restores {0}% of damage dealt as Health.",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -4504,6 +5172,16 @@
     ],
     "partner_skill": "Love's First Blossom",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nPal Eggs you pick up have a (35~45)% chance of becoming an Alpha Pal Egg.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nPal Eggs you pick up have a {0}% chance of becoming an Alpha Pal Egg.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "35",
+        "37",
+        "39",
+        "41",
+        "45"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -4563,6 +5241,16 @@
     ],
     "partner_skill": "Purity's Full Bloom",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nPal Eggs you pick up have a (45~55)% chance of becoming an Alpha Pal Egg.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nPal Eggs you pick up have a {0}% chance of becoming an Alpha Pal Egg.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "45",
+        "47",
+        "49",
+        "51",
+        "55"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -4617,6 +5305,16 @@
     ],
     "partner_skill": "Scorching Predator",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nIce Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nIce Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -4676,6 +5374,16 @@
     ],
     "partner_skill": "Magma Kaiser",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincreases the Attack and Defense of the Pal fighting alongside you by (5~10)% whenever you defeat an enemy.\nThis effect lasts 20 seconds and stacks up to five times.",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nincreases the Attack and Defense of the Pal fighting alongside you by {0}% whenever you defeat an enemy.\nThis effect lasts 20 seconds and stacks up to five times.",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "10"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -4735,6 +5443,16 @@
     ],
     "partner_skill": "Dragon Kaiser",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Dragon damage to enemy weak points by (25~40)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Dragon damage to enemy weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -4789,6 +5507,16 @@
     ],
     "partner_skill": "Berry Picker",
     "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "120",
+        "140",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -4842,6 +5570,8 @@
     ],
     "partner_skill": "Cool Body",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nthe player gains Heat Resistance +2.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -4895,6 +5625,16 @@
     ],
     "partner_skill": "Modified DNA",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile flying,\nMovement Speed is increased.\nEnhances Dark attacks by (15~30)% while mounted.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile flying,\nMovement Speed is increased.\nEnhances Dark attacks by {0}% while mounted.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 8,
@@ -4948,6 +5688,16 @@
     ],
     "partner_skill": "Silk Shroud",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Blizzard Spike.\nWhen this Pal uses Blizzard Spike,\nit has a x(1.1~2.5) damage multiplier.\nSometimes makes High Quality Cloth when assigned to Ranch.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Blizzard Spike.\nWhen this Pal uses Blizzard Spike,\nit has a x{0} damage multiplier.\nSometimes makes High Quality Cloth when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": "1",
     "nocturnal": false,
     "food_amount": 5,
@@ -5001,6 +5751,16 @@
     ],
     "partner_skill": "Gilded Shroud",
     "partner_skill_desc": "While in party,\nincreases Defense of Neutral Pals by (15~30)%. (Does not stack)\nSometimes makes High Quality Cloth when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Defense of Neutral Pals by {0}%. (Does not stack)\nSometimes makes High Quality Cloth when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -5054,6 +5814,8 @@
     ],
     "partner_skill": "Dig Here!",
     "partner_skill_desc": "Sometimes digs up items from the ground\nwhen assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 1,
@@ -5107,6 +5869,16 @@
     ],
     "partner_skill": "Lord Fox",
     "partner_skill_desc": "When activated,\nWixen changes the player's attack type to Fire and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nWixen changes the player's attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -5160,6 +5932,16 @@
     ],
     "partner_skill": "Black Fox Lord",
     "partner_skill_desc": "When activated,\nWixen Noct changes the player's attack type to Dark and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nWixen Noct changes the player's attack type to Dark and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -5220,6 +6002,16 @@
     ],
     "partner_skill": "Heart Drain",
     "partner_skill_desc": "While fighting together,\ngrants the player and Lovander a life steal effect that restores (5~9)% of damage dealt as Health.",
+    "partner_skill_template": "While fighting together,\ngrants the player and Lovander a life steal effect that restores {0}% of damage dealt as Health.",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -5273,6 +6065,16 @@
     ],
     "partner_skill": "Dark Knowledge",
     "partner_skill_desc": "While in party,\nincreases Attack of Dark Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Attack of Dark Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 1,
@@ -5326,6 +6128,16 @@
     ],
     "partner_skill": "Aqua Spout",
     "partner_skill_desc": "While in party,\nincreases Attack of Water Pals by (15~30)%. (Does not stack)\nSometimes drops Aquatic Pal Fluids when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Water Pals by {0}%. (Does not stack)\nSometimes drops Aquatic Pal Fluids when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -5379,6 +6191,16 @@
     ],
     "partner_skill": "Lava Spout",
     "partner_skill_desc": "While in party,\nincreases Attack of Fire Pals by (15~30)%. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Fire Pals by {0}%. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -5432,6 +6254,8 @@
     ],
     "partner_skill": "Fried Squid",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nEnables gentle floating while gliding for an extended time.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": true,
     "food_amount": 2,
@@ -5486,6 +6310,8 @@
     ],
     "partner_skill": "Fried Killamari",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nEnables gentle floating while gliding for an extended time.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 2,
@@ -5540,6 +6366,8 @@
     ],
     "partner_skill": "Milk Maker",
     "partner_skill_desc": "Sometimes drops Milk when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 2,
@@ -5599,6 +6427,8 @@
     ],
     "partner_skill": "Guardian of the Snowy Mountain",
     "partner_skill_desc": "Can be ridden.\nWhile at a base,\nincreases the Transporting Work Suitability Level for all other Base Pals by +1. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -5658,6 +6488,16 @@
     ],
     "partner_skill": "Guardian of the South",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nplayer and party Pals take (15~30)% less Ground damage and are immune to Muddy status. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nplayer and party Pals take {0}% less Ground damage and are immune to Muddy status. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -5711,6 +6551,16 @@
     ],
     "partner_skill": "Purification of Gaia",
     "partner_skill_desc": "While in party,\nGround Pals drop (40~80)% more items when defeated. (Does not stack)\nSometimes drops various seeds when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nGround Pals drop {0}% more items when defeated. (Does not stack)\nSometimes drops various seeds when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 5,
@@ -5764,6 +6614,8 @@
     ],
     "partner_skill": "Travel Companion",
     "partner_skill_desc": "Can be ridden as a flying mount.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 2,
@@ -5817,6 +6669,8 @@
     ],
     "partner_skill": "Helper Bunny",
     "partner_skill_desc": "While in party, appears near the player.\nAutomatically picks up nearby items.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": false,
     "food_amount": 2,
@@ -5876,6 +6730,16 @@
     ],
     "partner_skill": "Harvest Goddess",
     "partner_skill_desc": "When activated,\nthe queen's soothing graces restore the Health of the player and Party Pals by (80~90)%.",
+    "partner_skill_template": "When activated,\nthe queen's soothing graces restore the Health of the player and Party Pals by {0}%.",
+    "partner_skill_values": [
+      [
+        "80",
+        "82",
+        "84",
+        "86",
+        "90"
+      ]
+    ],
     "partner_skill_icon": "4",
     "nocturnal": false,
     "food_amount": 8,
@@ -5929,6 +6793,16 @@
     ],
     "partner_skill": "Goddess of the Tranquil Light",
     "partner_skill_desc": "When activated,\nthe queen's soothing graces restore the Health of the player and Party Pals by (85~95)%.",
+    "partner_skill_template": "When activated,\nthe queen's soothing graces restore the Health of the player and Party Pals by {0}%.",
+    "partner_skill_values": [
+      [
+        "85",
+        "87",
+        "89",
+        "91",
+        "95"
+      ]
+    ],
     "partner_skill_icon": "4",
     "nocturnal": true,
     "food_amount": 8,
@@ -5982,6 +6856,16 @@
     ],
     "partner_skill": "Queen Bee Command",
     "partner_skill_desc": "This Pal's Attack increases by (12~24)% for each Beegarde in party.",
+    "partner_skill_template": "This Pal's Attack increases by {0}% for each Beegarde in party.",
+    "partner_skill_values": [
+      [
+        "12",
+        "13",
+        "15",
+        "19",
+        "24"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -6035,6 +6919,8 @@
     ],
     "partner_skill": "Worker Bee",
     "partner_skill_desc": "While in party,\nincreases Elizabee's Attack.\nSometimes drops Honey when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -6088,6 +6974,8 @@
     ],
     "partner_skill": "Ultrasonic Sensor",
     "partner_skill_desc": "When activated,\nuses ultrasonic waves to detect nearby dungeons, treasure chests, and scrap.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "7",
     "nocturnal": true,
     "food_amount": 2,
@@ -6141,6 +7029,8 @@
     ],
     "partner_skill": "Grenadier Panda",
     "partner_skill_desc": "Can be ridden.\nCan rapidly fire a grenade launcher while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -6194,6 +7084,8 @@
     ],
     "partner_skill": "Grenadier Panda",
     "partner_skill_desc": "Can be ridden.\nCan rapidly fire a grenade launcher while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -6247,6 +7139,8 @@
     ],
     "partner_skill": "Warm Body",
     "partner_skill_desc": "Can be ridden.\nWhile in party, the player gains\nCold Resistance +2.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -6300,6 +7194,16 @@
     ],
     "partner_skill": "Lightning Shepherd",
     "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal’s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Rayhound)",
+    "partner_skill_template": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal’s Movement Speed increases by {0}% for each other Electric Pal in your party. (Excluding Rayhound)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -6353,6 +7257,16 @@
     ],
     "partner_skill": "Snow Shepherd",
     "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nWhile in party,\nincreases Defense of Ice Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nCan perform a double jump while mounted.\nWhile in party,\nincreases Defense of Ice Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -6406,6 +7320,23 @@
     ],
     "partner_skill": "Mining Assistance",
     "partner_skill_desc": "While in party,\nimproves player mining efficiency by (30~60)% and reduces Stone weight by (80~100)%.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nimproves player mining efficiency by {0}% and reduces Stone weight by {1}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "34",
+        "40",
+        "48",
+        "60"
+      ],
+      [
+        "80",
+        "84",
+        "88",
+        "92",
+        "100"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -6465,6 +7396,23 @@
     ],
     "partner_skill": "Black Ankylosaur",
     "partner_skill_desc": "Can be ridden as a flying mount.\nIncreases the damage dealt to ores by (1100~3300)%, and you can obtain (150~300)% more Ore while mounted.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nIncreases the damage dealt to ores by {0}%, and you can obtain {1}% more Ore while mounted.",
+    "partner_skill_values": [
+      [
+        "1100",
+        "1500",
+        "2000",
+        "2600",
+        "3300"
+      ],
+      [
+        "150",
+        "180",
+        "210",
+        "240",
+        "300"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 7,
@@ -6519,6 +7467,8 @@
     ],
     "partner_skill": "Grassland Gymnast",
     "partner_skill_desc": "While in party,\ngrants 1 additional jump and 1 additional mid-air dash. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -6572,6 +7522,16 @@
     ],
     "partner_skill": "Aurora Guide",
     "partner_skill_desc": "While in party,\nincreases Attack of Ice Pals by (15~30)%. (Does not stack)\nSometimes drops Ice Organ when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Ice Pals by {0}%. (Does not stack)\nSometimes drops Ice Organ when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -6636,6 +7596,8 @@
     ],
     "partner_skill": "Aerial Missile",
     "partner_skill_desc": "Can be ridden as a flying mount.\nCan rapidly fire a missile launcher while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -6689,6 +7651,8 @@
     ],
     "partner_skill": "Dream Chaser",
     "partner_skill_desc": "While in party,\nappears near the player.\nAttacks hostile enemies with\nDark magic bullets.\nThese bullets will not reduce the target's Health below 1.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": true,
     "food_amount": 1,
@@ -6742,6 +7706,8 @@
     ],
     "partner_skill": "Cheery Rifle",
     "partner_skill_desc": "When activated,\nTanzee will mercilessly fire an assault rifle at nearby enemies for a limited time.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "3",
     "nocturnal": false,
     "food_amount": 1,
@@ -6795,6 +7761,8 @@
     ],
     "partner_skill": "Chipper Chimp Gunfire",
     "partner_skill_desc": "When activated,\nTanzee Ignis will mercilessly fire a Fire assault rifle at nearby enemies for a limited time.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "3",
     "nocturnal": false,
     "food_amount": 1,
@@ -6848,6 +7816,16 @@
     ],
     "partner_skill": "Hellflame Lion",
     "partner_skill_desc": "Can be ridden.\nWhile in party, Grass Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party, Grass Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -6901,6 +7879,16 @@
     ],
     "partner_skill": "Darkflame Lion",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nNeutral Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nNeutral Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 6,
@@ -6961,6 +7949,16 @@
     ],
     "partner_skill": "King of Muscles",
     "partner_skill_desc": "Can be ridden.\nThis Pal's Defense and Movement Speed increase by (5~14)% for each Melpaca in party.",
+    "partner_skill_template": "Can be ridden.\nThis Pal's Defense and Movement Speed increase by {0}% for each Melpaca in party.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "9",
+        "11",
+        "14"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -7020,6 +8018,16 @@
     ],
     "partner_skill": "Coldhearted King",
     "partner_skill_desc": "Can be ridden.\nThis Pal's Defense and Movement Speed increase by (5~14)% for each Melpaca in party.",
+    "partner_skill_template": "Can be ridden.\nThis Pal's Defense and Movement Speed increase by {0}% for each Melpaca in party.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "9",
+        "11",
+        "14"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -7073,6 +8081,23 @@
     ],
     "partner_skill": "Logging Assistance",
     "partner_skill_desc": "While in party,\nimproves logging efficiency by (30~50)% and reduces weight of all types of wood by (40~60)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nimproves logging efficiency by {0}% and reduces weight of all types of wood by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ],
+      [
+        "40",
+        "45",
+        "50",
+        "55",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -7127,6 +8152,23 @@
     ],
     "partner_skill": "Logging Assistance",
     "partner_skill_desc": "While in party,\nimproves logging efficiency by (30~50)% and reduces weight of all types of wood by (40~60)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nimproves logging efficiency by {0}% and reduces weight of all types of wood by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ],
+      [
+        "40",
+        "45",
+        "50",
+        "55",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -7181,6 +8223,8 @@
     ],
     "partner_skill": "Fluffy",
     "partner_skill_desc": "While in party,\nincreases Attack and Defense of Sweepa.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -7234,6 +8278,16 @@
     ],
     "partner_skill": "King of Fluff",
     "partner_skill_desc": "Can be ridden.\nThis Pal's Attack and Defense increase by (12~24)% for each Swee in party.",
+    "partner_skill_template": "Can be ridden.\nThis Pal's Attack and Defense increase by {0}% for each Swee in party.",
+    "partner_skill_values": [
+      [
+        "12",
+        "13",
+        "15",
+        "19",
+        "24"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -7287,6 +8341,23 @@
     ],
     "partner_skill": "Mystical Black Magic",
     "partner_skill_desc": "While in party,\nNeutral Pals drop (40~80)% more items when defeated.\nAlso has a (10~50)% chance to prevent Pal Sphere consumption when thrown.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nNeutral Pals drop {0}% more items when defeated.\nAlso has a {1}% chance to prevent Pal Sphere consumption when thrown.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ],
+      [
+        "10",
+        "15",
+        "20",
+        "30",
+        "50"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": true,
     "food_amount": 4,
@@ -7340,6 +8411,8 @@
     ],
     "partner_skill": "Blazing Black Magic",
     "partner_skill_desc": "While at a base,\nincreases the Kindling Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -7394,6 +8467,16 @@
     ],
     "partner_skill": "Happy-Go-Lucky Bunny",
     "partner_skill_desc": "While in party,\nincreases Attack of Neutral Pals by (15~30)%. (Does not stack)\nWhile at a base,\nincreases the Handiwork Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Attack of Neutral Pals by {0}%. (Does not stack)\nWhile at a base,\nincreases the Handiwork Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -7447,6 +8530,23 @@
     ],
     "partner_skill": "Thunderous",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by (5~20)%.\nThis Pal’s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Beakon)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by {0}%.\nThis Pal’s Movement Speed increases by {1}% for each other Electric Pal in your party. (Excluding Beakon)",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ],
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 5,
@@ -7500,6 +8600,23 @@
     ],
     "partner_skill": "Coldsnap",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by (5~20)%.\nThis Pal’s Movement Speed increases by (5~25)% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by {0}%.\nThis Pal’s Movement Speed increases by {1}% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ],
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 5,
@@ -7559,6 +8676,16 @@
     ],
     "partner_skill": "Cast-Iron Shell",
     "partner_skill_desc": "While in your party,\ngenerates a barrier around the player after 5 melee hits are landed within (5~9) seconds. (Does not stack)",
+    "partner_skill_template": "While in your party,\ngenerates a barrier around the player after 5 melee hits are landed within {0} seconds. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -7619,6 +8746,16 @@
     ],
     "partner_skill": "Fullmetal Shell",
     "partner_skill_desc": "While in your party,\ngenerates a barrier around the player after 5 melee hits are landed within (5~9) seconds. (Does not stack)",
+    "partner_skill_template": "While in your party,\ngenerates a barrier around the player after 5 melee hits are landed within {0} seconds. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -7683,6 +8820,8 @@
     ],
     "partner_skill": "Holy Knight of the Firmament",
     "partner_skill_desc": "Can be ridden.\nCan triple jump while mounted.\nActivate Spear Thrust to have Necromus stay by your side and attack enemies in tandem.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -7736,6 +8875,8 @@
     ],
     "partner_skill": "Kuudere",
     "partner_skill_desc": "When activated,\ndetects the location of nearby Pal Effigies.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "7",
     "nocturnal": true,
     "food_amount": 1,
@@ -7789,6 +8930,16 @@
     ],
     "partner_skill": "Brave Sailor",
     "partner_skill_desc": "While in party,\nFire Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "While in party,\nFire Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 4,
@@ -7843,6 +8994,16 @@
     ],
     "partner_skill": "Unyielding Storm Commander",
     "partner_skill_desc": "While in party,\nimproves player's and Pals' Water damage to enemy weak points by (25~40)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nimproves player's and Pals' Water damage to enemy weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -7897,6 +9058,16 @@
     ],
     "partner_skill": "Wriggling Weasel",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Dragon and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Dragon and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -7951,6 +9122,16 @@
     ],
     "partner_skill": "Sparkling Weasel",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -8005,6 +9186,16 @@
     ],
     "partner_skill": "Sky Dragon Affection",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nincreases Attack of Dragon Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nincreases Attack of Dragon Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 6,
@@ -8058,6 +9249,16 @@
     ],
     "partner_skill": "Grass Dragon Affection",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Grass and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Grass and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 6,
@@ -8112,6 +9313,16 @@
     ],
     "partner_skill": "Wings of Death",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Dark and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Dark and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 7,
@@ -8165,6 +9376,16 @@
     ],
     "partner_skill": "Wings of Thunder",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Electric and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Electric and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 7,
@@ -8219,6 +9440,16 @@
     ],
     "partner_skill": "Flame Wing",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 7,
@@ -8272,6 +9503,16 @@
     ],
     "partner_skill": "Brandish Blade",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Iaigiri.\nWhen this Pal uses Iaigiri,\nit has a x(1.1~2.5) damage multiplier.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Iaigiri.\nWhen this Pal uses Iaigiri,\nit has a x{0} damage multiplier.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -8325,6 +9566,23 @@
     ],
     "partner_skill": "Void Blade",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Iaigiri.\nWhen this Pal uses Iaigiri,\nit has a x(1.1~2.5) damage multiplier.\nWhile in party,\nincreases the player's melee weapon damage by (30~65)% but only when not in combat. (Does not stack)",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Iaigiri.\nWhen this Pal uses Iaigiri,\nit has a x{1} damage multiplier.\nWhile in party,\nincreases the player's melee weapon damage by {0}% but only when not in combat. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "42",
+        "51",
+        "65"
+      ],
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -8379,6 +9637,8 @@
     ],
     "partner_skill": "Zephyr Glider",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nPrevents fall damage and extends the duration of high-speed gliding.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 2,
@@ -8432,6 +9692,8 @@
     ],
     "partner_skill": "Jolt Glider",
     "partner_skill_desc": "While in party,\nmodifies the performance of the equipped glider.\nPrevents fall damage and extends the duration of high-speed gliding.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "8",
     "nocturnal": false,
     "food_amount": 2,
@@ -8497,6 +9759,8 @@
     ],
     "partner_skill": "Dark Knight of the Abyss",
     "partner_skill_desc": "Can be ridden.\nCan double jump while mounted.\nWhen Twin Spears skill is activated, a Paladius in your party will appear and attack alongside you.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 9,
@@ -8550,6 +9814,16 @@
     ],
     "partner_skill": "Blessing of the Flower Spirit",
     "partner_skill_desc": "When activated,\nsoothing blossoms restore the player's Health by (75~85)%.\nWhile at a base,\nincreases the Planting Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": "When activated,\nsoothing blossoms restore the player's Health by {0}%.\nWhile at a base,\nincreases the Planting Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "75",
+        "77",
+        "79",
+        "82",
+        "85"
+      ]
+    ],
     "partner_skill_icon": "4",
     "nocturnal": false,
     "food_amount": 6,
@@ -8603,6 +9877,23 @@
     ],
     "partner_skill": "Passion of the Flower Spirit",
     "partner_skill_desc": "When activated,\nsoothing blossoms restore the player's Health by (80~90)%.\nWhile in party,\nplayer and party Pals take (15~30)% less Grass damage, and are immune to Ivy-Covered. (Does not stack)",
+    "partner_skill_template": "When activated,\nsoothing blossoms restore the player's Health by {1}%.\nWhile in party,\nplayer and party Pals take {0}% less Grass damage, and are immune to Ivy-Covered. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ],
+      [
+        "80",
+        "82",
+        "84",
+        "86",
+        "90"
+      ]
+    ],
     "partner_skill_icon": "4",
     "nocturnal": false,
     "food_amount": 6,
@@ -8657,6 +9948,16 @@
     ],
     "partner_skill": "Glaring Cat's Eye",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\npicking up a Pal Egg has a (50~75)% chance of receiving one extra. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\npicking up a Pal Egg has a {0}% chance of receiving one extra. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "55",
+        "60",
+        "65",
+        "75"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -8710,6 +10011,8 @@
     ],
     "partner_skill": "Mysterious Scales",
     "partner_skill_desc": "When activated,\nattacks the targeted enemy with Poison Fog.\nWhile at a base,\nincreases the Farming Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "1",
     "nocturnal": false,
     "food_amount": 2,
@@ -8763,6 +10066,23 @@
     ],
     "partner_skill": "Steel Scorpion",
     "partner_skill_desc": "While in party,\nplayer's Defense increases by (5~10)%, and Electric Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "While in party,\nplayer's Defense increases by {0}%, and Electric Pals drop {1}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "10"
+      ],
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "5",
     "nocturnal": true,
     "food_amount": 6,
@@ -8817,6 +10137,23 @@
     ],
     "partner_skill": "Golden Scorpion",
     "partner_skill_desc": "While in party,\nplayer's Defense increases by (5~10)%, and Electric Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "While in party,\nplayer's Defense increases by {0}%, and Electric Pals drop {1}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "6",
+        "7",
+        "8",
+        "10"
+      ],
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "5",
     "nocturnal": false,
     "food_amount": 6,
@@ -8876,6 +10213,16 @@
     ],
     "partner_skill": "Ferocious Thunder Dragon",
     "partner_skill_desc": "While in party,\nhitting an enemy with a bullet increases the Attack and Defense of the Pal fighting alongside you by (1~5)% for 5 seconds.\nThis effect stacks up to 30 times. (Does not stack.)",
+    "partner_skill_template": "While in party,\nhitting an enemy with a bullet increases the Attack and Defense of the Pal fighting alongside you by {0}% for 5 seconds.\nThis effect stacks up to 30 times. (Does not stack.)",
+    "partner_skill_values": [
+      [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    ],
     "partner_skill_icon": "202",
     "nocturnal": false,
     "food_amount": 9,
@@ -8930,6 +10277,16 @@
     ],
     "partner_skill": "Fluffy Wool",
     "partner_skill_desc": "While in party,\nincreases Attack of Neutral Pals by (15~30)%. (Does not stack)\nSometimes drops Wool when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Neutral Pals by {0}%. (Does not stack)\nSometimes drops Wool when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -8983,6 +10340,16 @@
     ],
     "partner_skill": "Soil Improver",
     "partner_skill_desc": "While in party,\nincreases Attack of Ground Pals by (15~30)%. (Does not stack)\nSometimes drops High Quality Pal Oil when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Attack of Ground Pals by {0}%. (Does not stack)\nSometimes drops High Quality Pal Oil when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -9037,6 +10404,16 @@
     ],
     "partner_skill": "Golden Harvest",
     "partner_skill_desc": "While in party,\nincreases amount of Gold Coin dropped by enemies by +(100~200)%.\nSometimes drops High Quality Pal Oil when assigned to Ranch, with a small chance to drop Gold Coin. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases amount of Gold Coin dropped by enemies by +{0}%.\nSometimes drops High Quality Pal Oil when assigned to Ranch, with a small chance to drop Gold Coin. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "130",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 3,
@@ -9091,6 +10468,16 @@
     ],
     "partner_skill": "Magma Tears",
     "partner_skill_desc": "While in party,\nrecovers Health of the player and Party Pals by (0.1~0.5)% per second outside of combat. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nrecovers Health of the player and Party Pals by {0}% per second outside of combat. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "0.1",
+        "0.15",
+        "0.2",
+        "0.3",
+        "0.5"
+      ]
+    ],
     "partner_skill_icon": "15",
     "nocturnal": false,
     "food_amount": 2,
@@ -9144,6 +10531,16 @@
     ],
     "partner_skill": "Tiny Spark",
     "partner_skill_desc": "While in party,\nincreases Defense of Fire Pals by (15~30)%. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nincreases Defense of Fire Pals by {0}%. (Does not stack)\nSometimes drops Flame Organ when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -9197,6 +10594,16 @@
     ],
     "partner_skill": "Nightmare Iris",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Nightmare Ray.\nWhen this Pal uses Nightmare Ray,\nit has a x(1.1~2.5) damage multiplier.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Nightmare Ray.\nWhen this Pal uses Nightmare Ray,\nit has a x{0} damage multiplier.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": "1",
     "nocturnal": true,
     "food_amount": 7,
@@ -9256,6 +10663,16 @@
     ],
     "partner_skill": "Nightmare Stare",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Nightmare Bloom.\nWhen this Pal uses Nightmare Bloom,\nit has a x(1.1~2.5) damage multiplier.",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Nightmare Bloom.\nWhen this Pal uses Nightmare Bloom,\nit has a x{0} damage multiplier.",
+    "partner_skill_values": [
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": "1",
     "nocturnal": true,
     "food_amount": 7,
@@ -9309,6 +10726,16 @@
     ],
     "partner_skill": "Celestial Darkness",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nenhances Neutral and Dark attacks by (15~30)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nenhances Neutral and Dark attacks by {0}%.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 9,
@@ -9363,6 +10790,16 @@
     ],
     "partner_skill": "Leap Stance",
     "partner_skill_desc": "When activated,\nCroajiro Noct channels its loyalty and puffs up its abdomen to store energy. Climbing on top will propel the player high into the air.\nWhile airborne before landing,\nthe player's Attack is increased by (50~86)%.",
+    "partner_skill_template": "When activated,\nCroajiro Noct channels its loyalty and puffs up its abdomen to store energy. Climbing on top will propel the player high into the air.\nWhile airborne before landing,\nthe player's Attack is increased by {0}%.",
+    "partner_skill_values": [
+      [
+        "50",
+        "56",
+        "64",
+        "74",
+        "86"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -9416,6 +10853,16 @@
     ],
     "partner_skill": "Shadow Stance",
     "partner_skill_desc": "When activated,\nCroajiro Noct channels its loyalty and puffs up its abdomen to store energy. Climbing on top will propel the player high into the air.\nWhile in party,\nimproves player's and Pals' Dark damage to enemy weak points by (25~40)%. (Does not stack)",
+    "partner_skill_template": "When activated,\nCroajiro Noct channels its loyalty and puffs up its abdomen to store energy. Climbing on top will propel the player high into the air.\nWhile in party,\nimproves player's and Pals' Dark damage to enemy weak points by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -9470,6 +10917,16 @@
     ],
     "partner_skill": "Floral Boost",
     "partner_skill_desc": "While at a base,\nLullu fills farms with good spirits, increasing the growth rate of the crops by (50~70)%.",
+    "partner_skill_template": "While at a base,\nLullu fills farms with good spirits, increasing the growth rate of the crops by {0}%.",
+    "partner_skill_values": [
+      [
+        "50",
+        "55",
+        "60",
+        "65",
+        "70"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -9523,6 +10980,8 @@
     ],
     "partner_skill": "Rampant Spores",
     "partner_skill_desc": "Can be ridden.\nSometimes drops Mushroom or Cavern Mushroom when assigned to Ranch.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 5,
@@ -9576,6 +11035,16 @@
     ],
     "partner_skill": "Roiling Spores",
     "partner_skill_desc": "Can be ridden.\nWhile at a base,\nits mysterious spores slow the rate at which the SAN value of allies at the base decreases by (10~15)%.",
+    "partner_skill_template": "Can be ridden.\nWhile at a base,\nits mysterious spores slow the rate at which the SAN value of allies at the base decreases by {0}%.",
+    "partner_skill_values": [
+      [
+        "10",
+        "11.5",
+        "13",
+        "14",
+        "15"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 5,
@@ -9630,6 +11099,16 @@
     ],
     "partner_skill": "Sandball Soccer",
     "partner_skill_desc": "While in party,\nincreases Defense of Ground Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Defense of Ground Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -9683,6 +11162,16 @@
     ],
     "partner_skill": "Grave Robber",
     "partner_skill_desc": "While in party,\nplayer and party Pals take (15~30)% less Neutral damage. (Does not stack)\nSometimes digs up Bone when assigned to Ranch.",
+    "partner_skill_template": "While in party,\nplayer and party Pals take {0}% less Neutral damage. (Does not stack)\nSometimes digs up Bone when assigned to Ranch.",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -9737,6 +11226,16 @@
     ],
     "partner_skill": "Phantom Venom",
     "partner_skill_desc": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Poison by (50~65)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Poison by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -9791,6 +11290,16 @@
     ],
     "partner_skill": "Scorpion Longwave",
     "partner_skill_desc": "When activated,\nPrixter Lux changes the player's attack type to Electric and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nPrixter Lux changes the player's attack type to Electric and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -9851,6 +11360,23 @@
     ],
     "partner_skill": "Steel Guardian Mode",
     "partner_skill_desc": "When activated,\na steel resolve increases Knocklem's Attack by (50~200)% and Defense by (50~200)% for a limited time.",
+    "partner_skill_template": "When activated,\na steel resolve increases Knocklem's Attack by {0}% and Defense by {1}% for a limited time.",
+    "partner_skill_values": [
+      [
+        "50",
+        "75",
+        "110",
+        "150",
+        "200"
+      ],
+      [
+        "50",
+        "75",
+        "110",
+        "150",
+        "200"
+      ]
+    ],
     "partner_skill_icon": "6",
     "nocturnal": false,
     "food_amount": 9,
@@ -9910,6 +11436,23 @@
     ],
     "partner_skill": "Iron Guardian Mode",
     "partner_skill_desc": "When activated,\na steel resolve increases Knocklem Ignis's Attack by (60~210)% and Defense by (60~210)% for a limited time.",
+    "partner_skill_template": "When activated,\na steel resolve increases Knocklem Ignis's Attack by {0}% and Defense by {1}% for a limited time.",
+    "partner_skill_values": [
+      [
+        "60",
+        "85",
+        "120",
+        "160",
+        "210"
+      ],
+      [
+        "60",
+        "85",
+        "120",
+        "160",
+        "210"
+      ]
+    ],
     "partner_skill_icon": "6",
     "nocturnal": false,
     "food_amount": 9,
@@ -9963,6 +11506,16 @@
     ],
     "partner_skill": "Birds of a Feather",
     "partner_skill_desc": "Can be ridden.\nWhile fighting together,\n(15~30)% increased chance of encountering pals with the same Passive Skill as this Pal.\n(Excludes certain Passive Skills)",
+    "partner_skill_template": "Can be ridden.\nWhile fighting together,\n{0}% increased chance of encountering pals with the same Passive Skill as this Pal.\n(Excludes certain Passive Skills)",
+    "partner_skill_values": [
+      [
+        "15",
+        "18",
+        "21",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -10016,6 +11569,8 @@
     ],
     "partner_skill": "Homeward Prayer",
     "partner_skill_desc": "When activated,\nteleports to the nearest base.\nCannot be used inside dungeons or similar areas.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -10069,6 +11624,16 @@
     ],
     "partner_skill": "Sand Sprint",
     "partner_skill_desc": "Can be ridden.\nMovement Speed is increased by (50~100)% while mounted on sand.",
+    "partner_skill_template": "Can be ridden.\nMovement Speed is increased by {0}% while mounted on sand.",
+    "partner_skill_values": [
+      [
+        "50",
+        "62",
+        "74",
+        "86",
+        "100"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -10122,6 +11687,8 @@
     ],
     "partner_skill": "Master of Unlocking",
     "partner_skill_desc": "While fighting together,\nMimog can open treasure chests without using a key.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -10181,6 +11748,16 @@
     ],
     "partner_skill": "Unknown Invader",
     "partner_skill_desc": "While in party,\nincreases the damage of the last bullet fired from a full-auto weapon by (100~160)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the damage of the last bullet fired from a full-auto weapon by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "120",
+        "135",
+        "160"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 4,
@@ -10240,6 +11817,16 @@
     ],
     "partner_skill": "Unknown Intruder",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincreases the player's energy weapon damage by (10~35)%.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nincreases the player's energy weapon damage by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "10",
+        "15",
+        "20",
+        "25",
+        "35"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -10293,6 +11880,16 @@
     ],
     "partner_skill": "Magma Overload",
     "partner_skill_desc": "Can be ridden as a mount.\nThis Pal's Attack increases by (4~8)% for each other Fire or Ground Pal in your party.",
+    "partner_skill_template": "Can be ridden as a mount.\nThis Pal's Attack increases by {0}% for each other Fire or Ground Pal in your party.",
+    "partner_skill_values": [
+      [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -10347,6 +11944,16 @@
     ],
     "partner_skill": "Ice Overload",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Ice damage to enemy weak points by (25~40)%.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nimproves player's and Pals' Ice damage to enemy weak points by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -10412,6 +12019,16 @@
     ],
     "partner_skill": "Meteor Wings",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\ndamage done by Partner Skills of weapon-wielding Pals increases by (20~50)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\ndamage done by Partner Skills of weapon-wielding Pals increases by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "26",
+        "32",
+        "38",
+        "50"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 8,
@@ -10466,6 +12083,16 @@
     ],
     "partner_skill": "Soul Collector",
     "partner_skill_desc": "While fighting together,\nPals drop +(100~200)% more Pal Souls when defeated. (Does not stack)",
+    "partner_skill_template": "While fighting together,\nPals drop +{0}% more Pal Souls when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "130",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": true,
     "food_amount": 6,
@@ -10519,6 +12146,16 @@
     ],
     "partner_skill": "Soul Binder",
     "partner_skill_desc": "While in party,\nincreases Defense of Grass Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Defense of Grass Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -10572,6 +12209,16 @@
     ],
     "partner_skill": "Night Dancer",
     "partner_skill_desc": "Can be ridden.\nBoosts jumping ability while mounted.\nThis Pal's movement speed increases by +(50~100)% at night.",
+    "partner_skill_template": "Can be ridden.\nBoosts jumping ability while mounted.\nThis Pal's movement speed increases by +{0}% at night.",
+    "partner_skill_values": [
+      [
+        "50",
+        "62",
+        "74",
+        "86",
+        "100"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 6,
@@ -10625,6 +12272,16 @@
     ],
     "partner_skill": "Light Dancer",
     "partner_skill_desc": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal’s Movement Speed increases by (5~25)% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
+    "partner_skill_template": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal’s Movement Speed increases by {0}% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -10684,6 +12341,23 @@
     ],
     "partner_skill": "Aegis Shield",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nreduces shield regeneration delay by (30~60)% and reduces damage taken by your shield by (65~80)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nreduces shield regeneration delay by {0}% and reduces damage taken by your shield by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "34",
+        "40",
+        "48",
+        "60"
+      ],
+      [
+        "65",
+        "68",
+        "71",
+        "75",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -10737,6 +12411,16 @@
     ],
     "partner_skill": "Dig, Smokie! Dig!",
     "partner_skill_desc": "When activated,\nuses its sharp sense of smell to detect nearby Chromite.\nWhile fighting together,\nChromite acquisition increases by +(100~200)%.",
+    "partner_skill_template": "When activated,\nuses its sharp sense of smell to detect nearby Chromite.\nWhile fighting together,\nChromite acquisition increases by +{0}%.",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "130",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": "7",
     "nocturnal": true,
     "food_amount": 3,
@@ -10790,6 +12474,8 @@
     ],
     "partner_skill": "Cryo Instincts",
     "partner_skill_desc": "While at a base,\nincreases the Cooling Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -10844,6 +12530,23 @@
     ],
     "partner_skill": "Blessing of Purification",
     "partner_skill_desc": "Can be ridden.\nThis Pal's Attack and Movement Speed increases by (2~6)% for each other Neutral Pal in your party.\nWhen in party,\nrecovers Health of the player and Party Pals by (0.15~0.75)% per second. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nThis Pal's Attack and Movement Speed increases by {0}% for each other Neutral Pal in your party.\nWhen in party,\nrecovers Health of the player and Party Pals by {1}% per second. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      [
+        "0.15",
+        "0.225",
+        "0.3",
+        "0.45",
+        "0.75"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -10897,6 +12600,16 @@
     ],
     "partner_skill": "Blessing of Chaos",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nthe Pal fighting alongside you gradually loses Health in exchange for (40~80)% Attack increase. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nthe Pal fighting alongside you gradually loses Health in exchange for {0}% Attack increase. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 8,
@@ -10950,6 +12663,8 @@
     ],
     "partner_skill": "Resonant Guardian",
     "partner_skill_desc": "Can be ridden as a flying mount.\nOnly 1 can be summoned to a base.\nWhile at a base,\nit constantly patrols the skies and bombards intruders from high above.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "206",
     "nocturnal": false,
     "food_amount": 9,
@@ -11003,6 +12718,16 @@
     ],
     "partner_skill": "Masquerade Dance",
     "partner_skill_desc": "While in party,\nincreases Party Pals' EXP gained by (40~80)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Party Pals' EXP gained by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "44",
+        "52",
+        "64",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": true,
     "food_amount": 5,
@@ -11056,6 +12781,16 @@
     ],
     "partner_skill": "Void-Dweller",
     "partner_skill_desc": "While in party,\nincreases the player's damage dealt to enemies that are not in combat by (50~100)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's damage dealt to enemies that are not in combat by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "60",
+        "70",
+        "80",
+        "100"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 3,
@@ -11109,6 +12844,23 @@
     ],
     "partner_skill": "Desert Empress",
     "partner_skill_desc": "While at base,\nboosts Anubis's work speed by (20~40)%.\nIncreases efficiency by (30~60)% if Sekhmet is also working at a Workbench, Workshop, or other related facilities. (Does not stack)",
+    "partner_skill_template": "While at base,\nboosts Anubis's work speed by {0}%.\nIncreases efficiency by {1}% if Sekhmet is also working at a Workbench, Workshop, or other related facilities. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "24",
+        "28",
+        "32",
+        "40"
+      ],
+      [
+        "30",
+        "36",
+        "42",
+        "48",
+        "60"
+      ]
+    ],
     "partner_skill_icon": "16",
     "nocturnal": false,
     "food_amount": 7,
@@ -11162,6 +12914,16 @@
     ],
     "partner_skill": "Chillswitch",
     "partner_skill_desc": "While in party,\nwhen the player attacks an enemy afflicted with Electrify, the enemy discharges electricity, dealing damage equal to (40~60)% of the player's attack damage to nearby enemies. (Does not stack.)",
+    "partner_skill_template": "While in party,\nwhen the player attacks an enemy afflicted with Electrify, the enemy discharges electricity, dealing damage equal to {0}% of the player's attack damage to nearby enemies. (Does not stack.)",
+    "partner_skill_values": [
+      [
+        "40",
+        "44",
+        "48",
+        "52",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -11221,6 +12983,16 @@
     ],
     "partner_skill": "Blade of Uncontrolled Passion",
     "partner_skill_desc": "While in party,\nthe amount of items obtained from using the Meat Cleaver increases by (100~200)%.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nthe amount of items obtained from using the Meat Cleaver increases by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "130",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -11274,6 +13046,8 @@
     ],
     "partner_skill": "Tarantriss’ Web",
     "partner_skill_desc": "Can be ridden.\nCan double jump while mounted.\nAdditionally, can shoot spider web to grapple and move at high speed.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 4,
@@ -11327,6 +13101,8 @@
     ],
     "partner_skill": "Plasma Dash",
     "partner_skill_desc": "Can be ridden.\nGrants Air Dash, to move at even higher speeds.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -11386,6 +13162,16 @@
     ],
     "partner_skill": "Power Stone",
     "partner_skill_desc": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Muddy by (50~65)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Muddy by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -11445,6 +13231,16 @@
     ],
     "partner_skill": "Power Crystal",
     "partner_skill_desc": "While in party,\nplayer and party Pals take (15~30)% less Dragon damage. (Does not stack)",
+    "partner_skill_template": "While in party,\nplayer and party Pals take {0}% less Dragon damage. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -11498,6 +13294,16 @@
     ],
     "partner_skill": "Sticky Princess",
     "partner_skill_desc": "While in party,\nthe capture gauge decreases (12~35)% more slowly while the bars are not overlapping during the fishing minigame.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nthe capture gauge decreases {0}% more slowly while the bars are not overlapping during the fishing minigame.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "12",
+        "17",
+        "22",
+        "28",
+        "35"
+      ]
+    ],
     "partner_skill_icon": "20",
     "nocturnal": true,
     "food_amount": 3,
@@ -11552,6 +13358,16 @@
     ],
     "partner_skill": "Cephalo-Princess",
     "partner_skill_desc": "While in party,\nincreases Defense of Water Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Defense of Water Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -11606,6 +13422,23 @@
     ],
     "partner_skill": "Chilled Whale Cruiser",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nfishing minigames start with the capture gauge increased by (5~14)%.\nAdditionally, while the bars overlap, capture progress increases by (5~14)%.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nfishing minigames start with the capture gauge increased by {0}%.\nAdditionally, while the bars overlap, capture progress increases by {1}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "9",
+        "11",
+        "14"
+      ],
+      [
+        "5",
+        "7",
+        "9",
+        "11",
+        "14"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 8,
@@ -11660,6 +13493,23 @@
     ],
     "partner_skill": "Cozy Whale Cruiser",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nfishing minigame begins with the capture gauge (7~17)% higher than usual, and capture progress increases by (7~17)% while the bars overlap. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nfishing minigame begins with the capture gauge {0}% higher than usual, and capture progress increases by {1}% while the bars overlap. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "7",
+        "9",
+        "11",
+        "13",
+        "17"
+      ],
+      [
+        "7",
+        "9",
+        "11",
+        "13",
+        "17"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 8,
@@ -11714,6 +13564,23 @@
     ],
     "partner_skill": "Jelliette Drop",
     "partner_skill_desc": "While in party,\nincreases items obtained from fishing by (55~95)%.\nWhile Jelliette and Jellroy are in your base, Jelliette's watering speed increases by (50~120)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases items obtained from fishing by {0}%.\nWhile Jelliette and Jellroy are in your base, Jelliette's watering speed increases by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "55",
+        "65",
+        "75",
+        "85",
+        "95"
+      ],
+      [
+        "50",
+        "60",
+        "70",
+        "90",
+        "120"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 3,
@@ -11767,6 +13634,8 @@
     ],
     "partner_skill": "Huggy Frost",
     "partner_skill_desc": "When activated,\nequips to the player and attacks using frigid air.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "2",
     "nocturnal": false,
     "food_amount": 1,
@@ -11820,6 +13689,16 @@
     ],
     "partner_skill": "Venom Picker",
     "partner_skill_desc": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "120",
+        "140",
+        "160",
+        "200"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -11873,6 +13752,23 @@
     ],
     "partner_skill": "Ground 'n' Pound",
     "partner_skill_desc": "While in party,\nimproves player's and Pals' Grass damage to enemy weak points by (25~40)%. (Does not stack)\nIncreases efficiency by (200~400)% when working at a Weapon Workbench, Weapon Assembly Line, or other related facilities.",
+    "partner_skill_template": "While in party,\nimproves player's and Pals' Grass damage to enemy weak points by {0}%. (Does not stack)\nIncreases efficiency by {1}% when working at a Weapon Workbench, Weapon Assembly Line, or other related facilities.",
+    "partner_skill_values": [
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ],
+      [
+        "200",
+        "220",
+        "260",
+        "320",
+        "400"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -11926,6 +13822,23 @@
     ],
     "partner_skill": "Frozen Gleam Strike",
     "partner_skill_desc": "When activated,\nattacks targeted enemy with Snow Claw.\nWhen this Pal uses Snow Claw,\nit has a x(1.1~2.5) damage multiplier.\nWhile in party,\nincreases the player's melee weapon attack speed by (15~30)%.\n(Does not stack)",
+    "partner_skill_template": "When activated,\nattacks targeted enemy with Snow Claw.\nWhen this Pal uses Snow Claw,\nit has a x{1} damage multiplier.\nWhile in party,\nincreases the player's melee weapon attack speed by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ],
+      [
+        "1.1",
+        "1.3",
+        "1.6",
+        "2",
+        "2.5"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -11979,6 +13892,16 @@
     ],
     "partner_skill": "Gloomhowl",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nplayer and party Pals take (15~30)% less Dark damage and are immune to Blind. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nplayer and party Pals take {0}% less Dark damage and are immune to Blind. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 5,
@@ -12032,6 +13955,8 @@
     ],
     "partner_skill": "Lady of Dark Lightning",
     "partner_skill_desc": "While in party,\nappears near the player.\nAttacks hostile enemies with\nDark bolts.\nThese bolts will not reduce the target's Health below 1.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": true,
     "food_amount": 2,
@@ -12086,6 +14011,16 @@
     ],
     "partner_skill": "Explosive Strength",
     "partner_skill_desc": "While in party,\nwhen attacking enemy weak point, increases the power of the next weak point attack by (30~60)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nwhen attacking enemy weak point, increases the power of the next weak point attack by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "34",
+        "40",
+        "48",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -12139,6 +14074,16 @@
     ],
     "partner_skill": "Stormcloud",
     "partner_skill_desc": "Can be ridden.\nCan double jump while mounted.\nWhile in party, Water Pals drop (40~80)% more items when defeated.\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nCan double jump while mounted.\nWhile in party, Water Pals drop {0}% more items when defeated.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 5,
@@ -12192,6 +14137,16 @@
     ],
     "partner_skill": "Tidal Predator",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nFire Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nFire Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -12245,6 +14200,8 @@
     ],
     "partner_skill": "Blizzard Crash",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\ndelivers crushing blows with a hammer forged from Ice.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -12298,6 +14255,16 @@
     ],
     "partner_skill": "Snake's Sagacity",
     "partner_skill_desc": "While in party,\nthe player's attacks inflict Blind (2~6).\n(Does not stack)",
+    "partner_skill_template": "While in party,\nthe player's attacks inflict Blind {0}.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -12351,6 +14318,16 @@
     ],
     "partner_skill": "Master of Darkness",
     "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by (5~25)% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
+    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by {0}% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": true,
     "food_amount": 7,
@@ -12405,6 +14382,16 @@
     ],
     "partner_skill": "Abyssal Celebrity Chef",
     "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by (5~25)% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
+    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by {0}% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
+    "partner_skill_values": [
+      [
+        "5",
+        "9",
+        "13",
+        "18",
+        "25"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 7,
@@ -12459,6 +14446,16 @@
     ],
     "partner_skill": "Witch's Icy Veil",
     "partner_skill_desc": "When activated,\nIcelyn changes the player's attack type to Ice and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nIcelyn changes the player's attack type to Ice and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -12512,6 +14509,23 @@
     ],
     "partner_skill": "Trick-Loving Fluffle",
     "partner_skill_desc": "While in party,\nwhen the player's Health falls below 50%, Dupin generates an explosion around the player (Fire / Power: (100~200) / Burn buildup: 777).\nAdditionally, while the player's Health is below 50%, the player's Attack is increased by (30~50)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nwhen the player's Health falls below 50%, Dupin generates an explosion around the player (Fire / Power: {0} / Burn buildup: 777).\nAdditionally, while the player's Health is below 50%, the player's Attack is increased by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "100",
+        "110",
+        "130",
+        "160",
+        "200"
+      ],
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -12571,6 +14585,8 @@
     ],
     "partner_skill": "Sacred Barrier",
     "partner_skill_desc": "Can be ridden.\nWhile mounted,\nit generates a barrier that blocks all attacks.\nCan triple jump while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -12624,6 +14640,16 @@
     ],
     "partner_skill": "Herbil Pulse",
     "partner_skill_desc": "While in party,\nHerbil uses its healing powers to restore (30~60)% of the player's Max Health when incapacitated.",
+    "partner_skill_template": "While in party,\nHerbil uses its healing powers to restore {0}% of the player's Max Health when incapacitated.",
+    "partner_skill_values": [
+      [
+        "30",
+        "36",
+        "42",
+        "48",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -12678,6 +14704,8 @@
     ],
     "partner_skill": "Invisible Eye",
     "partner_skill_desc": "While in party,\nreduces the chance of being detected by enemies. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -12731,6 +14759,23 @@
     ],
     "partner_skill": "Icy Maw",
     "partner_skill_desc": "While in party,\nreduces the weight of ingredient and food by (30~60)%.\nWhen paired with another Ice Pal, their Rot Speed also reduces by (-80~-30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nreduces the weight of ingredient and food by {0}%.\nWhen paired with another Ice Pal, their Rot Speed also reduces by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "50",
+        "60"
+      ],
+      [
+        "-30",
+        "-42",
+        "-54",
+        "-66",
+        "-80"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -12785,6 +14830,16 @@
     ],
     "partner_skill": "Hug Me Please",
     "partner_skill_desc": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Ivy-Covered by (50~65)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases player's and Pals' damage to enemies afflicted with Ivy-Covered by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -12838,6 +14893,16 @@
     ],
     "partner_skill": "Hug You So Much",
     "partner_skill_desc": "While in party,\nthe player's attacks inflict Ivy-Covered (2~6). (Does not stack)",
+    "partner_skill_template": "While in party,\nthe player's attacks inflict Ivy-Covered {0}. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -12892,6 +14957,8 @@
     ],
     "partner_skill": "Charming Spore",
     "partner_skill_desc": "While at a base,\nincreases the Medicine Production Work Suitability Level for all other Base Pals by +1. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -12945,6 +15012,16 @@
     ],
     "partner_skill": "Water Gun",
     "partner_skill_desc": "When activated,\nFinsider changes the player's attack type to Water and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nFinsider changes the player's attack type to Water and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -12998,6 +15075,23 @@
     ],
     "partner_skill": "Ember Chamber",
     "partner_skill_desc": "While in party,\nFinsider Ignis helps carry supplies, reducing the weight of weapons in your inventory by (60~100)%.\nAlso improves player's and Pals' Fire damage to enemy weak points by (25~40)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nFinsider Ignis helps carry supplies, reducing the weight of weapons in your inventory by {0}%.\nAlso improves player's and Pals' Fire damage to enemy weak points by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "60",
+        "70",
+        "80",
+        "90",
+        "100"
+      ],
+      [
+        "25",
+        "27",
+        "30",
+        "34",
+        "40"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 2,
@@ -13052,6 +15146,16 @@
     ],
     "partner_skill": "Burning Future",
     "partner_skill_desc": "While in party,\nwhen the player attacks an enemy afflicted with Burn, the enemy explodes, dealing damage equal to (40~60)% of the player's attack damage to nearby enemies.\n(Does not stack.)",
+    "partner_skill_template": "While in party,\nwhen the player attacks an enemy afflicted with Burn, the enemy explodes, dealing damage equal to {0}% of the player's attack damage to nearby enemies.\n(Does not stack.)",
+    "partner_skill_values": [
+      [
+        "40",
+        "44",
+        "48",
+        "52",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -13105,6 +15209,16 @@
     ],
     "partner_skill": "Rider of the Snowy Mountain",
     "partner_skill_desc": "Can be ridden.\nMovement Speed is increased by (80~160)% while mounted on snow.\nCan also slide quickly down slopes.",
+    "partner_skill_template": "Can be ridden.\nMovement Speed is increased by {0}% while mounted on snow.\nCan also slide quickly down slopes.",
+    "partner_skill_values": [
+      [
+        "80",
+        "100",
+        "120",
+        "140",
+        "160"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -13159,6 +15273,16 @@
     ],
     "partner_skill": "Snowy Mountain Slider",
     "partner_skill_desc": "Can be ridden.\nMovement Speed is increased by (80~160)% while mounted on snow.\nCan also slide quickly down slopes.\nWhile it starts out slow, the top speed it can hit while sliding is no joke.",
+    "partner_skill_template": "Can be ridden.\nMovement Speed is increased by {0}% while mounted on snow.\nCan also slide quickly down slopes.\nWhile it starts out slow, the top speed it can hit while sliding is no joke.",
+    "partner_skill_values": [
+      [
+        "80",
+        "100",
+        "120",
+        "140",
+        "160"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 4,
@@ -13213,6 +15337,8 @@
     ],
     "partner_skill": "Happy Clover",
     "partner_skill_desc": "While at a base,\nincreases the Gathering Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -13267,6 +15393,8 @@
     ],
     "partner_skill": "Crackle Booster",
     "partner_skill_desc": "While at a base,\nincreases the Generating Electricity Work Suitability Level for all other Base Pals by +1. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -13320,6 +15448,8 @@
     ],
     "partner_skill": "Death-Cheating Feline",
     "partner_skill_desc": "While in party,\nincreases the capture rate when awarded a back bonus. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -13373,6 +15503,16 @@
     ],
     "partner_skill": "Dark-Nester",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile in party,\nincreases player's and Pals' damage to enemies afflicted with Blind by (50~65)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile in party,\nincreases player's and Pals' damage to enemies afflicted with Blind by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "50",
+        "53",
+        "56",
+        "60",
+        "65"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 8,
@@ -13426,6 +15566,16 @@
     ],
     "partner_skill": "Grinning Death",
     "partner_skill_desc": "While in party,\nattacking enemies afflicted with Poison reduces their Attack by (40~80)%.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nattacking enemies afflicted with Poison reduces their Attack by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -13485,6 +15635,16 @@
     ],
     "partner_skill": "Balmy Weather",
     "partner_skill_desc": "Can be ridden.\nWhile in your base,\nincreases the egg production speed of Pals assigned to Breeding Farm by (20~50)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in your base,\nincreases the egg production speed of Pals assigned to Breeding Farm by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "26",
+        "32",
+        "38",
+        "50"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 7,
@@ -13539,6 +15699,16 @@
     ],
     "partner_skill": "Samba Step",
     "partner_skill_desc": "Can be ridden.\nMovement Speed is increased by (155~240)% while mounted on grass.",
+    "partner_skill_template": "Can be ridden.\nMovement Speed is increased by {0}% while mounted on grass.",
+    "partner_skill_values": [
+      [
+        "155",
+        "175",
+        "195",
+        "215",
+        "240"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -13598,6 +15768,8 @@
     ],
     "partner_skill": "Forest Laser",
     "partner_skill_desc": "Can be ridden.\nWhen activated,\nDualith fires a powerful Grass laser from its right hand.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -13658,6 +15830,8 @@
     ],
     "partner_skill": "Corruption Laser",
     "partner_skill_desc": "Can be ridden.\nWhen activated,\nDualith Noct fires a powerful Dark laser from its right hand.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 8,
@@ -13712,6 +15886,16 @@
     ],
     "partner_skill": "Peacock Pounce",
     "partner_skill_desc": "While in party,\nFrostplume's icy aura sharpens focus, increasing the player's reload speeds by (20~50)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nFrostplume's icy aura sharpens focus, increasing the player's reload speeds by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "26",
+        "32",
+        "38",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 5,
@@ -13765,6 +15949,8 @@
     ],
     "partner_skill": "Masonry Archelon",
     "partner_skill_desc": "Can be ridden\nWhile at a base,\nincreases the Mining Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -13818,6 +16004,16 @@
     ],
     "partner_skill": "Stone-Chaser Archelon",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nincreases the durability of all weapons and armor by (80~100)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nincreases the durability of all weapons and armor by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "80",
+        "84",
+        "88",
+        "92",
+        "100"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 8,
@@ -13871,6 +16067,8 @@
     ],
     "partner_skill": "Big Stretch",
     "partner_skill_desc": "While in party,\nreduces the effects of gravity on the player, making them more floaty while jumping and falling. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -13924,6 +16122,23 @@
     ],
     "partner_skill": "Jellroy Drop",
     "partner_skill_desc": "While in party,\nincreases items obtained from salvaging by (55~95)%.\nWhile Jelliette and Jellroy are in your base, Jellroy's watering speed increases by (50~120)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases items obtained from salvaging by {0}%.\nWhile Jelliette and Jellroy are in your base, Jellroy's watering speed increases by {1}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "55",
+        "65",
+        "75",
+        "85",
+        "95"
+      ],
+      [
+        "50",
+        "60",
+        "70",
+        "90",
+        "120"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": true,
     "food_amount": 3,
@@ -13978,6 +16193,16 @@
     ],
     "partner_skill": "Electro-Massage Incubation",
     "partner_skill_desc": "Can be ridden as a flying mount.\nWhile at a base,\nshortens the time it takes to incubate eggs by (20~40)%. (Does not stack)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile at a base,\nshortens the time it takes to incubate eggs by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "20",
+        "22",
+        "26",
+        "32",
+        "40"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 6,
@@ -14031,6 +16256,16 @@
     ],
     "partner_skill": "Hidden Dark Energy",
     "partner_skill_desc": "While in party,\nincreases Defense of Dark Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Defense of Dark Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 5,
@@ -14084,6 +16319,16 @@
     ],
     "partner_skill": "Best Boy",
     "partner_skill_desc": "While in party,\nincreases the player's melee weapon damage by (10~35)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's melee weapon damage by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "10",
+        "15",
+        "20",
+        "25",
+        "35"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 1,
@@ -14148,6 +16393,8 @@
     ],
     "partner_skill": "Sentinel of the Great Sea",
     "partner_skill_desc": "While in party,\nit follows up the player's attacks with Water spear strikes.\nCan be ridden to travel on water.\nWhile mounted,\nit can leap high into the air over water.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 9,
@@ -14201,6 +16448,16 @@
     ],
     "partner_skill": "Fish Fillet",
     "partner_skill_desc": "When activated,\nSkutlass becomes the player's katana (Attack: (2600~3900)).\nIf it does not revert to its normal form quickly, Skutlass will become incapacitated.\nIt will also become incapacitated if Iaigiri is used.",
+    "partner_skill_template": "When activated,\nSkutlass becomes the player's katana (Attack: {0}).\nIf it does not revert to its normal form quickly, Skutlass will become incapacitated.\nIt will also become incapacitated if Iaigiri is used.",
+    "partner_skill_values": [
+      [
+        "2600",
+        "2700",
+        "3000",
+        "3400",
+        "3900"
+      ]
+    ],
     "partner_skill_icon": "209",
     "nocturnal": false,
     "food_amount": 5,
@@ -14254,6 +16511,16 @@
     ],
     "partner_skill": "Seared Fish Fillet",
     "partner_skill_desc": "When activated,\nSkutlass Ignis becomes the player's katana (Attack: (2900~4200)).\nIf it does not revert to its normal form quickly, Skutlass Ignis will become incapacitated.\nIt will also become incapacitated if Iaigiri is used.",
+    "partner_skill_template": "When activated,\nSkutlass Ignis becomes the player's katana (Attack: {0}).\nIf it does not revert to its normal form quickly, Skutlass Ignis will become incapacitated.\nIt will also become incapacitated if Iaigiri is used.",
+    "partner_skill_values": [
+      [
+        "2900",
+        "3000",
+        "3300",
+        "3700",
+        "4200"
+      ]
+    ],
     "partner_skill_icon": "209",
     "nocturnal": false,
     "food_amount": 5,
@@ -14308,6 +16575,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -14361,6 +16630,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 2,
@@ -14414,6 +16685,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -14467,6 +16740,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": true,
     "food_amount": 3,
@@ -14520,6 +16795,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -14573,6 +16850,8 @@
     ],
     "partner_skill": "Slime Body",
     "partner_skill_desc": "Can be ridden.\nCan jump high into the air while mounted.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 3,
@@ -14626,6 +16905,16 @@
     ],
     "partner_skill": "Enchant",
     "partner_skill_desc": "While in party,\nDark Pals drop (40~80)% more items when defeated. (Does not stack)",
+    "partner_skill_template": "While in party,\nDark Pals drop {0}% more items when defeated. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "14",
     "nocturnal": false,
     "food_amount": 2,
@@ -14679,6 +16968,8 @@
     ],
     "partner_skill": "Bat Backup",
     "partner_skill_desc": "While in party,\nappears near the player.\nAutomatically picks up nearby items.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": false,
     "food_amount": 2,
@@ -14732,6 +17023,8 @@
     ],
     "partner_skill": "Bat Backup",
     "partner_skill_desc": "While in party,\nappears near the player.\nAutomatically picks up nearby items.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "11",
     "nocturnal": false,
     "food_amount": 2,
@@ -14785,6 +17078,8 @@
     ],
     "partner_skill": "Mad Eye Lunge",
     "partner_skill_desc": "When activated,\nEye of Cthulhu charges and attacks targeted enemy.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "1",
     "nocturnal": true,
     "food_amount": 2,
@@ -14838,6 +17133,16 @@
     ],
     "partner_skill": "Demonic Sight",
     "partner_skill_desc": "While in party,\nincreases Attack of Dark Pals by (15~30)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nincreases Attack of Dark Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 2,
@@ -14891,6 +17196,8 @@
     ],
     "partner_skill": "Resurrection",
     "partner_skill_desc": "While fighting together,\nwhen Gildra is incapacitated, it revives with its Hunger reduced to 0.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 6,
@@ -14945,6 +17252,8 @@
     ],
     "partner_skill": "Charming Fish",
     "partner_skill_desc": "Can be ridden to travel on water.\nWhile in party,\nmakes it easier to fish up talented Pals. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 6,
@@ -14998,6 +17307,16 @@
     ],
     "partner_skill": "Shocking Fish",
     "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by (5~20)%.\nWhile in party,\nmakes it easier to fish up talented Pals. (Does not stack)",
+    "partner_skill_template": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by {0}%.\nWhile in party,\nmakes it easier to fish up talented Pals. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "5",
+        "7",
+        "10",
+        "14",
+        "20"
+      ]
+    ],
     "partner_skill_icon": "19",
     "nocturnal": false,
     "food_amount": 6,
@@ -15052,6 +17371,16 @@
     ],
     "partner_skill": "Untainted Maiden",
     "partner_skill_desc": "While in party,\nincreases the player's Attack by (30~80)% if all Pals in party are different species.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nincreases the player's Attack by {0}% if all Pals in party are different species.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "30",
+        "40",
+        "50",
+        "60",
+        "80"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -15106,6 +17435,16 @@
     ],
     "partner_skill": "Charging Shell",
     "partner_skill_desc": "While in party, the player's attacks inflict Electrify (2~6). (Does not stack)",
+    "partner_skill_template": "While in party, the player's attacks inflict Electrify {0}. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -15159,6 +17498,16 @@
     ],
     "partner_skill": "Grounding Shell",
     "partner_skill_desc": "While in party,\nplayer and party Pals take (15~30)% less Water damage, and are immune to Soak. (Does not stack)",
+    "partner_skill_template": "While in party,\nplayer and party Pals take {0}% less Water damage, and are immune to Soak. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 4,
@@ -15213,6 +17562,16 @@
     ],
     "partner_skill": "Lantern Enchantment",
     "partner_skill_desc": "While in party,\nthe player's arrows explode on contact, dealing additional damage equal to (15~30)% of the player's attack damage.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nthe player's arrows explode on contact, dealing additional damage equal to {0}% of the player's attack damage.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "18",
+        "21",
+        "25",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 7,
@@ -15267,6 +17626,16 @@
     ],
     "partner_skill": "Yokozuna's Presence",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nplayer and party Pals take (15~30)% less Electric damage and are immune to Electrify. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nplayer and party Pals take {0}% less Electric damage and are immune to Electrify. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "17",
+        "20",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 6,
@@ -15320,6 +17689,16 @@
     ],
     "partner_skill": "Entangling Tongue",
     "partner_skill_desc": "While in party,\nwhen the player performs a dodge roll or dodge step, Carnibora creates a whirlwind that deals damage to enemies it touches (Grass / Power: (40~80)). (Does not stack)",
+    "partner_skill_template": "While in party,\nwhen the player performs a dodge roll or dodge step, Carnibora creates a whirlwind that deals damage to enemies it touches (Grass / Power: {0}). (Does not stack)",
+    "partner_skill_values": [
+      [
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "11",
     "nocturnal": false,
     "food_amount": 7,
@@ -15373,6 +17752,8 @@
     ],
     "partner_skill": "Fluffy Flutterer",
     "partner_skill_desc": "While in party,\nincreases the capture rate of Pals afflicted with Freeze. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -15426,6 +17807,8 @@
     ],
     "partner_skill": "Fuzzy Fairy",
     "partner_skill_desc": "While in party,\nincreases the capture rate of Pals afflicted with Ivy-Covered. (Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -15479,6 +17862,8 @@
     ],
     "partner_skill": "Magical Twin Powers",
     "partner_skill_desc": "While at a base,\nincreases the Watering Work Suitability Level for all other Base Pals by +1.\n(Does not stack)",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 3,
@@ -15532,6 +17917,16 @@
     ],
     "partner_skill": "Phantasmal Arcana",
     "partner_skill_desc": "While in party,\nwhen the player attacks an enemy afflicted with Burn, the enemy creates flames around itself, dealing continuous damage equal to (15~30)% of the player's attack damage to enemies that come into contact with them. (Does not stack.)",
+    "partner_skill_template": "While in party,\nwhen the player attacks an enemy afflicted with Burn, the enemy creates flames around itself, dealing continuous damage equal to {0}% of the player's attack damage to enemies that come into contact with them. (Does not stack.)",
+    "partner_skill_values": [
+      [
+        "15",
+        "18",
+        "21",
+        "24",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 8,
@@ -15586,6 +17981,16 @@
     ],
     "partner_skill": "Flower Dance",
     "partner_skill_desc": "While in party,\nextends the invincibility period during dodge rolls and dodge steps by (15~30)%.\n(Does not stack)",
+    "partner_skill_template": "While in party,\nextends the invincibility period during dodge rolls and dodge steps by {0}%.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "15",
+        "20",
+        "23",
+        "27",
+        "30"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 6,
@@ -15639,6 +18044,16 @@
     ],
     "partner_skill": "Long-Sleeved Hurray",
     "partner_skill_desc": "While in party,\nreduces the Partner Skill cooldowns for other party Pals by (10~50)%. (Does not stack)",
+    "partner_skill_template": "While in party,\nreduces the Partner Skill cooldowns for other party Pals by {0}%. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "10",
+        "15",
+        "20",
+        "30",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -15692,6 +18107,16 @@
     ],
     "partner_skill": "Glorious Mist",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nthe player's attacks inflict Soak (2~6).\n(Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nthe player's attacks inflict Soak {0}.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,
@@ -15746,6 +18171,16 @@
     ],
     "partner_skill": "Azure Sovereign",
     "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal's Attack increases by (4~8)% for each other Dragon Pal in your party.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal's Attack increases by {0}% for each other Dragon Pal in your party.",
+    "partner_skill_values": [
+      [
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -15800,6 +18235,16 @@
     ],
     "partner_skill": "Selfless Discipline",
     "partner_skill_desc": "This Pal's Attack and Defense increase by (2~6)% for each other Grass Pal in your party.",
+    "partner_skill_template": "This Pal's Attack and Defense increase by {0}% for each other Grass Pal in your party.",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 7,
@@ -15853,6 +18298,16 @@
     ],
     "partner_skill": "Mother Nature's Menace",
     "partner_skill_desc": "When activated,\nElgrove changes the player's attack type to Grass and increases Attack by (30~50)%.",
+    "partner_skill_template": "When activated,\nElgrove changes the player's attack type to Grass and increases Attack by {0}%.",
+    "partner_skill_values": [
+      [
+        "30",
+        "35",
+        "40",
+        "45",
+        "50"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -15906,6 +18361,8 @@
     ],
     "partner_skill": "Father Winter's Threat",
     "partner_skill_desc": "While in party,\ngrants the player the ability to Freeze enemies afflicted with Soak in one strike.",
+    "partner_skill_template": null,
+    "partner_skill_values": [],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -15959,6 +18416,16 @@
     ],
     "partner_skill": "Spore Stalwart",
     "partner_skill_desc": "While in party,\nwhen the player attacks an enemy afflicted with Ivy-Covered, the enemy explodes, dealing additional damage equal to (40~60)% of the player's attack damage. (Does not stack)\nAlso grants immunity to the World Tree's Explosive Spores to both the player and their Pals.",
+    "partner_skill_template": "While in party,\nwhen the player attacks an enemy afflicted with Ivy-Covered, the enemy explodes, dealing additional damage equal to {0}% of the player's attack damage. (Does not stack)\nAlso grants immunity to the World Tree's Explosive Spores to both the player and their Pals.",
+    "partner_skill_values": [
+      [
+        "40",
+        "44",
+        "48",
+        "52",
+        "60"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 9,
@@ -16012,6 +18479,16 @@
     ],
     "partner_skill": "Liberated Pterosaur",
     "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal's Attack and Movement Speed increase by (2~6)% for each other Dragonor Dark Pal in your party.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal's Attack and Movement Speed increase by {0}% for each other Dragonor Dark Pal in your party.",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": true,
     "food_amount": 9,
@@ -16066,6 +18543,16 @@
     ],
     "partner_skill": "Resentful Pterosaur",
     "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal's Attack and Movement Speed increase by (2~6)% or each other Dragon or Fire Pal in your party.\n(Excluding Eidrolon Ignis)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal's Attack and Movement Speed increase by {0}% or each other Dragon or Fire Pal in your party.\n(Excluding Eidrolon Ignis)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": "18",
     "nocturnal": false,
     "food_amount": 9,
@@ -16120,6 +18607,16 @@
     ],
     "partner_skill": "Mist Stalwart",
     "partner_skill_desc": "When activated,\nthe player's attacks inflict Poison (2~6).\nWhile in party,\ngrants the player and party Pals immunity to Poison, and nullifies the effects of toxic gas in the World Tree area.\n(Does not stack)",
+    "partner_skill_template": "When activated,\nthe player's attacks inflict Poison {0}.\nWhile in party,\ngrants the player and party Pals immunity to Poison, and nullifies the effects of toxic gas in the World Tree area.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": true,
     "food_amount": 9,
@@ -16174,6 +18671,16 @@
     ],
     "partner_skill": "Stage Combat",
     "partner_skill_desc": "While in party, the player's attacks inflict Burn (2~6).\n(Does not stack)",
+    "partner_skill_template": "While in party, the player's attacks inflict Burn {0}.\n(Does not stack)",
+    "partner_skill_values": [
+      [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    ],
     "partner_skill_icon": null,
     "nocturnal": false,
     "food_amount": 8,
@@ -16233,6 +18740,16 @@
     ],
     "partner_skill": "Indestructible Fortress",
     "partner_skill_desc": "Can be ridden.\nWhile in party,\nplayer and party Pals take (60~80)% less damage from explosive attacks, and are immune to Stun. (Does not stack)",
+    "partner_skill_template": "Can be ridden.\nWhile in party,\nplayer and party Pals take {0}% less damage from explosive attacks, and are immune to Stun. (Does not stack)",
+    "partner_skill_values": [
+      [
+        "60",
+        "65",
+        "70",
+        "75",
+        "80"
+      ]
+    ],
     "partner_skill_icon": "17",
     "nocturnal": false,
     "food_amount": 9,

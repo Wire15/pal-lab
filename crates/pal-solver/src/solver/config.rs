@@ -109,13 +109,24 @@ pub struct SolverConfig {
     pub max_breeding_steps: u32,
     /// Max solver passes / the reachability horizon (palcalc `MaxSolverIterations`, default 20).
     pub max_solver_iterations: u32,
-    /// Max wild pals usable across a plan (palcalc `MaxWildPals`, default 1).
+    /// Max wild pals usable across a single plan. palcalc's UI default
+    /// (`MaxWildPals`) is 1 — a conservative "owned pals + at most one catch"
+    /// mode. Our "include pals I don't own" mode ([`Self::include_wild`]) needs
+    /// more: a self-only-breeding legendary (Jetragon, Frostallion, …) is bred
+    /// exclusively from a same-species pair, so a passive-concentrating plan
+    /// must catch >= 2 of them. We default to 10 (only consulted when
+    /// `include_wild` is set — owned-only mode forces the budget to 0) to permit
+    /// realistic catch->breed chains while staying bounded.
     pub max_wild_pals: u32,
     /// Max irrelevant passives kept on the reduced initial owned set
     /// (palcalc `MaxInputIrrelevantPassives`, default 3).
     pub max_input_irrelevant_passives: u8,
-    /// Whether wild pals may be introduced at all (convenience gate on `max_wild_pals`).
-    pub allow_wild: bool,
+    /// "Include pals I don't own": when true, the search is seeded with one
+    /// hypothetical wild (to-be-caught) pal per wild-spawnable species, so
+    /// targets with no owned breeding path (self-only legendaries) still get
+    /// catch->breed plans. Default false (owned pals only). Gates
+    /// [`Self::max_wild_pals`] via [`Self::effective_max_wild`].
+    pub include_wild: bool,
     /// Effort ceiling in seconds; refs above this are discarded
     /// (palcalc `MaxEffort`, default 7 days).
     pub max_effort_secs: f64,
@@ -133,9 +144,9 @@ impl Default for SolverConfig {
         SolverConfig {
             max_breeding_steps: 10,
             max_solver_iterations: 20,
-            max_wild_pals: 1,
+            max_wild_pals: 10,
             max_input_irrelevant_passives: 3,
-            allow_wild: true,
+            include_wild: false,
             max_effort_secs: 7.0 * 24.0 * 3600.0,
             result_limit: 3,
             cake: CakeKind::Normal,
@@ -147,7 +158,7 @@ impl SolverConfig {
     /// Effective wild-pal budget (0 when wild pals are disabled).
     #[inline]
     pub fn effective_max_wild(&self) -> u32 {
-        if self.allow_wild {
+        if self.include_wild {
             self.max_wild_pals
         } else {
             0

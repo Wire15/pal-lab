@@ -94,6 +94,13 @@ pub struct SpeciesEntry {
     pub partner_skill: Option<String>,
     /// Partner-skill effect description, paired with `partner_skill`.
     pub partner_skill_desc: Option<String>,
+    /// Partner-skill description with `{0}`..`{N}` slot markers where a value
+    /// varies across ranks (Lv1..LvN); constants baked in. `null` when nothing
+    /// varies. Paired with `partner_skill_values`.
+    pub partner_skill_template: Option<String>,
+    /// Per-slot display values for `partner_skill_template`: outer = slot, inner
+    /// = value per rank ascending. Empty when there is no template.
+    pub partner_skill_values: Vec<Vec<String>>,
     /// Partner-skill icon key (numeric `TextureID` string) when a PNG resolves
     /// at `app/public/partner/<id>.png`; `null` -> UI shows a generic glyph.
     pub partner_skill_icon: Option<String>,
@@ -140,6 +147,8 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
         work_suitability: sp.work_suitability.to_vec(),
         partner_skill: sp.partner_skill.clone(),
         partner_skill_desc: sp.partner_skill_desc.clone(),
+        partner_skill_template: sp.partner_skill_template.clone(),
+        partner_skill_values: sp.partner_skill_values.clone(),
         partner_skill_icon: sp.partner_skill_icon.clone(),
         nocturnal: sp.nocturnal,
         food_amount: sp.food_amount,
@@ -174,12 +183,24 @@ pub struct BreedingNotes {
     pub unique_combos: Vec<UniqueCombo>,
 }
 
-/// Full detail: the list row plus breeding participation notes.
+/// One resolved level-up learnable move for the detail view: the save-side waza
+/// `id` (joins `list_active_skills`) plus the `level` it is learned at.
+#[derive(Debug, Clone, Serialize)]
+pub struct LearnMoveEntry {
+    pub id: String,
+    pub level: u16,
+}
+
+/// Full detail: the list row plus breeding participation notes and the level-up
+/// learnset (sorted by level ascending).
 #[derive(Debug, Clone, Serialize)]
 pub struct SpeciesDetail {
     #[serde(flatten)]
     pub species: SpeciesEntry,
     pub breeding: BreedingNotes,
+    /// Level-up learnable actives, sorted by level ascending; empty when the
+    /// species has no level-up rows.
+    pub learnset: Vec<LearnMoveEntry>,
 }
 
 /// Detail for one species by its internal id (`CharacterID`).
@@ -220,9 +241,16 @@ pub fn paldex_species_detail(id: String) -> Result<SpeciesDetail, String> {
         });
     }
 
+    let learnset = gd
+        .learnset(idx)
+        .iter()
+        .map(|m| LearnMoveEntry { id: m.waza_id.clone(), level: m.level })
+        .collect();
+
     Ok(SpeciesDetail {
         species: species_entry(gd, sp),
         breeding: BreedingNotes { parent_pair_count, unique_combos },
+        learnset,
     })
 }
 
@@ -498,15 +526,30 @@ mod tests {
         let mut spec = TargetSpec::new(TargetPal::Species(target));
         spec.required_passives = passives;
         let save = pal_save::read_save_dir(std::path::Path::new(&testdata_dir())).expect("save");
-        let plans: Vec<_> = run_solver(gd, &spec, &save.pals, &cfg)
+        let mut plans: Vec<_> = run_solver(gd, &spec, &save.pals, &cfg)
             .into_iter()
             .take(3)
             .collect();
         assert!(!plans.is_empty(), "expected solver plans for fixture");
-        write(
-            "solve-result.json",
-            serde_json::to_string_pretty(&plans).unwrap(),
+        // Append a wild catch->breed chain example (include_wild): a non-catchable
+        // target bred from two wild-catchable parents. Surfaces the "wild" node kind
+        // that SolverUI renders. Icelyn is a clean same-cost chain on the stable pack.
+        if let Some(icelyn) = resolve_species(gd, "Icelyn") {
+            let mut wcfg = SolverConfig::default();
+            wcfg.include_wild = true;
+            wcfg.max_breeding_steps = 4;
+            wcfg.max_solver_iterations = 4;
+            let wspec = TargetSpec::new(TargetPal::Species(icelyn));
+            if let Some(p) = run_solver(gd, &wspec, &[], &wcfg).into_iter().next() {
+                plans.push(p);
+            }
+        }
+        let solve_json = serde_json::to_string_pretty(&plans).unwrap();
+        assert!(
+            solve_json.contains("\"Wild\""),
+            "solve-result fixture must contain a wild node example (include_wild chain)",
         );
+        write("solve-result.json", solve_json);
 
         // --- Pal-dex reference fixtures (round 2) ---
         // Detail for every species so any clicked pal renders in dev; the map is

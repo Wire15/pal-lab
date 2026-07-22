@@ -25,7 +25,7 @@ pub struct SolveRequest {
     #[serde(default)]
     pub required_passives: Vec<String>,
     pub max_steps: Option<u32>,
-    pub allow_wild: Option<bool>,
+    pub include_wild: Option<bool>,
     pub max_irrelevant: Option<u8>,
 }
 
@@ -52,8 +52,8 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<Vec<BreedingPlan>, String> {
         .collect::<Result<Vec<_>, _>>()?;
 
     let mut cfg = SolverConfig::default();
-    if let Some(allow_wild) = req.allow_wild {
-        cfg.allow_wild = allow_wild;
+    if let Some(include_wild) = req.include_wild {
+        cfg.include_wild = include_wild;
     }
     if let Some(n) = req.max_steps {
         cfg.max_breeding_steps = n;
@@ -173,7 +173,7 @@ mod tests {
             target_species: "Anubis".into(),
             required_passives: vec!["Runner".into(), "PAL_Sanity_Up_1".into()],
             max_steps: Some(5),
-            allow_wild: None,
+            include_wild: None,
             max_irrelevant: None,
         };
         let plans = run(&testdata_dir(), req).expect("solve should succeed");

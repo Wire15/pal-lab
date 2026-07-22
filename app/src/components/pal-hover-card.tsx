@@ -32,6 +32,7 @@ import { PassiveStrip } from "./passive-strip";
 import { nonzeroWork, WorkGlyph } from "./work-suit";
 import { ElementBadges } from "./element";
 import { PartnerIcon } from "./partner";
+import { PartnerSkillDescription, partnerLevels } from "./partner-value";
 import { genderView, ivBand, QUALITY_TEXT, rarityTier, type RarityTier } from "../lib/ui";
 import { alphaIconUrl } from "../lib/assets";
 
@@ -350,11 +351,25 @@ function HoverCardBody({
               <div className="text-[12px] font-medium leading-snug text-amber-bright">
                 {entry.partner_skill}
               </div>
-              {entry.partner_skill_desc && (
-                <div className="mt-0.5 line-clamp-2 whitespace-pre-line text-[11px] leading-snug text-ink-dim">
-                  {entry.partner_skill_desc}
-                </div>
-              )}
+              {(() => {
+                const levels = partnerLevels(entry);
+                if (levels)
+                  return (
+                    <PartnerSkillDescription
+                      template={levels.template}
+                      values={levels.values}
+                      interactive={false}
+                      className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-ink-dim"
+                    />
+                  );
+                return (
+                  entry.partner_skill_desc && (
+                    <div className="mt-0.5 line-clamp-2 whitespace-pre-line text-[11px] leading-snug text-ink-dim">
+                      {entry.partner_skill_desc}
+                    </div>
+                  )
+                );
+              })()}
             </div>
           </div>
         </div>

@@ -4,7 +4,6 @@ import type {
   BreedingPlan,
   NamedEntry,
   PlanNode,
-  PlanSource,
   SolveRequest,
 } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
@@ -16,17 +15,6 @@ import { useAppState } from "../state";
 function countWild(node: PlanNode): number {
   const self = typeof node.source === "object" && "Wild" in node.source ? 1 : 0;
   return self + node.children.reduce((n, c) => n + countWild(c), 0);
-}
-
-function SourceTag({ source }: { source: PlanSource }) {
-  if (source === "Bred") return <Tag tone="amber">Bred</Tag>;
-  if ("Owned" in source)
-    return <Tag>Owned &middot; {source.Owned.location}</Tag>;
-  return (
-    <Tag tone="boss" className="!border-el-leaf/50 !bg-el-leaf/12 !text-el-leaf">
-      Wild &times;{source.Wild.captures}
-    </Tag>
-  );
 }
 
 /** One node of the lineage ladder: a compact card, recursively collapsible. */
@@ -41,13 +29,26 @@ function TreeNode({
 }) {
   const g = genderView(node.gender);
   const isBred = node.source === "Bred";
+  // Externally-tagged serde: read the source object's variant directly.
+  const wild =
+    typeof node.source === "object" && "Wild" in node.source
+      ? node.source.Wild
+      : null;
+  const owned =
+    typeof node.source === "object" && "Owned" in node.source
+      ? node.source.Owned
+      : null;
   const prob = probBand(node.probability);
   const hasChildren = node.children.length > 0;
 
   const card = (
     <div
       className={`flex flex-col gap-1.5 rounded-md border px-2.5 py-2 ${
-        isRoot ? "border-amber/45 bg-amber/[0.06]" : "border-line bg-panel"
+        isRoot
+          ? "border-amber/45 bg-amber/[0.06]"
+          : wild
+            ? "border-el-leaf/45 bg-el-leaf/[0.06]"
+            : "border-line bg-panel"
       }`}
     >
       <div className="flex items-center gap-2.5">
@@ -76,7 +77,28 @@ function TreeNode({
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <SourceTag source={node.source} />
+          {wild ? (
+            <>
+              <span
+                className="rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
+                title="Catch this pal in the wild"
+              >
+                Catch{wild.captures > 1 ? `\u00a0\u00d7${wild.captures}` : ""}
+              </span>
+              {wild.min_wild_level ? (
+                <span
+                  className="rounded-sm border border-el-leaf/35 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
+                  title={`Wild spawns from level ${wild.min_wild_level}`}
+                >
+                  Lv {wild.min_wild_level}+
+                </span>
+              ) : null}
+            </>
+          ) : owned ? (
+            <Tag>Owned &middot; {owned.location}</Tag>
+          ) : isBred ? (
+            <Tag tone="amber">Bred</Tag>
+          ) : null}
           {isBred && (
             <>
               <span
@@ -128,7 +150,7 @@ export default function Solver() {
   const [passiveInput, setPassiveInput] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
-  const [allowWild, setAllowWild] = useState(false);
+  const [includeWild, setIncludeWild] = useState(false);
 
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
   const [passiveList, setPassiveList] = useState<NamedEntry[]>([]);
@@ -179,7 +201,7 @@ export default function Solver() {
         target_species: species,
         required_passives: passives,
         max_steps: maxSteps,
-        allow_wild: allowWild,
+        include_wild: includeWild,
       };
       const result = await invoke<BreedingPlan[]>("solve", { saveDir, spec });
       setPlans(result);
@@ -287,7 +309,7 @@ export default function Solver() {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3">
           <label className="flex items-center gap-2 text-[13px] text-ink-dim">
             <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
               Max steps
@@ -300,15 +322,50 @@ export default function Solver() {
               onChange={(e) => setMaxSteps(Number(e.currentTarget.value))}
             />
           </label>
-          <label className="flex cursor-pointer items-center gap-2 text-[13px] text-ink-dim">
-            <input
-              type="checkbox"
-              className="h-4 w-4 accent-[var(--color-amber)]"
-              checked={allowWild}
-              onChange={(e) => setAllowWild(e.currentTarget.checked)}
-            />
-            Allow wild
-          </label>
+
+          <div className="flex flex-col gap-1.5">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+              Source pool
+            </span>
+            <div
+              className="flex flex-col overflow-hidden rounded-md border border-line"
+              role="radiogroup"
+              aria-label="Which pals the solver may draw from"
+            >
+              {[
+                { wild: false, label: "Only pals I own" },
+                { wild: true, label: "Include pals I don\u2019t own" },
+              ].map((m) => {
+                const active = includeWild === m.wild;
+                return (
+                  <button
+                    key={m.label}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setIncludeWild(m.wild)}
+                    className={`flex items-center gap-2 border-b border-line px-2.5 py-1.5 text-left text-[12px] transition-colors last:border-b-0 ${
+                      active
+                        ? "bg-raised text-amber"
+                        : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                        active ? "bg-amber" : "bg-line"
+                      }`}
+                    />
+                    {m.label}
+                  </button>
+                );
+              })}
+            </div>
+            {includeWild && (
+              <p className="text-[12px] leading-relaxed text-ink-faint">
+                Plans may include pals you&rsquo;d need to catch first.
+              </p>
+            )}
+          </div>
         </div>
 
         <button
@@ -338,7 +395,7 @@ export default function Solver() {
             <div className="font-display text-lg text-ink-dim">No path found</div>
             <p className="max-w-xs text-sm text-ink-faint">
               No breeding chain reaches that target within {maxSteps} steps. Try
-              raising max steps or allowing wild pals.
+              raising max steps or including pals you don&rsquo;t own.
             </p>
           </div>
         )}

@@ -280,6 +280,9 @@ pub struct WildPalRef {
     pub ivs: SolverIvSet,
     pub self_effort: f64,
     pub captures_required: u32,
+    /// The species' minimum wild spawn level (`PalSpecies.wild_levels.0`).
+    /// Surfaced in the plan node so the UI can show "catchable from Lv N".
+    pub min_wild_level: u16,
 }
 
 /// A bred reference: a child of two parents inheriting a target passive set.
@@ -511,6 +514,7 @@ impl WildPalRef {
             ivs: SolverIvSet::RANDOM,
             self_effort,
             captures_required: 1,
+            min_wild_level: sp.wild_levels.0 as u16,
         }
     }
 
