@@ -51,6 +51,7 @@ static class Program
 
         if (args.Contains("--discover")) { Discover(provider); return 0; }
         if (args.Contains("--discover-learnset")) { DiscoverLearnset(provider); return 0; }
+        if (args.Contains("--discover-breeding")) { DiscoverBreeding(provider); return 0; }
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -244,6 +245,49 @@ static class Program
         Console.WriteLine($"[passive-pools mutation ids] {string.Join(", ", mutMembers)}");
         Console.WriteLine($"[passive-fields] {string.Join(", ", allPassiveFields)}");
 
+        // ---- breeding boosts (TYPED extraction; see PartnerBreedingBoosts / BreedEffect) ----
+        // Discovered by effect key, never by species name, so future breeding pals are caught.
+        var breedingBoosts = new List<object>();
+        var partnerRefRows = PartnerReferencedPassiveRows(partnerParam);
+        int breedPartner = 0, breedPassive = 0;
+        // (a) partner-skill boosts per playable species (same variant->param resolution as the
+        //     desc/template path). partner_base vs partner_party from the effect's TargetType.
+        foreach (var name in species.Keys)
+        {
+            var paramKey = ResolveVariantKey(k => partnerParamByName.ContainsKey(k) && HasTemplateData(partnerParamByName[k]), "", name);
+            if (paramKey == null) continue;
+            foreach (var (effect, target, vals) in PartnerBreedingBoosts(partnerParamByName[paramKey], passiveRowByName))
+            {
+                if (vals.Count == 0) continue;
+                var kind = target == "ToBuildObject" ? "partner_base" : "partner_party";
+                breedingBoosts.Add(new { source = name, source_kind = kind, effect, values_per_rank = vals });
+                breedPartner++;
+            }
+        }
+        // (b) standalone passive boosts (e.g. Babysitter): every EMITTED passive whose row carries
+        //     a breeding effect, excluding partner-internal component rows. Flat value -> [frac].
+        foreach (var r in passiveMain.RowMap)
+        {
+            var rowKey = r.Key.Text;
+            if (partnerRefRows.Contains(rowKey) || !passives.ContainsKey(rowKey)) continue;
+            var pv = Vals(r.Value);
+            for (int i = 1; i <= 4; i++)
+            {
+                var effect = BreedEffect(StripEnum(S(pv, "EffectType" + i)));
+                if (effect == null) continue;
+                breedingBoosts.Add(new { source = rowKey, source_kind = "passive", effect, values_per_rank = new List<double> { F(pv, "EffectValue" + i) / 100.0 } });
+                breedPassive++;
+            }
+        }
+        breedingBoosts = breedingBoosts
+            .OrderBy(b => (string)GetProp(b, "source_kind"), StringComparer.Ordinal)
+            .ThenBy(b => (string)GetProp(b, "source"), StringComparer.Ordinal)
+            .ThenBy(b => (string)GetProp(b, "effect"), StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[breeding-boosts] total={breedingBoosts.Count} partner={breedPartner} passive={breedPassive}");
+        foreach (var b in breedingBoosts)
+            Console.WriteLine($"    {GetProp(b, "source_kind")} {GetProp(b, "source"),-22} {GetProp(b, "effect"),-18} = [{string.Join(", ", ((List<double>)GetProp(b, "values_per_rank")).Select(FmtNum))}]");
+
         // ---- partner-skill icons ----
         var (iconExported, iconUnresolved) = ExportPartnerIcons(provider, partnerIconIds);
         Console.WriteLine($"[partner-icons] distinctUsed={partnerIconIds.Count} exportedPng={iconExported} unresolvedTextureIds={iconUnresolved.Count}");
@@ -383,6 +427,7 @@ static class Program
             passives,
             active_skills = activeSkills,
             learnsets,
+            breeding_boosts = breedingBoosts,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -489,6 +534,29 @@ static class Program
         var sbRow = activeSkills.TryGetValue("Unique_SheepBall_Roll", out var sbo) ? sbo : null;
         Gate(sbRow != null && !string.IsNullOrEmpty((string)GetProp(sbRow, "name")),
             "active_skills missing resolvable 'Unique_SheepBall_Roll'");
+
+        // breeding boosts: the four known partner skills + Babysitter must resolve with the
+        // documented per-rank ranges (validation set for the effect-key discovery).
+        object FindBoost(string src, string eff) => breedingBoosts.FirstOrDefault(b =>
+            (string)GetProp(b, "source") == src && (string)GetProp(b, "effect") == eff);
+        List<double> BoostVals(object b) => b == null ? null : (List<double>)GetProp(b, "values_per_rank");
+        void GateBoost(string src, string eff, string kind, double lo, double hi)
+        {
+            var b = FindBoost(src, eff);
+            Gate(b != null, $"breeding boost {src}/{eff} missing");
+            if (b == null) return;
+            Gate((string)GetProp(b, "source_kind") == kind, $"{src}/{eff} kind '{GetProp(b, "source_kind")}' != {kind}");
+            var vs = BoostVals(b);
+            Gate(vs != null && vs.Count >= 1 && Math.Abs(vs.First() - lo) < 1e-6 && Math.Abs(vs.Last() - hi) < 1e-6,
+                $"{src}/{eff} range [{(vs == null ? "null" : string.Join(",", vs.Select(FmtNum)))}] != [{FmtNum(lo)}..{FmtNum(hi)}]");
+        }
+        GateBoost("Plesiosaur", "farm_speed", "partner_base", 0.20, 0.50);
+        GateBoost("ThunderFluffyBird", "incubation_speed", "partner_base", 0.20, 0.40);
+        GateBoost("NaughtyCat", "extra_egg_chance", "partner_party", 0.50, 0.75);
+        GateBoost("SakuraSaurus", "alpha_egg_chance", "partner_party", 0.35, 0.45);
+        var baby = FindBoost("MutationPal_Babysitter", "incubation_speed");
+        Gate(baby != null, "Babysitter incubation_speed boost missing");
+        Gate(FindBoost("MutationPal_Babysitter", "farm_speed") != null, "Babysitter farm_speed boost missing");
 
         // ---- summary ----
         Console.WriteLine("==== SUMMARY ====");
@@ -603,6 +671,98 @@ static class Program
         }
     }
 
+    // Reusable discovery pass (`--discover-breeding`): locate the TYPED sources of
+    // breeding/egg/incubation effects without parsing description text. Dumps (1) every
+    // distinct EPalPassiveSkillEffectType value used across DT_PassiveSkill_Main, flagging
+    // breeding-relevant ones by keyword; (2) every passive carrying such an effect; (3) each
+    // partner-skill param row's schema, its trigger condition, and the referenced
+    // DT_PassiveSkill_Main rows' effect types + per-rank values so the emit path can classify
+    // by effect key (not species name).
+    static void DiscoverBreeding(IFileProvider provider)
+    {
+        var passiveMain = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PassiveSkill_Main");
+        var partnerParam = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PartnerSkillParameter");
+        var passiveRowByName = new Dictionary<string, FStructFallback>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pr in passiveMain.RowMap) passiveRowByName[pr.Key.Text] = pr.Value;
+
+        bool IsBreedEff(string et) => et != null && (
+            et.Contains("Breed", StringComparison.OrdinalIgnoreCase)
+            || et.Contains("Egg", StringComparison.OrdinalIgnoreCase)
+            || et.Contains("Incubat", StringComparison.OrdinalIgnoreCase)
+            || et.Contains("Hatch", StringComparison.OrdinalIgnoreCase));
+
+        // (1) every distinct EffectType across DT_PassiveSkill_Main
+        var effTypes = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        foreach (var r in passiveMain.RowMap)
+        {
+            var v = Vals(r.Value);
+            for (int i = 1; i <= 4; i++)
+            {
+                var et = StripEnum(S(v, "EffectType" + i));
+                if (string.IsNullOrEmpty(et) || et == "None" || et == "no") continue;
+                effTypes[et] = effTypes.TryGetValue(et, out var c) ? c + 1 : 1;
+            }
+        }
+        Console.WriteLine($"[breeding-discover] distinct EffectType values in DT_PassiveSkill_Main ({effTypes.Count}):");
+        foreach (var kv in effTypes)
+            Console.WriteLine($"    {(IsBreedEff(kv.Key) ? "**BREED**" : "         ")} {kv.Value,4}  {kv.Key}");
+
+        // (2) every passive row carrying a breeding-relevant effect
+        Console.WriteLine("[breeding-discover] passive rows with breeding effect:");
+        foreach (var r in passiveMain.RowMap)
+        {
+            var v = Vals(r.Value);
+            var hits = new List<string>();
+            for (int i = 1; i <= 4; i++)
+            {
+                var et = StripEnum(S(v, "EffectType" + i));
+                if (IsBreedEff(et)) hits.Add($"{et}={FmtNum(F(v, "EffectValue" + i))}(tgt={StripEnum(S(v, "TargetType" + i))})");
+            }
+            if (hits.Count > 0) Console.WriteLine($"    row '{r.Key.Text}': {string.Join(", ", hits)}");
+        }
+
+        // (3) partner-skill param rows: schema + trigger + referenced passive effect types
+        Console.WriteLine($"[breeding-discover] DT_PartnerSkillParameter rows={partnerParam.RowMap.Count}");
+        int shownSchema = 0;
+        foreach (var r in partnerParam.RowMap)
+        {
+            var row = r.Value;
+            if (shownSchema++ < 3)
+                Console.WriteLine($"    SCHEMA row '{r.Key.Text}': props=[{string.Join(", ", row.Properties.Select(p => p.Name.Text))}]");
+            // Collect referenced passive rows across both arrays, resolve their effect types.
+            var refBreed = new List<string>();
+            foreach (var (arrayField, innerField) in new[] { ("PassiveSkills", "SkillAndParametersArray"), ("TextReferencePassiveSkills", "PassiveSkillIds") })
+            {
+                var ranks = AsArray(Prop(row, arrayField));
+                if (ranks == null) continue;
+                foreach (var rankEl in ranks.Properties)
+                {
+                    var inner = AsArray(Prop(AsStruct(rankEl.GenericValue), innerField));
+                    if (inner == null) continue;
+                    foreach (var entry in inner.Properties)
+                    {
+                        var es = AsStruct(entry.GenericValue);
+                        var key = FNameText(Prop(es, "Key")) ?? FNameText(Prop(AsStruct(Prop(es, "SkillName")), "Key"));
+                        if (key == null || !passiveRowByName.TryGetValue(key, out var prow)) continue;
+                        var pv = Vals(prow);
+                        for (int i = 1; i <= 4; i++)
+                        {
+                            var et = StripEnum(S(pv, "EffectType" + i));
+                            if (IsBreedEff(et)) refBreed.Add($"{arrayField}->{key}:{et}={FmtNum(F(pv, "EffectValue" + i))}(tgt={StripEnum(S(pv, "TargetType" + i))})");
+                        }
+                    }
+                }
+            }
+            // Trigger condition candidates (any field whose name hints at base/party/timing).
+            var trig = row.Properties
+                .Where(p => { var n = p.Name.Text; return n.Contains("Trigger") || n.Contains("Condition") || n.Contains("Timing") || n.Contains("Base") || n.Contains("Party") || n.Contains("Type"); })
+                .Select(p => $"{p.Name.Text}={StripEnum(p.Tag?.GenericValue?.ToString())}")
+                .ToList();
+            if (refBreed.Count > 0)
+                Console.WriteLine($"    BREED-PARTNER '{r.Key.Text}': trigger=[{string.Join(", ", trig)}] | {string.Join(" | ", refBreed.Distinct())}");
+        }
+    }
+
     static string DumpStruct(object v)
     {
         var s = AsStruct(v);
@@ -636,6 +796,85 @@ static class Program
         var active = AsStruct(Prop(param, "ActiveSkill"));
         return AsArray(Prop(active, "ActiveSkill_MainValueByRank"))?.Properties.Count > 0
             || AsArray(Prop(active, "ActiveSkill_OverWriteEffectTimeByRank"))?.Properties.Count > 0;
+    }
+
+    // ---- breeding-boost extraction (typed, source-agnostic) ----
+    // Breeding/egg/incubation boosts live as TYPED effects on DT_PassiveSkill_Main rows
+    // (EPalPassiveSkillEffectType), never as parsed description text. Discovered set (build
+    // 24181527, see `--discover-breeding`): BreedSpeed / BreedSpeed_InBaseCamp (farm egg-
+    // production speed), PalEggHatchingSpeed (incubation), EggObtainExtraEgg (extra-egg
+    // chance), EggAlphaConversion (alpha-egg chance, cosmetic). Partner skills grant these
+    // via their per-rank PassiveSkills[] refs; passives (e.g. Babysitter) carry them inline.
+    // The frozen `effect` contract collapses the five raw types onto four buckets.
+    static readonly Dictionary<string, string> BreedEffectMap = new(StringComparer.Ordinal)
+    {
+        ["BreedSpeed"] = "farm_speed",
+        ["BreedSpeed_InBaseCamp"] = "farm_speed",
+        ["PalEggHatchingSpeed"] = "incubation_speed",
+        ["EggObtainExtraEgg"] = "extra_egg_chance",
+        ["EggAlphaConversion"] = "alpha_egg_chance",
+    };
+    static string BreedEffect(string et) => et != null && BreedEffectMap.TryGetValue(et, out var e) ? e : null;
+
+    // Per-rank breeding boosts granted by a partner-skill param row. Scans PassiveSkills[]
+    // (the passives ACTUALLY granted per rank — TextReferencePassiveSkills[] is display-only)
+    // and, per breeding effect type, collects the fraction value at each rank in ascending
+    // rank order. `target` is the raw TargetType (ToBuildObject = at-base, ToTrainer = in-party)
+    // that drives partner_base vs partner_party. Empty for non-breeding partner skills.
+    static List<(string effect, string target, List<double> valsPerRank)> PartnerBreedingBoosts(
+        FStructFallback param, Dictionary<string, FStructFallback> passiveRows)
+    {
+        // effect-type -> (raw target, per-rank fractions)
+        var acc = new Dictionary<string, (string target, List<double> vals)>(StringComparer.Ordinal);
+        var ranks = AsArray(Prop(param, "PassiveSkills"));
+        if (ranks != null)
+            foreach (var rankEl in ranks.Properties) // rank-1..N ascending
+            {
+                var inner = AsArray(Prop(AsStruct(rankEl.GenericValue), "SkillAndParametersArray"));
+                if (inner == null) continue;
+                foreach (var entry in inner.Properties)
+                {
+                    var es = AsStruct(entry.GenericValue);
+                    var key = FNameText(Prop(es, "Key")) ?? FNameText(Prop(AsStruct(Prop(es, "SkillName")), "Key"));
+                    if (key == null || !passiveRows.TryGetValue(key, out var prow)) continue;
+                    var pv = Vals(prow);
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        var et = StripEnum(S(pv, "EffectType" + i));
+                        if (BreedEffect(et) == null) continue;
+                        var tgt = StripEnum(S(pv, "TargetType" + i));
+                        if (!acc.TryGetValue(et, out var e)) { e = (tgt, new List<double>()); acc[et] = e; }
+                        e.vals.Add(F(pv, "EffectValue" + i) / 100.0);
+                        acc[et] = e;
+                    }
+                }
+            }
+        return acc.Select(kv => (BreedEffect(kv.Key), kv.Value.target, kv.Value.vals)).ToList();
+    }
+
+    // Every DT_PassiveSkill_Main row key referenced by ANY partner-skill param's PassiveSkills[]
+    // (the partner-internal component rows). Excluded from the standalone-passive breeding pass
+    // so partner boosts aren't double-counted as passives.
+    static HashSet<string> PartnerReferencedPassiveRows(UDataTable partnerParam)
+    {
+        var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pr in partnerParam.RowMap)
+        {
+            var ranks = AsArray(Prop(pr.Value, "PassiveSkills"));
+            if (ranks == null) continue;
+            foreach (var rankEl in ranks.Properties)
+            {
+                var inner = AsArray(Prop(AsStruct(rankEl.GenericValue), "SkillAndParametersArray"));
+                if (inner == null) continue;
+                foreach (var entry in inner.Properties)
+                {
+                    var es = AsStruct(entry.GenericValue);
+                    var key = FNameText(Prop(es, "Key")) ?? FNameText(Prop(AsStruct(Prop(es, "SkillName")), "Key"));
+                    if (key != null) set.Add(key);
+                }
+            }
+        }
+        return set;
     }
     static readonly Regex TplRefPassive = new(@"\{ReferencePassive(\d+)_EffectValue(\d+)\}");
     static readonly Regex TplPassive = new(@"\{Passive(\d+)_EffectValue(\d+)\}");

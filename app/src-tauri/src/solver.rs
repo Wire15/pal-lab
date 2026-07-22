@@ -12,8 +12,8 @@ use std::path::Path;
 use pal_data::gamedata::PassiveTier;
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve_with_catching, BreedingPlan, Catching, ModeResult,
-    SolverConfig, TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve_with_catching, BreedingPlan, BreedingSetup, CakeKind,
+    Catching, IvModel, ModeResult, SolverConfig, TargetPal, TargetSpec,
 };
 use serde::{Deserialize, Serialize};
 
@@ -32,6 +32,35 @@ pub struct SolveRequest {
     /// only when the target is unreachable owned-only.
     #[serde(default)]
     pub catching: Catching,
+    /// IV floor thresholds (0-100; 0 = don't-care). Maps to `TargetSpec.iv_*`.
+    /// Absent => all don't-care (today's behavior).
+    #[serde(default)]
+    pub ivs: Option<IvThresholds>,
+    /// Breeding cake token (`"normal"`/`"mushroom"`/`"vegetable"`/
+    /// `"deluxe_vegetable"`/`"special"`, case/`_`-`-`-space-insensitive). Absent
+    /// => `Normal` (no cake).
+    #[serde(default)]
+    pub cake: Option<String>,
+    /// IV inherit-count model (`"empirical"` default / `"cdo"`). Absent =>
+    /// `Empirical`.
+    #[serde(default)]
+    pub iv_model: Option<IvModel>,
+    /// Breeding-farm setup multipliers (farm-speed / incubation / extra-egg /
+    /// world egg-hatch hours). Absent => neutral vanilla setup.
+    #[serde(default)]
+    pub setup: Option<BreedingSetup>,
+}
+
+/// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
+/// is a 0-100 minimum; `0` means "don't care". Missing keys default to 0.
+#[derive(Debug, Clone, Deserialize)]
+pub struct IvThresholds {
+    #[serde(default)]
+    pub hp: u8,
+    #[serde(default)]
+    pub attack: u8,
+    #[serde(default)]
+    pub defense: u8,
 }
 
 /// Response for the [`solve`] command: the plans plus whether a `BreedingOnly`
@@ -72,11 +101,25 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
         cfg.max_breeding_steps = n;
         cfg.max_solver_iterations = n;
     }
+    if let Some(cake) = &req.cake {
+        cfg.cake = cake.parse::<CakeKind>()?;
+    }
+    if let Some(model) = req.iv_model {
+        cfg.iv_model = model;
+    }
+    if let Some(setup) = req.setup {
+        cfg.setup = setup;
+    }
 
     let mut spec = TargetSpec::new(TargetPal::Species(target_species));
     spec.required_passives = required_passives;
     if let Some(m) = req.max_irrelevant {
         spec.max_irrelevant = m;
+    }
+    if let Some(ivs) = &req.ivs {
+        spec.iv_hp = ivs.hp;
+        spec.iv_attack = ivs.attack;
+        spec.iv_defense = ivs.defense;
     }
 
     let save =
@@ -94,6 +137,26 @@ pub async fn solve(save_dir: String, spec: SolveRequest) -> Result<SolveResponse
     tauri::async_runtime::spawn_blocking(move || run(&save_dir, spec))
         .await
         .map_err(|e| format!("solver task panicked: {e}"))?
+}
+
+/// World-setting values the Solver view needs (currently just egg hatch time).
+/// `egg_hatch_hours` is `null` when the save has no `WorldOption.sav` (dedicated
+/// servers) or the property is absent — the UI falls back to the vanilla 72h.
+#[derive(Debug, Clone, Serialize)]
+pub struct WorldOptionsResponse {
+    pub egg_hatch_hours: Option<f64>,
+}
+
+/// Scan `<save_dir>/WorldOption.sav` for breeding-relevant world settings.
+/// Never errors on a missing file (returns `egg_hatch_hours: null`); only a
+/// present-but-corrupt save surfaces an error.
+#[tauri::command]
+pub fn get_world_options(save_dir: String) -> Result<WorldOptionsResponse, String> {
+    let opts = pal_save::read_world_options(Path::new(&save_dir))
+        .map_err(|e| format!("reading world options: {e}"))?;
+    Ok(WorldOptionsResponse {
+        egg_hatch_hours: opts.and_then(|o| o.egg_hatch_hours),
+    })
 }
 
 /// Every species as `{id, name}`, in interned-index order, for the target input.
@@ -191,6 +254,10 @@ mod tests {
             include_wild: None,
             max_irrelevant: None,
             catching: Catching::default(),
+            ivs: None,
+            cake: None,
+            iv_model: None,
+            setup: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -224,6 +291,10 @@ mod tests {
             include_wild: Some(true),
             max_irrelevant: None,
             catching: Catching::BreedingOnly,
+            ivs: None,
+            cake: None,
+            iv_model: None,
+            setup: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -234,5 +305,56 @@ mod tests {
         for p in &resp.plans {
             assert!(!has_wild(&p.root), "breeding_only owned-reachable plan has no wild nodes");
         }
+    }
+
+    /// ivs + cake set on the request must map through `run` (backward-compatible
+    /// deserialize path) and still produce plans. Anubis IVs are unknown on the
+    /// bred target, but modest thresholds with a Mushroom IV-floor cake keep it
+    /// reachable — proving the fields wire into `TargetSpec`/`SolverConfig`.
+    #[test]
+    fn maps_ivs_and_cake_from_request() {
+        let req = SolveRequest {
+            target_species: "Anubis".into(),
+            required_passives: vec!["Runner".into()],
+            max_steps: Some(5),
+            include_wild: None,
+            max_irrelevant: None,
+            catching: Catching::default(),
+            ivs: Some(IvThresholds { hp: 3, attack: 3, defense: 0 }),
+            cake: Some("mushroom".into()),
+            iv_model: Some(IvModel::Empirical),
+            setup: Some(BreedingSetup {
+                farm_speed_bonus: 0.5,
+                incubation_reduction: 0.2,
+                extra_egg_chance: 0.0,
+                egg_hatch_hours: 24.0,
+            }),
+        };
+        let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
+        assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
+        eprintln!(
+            "ivs+cake solve: {} plan(s); best {} steps, {:.0}s",
+            resp.plans.len(),
+            resp.plans[0].total_steps,
+            resp.plans[0].total_time_secs
+        );
+    }
+
+    /// `get_world_options` reads the real WorldOption.sav fixture (scanned egg
+    /// hatch time) and returns `null` for a save without one.
+    #[test]
+    fn get_world_options_reads_and_defaults() {
+        let wo_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../testdata/worldoption");
+        if wo_dir.join("WorldOption.sav").is_file() {
+            let resp = get_world_options(wo_dir.to_string_lossy().into_owned())
+                .expect("world options parse");
+            let hours = resp.egg_hatch_hours.expect("fixture carries egg hatch hours");
+            assert!(hours > 0.0 && hours <= 240.0, "plausible hours: {hours}");
+            eprintln!("get_world_options scanned egg_hatch_hours = {hours}");
+        }
+        // A save dir with no WorldOption.sav => null (never an error).
+        let none = get_world_options(testdata_dir()).expect("missing file is not an error");
+        assert!(none.egg_hatch_hours.is_none());
     }
 }

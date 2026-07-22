@@ -11,7 +11,7 @@ pub mod results;
 pub mod spec;
 pub mod working_set;
 
-pub use config::{CakeKind, SolverConfig};
+pub use config::{BreedingSetup, CakeKind, IvModel, SolverConfig};
 pub use engine::{build_initial_content, solve, solve_with_catching, Catching, ModeResult};
 pub use refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,

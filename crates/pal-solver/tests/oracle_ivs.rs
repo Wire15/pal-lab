@@ -63,3 +63,26 @@ fn normalized_iv_defaults_match_gameconstants() {
         assert!(close(iv_inherit_probability(n, &w), exp), "iv_direct[{n}]");
     }
 }
+
+/// The `IvModel::Cdo` model swaps `talent_inherit` for the game-file
+/// `combi_talent_inherit_num` weights. The shipped `[3,2,1]` array normalizes to
+/// 50/33.3/16.7% (vs the empirical 50/25/25%), and the pack must carry `[3,2,1]`.
+#[test]
+fn cdo_iv_model_derives_from_game_settings() {
+    use pal_data::GameData;
+    let gd = GameData::get();
+    let cdo_raw = &gd.game_settings().combi_talent_inherit_num;
+    assert_eq!(cdo_raw, &vec![3u32, 2, 1], "pack CDO talent weights");
+
+    let cdo = InheritanceWeights {
+        talent_inherit: cdo_raw.iter().map(|&w| w as f32).collect(),
+        ..gd.inheritance().clone()
+    };
+    // 3/6, 2/6, 1/6.
+    for (n, exp) in [(1, 0.5), (2, 1.0 / 3.0), (3, 1.0 / 6.0)] {
+        assert!(close(iv_inherit_probability(n, &cdo), exp), "cdo iv_direct[{n}]");
+    }
+    // Empirical and Cdo must genuinely differ at n=2/n=3.
+    let emp = InheritanceWeights::default();
+    assert!((iv_inherit_probability(2, &cdo) - iv_inherit_probability(2, &emp)).abs() > 1e-3);
+}

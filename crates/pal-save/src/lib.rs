@@ -6,6 +6,9 @@ pub mod archive;
 pub mod characters;
 pub mod compress;
 pub mod gvas;
+pub mod worldoption;
+
+pub use worldoption::WorldOptions;
 
 use std::collections::HashSet;
 use std::path::Path;
@@ -220,4 +223,19 @@ fn to_player_infos(entries: &[characters::PlayerEntry]) -> Vec<PlayerInfo> {
 fn read_and_decompress(path: &Path) -> Result<Vec<u8>, SaveError> {
     let raw = std::fs::read(path)?;
     compress::decompress_sav(&raw)
+}
+
+/// Read `<save_dir>/WorldOption.sav` for the world's breeding-relevant option
+/// values. Returns `Ok(None)` when the file is absent (dedicated servers keep
+/// world settings elsewhere and ship no `WorldOption.sav`), so callers fall back
+/// to vanilla defaults. `Err` only on a present-but-corrupt file.
+pub fn read_world_options(
+    save_dir: impl AsRef<Path>,
+) -> Result<Option<WorldOptions>, SaveError> {
+    let path = save_dir.as_ref().join("WorldOption.sav");
+    if !path.exists() {
+        return Ok(None);
+    }
+    let blob = read_and_decompress(&path)?;
+    Ok(Some(worldoption::parse_world_options(&blob)?))
 }

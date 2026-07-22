@@ -18,10 +18,10 @@ use pal_solver::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
     prob_inherited_target_passives_forced,
 };
-use pal_solver::solver::config::{CakeKind, SolverConfig};
+use pal_solver::solver::config::{BreedingSetup, CakeKind, SolverConfig};
 use pal_solver::solver::refs::{
     incubation_secs, BredPalRef, OwnedInstance, OwnedPalRef, PalRef, SolverIvSet,
-    AVG_BREEDING_TIME_SECS,
+    AVG_BREEDING_TIME_SECS, DEFAULT_EGG_HATCH_HOURS,
 };
 use pal_solver::solver::results::BreedingPlan;
 use pal_solver::solver::spec::{TargetPal, TargetSpec};
@@ -111,7 +111,8 @@ fn vegetable_halves_breeding_time() {
     assert_eq!(normal.avg_required_breedings, 2);
     let veg = normal.with_egg_multiplier(gd, CakeKind::Vegetable.egg_multiplier());
 
-    let incubation = incubation_secs(gd.species_at(0).unwrap().rarity);
+    let incubation =
+        incubation_secs(gd.species_at(0).unwrap().rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
     // Only the breeding-time term divides by 2; incubation (added once with
     // MultipleIncubators) is unchanged.
     let normal_breeding = normal.self_effort - incubation;
@@ -254,12 +255,17 @@ fn golden_normal_plan_and_special_collapse() {
     let mut spec = TargetSpec::new(TargetPal::Species(anubis));
     spec.required_passives = vec![swift, runner];
 
-    // Golden: Normal cake, no wild pals (deterministic min-effort plan).
-    let normal_cfg = SolverConfig { include_wild: false, ..SolverConfig::default() };
+    // Golden: Normal cake, no wild pals (deterministic min-effort plan). Pin the
+    // world egg-hatch time to 2h via BreedingSetup so the golden effort is
+    // calibrated in the original regime (independent of the 72h vanilla default)
+    // — this also exercises setup threading through a full solve.
+    let regime = BreedingSetup { egg_hatch_hours: 2.0, ..BreedingSetup::default() };
+    let normal_cfg =
+        SolverConfig { include_wild: false, setup: regime, ..SolverConfig::default() };
     let normal = solve(gd, &spec, &save.pals, &normal_cfg);
     assert!(!normal.is_empty(), "Normal cake must find a plan");
     let n0 = &normal[0];
-    // Pinned golden: 7-step, ~9h20m (33600s) best plan, no cakes.
+    // Pinned golden: 7-step, ~9h20m (33600s) best plan at the 2h hatch regime.
     assert_eq!(n0.total_steps, 7, "golden step count");
     assert!(
         (n0.total_time_secs - 33_600.0).abs() < 120.0,
@@ -275,8 +281,12 @@ fn golden_normal_plan_and_special_collapse() {
     // Special cake: forces X=4, collapsing the multi-passive path. The best
     // plan's root success probability jumps to the ceiling and the plan reports
     // the cakes it needs.
-    let special_cfg =
-        SolverConfig { cake: CakeKind::Special, include_wild: false, ..SolverConfig::default() };
+    let special_cfg = SolverConfig {
+        cake: CakeKind::Special,
+        include_wild: false,
+        setup: regime,
+        ..SolverConfig::default()
+    };
     let special = solve(gd, &spec, &save.pals, &special_cfg);
     assert!(!special.is_empty(), "Special cake must find a plan");
     let s0 = &special[0];

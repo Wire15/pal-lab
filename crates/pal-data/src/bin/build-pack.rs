@@ -18,8 +18,9 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 use pal_data::gamedata::{
-    ActiveSkill, BreedingEntry, ElementKind, GameSettings, InheritanceWeights, LearnMove, Pack,
-    PalSpecies, ParentGender, PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
+    ActiveSkill, BreedingBoost, BreedingBoostSource, BreedingEffect, BreedingEntry, ElementKind,
+    GameSettings, InheritanceWeights, LearnMove, Pack, PalSpecies, ParentGender, PassiveEffect,
+    PassiveSkill, PassiveTier, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -121,6 +122,20 @@ struct RawExtract {
     /// each already sorted by level ascending in the extraction.
     #[serde(default)]
     learnsets: HashMap<String, Vec<RawLearnMove>>,
+    /// Structured breeding boosts (`breeding_boosts`), already deterministically
+    /// ordered by the extractor. Enum fields parse straight from the snake_case JSON.
+    #[serde(default)]
+    breeding_boosts: Vec<RawBreedingBoost>,
+}
+
+/// One extraction breeding-boost entry; enums deserialize from the frozen
+/// snake_case tokens directly into the pack [`BreedingBoost`] shape.
+#[derive(Deserialize)]
+struct RawBreedingBoost {
+    source: String,
+    source_kind: BreedingBoostSource,
+    effect: BreedingEffect,
+    values_per_rank: Vec<f32>,
 }
 
 /// One extraction active-skill entry (see `tools/pal-extract`). Field names match
@@ -624,6 +639,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
+    // Breeding boosts (data only; solver ignores this wave). Extractor order is already
+    // deterministic; the pack mirrors it 1:1. Partner sources join species by internal name.
+    let breeding_boosts: Vec<BreedingBoost> = extract
+        .breeding_boosts
+        .iter()
+        .map(|b| BreedingBoost {
+            source: b.source.clone(),
+            source_kind: b.source_kind,
+            effect: b.effect,
+            values_per_rank: b.values_per_rank.clone(),
+        })
+        .collect();
+    let cosmetic_boosts = breeding_boosts.iter().filter(|b| b.effect.is_cosmetic()).count();
+    println!(
+        "breeding boosts: {} total ({} cosmetic alpha-egg)",
+        breeding_boosts.len(),
+        cosmetic_boosts,
+    );
+
     let pack = Pack {
         version: db.version.clone(),
         game_build: extract.meta.game_build.clone(),
@@ -640,6 +674,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             combi_boss_pal_rate: extract.game_settings.combi_boss_pal_rate,
         },
         learnsets,
+        breeding_boosts,
     };
 
     let bytes = bincode::serialize(&pack)?;

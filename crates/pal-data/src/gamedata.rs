@@ -370,6 +370,60 @@ pub struct LearnMove {
     pub level: u16,
 }
 
+/// Where a breeding boost comes from and when it applies. Serialized snake_case to
+/// match the frozen `breeding_boosts` contract (`partner_base` / `partner_party` /
+/// `passive`). Partner boosts split on the effect's game `TargetType`
+/// (`ToBuildObject` ⇒ at-base, `ToTrainer` ⇒ in-party).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BreedingBoostSource {
+    /// Partner skill active while the pal is assigned at a base.
+    PartnerBase,
+    /// Partner skill active while the pal is in the party.
+    PartnerParty,
+    /// A passive skill carrying the effect inline (e.g. Babysitter).
+    Passive,
+}
+
+/// The breeding-relevant effect a boost applies, collapsing the game's five raw
+/// `EPalPassiveSkillEffectType` breeding types onto four buckets. `AlphaEggChance`
+/// is cosmetic (alpha conversion of picked-up eggs) — no effort/steps impact.
+/// Serialized snake_case per the frozen contract.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BreedingEffect {
+    /// Breeding-farm egg-production speed (`BreedSpeed` / `BreedSpeed_InBaseCamp`).
+    FarmSpeed,
+    /// Egg incubation speed (`PalEggHatchingSpeed`).
+    IncubationSpeed,
+    /// Chance of an extra egg on pickup (`EggObtainExtraEgg`).
+    ExtraEggChance,
+    /// Chance a picked-up egg becomes an Alpha egg (`EggAlphaConversion`) — cosmetic.
+    AlphaEggChance,
+}
+
+impl BreedingEffect {
+    /// True for cosmetic-only effects (alpha conversion) with no breeding-effort impact.
+    pub fn is_cosmetic(self) -> bool {
+        matches!(self, BreedingEffect::AlphaEggChance)
+    }
+}
+
+/// One breeding boost from the own-install extraction (`tools/pal-extract`,
+/// discovered by typed effect key, not description text). Emitted by the data
+/// slice; the solver does NOT consume it this wave (setup multipliers arrive
+/// pre-composed from the caller).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BreedingBoost {
+    /// Species internal name (partner skills) or passive id (passives).
+    pub source: String,
+    pub source_kind: BreedingBoostSource,
+    pub effect: BreedingEffect,
+    /// Per-rank magnitude as a fraction (e.g. `0.20`..`0.50`). Partner skills carry
+    /// one value per condensation rank (1..N ascending); passives a single flat value.
+    pub values_per_rank: Vec<f32>,
+}
+
 /// The full serialized pack. This is exactly what `bincode` reads/writes; every
 /// field is a `Vec` (deterministic order) — no `HashMap`s cross the wire.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -397,6 +451,10 @@ pub struct Pack {
     /// interned index), each sorted by level ascending. Empty vec for species
     /// with no level-up rows. From the own-install extraction (`DT_WazaMasterLevel`).
     pub learnsets: Vec<Vec<LearnMove>>,
+    /// Structured breeding/egg/incubation boosts from the own-install extraction
+    /// (`breeding_boosts`), in deterministic `(source_kind, source, effect)` order.
+    /// The solver does NOT read this wave; surfaced for the UI / Wave 2 setup UX.
+    pub breeding_boosts: Vec<BreedingBoost>,
 }
 
 /// Sentinel used by palcalc's min-steps matrix for "no path".
@@ -550,6 +608,12 @@ impl GameData {
     /// The full breeding table (species interned to indices).
     pub fn breeding(&self) -> &[BreedingEntry] {
         &self.pack.breeding
+    }
+
+    /// Structured breeding/egg/incubation boosts from the extraction (data only;
+    /// the solver does not consume these this wave). See [`BreedingBoost`].
+    pub fn breeding_boosts(&self) -> &[BreedingBoost] {
+        &self.pack.breeding_boosts
     }
 
     /// Passive-skill definition by its internal id (e.g. `"Runner"`).

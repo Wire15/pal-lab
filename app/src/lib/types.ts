@@ -94,6 +94,55 @@ export interface SolveRequest {
    * gaps freely. Either way, trivial 0-step "catch the target" plans are
    * dropped whenever a real plan exists. */
   catching?: "allowed" | "breeding_only";
+  /** IV floor thresholds (0-100; 0 = don't care). Absent => all don't-care. */
+  ivs?: IvThresholds;
+  /** Breeding cake token. Absent => "normal" (no cake). */
+  cake?: CakeToken;
+  /** IV inherit-count model. Absent => "empirical". */
+  iv_model?: IvModel;
+  /** Breeding-farm setup multipliers. Absent => neutral vanilla setup. */
+  setup?: BreedingSetup;
+}
+
+/** IV floor thresholds for `SolveRequest.ivs`. Each is a 0-100 minimum; `0`
+ * means "don't care". Maps to the solver's `TargetSpec.iv_{hp,attack,defense}`. */
+export interface IvThresholds {
+  hp: number;
+  attack: number;
+  defense: number;
+}
+
+/** Breeding-cake token accepted by `SolveRequest.cake` (parsed server-side,
+ * snake_case). Distinct from `CakeKind` (the PascalCase serde value on plan
+ * output). */
+export type CakeToken =
+  | "normal"
+  | "mushroom"
+  | "vegetable"
+  | "deluxe_vegetable"
+  | "special";
+
+/** IV inherit-count distribution model for `SolveRequest.iv_model`.
+ * `"empirical"` = the solver's 50/25/25 default; `"cdo"` = game-file
+ * `combi_talent_inherit_num` weights (50/33.3/16.7). */
+export type IvModel = "empirical" | "cdo";
+
+/** Breeding-farm setup multipliers for `SolveRequest.setup`. Bonuses are
+ * fractions (e.g. `0.5` = +50%). `egg_hatch_hours` is the world setting
+ * (`PalEggDefaultHatchingTime`, vanilla default 72), typically sourced from
+ * `getWorldOptions`. */
+export interface BreedingSetup {
+  farm_speed_bonus: number;
+  incubation_reduction: number;
+  extra_egg_chance: number;
+  egg_hatch_hours: number;
+}
+
+/** Response from the `get_world_options` command. `egg_hatch_hours` is `null`
+ * when the save has no `WorldOption.sav` (dedicated servers) or the property is
+ * absent; the UI then falls back to the vanilla 72h default. */
+export interface WorldOptionsResponse {
+  egg_hatch_hours: number | null;
 }
 
 /** `{id, name}` from `list_species`. */

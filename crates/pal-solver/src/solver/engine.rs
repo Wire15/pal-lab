@@ -20,7 +20,7 @@ use crate::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
     prob_inherited_target_passives_forced,
 };
-use crate::solver::config::SolverConfig;
+use crate::solver::config::{BreedingSetup, IvModel, SolverConfig};
 use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
@@ -419,7 +419,11 @@ fn breed_pair(
                     child_ivs,
                     ivs_prob,
                 );
-                let egg_mult = cfg.cake.egg_multiplier();
+                if cfg.setup != BreedingSetup::default() {
+                    bred = bred.with_setup(gd, &cfg.setup);
+                }
+                // Effective egg multiplier: cake BreedCount * (1 + extra-egg boost).
+                let egg_mult = cfg.cake.egg_multiplier() * (1.0 + cfg.setup.extra_egg_chance);
                 if egg_mult != 1.0 {
                     bred = bred.with_egg_multiplier(gd, egg_mult);
                 }
@@ -448,7 +452,26 @@ pub fn solve(
     // lowering the spec's IV thresholds before the search (single source of
     // truth for owned relevance, IV probability, and satisfaction checks).
     cfg.cake.apply_iv_floor(&mut spec);
-    let weights = gd.inheritance();
+    // IV inherit-count distribution: Empirical uses the pack's `talent_inherit`
+    // weights (50/25/25, oracle-pinned); Cdo swaps in the game-file
+    // `combi_talent_inherit_num` weights ([3,2,1] -> 50/33.3/16.7). Only the
+    // `talent_inherit` array differs; passive weights are shared.
+    let cdo_weights;
+    let weights = match cfg.iv_model {
+        IvModel::Empirical => gd.inheritance(),
+        IvModel::Cdo => {
+            cdo_weights = InheritanceWeights {
+                talent_inherit: gd
+                    .game_settings()
+                    .combi_talent_inherit_num
+                    .iter()
+                    .map(|&w| w as f32)
+                    .collect(),
+                ..gd.inheritance().clone()
+            };
+            &cdo_weights
+        }
+    };
 
     let initial = build_initial_content(gd, &spec, owned, cfg);
 

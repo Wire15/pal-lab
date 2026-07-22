@@ -103,6 +103,57 @@ impl std::str::FromStr for CakeKind {
     }
 }
 
+/// Which inheritance-count distribution the IV probability model uses.
+///
+/// The pack ships two candidate weight arrays for the number of IV categories
+/// inherited directly: the solver's empirically-validated `talent_inherit`
+/// (`[2,1,1]` -> 50/25/25%) and the game-file CDO `combi_talent_inherit_num`
+/// (`[3,2,1]` -> 50/33.3/16.7%). [`Empirical`](IvModel::Empirical) keeps the
+/// former (default, unchanged behavior; oracle fixtures pin it); [`Cdo`](IvModel::Cdo)
+/// swaps in the game-file weights for a datamined-accuracy alternative.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "lowercase")]
+pub enum IvModel {
+    /// Solver's empirical 50/25/25 model (pack `talent_inherit`, `[2,1,1]`).
+    #[default]
+    Empirical,
+    /// Game-file CDO weights (`combi_talent_inherit_num`, `[3,2,1]`).
+    Cdo,
+}
+
+/// Breeding-farm setup multipliers threaded into the effort model. Bonuses are
+/// fractions (e.g. `0.5` = +50%). Composed pre-solve by the caller from the
+/// breeding-boost pack section + world settings; the solver treats them as
+/// opaque numbers. Default is the neutral, vanilla setup.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct BreedingSetup {
+    /// Fractional egg-production speedup at the Breeding Farm (Plesiosaur-style
+    /// partner boosts). `time_per_breed = AVG_BREEDING_TIME_SECS / (1 + this)`.
+    pub farm_speed_bonus: f64,
+    /// Fractional reduction of egg incubation time (ThunderFluffyBird-style
+    /// boosts + Babysitter passive). `incubation *= (1 - this)`.
+    pub incubation_reduction: f64,
+    /// Fractional bonus egg yield per cycle (NaughtyCat extra-egg chance),
+    /// composed with the cake `BreedCount` egg multiplier.
+    pub extra_egg_chance: f64,
+    /// World-setting egg hatch time in hours (`PalEggDefaultHatchingTime`,
+    /// vanilla default 72). Drives the "massive" egg incubation base
+    /// (`egg_hatch_hours * 3600`), divided down by egg size.
+    pub egg_hatch_hours: f64,
+}
+
+impl Default for BreedingSetup {
+    fn default() -> Self {
+        BreedingSetup {
+            farm_speed_bonus: 0.0,
+            incubation_reduction: 0.0,
+            extra_egg_chance: 0.0,
+            egg_hatch_hours: 72.0,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SolverConfig {
     /// Max total breeding steps in any single plan tree (palcalc `MaxBreedingSteps`, default 10).
@@ -137,6 +188,16 @@ pub struct SolverConfig {
     /// (e.g. the Tauri command deserializing older requests) compatible.
     #[serde(default)]
     pub cake: CakeKind,
+    /// Breeding-farm setup multipliers (farm-speed / incubation / extra-egg /
+    /// world hatch time) threaded into the effort model. Default is the neutral
+    /// vanilla setup ([`BreedingSetup::default`]). `#[serde(default)]` keeps
+    /// older callers that omit it behaving exactly as before.
+    #[serde(default)]
+    pub setup: BreedingSetup,
+    /// IV inherit-count distribution model (default [`IvModel::Empirical`],
+    /// pinned by the oracle fixtures). `#[serde(default)]` for back-compat.
+    #[serde(default)]
+    pub iv_model: IvModel,
 }
 
 impl Default for SolverConfig {
@@ -150,6 +211,8 @@ impl Default for SolverConfig {
             max_effort_secs: 7.0 * 24.0 * 3600.0,
             result_limit: 3,
             cake: CakeKind::Normal,
+            setup: BreedingSetup::default(),
+            iv_model: IvModel::Empirical,
         }
     }
 }

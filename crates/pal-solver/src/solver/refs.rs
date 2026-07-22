@@ -21,9 +21,11 @@ pub const BREEDING_TIME_SECS: f64 = 5.0 * 60.0;
 /// Effective per-attempt breeding time. palcalc doubles the raw time
 /// (`AvgBreedingTime`) to account for parents idling at night.
 pub const AVG_BREEDING_TIME_SECS: f64 = BREEDING_TIME_SECS * 2.0;
-/// Incubation time for a "massive"/huge egg (palcalc `MassiveEggIncubationTime`
-/// = 2 h). Smaller eggs divide this down (see [`incubation_secs`]).
-pub const MASSIVE_EGG_INCUBATION_SECS: f64 = 2.0 * 3600.0;
+/// Default world egg-hatch time in hours (`PalEggDefaultHatchingTime`, Palworld
+/// vanilla default). The "massive"/huge egg takes the full time; smaller eggs
+/// divide it down (see [`incubation_secs`]). A world scan or the breeding-setup
+/// input overrides this per solve.
+pub const DEFAULT_EGG_HATCH_HOURS: f64 = 72.0;
 /// Minimum wild-catch time (palcalc `GameConstants.TimeToCatch` base = 3 min).
 pub const CATCH_MIN_SECS: f64 = 3.0 * 60.0;
 
@@ -34,20 +36,22 @@ pub const MULTIPLE_BREEDING_FARMS: bool = true;
 /// with breeding, so self-effort is breeding-time + one incubation.
 pub const MULTIPLE_INCUBATORS: bool = true;
 
-/// Egg incubation time (seconds) for a species, keyed off its rarity.
+/// Egg incubation time (seconds) for a species, keyed off its rarity, given the
+/// full "massive"/huge egg time `massive_secs` (`= egg_hatch_hours * 3600`).
 ///
-/// palcalc `EggSize.IncubationTime` divides `MassiveEggIncubationTime` by a
-/// size modifier; egg size is derived from rarity via `GameConstants.EggSizeMinRarity`
-/// (`Huge >= 8`, `Large >= 5`, else `Normal`).
-pub fn incubation_secs(rarity: u8) -> f64 {
+/// palcalc `EggSize.IncubationTime` divides the massive time by a size modifier;
+/// egg size is derived from rarity via `GameConstants.EggSizeMinRarity`
+/// (`Huge >= 8`, `Large >= 5`, else `Normal`). At the vanilla 72 h hatch time a
+/// huge egg takes 72 h, large 36 h, normal 6 h.
+pub fn incubation_secs(rarity: u8, massive_secs: f64) -> f64 {
     let modifier = if rarity >= 8 {
-        1.0 // Huge  -> 2 h
+        1.0 // Huge  -> full time
     } else if rarity >= 5 {
-        2.0 // Large -> 1 h
+        2.0 // Large -> half
     } else {
-        12.0 // Normal -> 10 min
+        12.0 // Normal -> a twelfth
     };
-    MASSIVE_EGG_INCUBATION_SECS / modifier
+    massive_secs / modifier
 }
 
 /// palcalc `GameConstants.PassivesWildAtMostN`: probability a wild pal has at
@@ -308,6 +312,16 @@ pub struct BredPalRef {
     /// Eggs produced per breeding cycle (cake `BreedCount`; 1.0 = no cake). The
     /// per-attempt breeding time divides by this in [`BredPalRef::recompute_effort`].
     pub egg_multiplier: f64,
+    /// Fractional Breeding-Farm speedup (partner boost). Divides the per-attempt
+    /// breeding time: `time_per_breed = AVG_BREEDING_TIME_SECS / (1 + this)`.
+    /// `0.0` = no boost (default).
+    pub farm_speed_bonus: f64,
+    /// Fractional incubation-time reduction (partner/passive boost). Multiplies
+    /// incubation by `(1 - this)`. `0.0` = no reduction (default).
+    pub incubation_reduction: f64,
+    /// World egg-hatch time in hours driving the massive-egg incubation base
+    /// (`egg_hatch_hours * 3600`). Default [`DEFAULT_EGG_HATCH_HOURS`] (72).
+    pub egg_hatch_hours: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -567,6 +581,9 @@ impl BredPalRef {
             num_wild_pals: 0,
             num_eggs: 0,
             egg_multiplier: 1.0,
+            farm_speed_bonus: 0.0,
+            incubation_reduction: 0.0,
+            egg_hatch_hours: DEFAULT_EGG_HATCH_HOURS,
         };
         r.recompute_effort(gd);
         r
@@ -582,11 +599,14 @@ impl BredPalRef {
 
     fn recompute_effort(&mut self, gd: &GameData) {
         let rarity = gd.species_at(self.species).map(|s| s.rarity).unwrap_or(0);
-        let incubation = incubation_secs(rarity);
+        let massive_secs = self.egg_hatch_hours * 3600.0;
+        let incubation = incubation_secs(rarity, massive_secs) * (1.0 - self.incubation_reduction);
         let (self_effort, total_time) = if self.avg_required_breedings == u32::MAX {
             (f64::INFINITY, f64::INFINITY)
         } else {
-            let time_per_breed = AVG_BREEDING_TIME_SECS; // TimeFactor = 1.0 (Philanthropist not modeled)
+            // Breeding-Farm speed boosts (partner skills) shorten each attempt:
+            // time_per_breed = base / (1 + farm_speed_bonus). No boost => base.
+            let time_per_breed = AVG_BREEDING_TIME_SECS / (1.0 + self.farm_speed_bonus);
             // BreedCount>1 (Vegetable cake) yields several eggs per cycle, so the
             // cycles needed to hit `avg_required_breedings` target eggs — and thus
             // the breeding time — divide by the egg multiplier.
@@ -630,6 +650,22 @@ impl BredPalRef {
     /// `BreedCount=2`), recomputing effort. `1.0` is the no-cake default.
     pub fn with_egg_multiplier(&self, gd: &GameData, egg_multiplier: f64) -> BredPalRef {
         let mut r = BredPalRef { egg_multiplier, ..self.clone() };
+        r.recompute_effort(gd);
+        r
+    }
+
+    /// Return a copy with the breeding-farm [`BreedingSetup`] applied (farm-speed
+    /// bonus, incubation reduction, world egg-hatch time), recomputing effort.
+    /// The egg multiplier (cake `BreedCount`) is set separately via
+    /// [`Self::with_egg_multiplier`], composed by the engine with the setup's
+    /// `extra_egg_chance`.
+    pub fn with_setup(&self, gd: &GameData, setup: &crate::solver::config::BreedingSetup) -> BredPalRef {
+        let mut r = BredPalRef {
+            farm_speed_bonus: setup.farm_speed_bonus,
+            incubation_reduction: setup.incubation_reduction,
+            egg_hatch_hours: setup.egg_hatch_hours,
+            ..self.clone()
+        };
         r.recompute_effort(gd);
         r
     }

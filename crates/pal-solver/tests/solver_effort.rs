@@ -5,11 +5,11 @@
 
 use pal_data::types::{ContainerKind, Gender, IvSet, OwnedPal};
 use pal_data::GameData;
-use pal_solver::solver::config::SolverConfig;
+use pal_solver::solver::config::{BreedingSetup, CakeKind, SolverConfig};
 use pal_solver::solver::engine::build_initial_content;
 use pal_solver::solver::refs::{
     incubation_secs, BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender,
-    SolverIv, SolverIvSet, WildPalRef, AVG_BREEDING_TIME_SECS,
+    SolverIv, SolverIvSet, WildPalRef, AVG_BREEDING_TIME_SECS, DEFAULT_EGG_HATCH_HOURS,
 };
 use pal_solver::solver::spec::{TargetPal, TargetSpec};
 
@@ -71,7 +71,8 @@ fn bred_self_effort_matches_model() {
         1.0,
     );
     assert_eq!(bred.avg_required_breedings, 2);
-    let expected_incubation = incubation_secs(gd.species_at(child).unwrap().rarity);
+    let expected_incubation =
+        incubation_secs(gd.species_at(child).unwrap().rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
     let expected_self = 2.0 * AVG_BREEDING_TIME_SECS + expected_incubation;
     assert!((bred.self_effort - expected_self).abs() < 1e-6);
     // parents are owned (zero effort) -> total == self.
@@ -228,4 +229,89 @@ fn iv_satisfies_threshold() {
     let merged = pal_solver::solver::refs::merge_iv(SolverIv::RANDOM, SolverIv::fixed(true, 50));
     assert_eq!(merged.min, 50);
     let _ = EffPassive::Random;
+}
+
+// ---- Breeding-setup multiplier effort math (Wave 1) ---------------------
+
+/// A bred ref with `avg_required_breedings == 2` (p=0.5, ivp=1.0), owned
+/// parents (zero parent effort), used as the effort baseline.
+fn baseline_bred(gd: &GameData) -> BredPalRef {
+    BredPalRef::new(
+        gd,
+        0u16,
+        owned_ref(1, Gender::Male),
+        owned_ref(2, Gender::Female),
+        vec![],
+        0.5,
+        SolverIvSet::RANDOM,
+        1.0,
+    )
+}
+
+#[test]
+fn farm_speed_bonus_scales_time_per_breed() {
+    let gd = GameData::get();
+    let rarity = gd.species_at(0).unwrap().rarity;
+    let incubation = incubation_secs(rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
+    let base = baseline_bred(gd);
+    assert_eq!(base.avg_required_breedings, 2);
+    // Neutral setup: time_per_breed = AVG_BREEDING_TIME_SECS (600s).
+    assert!((base.self_effort - (2.0 * AVG_BREEDING_TIME_SECS + incubation)).abs() < 1e-6);
+
+    // farm_speed_bonus = 0.5 => time_per_breed = 600 / 1.5 = 400s.
+    let boosted = base.with_setup(
+        gd,
+        &BreedingSetup { farm_speed_bonus: 0.5, ..BreedingSetup::default() },
+    );
+    let time_per_breed = (boosted.self_effort - incubation) / boosted.avg_required_breedings as f64;
+    assert!((time_per_breed - 400.0).abs() < 1e-6, "got {time_per_breed}");
+    assert!((boosted.self_effort - (2.0 * 400.0 + incubation)).abs() < 1e-6);
+}
+
+#[test]
+fn extra_egg_composes_with_vegetable_cake() {
+    let gd = GameData::get();
+    // Effective egg multiplier the engine composes: cake BreedCount * (1 + extra).
+    let egg_mult = CakeKind::Vegetable.egg_multiplier() * (1.0 + 0.75);
+    assert!((egg_mult - 3.5).abs() < 1e-9, "vegetable(2.0) * 1.75 = 3.5, got {egg_mult}");
+
+    // Applied, the per-cycle breeding time divides by the egg multiplier.
+    let rarity = gd.species_at(0).unwrap().rarity;
+    let incubation = incubation_secs(rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
+    let bred = baseline_bred(gd).with_egg_multiplier(gd, egg_mult);
+    let expected = 2.0 * AVG_BREEDING_TIME_SECS / 3.5 + incubation;
+    assert!((bred.self_effort - expected).abs() < 1e-6, "got {}", bred.self_effort);
+}
+
+#[test]
+fn incubation_scales_with_egg_hatch_hours() {
+    let gd = GameData::get();
+    let rarity = gd.species_at(0).unwrap().rarity;
+    let inc72 = incubation_secs(rarity, 72.0 * 3600.0);
+    let inc2 = incubation_secs(rarity, 2.0 * 3600.0);
+    // 72h vs 2h world hatch time => 36x incubation base.
+    assert!((inc72 / inc2 - 36.0).abs() < 1e-9, "expected 36x, got {}", inc72 / inc2);
+
+    let base = baseline_bred(gd);
+    let b72 = base.with_setup(gd, &BreedingSetup { egg_hatch_hours: 72.0, ..BreedingSetup::default() });
+    let b2 = base.with_setup(gd, &BreedingSetup { egg_hatch_hours: 2.0, ..BreedingSetup::default() });
+    // Only the incubation term moves; breeding time is unchanged.
+    assert!(((b72.self_effort - b2.self_effort) - (inc72 - inc2)).abs() < 1e-6);
+    // egg_hatch_hours = 2 recovers the pre-Wave-1 fixed 2h massive incubation.
+    assert!((b2.self_effort - (2.0 * AVG_BREEDING_TIME_SECS + inc2)).abs() < 1e-6);
+}
+
+#[test]
+fn incubation_reduction_shrinks_incubation() {
+    let gd = GameData::get();
+    let rarity = gd.species_at(0).unwrap().rarity;
+    let inc = incubation_secs(rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
+    let base = baseline_bred(gd);
+    let reduced = base.with_setup(
+        gd,
+        &BreedingSetup { incubation_reduction: 0.4, ..BreedingSetup::default() },
+    );
+    // incubation *= (1 - 0.4); breeding time unchanged.
+    let expected = 2.0 * AVG_BREEDING_TIME_SECS + inc * 0.6;
+    assert!((reduced.self_effort - expected).abs() < 1e-6, "got {}", reduced.self_effort);
 }

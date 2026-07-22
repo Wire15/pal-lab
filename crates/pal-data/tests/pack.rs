@@ -520,3 +520,86 @@ fn wild_levels_gate_wild_seeding() {
     let raid = gd.species_by_id("KingBahamut_Dragon").expect("Bellanoir Libero exists");
     assert_eq!(raid.wild_levels.0, 0, "raid-only species has no wild spawn");
 }
+
+#[test]
+fn breeding_boosts_extract_typed_effects() {
+    use pal_data::gamedata::{BreedingBoostSource, BreedingEffect};
+    let gd = GameData::get();
+    let boosts = gd.breeding_boosts();
+
+    // Helper: find a boost by source id + effect.
+    let find = |source: &str, effect: BreedingEffect| {
+        boosts
+            .iter()
+            .find(|b| b.source == source && b.effect == effect)
+    };
+    // Per-rank fraction tolerance (values are percent/100).
+    let approx = |a: f32, b: f32| (a - b).abs() < 1e-6;
+
+    // Plesiosaur: base-camp farm (egg production) speed, 20%..50% across ranks.
+    let ple = find("Plesiosaur", BreedingEffect::FarmSpeed).expect("Plesiosaur farm_speed boost");
+    assert_eq!(ple.source_kind, BreedingBoostSource::PartnerBase, "Plesiosaur is a base partner boost");
+    assert_eq!(ple.values_per_rank.len(), 5, "5 condensation ranks");
+    assert!(approx(ple.values_per_rank[0], 0.20), "rank1 = 0.20, got {}", ple.values_per_rank[0]);
+    assert!(approx(*ple.values_per_rank.last().unwrap(), 0.50), "rank5 = 0.50");
+    assert!(
+        ple.values_per_rank.windows(2).all(|w| w[1] >= w[0]),
+        "values ascend by rank",
+    );
+
+    // ThunderFluffyBird: incubation speed, 20%..40%.
+    let tfb = find("ThunderFluffyBird", BreedingEffect::IncubationSpeed)
+        .expect("ThunderFluffyBird incubation_speed boost");
+    assert_eq!(tfb.source_kind, BreedingBoostSource::PartnerBase);
+    assert!(approx(tfb.values_per_rank[0], 0.20) && approx(*tfb.values_per_rank.last().unwrap(), 0.40));
+
+    // NaughtyCat: in-party extra-egg chance, 50%..75%.
+    let cat = find("NaughtyCat", BreedingEffect::ExtraEggChance)
+        .expect("NaughtyCat extra_egg_chance boost");
+    assert_eq!(cat.source_kind, BreedingBoostSource::PartnerParty, "extra-egg is a party boost");
+    assert!(approx(cat.values_per_rank[0], 0.50) && approx(*cat.values_per_rank.last().unwrap(), 0.75));
+
+    // Babysitter passive: carries BOTH farm_speed and incubation_speed, single flat +30%.
+    let baby_farm = find("MutationPal_Babysitter", BreedingEffect::FarmSpeed)
+        .expect("Babysitter farm_speed boost present");
+    assert_eq!(baby_farm.source_kind, BreedingBoostSource::Passive, "Babysitter is a passive source");
+    assert_eq!(baby_farm.values_per_rank.len(), 1, "passive boost is a single flat value");
+    assert!(approx(baby_farm.values_per_rank[0], 0.30), "Babysitter farm_speed +30%");
+    let baby_inc = find("MutationPal_Babysitter", BreedingEffect::IncubationSpeed)
+        .expect("Babysitter incubation_speed boost present");
+    assert!(approx(baby_inc.values_per_rank[0], 0.30), "Babysitter incubation +30%");
+
+    // Alpha-egg conversion entries exist and are flagged cosmetic-only (no effort impact).
+    let alpha: Vec<_> = boosts
+        .iter()
+        .filter(|b| b.effect == BreedingEffect::AlphaEggChance)
+        .collect();
+    assert!(!alpha.is_empty(), "at least one alpha_egg_chance entry (SakuraSaurus)");
+    assert!(
+        alpha.iter().all(|b| b.effect.is_cosmetic()),
+        "every alpha_egg_chance boost is cosmetic-only",
+    );
+    let sakura = find("SakuraSaurus", BreedingEffect::AlphaEggChance)
+        .expect("SakuraSaurus alpha_egg_chance boost");
+    assert_eq!(sakura.source_kind, BreedingBoostSource::PartnerParty);
+    assert!(approx(sakura.values_per_rank[0], 0.35) && approx(*sakura.values_per_rank.last().unwrap(), 0.45));
+
+    // No non-alpha effect is ever miscategorized as cosmetic.
+    assert!(
+        boosts.iter().filter(|b| b.effect != BreedingEffect::AlphaEggChance).all(|b| !b.effect.is_cosmetic()),
+        "only alpha_egg_chance is cosmetic",
+    );
+
+    // Deterministic order: (source_kind, source, effect). Partner_* sort before passive.
+    let kind_rank = |k: BreedingBoostSource| match k {
+        BreedingBoostSource::PartnerBase => 0,
+        BreedingBoostSource::PartnerParty => 1,
+        BreedingBoostSource::Passive => 2,
+    };
+    assert!(
+        boosts.windows(2).all(|w| {
+            (kind_rank(w[0].source_kind), &w[0].source) <= (kind_rank(w[1].source_kind), &w[1].source)
+        }),
+        "breeding boosts are in deterministic (source_kind, source) order",
+    );
+}
