@@ -161,9 +161,20 @@ Primitives live in `components/primitives.tsx`; compose them, don't reinvent.
 - **Chips vs Tags:** chips carry *graded* data (passives); tags carry *flat*
   categories. Keep them visually distinct (chip = data tone, tag = neutral).
 
-## 7. Signature element — the Lineage Ladder
+## 7. Signature element — the breeding plan
 
-The breeding plan tree is the hero and the thing the app is remembered by.
+The breeding plan is the hero and the thing the app is remembered by. The
+Solver results area offers **two renderers behind a `Graph | List` toggle**
+(top-right of the tabs row, default **Graph**). Plans surface as a **tab row**
+(`Plan 1`, `Plan 2`, … with a compact `Fastest` badge on the quickest); a slim
+`raised` header under the tabs carries the active plan's big amber total time
+then mono `steps · wild · cake` stats. The **List** view is the original
+Lineage Ladder (below); the **Graph** view is the pannable breeding-bracket
+flowchart (further below). (`TreeNode` + `PlanGraph` in the Solver;
+`views/Solver.tsx` owns the tabs, toggle, and node-selection state.)
+
+### List view — the Lineage Ladder
+
 (`TreeNode` in `views/Solver.tsx`.)
 
 - Each step is a compact **node card**: chevron · PalIcon · species + ♂/♀ · then
@@ -195,6 +206,55 @@ The breeding plan tree is the hero and the thing the app is remembered by.
   vs **Include pals I don't own**. The second mode sets `include_wild: true` on
   the solve request and reveals a one-line `ink-faint` hint ("Plans may include
   pals you'd need to catch first."). It is what surfaces the CATCH leaves above.
+
+### Graph view — the breeding bracket
+
+The default renderer: a pannable / zoomable flowchart of one plan's tree
+(`PlanGraph` in `components/plan-graph.tsx`; pure layout in
+`plan-graph-layout.ts`). No graph/layout dependency — a hand-rolled recursive
+tidy-tree over the strict binary plan tree (a bred node has exactly two parents;
+leaves are Owned/Wild). Rendering is real DOM: HTML pal nodes absolutely
+positioned inside a single CSS-transformed viewport (`translate(x,y) scale(k)`)
+over **one SVG underlay** for the edges, so hover cards, focus, and click all
+keep working.
+
+- **Layout** — a left→right breeding bracket. Column x is a pure function of a
+  node's depth from the root: **leaves in the leftmost columns, the target root
+  rightmost** (`x = (maxDepth − depth)·COL_W`). Leaves claim sequential rows in
+  traversal order; each bred node sits at the vertical **midpoint of its two
+  parents**. Constants `COL_W 220`, `ROW_H 128`, node circle `R 34`. The
+  degenerate single-node plan (owned/catch target, zero steps) renders as one
+  centered node with no edges.
+- **Pal nodes** — the circular Palbox **Slot idiom** (portrait clipped to a
+  circle, gender dot), source-tinted ring: **neutral** owned, **amber** bred,
+  **`el-leaf`** wild-catch, **amber (2px)** when selected. The plan payload
+  carries no level/rank/alpha/instance, so — unlike the roster Slot — there is
+  **no level pill** (nothing to fabricate); detail lives in the side panel.
+  Below the circle: species name + the §7 status chip — `Owned · <location>`
+  (neutral `Tag`), `Bred` (amber `Tag`), or the `CATCH`/`CATCH ×N` + `Lv N+`
+  cluster (`el-leaf`) for a wild leaf. Species-only `PalHoverCard` on hover.
+- **Junction chips** — one per breeding pair, on the convergence point midway
+  between the two parent edges and the bred child (`x = child.x − COL_W/2`). A
+  compact `panel`/`line` chip: egg glyph (amber) + the color-coded odds pill
+  (§5 `probBand`) + mono step time (`formatDuration`). **All step math lives
+  here, never on the pal nodes.**
+- **Edges** — SVG underlay in the same transformed coordinate space. Each
+  parent's right edge → horizontal-then-vertical cubic bezier → junction →
+  child's left edge. Stroke is the subtle `line` token; the **junction→child**
+  segment of a breed step carries the **`amber/70`** bred accent.
+  `vector-effect: non-scaling-stroke` keeps hairlines crisp under zoom.
+- **Interaction** — wheel **zooms to the cursor** (clamped `0.4–2.5`, native
+  non-passive listener so page scroll is suppressed, cursor point stays fixed);
+  a left-drag on the background **pans** past a **4px threshold**
+  (`grab`/`grabbing` cursor); nodes `stopPropagation` on pointer-down so a click
+  **selects** instead of panning. The view **fit-to-views on mount and on every
+  plan switch** (bounding box + ~48px padding, centered). A bottom-right control
+  cluster does **− / + / fit**. Nodes are `tabIndex=0` and **Enter/Space** select
+  (keyboard a11y); **Escape** clears the selection.
+- **Selection** — clicking a pal node lifts a `PlanNodeSelection` (the flattened
+  plan-node fields; see §16) into `Solver.tsx`, which mounts the
+  `PlanNodePanel` inspector on the right. Switching plans or re-solving clears
+  the selection.
 
 ## 8. Window chrome & quality floor
 
@@ -725,3 +785,50 @@ breeders (raid/quest pals: Blazamut Ryu, Bellanoir, the Xeno line, …) stay
 "no plan" even with wild on — they are genuinely unobtainable by catch+breed.
 Wild plan nodes carry `source:{Wild:{captures,min_wild_level}}`; owned/bred node
 shapes are unchanged.
+
+## 16. Round 7 — Solver graph node inspector (`components/plan-node-panel.tsx`)
+
+The Solver graph view (§7) pairs its pannable canvas with a **right-side node
+inspector**: click any pal node and `PlanNodePanel` slides in as a fixed
+`w-[340px]` column, `border-l border-line bg-panel`, full height, its **own
+`overflow-auto` scroll container** so long passive lists never clip the canvas.
+It reuses the pal-dex detail chassis — a `raised` eyebrow header, `Section`
+blocks (mono `text-[10px]` uppercase eyebrow over a `panel/40` body), and the
+shared `PalIcon` / `PassiveStrip` / `PalHoverCard` / `Tag` primitives — so the
+panel reads as the same surface as everything else. Zero new tokens.
+
+**Data honesty.** The panel shows only what a `PlanNode` actually carries
+(`species_name`, `gender`, `passives`, `source`, `probability`,
+`est_time_secs`). The solve payload has **no IVs, level, owner, or instance id**
+for owned nodes — only `Owned:{location}` — so the panel never fabricates stat
+bars; it presents each node's real fields and nothing more.
+
+**Header.** A mono `text-amber` eyebrow (`Plan N · {bred|owned|wild} node`) with
+a `line`-bordered close `×` button on the right. Focus moves to the close button
+on open and whenever the selected node changes (keyboard lands somewhere
+actionable); Escape is handled by the parent (§7), the button calls `onClose`.
+
+**Identity row.** `PalIcon 56` (wrapped in `PalHoverCard` + a dex-nav button
+when the species id resolved) beside the `font-display` name, the §2 gender
+glyph (water ♂ / dragon ♀ / faint dash), and a **kind chip**: `Bred` amber `Tag`,
+`Owned` neutral `Tag`, or the `el-leaf` `Catch ×N` chip matching the list
+renderer.
+
+**Per-kind body.**
+- **Bred** — a *Breeding step* `Section` with the `probBand` odds pill in the
+  header (same tinting as the tree card) and a fact list: `Odds` (band label +
+  `%`) and `Est. time` (`formatDuration`).
+- **Owned** — an *Owned pal* `Section`: `Location` (the `Owned.location` string)
+  and a `good`-tinted "In your box — no breeding" ready note.
+- **Wild** — a *Wild capture* `Section` with the `el-leaf` `Lv M+` pill in the
+  header, `Catches ×N` + `Min level` facts, and the one-line microcopy
+  "Catch in the wild at level M or higher."
+
+**Passives (all kinds).** A *Passives* `Section` renders every passive as a `sm`
+`PassiveStrip`; the `(random)` sentinel shows as the neutral "random roll" strip
+(like the list renderer) and adds the note "One passive slot rolls at random
+each time this pair breeds." An empty list reads "No passives carried."
+
+**Dex action.** A footer "View in Pal-dex →" button (shown only when the species
+id resolved) calls `onNavigateDex(species)`, reusing the shared `requestDex`
+state path (§9) — the same navigation the palbox slots and dex cells use.

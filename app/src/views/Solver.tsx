@@ -10,6 +10,8 @@ import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
 import { useAppState } from "../state";
+import { PlanGraph } from "../components/plan-graph";
+import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
 
 /** Count wild-caught leaves in a plan tree (header summary cross-check). */
 function countWild(node: PlanNode): number {
@@ -145,7 +147,7 @@ function TreeNode({
 }
 
 export default function Solver() {
-  const { saveDir, solveTarget, clearSolveTarget } = useAppState();
+  const { saveDir, solveTarget, clearSolveTarget, requestDex } = useAppState();
   const [species, setSpecies] = useState("");
   const [passiveInput, setPassiveInput] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
@@ -158,6 +160,12 @@ export default function Solver() {
   const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [solving, setSolving] = useState(false);
+  const [viewMode, setViewMode] = useState<"graph" | "list">("graph");
+  const [activePlan, setActivePlan] = useState(0);
+  const [selection, setSelection] = useState<{
+    nodeId: string;
+    data: PlanNodeSelection;
+  } | null>(null);
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
@@ -171,6 +179,24 @@ export default function Solver() {
       clearSolveTarget();
     }
   }, [solveTarget, clearSolveTarget]);
+
+  // A fresh solve resets to the first plan; switching plans (or a new result)
+  // clears any node selection, since node ids are per-plan-render path ids.
+  useEffect(() => {
+    setActivePlan(0);
+  }, [plans]);
+  useEffect(() => {
+    setSelection(null);
+  }, [activePlan, plans]);
+
+  // Escape clears the current node selection (closes the inspector panel).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setSelection(null);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const passiveNames = useMemo(
     () => new Set(passiveList.map((p) => p.name)),
@@ -383,15 +409,15 @@ export default function Solver() {
       </aside>
 
       {/* Results */}
-      <section className="flex-1 overflow-auto px-6 py-5">
+      <section className="flex flex-1 flex-col overflow-hidden">
         {error && (
-          <div className="rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
+          <div className="m-6 rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
             {error}
           </div>
         )}
 
         {plans && plans.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <div className="font-display text-lg text-ink-dim">No path found</div>
             <p className="max-w-xs text-sm text-ink-faint">
               No breeding chain reaches that target within {maxSteps} steps. Try
@@ -401,53 +427,171 @@ export default function Solver() {
         )}
 
         {plans && plans.length > 0 && (
-          <div className="flex flex-col gap-5">
-            {plans.map((plan, i) => {
-              const wildNodes = countWild(plan.root);
-              return (
-                <article key={i} className="overflow-hidden rounded-lg border border-line bg-panel/40">
-                  <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-raised px-4 py-3">
-                    <span className="font-display text-sm font-bold tracking-wide text-ink">
+          <>
+            {/* Plan tabs + Graph|List toggle */}
+            <div className="flex items-center gap-3 border-b border-line bg-panel px-4 py-2">
+              <div
+                className="flex flex-wrap items-center gap-1"
+                role="tablist"
+                aria-label="Breeding plans"
+              >
+                {plans.map((_plan, i) => {
+                  const active = i === activePlan;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setActivePlan(i)}
+                      className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                        active
+                          ? "border-amber/50 bg-amber/10 text-amber"
+                          : "border-line bg-panel text-ink-dim hover:bg-hover hover:text-ink"
+                      }`}
+                    >
                       Plan {i + 1}
-                    </span>
-                    {i === fastestIdx && (
-                      <Tag tone="amber">Fastest</Tag>
-                    )}
+                      {i === fastestIdx && (
+                        <span
+                          className={`rounded-sm px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wider ${
+                            active ? "bg-amber/20 text-amber" : "bg-raised text-amber/80"
+                          }`}
+                        >
+                          Fastest
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              <div
+                className="ml-auto flex overflow-hidden rounded-md border border-line"
+                role="radiogroup"
+                aria-label="Result view"
+              >
+                {(["graph", "list"] as const).map((m) => {
+                  const active = viewMode === m;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setViewMode(m)}
+                      className={`px-3 py-1 text-[12px] font-medium capitalize transition-colors ${
+                        active
+                          ? "bg-raised text-amber"
+                          : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                      }`}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {viewMode === "graph" ? (
+              <>
+                {plans[activePlan] && (
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line bg-raised px-4 py-2">
                     <span className="font-mono text-lg font-semibold tabular-nums text-amber">
-                      {formatDuration(plan.total_time_secs)}
+                      {formatDuration(plans[activePlan].total_time_secs)}
                     </span>
-                    <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
                       <span>
-                        <span className="text-ink">{plan.total_steps}</span> steps
+                        <span className="text-ink">{plans[activePlan].total_steps}</span> steps
                       </span>
                       <span className="text-line">|</span>
                       <span>
-                        <span className="text-el-leaf">{plan.total_wild_pals || wildNodes}</span> wild
+                        <span className="text-el-leaf">
+                          {plans[activePlan].total_wild_pals || countWild(plans[activePlan].root)}
+                        </span>{" "}
+                        wild
                       </span>
-                      {plan.cake && plan.cake !== "Normal" && (
+                      {plans[activePlan].cake && plans[activePlan].cake !== "Normal" && (
                         <>
                           <span className="text-line">|</span>
                           <span>
-                            <span className="text-ink">{plan.cake_count}</span> {plan.cake} cake
+                            <span className="text-ink">{plans[activePlan].cake_count}</span>{" "}
+                            {plans[activePlan].cake} cake
                           </span>
                         </>
                       )}
                     </div>
-                  </header>
-                  <div className="p-3 text-sm">
-                    <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      Target
-                    </div>
-                    <TreeNode node={plan.root} nameToId={nameToId} isRoot />
                   </div>
-                </article>
-              );
-            })}
-          </div>
+                )}
+                <div className="flex min-h-0 flex-1">
+                  <div className="min-w-0 flex-1">
+                    {plans[activePlan] && (
+                      <PlanGraph
+                        plan={plans[activePlan]}
+                        planIndex={activePlan}
+                        nameToId={nameToId}
+                        selectedId={selection?.nodeId ?? null}
+                        onSelect={(data, nodeId) => setSelection({ nodeId, data })}
+                      />
+                    )}
+                  </div>
+                  {selection && (
+                    <PlanNodePanel
+                      selection={selection.data}
+                      onClose={() => setSelection(null)}
+                      onNavigateDex={requestDex}
+                    />
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 overflow-auto px-6 py-5">
+                <div className="flex flex-col gap-5">
+                  {plans.map((plan, i) => {
+                    const wildNodes = countWild(plan.root);
+                    return (
+                      <article key={i} className="overflow-hidden rounded-lg border border-line bg-panel/40">
+                        <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-raised px-4 py-3">
+                          <span className="font-display text-sm font-bold tracking-wide text-ink">
+                            Plan {i + 1}
+                          </span>
+                          {i === fastestIdx && <Tag tone="amber">Fastest</Tag>}
+                          <span className="font-mono text-lg font-semibold tabular-nums text-amber">
+                            {formatDuration(plan.total_time_secs)}
+                          </span>
+                          <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
+                            <span>
+                              <span className="text-ink">{plan.total_steps}</span> steps
+                            </span>
+                            <span className="text-line">|</span>
+                            <span>
+                              <span className="text-el-leaf">{plan.total_wild_pals || wildNodes}</span> wild
+                            </span>
+                            {plan.cake && plan.cake !== "Normal" && (
+                              <>
+                                <span className="text-line">|</span>
+                                <span>
+                                  <span className="text-ink">{plan.cake_count}</span> {plan.cake} cake
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </header>
+                        <div className="p-3 text-sm">
+                          <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                            Target
+                          </div>
+                          <TreeNode node={plan.root} nameToId={nameToId} isRoot />
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {!plans && !error && (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <div className="font-display text-lg text-ink-dim">Plan a breeding path</div>
             <p className="max-w-sm text-sm text-ink-faint">
               Pick a save, choose a target species and the passives you want, then
