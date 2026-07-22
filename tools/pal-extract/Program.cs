@@ -249,19 +249,82 @@ static class Program
         // ---- element icons ----
         var iconVariants = ExportElementIcons(provider);
 
-        // ---- active-skill names ----
-        // Export every ACTION_SKILL_<id> localized name from DT_SkillNameText_Common,
-        // keyed by the save-side waza id (enum prefix stripped). Skip stubs.
-        var activeNames = new SortedDictionary<string, string>(StringComparer.Ordinal);
+        // ---- active skills (waza) ----
+        // The active-skill (waza) data table keys each row generically (NewRow_N);
+        // the save-side id lives in the row's `WazaType` enum (EPalWazaID::<id>).
+        // We emit one entry per resolvable-named waza row with element/power/cooldown/
+        // description, plus a name-only fallback for any ACTION_SKILL_<id> localized
+        // name that has no waza row (preserves the old active_names coverage set).
+        var waza = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Waza/DT_WazaDataTable");
+        var activeSkills = new SortedDictionary<string, object>(StringComparer.Ordinal);
+        var activeElementKinds = new SortedSet<string>(StringComparer.Ordinal);
+        int wazaNoName = 0, wazaDupe = 0;
+        bool IsStub(string s) => string.IsNullOrEmpty(s) || s == "en Text" || s == "-";
+        string ActiveName(string id) => skillNames.TryGetValue("ACTION_SKILL_" + id, out var n) ? Clean(n) : null;
+        string ActiveDesc(string id)
+        {
+            if (!skillDescs.TryGetValue("ACTION_SKILL_" + id, out var raw)) return null;
+            var cleaned = CleanActiveDesc(raw, palNames, itemNames, mapObjNames, uiCommon, skillNames);
+            return IsStub(cleaned) ? null : cleaned;
+        }
+        foreach (var r in waza.RowMap)
+        {
+            var v = Vals(r.Value);
+            var id = StripEnum(S(v, "WazaType"));
+            if (string.IsNullOrEmpty(id) || id == "None") continue;
+            var nm = ActiveName(id);
+            if (IsStub(nm)) { wazaNoName++; continue; }
+            if (activeSkills.ContainsKey(id)) { wazaDupe++; continue; }
+            var element = StripEnum(S(v, "Element")) ?? "None";
+            activeElementKinds.Add(element);
+            int power = I(v, "Power");
+            int cool = (int)Math.Round(F(v, "CoolTime"));
+            activeSkills[id] = new
+            {
+                name = nm,
+                element,
+                power = power > 0 ? (int?)power : null,
+                cool_time = cool > 0 ? (int?)cool : null,
+                description = ActiveDesc(id),
+            };
+        }
+        int wazaBacked = activeSkills.Count;
+        // Waza-backed keys use the save-side WazaType enum casing (canonical). The
+        // localization table's ACTION_SKILL_<id> suffixes occasionally differ only in
+        // case (e.g. WazaType "Railbolt" vs text key "RailBolt"); match case-insensitively
+        // so we don't emit a stats-less duplicate under the localization casing.
+        var wazaKeyCI = new HashSet<string>(activeSkills.Keys, StringComparer.OrdinalIgnoreCase);
+        // Name-only fallback: every ACTION_SKILL_<id> name lacking a waza row.
+        var oldNameIds = new List<string>();
         foreach (var kv in skillNames)
         {
             if (!kv.Key.StartsWith("ACTION_SKILL_", StringComparison.OrdinalIgnoreCase)) continue;
-            var aid = kv.Key.Substring("ACTION_SKILL_".Length);
-            var anm = Clean(kv.Value);
-            if (string.IsNullOrEmpty(anm) || anm == "en Text" || anm == "-") continue;
-            activeNames[aid] = anm;
+            var id = kv.Key.Substring("ACTION_SKILL_".Length);
+            if (IsStub(Clean(kv.Value))) continue;
+            oldNameIds.Add(id);
+            if (wazaKeyCI.Contains(id)) continue;
+            wazaKeyCI.Add(id);
+            activeElementKinds.Add("None");
+            activeSkills[id] = new
+            {
+                name = Clean(kv.Value),
+                element = "None",
+                power = (int?)null,
+                cool_time = (int?)null,
+                description = ActiveDesc(id),
+            };
         }
-        Console.WriteLine($"[active-names] count={activeNames.Count}");
+        // Coverage is case-insensitive: a save-side WazaType id resolves regardless of the
+        // localization key's casing, so an old-name id backed by a differently-cased waza key
+        // is NOT a regression.
+        var regressions = oldNameIds.Where(id => !activeSkills.ContainsKey(id)
+            && !activeSkills.Keys.Any(k => string.Equals(k, id, StringComparison.OrdinalIgnoreCase))).ToList();
+        var oldNameCI = new HashSet<string>(oldNameIds, StringComparer.OrdinalIgnoreCase);
+        var wazaOnlyAdds = activeSkills.Keys.Where(id => !oldNameCI.Contains(id)).ToList();
+        Console.WriteLine($"[active-skills] count={activeSkills.Count} wazaBacked={wazaBacked} nameOnly={activeSkills.Count - wazaBacked} wazaNoName={wazaNoName} oldNameSet={oldNameIds.Count}");
+        Console.WriteLine($"[active-skills] elements=[{string.Join(",", activeElementKinds)}]");
+        Console.WriteLine($"[active-skills] regressions vs old set ({regressions.Count}): {string.Join(", ", regressions)}");
+        Console.WriteLine($"[active-skills] waza-only additions ({wazaOnlyAdds.Count}): {string.Join(", ", wazaOnlyAdds.Take(40))}");
 
         // ---- assemble + write ----
         var root = new
@@ -275,7 +338,7 @@ static class Program
             game_settings = gameSettings,
             species,
             passives,
-            active_names = activeNames,
+            active_skills = activeSkills,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -346,11 +409,21 @@ static class Program
         if (passPalAny != 114)
             Console.WriteLine($"[WARN] pal-passive count (any pool) {passPalAny} != 114 (paldb ref); AddPal-only={passAddPal} — game version may differ");
 
-        // active-skill names: expect several hundred; the two round-target ids must resolve.
-        Gate(activeNames.Count > 200, $"active_names count {activeNames.Count} unexpectedly low");
-        Gate(activeNames.ContainsKey("AirCanon"), "active_names missing 'AirCanon'");
-        Gate(activeNames.TryGetValue("Unique_SheepBall_Roll", out var sbRoll) && !string.IsNullOrEmpty(sbRoll),
-            "active_names missing 'Unique_SheepBall_Roll'");
+        // active skills: expect several hundred; coverage must not regress below the old name set.
+        Gate(activeSkills.Count >= 300, $"active_skills count {activeSkills.Count} < 300");
+        Gate(regressions.Count == 0, $"active_skills regressed {regressions.Count} old-name ids: {string.Join(", ", regressions.Take(20))}");
+        var airRow = activeSkills.TryGetValue("AirCanon", out var ao) ? ao : null;
+        Gate(airRow != null, "active_skills missing 'AirCanon'");
+        if (airRow != null)
+        {
+            Gate((string)GetProp(airRow, "name") == "Air Cannon", $"AirCanon name '{GetProp(airRow, "name")}' != 'Air Cannon'");
+            Gate((string)GetProp(airRow, "element") == "Normal", $"AirCanon element '{GetProp(airRow, "element")}' != 'Normal'");
+            var airPow = (int?)GetProp(airRow, "power");
+            Gate(airPow.HasValue && airPow.Value > 0, $"AirCanon power {(airPow?.ToString() ?? "null")} not > 0");
+        }
+        var sbRow = activeSkills.TryGetValue("Unique_SheepBall_Roll", out var sbo) ? sbo : null;
+        Gate(sbRow != null && !string.IsNullOrEmpty((string)GetProp(sbRow, "name")),
+            "active_skills missing resolvable 'Unique_SheepBall_Roll'");
 
         // ---- summary ----
         Console.WriteLine("==== SUMMARY ====");
@@ -377,9 +450,9 @@ static class Program
         Console.WriteLine("sample passive Brittle: " + JsonConvert.SerializeObject(FindPassive("Brittle")));
         Console.WriteLine($"wall time: {sw.Elapsed.TotalSeconds:F1}s");
 
-        Console.WriteLine($"active_names count={activeNames.Count}");
-        foreach (var k in new[] { "Unique_SheepBall_Roll", "AirCanon" })
-            Console.WriteLine($"  active_name[{k}] = {(activeNames.TryGetValue(k, out var an) ? an : "(MISSING)")}");
+        Console.WriteLine($"active_skills count={activeSkills.Count} (wazaBacked={wazaBacked})");
+        foreach (var k in new[] { "AirCanon", "Unique_SheepBall_Roll", "FireBall" })
+            Console.WriteLine($"  active_skill[{k}] = {(activeSkills.TryGetValue(k, out var an) ? JsonConvert.SerializeObject(an) : "(MISSING)")}");
         if (errors.Count > 0)
         {
             Console.WriteLine("==== VALIDATION FAILED ====");
@@ -578,6 +651,30 @@ static class Program
     {
         string s = Regex.Replace(raw, @"\{EffectValue(\d)\}", m =>
             IntOrRound(F(pv, "EffectValue" + m.Groups[1].Value)).ToString());
+        var cleaned = Clean(s);
+        return string.IsNullOrEmpty(cleaned) ? null : cleaned;
+    }
+
+    // Resolve embedded <itemName id=|X|/> / <characterName id=|Y|/> / <img .../> rich tags in an
+    // active-skill description to their English display text (same IdTag scheme as partner descs;
+    // no per-rank {templates} here), then strip remaining tags via Clean().
+    static string CleanActiveDesc(string raw, Dictionary<string, string> pal, Dictionary<string, string> item,
+        Dictionary<string, string> mapobj, Dictionary<string, string> ui, Dictionary<string, string> skill)
+    {
+        if (raw == null) return null;
+        string s = IdTag.Replace(raw, m =>
+        {
+            var tag = m.Groups[1].Value; var id = m.Groups[2].Value;
+            return tag switch
+            {
+                "itemName" => item.TryGetValue("ITEM_NAME_" + id, out var x) ? x : id,
+                "mapObjectName" => mapobj.TryGetValue("MAPOBJECT_NAME_" + id, out var x) ? x : id,
+                "characterName" => pal.TryGetValue("PAL_NAME_" + id, out var x) ? x : id,
+                "uiCommon" => ui.TryGetValue(id, out var x) ? x : id,
+                "img" => "",
+                _ => skill.TryGetValue("ACTION_SKILL_" + id, out var x) ? x : id,
+            };
+        });
         var cleaned = Clean(s);
         return string.IsNullOrEmpty(cleaned) ? null : cleaned;
     }

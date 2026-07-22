@@ -1,7 +1,7 @@
 {
   "meta": {
     "game_build": "24181527",
-    "extracted_at": "2026-07-22T11:00:01.7126375+00:00",
+    "extracted_at": "2026-07-22T13:31:28.5347692+00:00",
     "usmap": "PalworldModding/UsefulFiles@1.0"
   },
   "game_settings": {
@@ -16252,338 +16252,2330 @@
       "lottery_weight": 100
     }
   },
-  "active_names": {
-    "AcidRain": "Acid Rain",
-    "AirBlade": "Air Blade",
-    "AirCanon": "Air Cannon",
-    "Apocalypse": "Apocalypse",
-    "AquaJet": "Hydro Jet",
-    "BeamSlicer": "Beam Slicer",
-    "BlastCanon": "Blast Cannon",
-    "BlizzardLance": "Iceberg",
-    "BubbleShot": "Bubble Blast",
-    "BubbleShower": "Poison Shower",
-    "ChargeCanon": "Charge Cannon",
-    "Commet": "Comet Strike",
-    "CommetRain": "Meteorain",
-    "CreepingBubble": "Creeping Bubbles",
-    "CrossThunder": "Cross Lightning",
-    "CrossWind": "Crosswind",
-    "DarkArrow": "Dark Arrow",
-    "DarkBall": "Dark Ball",
-    "DarkCanon": "Dark Cannon",
-    "DarkLaser": "Dark Laser",
-    "DarkLegion": "Dark Whisp",
-    "DarkPulse": "Umbral Surge",
-    "DarkWave": "Shadow Burst",
-    "DiamondFall": "Diamond Rain",
-    "DiversionLaser": "Torrential Blast",
-    "DoubleIcicleThrow": "Double Blizzard Spike",
-    "DragonBreath": "Dragon Breath",
-    "DragonCanon": "Dragon Cannon",
-    "DragonMeteor": "Dragon Meteor",
-    "DragonWave": "Dragon Burst",
-    "ElecWave": "Shockwave",
-    "EnergyShot": "Ice Missile",
-    "Eruption": "Volcanic Rain",
-    "FireBall": "Fire Ball",
-    "FireBlast": "Ignis Blast",
-    "FireSeed": "Spirit Fire",
-    "FlameFunnel": "Flame Funnel",
-    "FlameWall": "Flame Wall",
-    "Flamethrower": "Ignis Breath",
-    "FlareArrow": "Flare Arrow",
-    "FlareTornado": "Flare Storm",
-    "FlareTwister": "Flare Twister",
-    "FrostBreath": "Crystal Breath",
-    "GhostFlame": "Spirit Flame",
-    "GrassTornado": "Grass Tornado",
-    "GravityShot": "Dark Shot",
-    "HolyBlast": "Holy Burst",
-    "Human_Punch": "Punch",
-    "HydroPump": "Hydro Laser",
-    "HydroSlicer": "Hydro Slicer",
-    "HyperBeam": "Pal Blast",
-    "IceAge": "Absolute Frost",
-    "IceBlade": "Icicle Cutter",
-    "IceMissile": "Ice Missile",
-    "IceWall": "Freeze Wall",
-    "IcicleLine": "Icicle Line",
-    "IciclePierce": "Icicle Bullet",
-    "IcicleThrow": "Blizzard Spike",
-    "Inferno": "Ignis Rage",
-    "Intimidate": "Intimidate",
-    "LightningStrike": "Lightning Strike",
-    "LineGeyser": "Splash",
-    "LineThunder": "Lightning Streak",
-    "LockonLaser": "Lock-on Laser",
-    "MudShot": "Bog Blast",
-    "PoisonFog": "Poison Fog",
-    "PoisonShot": "Poison Blast",
-    "PowerBall": "Power Bomb",
-    "PowerShot": "Power Shot",
-    "PredatorBeam": "Predator Blast",
-    "PredatorLockon": "Predator Mark",
-    "PredatorWave": "Predator Surge",
-    "Psychokinesis": "Psycho Gravity",
-    "RadiantBarrage": "Radiant Barrage",
-    "RaidCutter": "Raid Cutter",
-    "RailBolt": "Thunder Rail",
-    "RangeThunder": "All Range Thunder",
-    "ReflectiveShuriken": "Reflect Leaf",
-    "RipTide": "Aqua Surge",
-    "RockBeat": "Rocky Impact",
-    "RockLance": "Rock Lance",
-    "RootAttack": "Spine Vine",
-    "RootLance": "Circle Vine",
-    "SandTornado": "Sand Tornado",
-    "SandTwister": "Sand Twister",
-    "SeaGush": "Geyser Gush",
-    "SeedMachinegun": "Seed Machine Gun",
-    "SeedMine": "Seed Mine",
-    "SelfDestruct": "Implode",
-    "SelfDestruct_Bee": "Bee Quiet",
-    "SelfExplosion": "Megaton Implode",
-    "ShadowBall": "Nightmare Ball",
-    "ShokeiLaser": "Lethal Laser",
-    "SolarBeam": "Solar Blast",
-    "SpecialCutter": "Multicutter",
-    "SpreadPulse": "Spark Blast",
-    "StarMine": "Star Mine",
-    "StardustArrow": "Fireball",
-    "StoneShotgun": "Stone Blast",
-    "ThreeCommet": "Comet Barrage",
-    "ThreeThunder": "Tri-Lightning",
-    "ThrowRock": "Stone Cannon",
-    "ThunderBall": "Electric Ball",
-    "ThunderFunnel": "Plasma Funnel",
-    "ThunderRain": "Thunder Rain",
-    "ThunderSpear": "Thunder Spear",
-    "ThunderStorm": "Thunderstorm",
-    "Thunderbolt": "Lightning Bolt",
-    "Tremor": "Rockburst",
-    "TriSpark": "TriSpark",
-    "Unique_Alpaca_Tackle": "Fluffy Tackle",
-    "Unique_AmaterasuWolf_Bite": "Fierce Fang (Fire)",
-    "Unique_AmaterasuWolf_BiteV2": "Double Fang (Fire)",
-    "Unique_AmaterasuWolf_Dark_Bite": "Fierce Fang (Dark)",
-    "Unique_AmaterasuWolf_Dark_BiteV2": "Double Fang (Dark)",
-    "Unique_AmaterasuWolf_Dark_DarkCharge": "Daring Shadowstorm",
-    "Unique_AmaterasuWolf_FireCharge": "Daring Flames",
-    "Unique_Anubis_GroundPunch": "Ground Smash",
-    "Unique_Anubis_LowRoundKick": "Spinning Roundhouse",
-    "Unique_Anubis_Tackle": "Forceful Charge",
-    "Unique_Baphomet_Dark_DarkKite": "Nightmare Claw",
-    "Unique_Baphomet_SwallowKite": "Hellfire Claw",
-    "Unique_BirdDragon_FireBreath": "Flame Breath",
-    "Unique_BirdDragon_Ice_IceBreath": "Tempest Blizzard",
-    "Unique_BlackCentaur_TwoSpearRushes": "Twin Spears",
-    "Unique_BlackGriffon_TackleLaser": "Divine Disaster",
-    "Unique_BlackGriffon_TackleLaser2": "Divine Disaster II",
-    "Unique_BlackMetalDragon_FirePunch": "Firefist Breathstorm",
-    "Unique_BlackPuppy_Bite": "Fierce Fang (Dark)",
-    "Unique_BlackPuppy_BiteV2": "Double Fang (Dark)",
-    "Unique_BluePlatypus_Toboggan": "Surfing Slam",
-    "Unique_BluePlatypus_Toboggan_Fire": "Fire Tackle",
-    "Unique_BlueSkyDragon_DrainStorm": "Celestial Vortex",
-    "Unique_BlueSkyDragon_SweepBreath": "Azure Dracoflare",
-    "Unique_BlueSkyDragon_Tossin": "Hydra Charge",
-    "Unique_BlueThunderHorse_FlashDash": "Bolt Blink",
-    "Unique_BlueThunderHorse_Tossin": "Flash Charge",
-    "Unique_Boar_Tackle": "Reckless Charge",
-    "Unique_CaptainPenguin_Black_BodySlide_Electric": "Thunderslide",
-    "Unique_CaptainPenguin_BodySlide": "Emperor Slide",
-    "Unique_ChickenPal_ChickenPeck": "Chicken Rush",
-    "Unique_ClownRabbit_TrickShow": "Trickster Show",
-    "Unique_CubeTurtle_CubePress": "Cube Press",
-    "Unique_CubeTurtle_Neutral_HolyPress": "Holy Press",
-    "Unique_CuteMole_DiggingAttack": "Fuddler Tunneler",
-    "Unique_DarkAlien_JumpScractch": "Evil Slash",
-    "Unique_DarkCrow_TelePoke": "Phantom Peck",
-    "Unique_DarkMechaDragon_BeamSlash": "Beam Slash",
-    "Unique_DarkMechaDragon_ConvergentBeam": "Astral Ray",
-    "Unique_DarkMechaDragon_FunnelLaser": "Omega Laser",
-    "Unique_DarkMechaDragon_SetFunnel": "Satellite Bit",
-    "Unique_DarkMechaDragon_WarpComet": "Cosmic Meteor",
-    "Unique_DarkMutant_DarkTackle": "Apocalypse",
-    "Unique_DarkScorpion_Pierce": "Jumping Stinger",
-    "Unique_Deer_Ground_DirtyHorn": "Mud Horn",
-    "Unique_Deer_PushupHorn": "Antler Uppercut",
-    "Unique_DomeArmorDragon_ExplosiveMissile": "Missile Burst",
-    "Unique_DrillGame_ShellAttack": "Shell Spin",
-    "Unique_Eagle_GlidingNail": "Gale Claw",
-    "Unique_ElecPanda_ElecScratch": "Lightning Claw",
-    "Unique_ElecPanda_GatlingAttack": "Heavy Thunder Tank",
-    "Unique_ElecPomeranian_Bite": "Fierce Fang (Electric)",
-    "Unique_ElecPomeranian_BiteV2": "Double Fang (Electric)",
-    "Unique_ElecSnail_ShellCharge": "Shell Charge",
-    "Unique_FairyDragon_FairyTornado": "Mystic Whirlwind",
-    "Unique_FeatherOstrich_Tossin": "Earth Dash",
-    "Unique_FengyunDeeper_CloudTempest": "Cloud Tempest",
-    "Unique_FengyunDeeper_Electric_ThunderTempest": "Thunder Tempest",
-    "Unique_FireKirin_Dark_DarkTossin": "Dark Charge",
-    "Unique_FireKirin_Tackle": "Ignis Charge",
-    "Unique_FlameBuffalo_FlameHorn": "Blazing Horn",
-    "Unique_FlowerDinosaur_Electric_ThunderWhip": "Lightning Smash",
-    "Unique_FlowerDinosaur_Whip": "Botanical Smash",
-    "Unique_FlowerPrince_PoisonGasDance": "Toxic Dance",
-    "Unique_FlowerPrince_PoisonGasTackle": "Poison Promenade",
-    "Unique_Garm_Bite": "Fierce Fang",
-    "Unique_Garm_BiteV2": "Double Fang",
-    "Unique_GhostAnglerfish_Fire_SweepBait_Fire": "Scorching Lantern Sweep",
-    "Unique_GhostAnglerfish_SweepBait": "Lantern Sweep",
-    "Unique_GhostBeast_Tossin": "Spirit Dash",
-    "Unique_GhostDragon_PhosphorousBeam": "Blazing Beam",
-    "Unique_GhostDragon_TailSlash": "Tail Slash",
-    "Unique_GoldenHorse_Bite": "Fierce Fang (Ground)",
-    "Unique_GoldenHorse_BiteV2": "Double Fang (Ground)",
-    "Unique_GoldenHorse_StoneDash": "Crash Dash",
-    "Unique_Gorilla_GroundPunch": "Ground Pound",
-    "Unique_Gorilla_Ground_EarthPunch": "Rumble Combo",
-    "Unique_GrassGolem_ArmCannon": "Root Cannon",
-    "Unique_GrassGolem_Dark_DarkArmCannon": "Dark Root",
-    "Unique_GrassGolem_RocketPunch": "Rocket Arm",
-    "Unique_GrassMinotaur_BullRush": "Raging Bull Rush",
-    "Unique_GrassMinotaur_BullRush_Lower": "Bull Rush",
-    "Unique_GrassMinotaur_Ice_BullRush": "Raging Snow Rush",
-    "Unique_GrassMinotaur_Ice_BullRush_Lower": "Snow Rush",
-    "Unique_GrassPanda_Electric_ElectricPunch": "Blast Punch",
-    "Unique_GrassPanda_MusclePunch": "Crushing Punch",
-    "Unique_GrassRabbitMan_GrassRoundKick": "Leaping Roundhouse",
-    "Unique_Grassmammoth_Earthquake": "Earth Impact",
-    "Unique_GrimGirl_BrutalMachete": "Grudge Barrage",
-    "Unique_GuardianDog_Bite": "Fierce Fang",
-    "Unique_GuardianDog_BiteV2": "Double Fang",
-    "Unique_HawkBird_Storm": "Tornado Attack",
-    "Unique_HerculesBeetle_BeetleTackle": "Giga Horn",
-    "Unique_Horus_FlareBird": "Phoenix Flare",
-    "Unique_Horus_PerfectStorm": "Raging Flame Wave",
-    "Unique_Horus_Water_AquaStorm": "Phoenix Tide",
-    "Unique_IceCrocodile_SpitAttack": "Chaotic Spray",
-    "Unique_IceDeer_IceHorn": "Freezing Charge",
-    "Unique_IceHorse_Dark_DarkBladeAttack": "Dark Wing",
-    "Unique_IceHorse_IceBladeAttack": "Crystal Wing",
-    "Unique_IceNarwhal_JumpingHorn": "High Breach",
-    "Unique_JetDragon_JumpBeam": "Beam Comet",
-    "Unique_KingAlpaca_BodyPress": "Kingly Slam",
-    "Unique_KingAlpaca_Ice_IcePress": "Frozen Press",
-    "Unique_KingBahamut_AirCrash": "Magna Crush",
-    "Unique_KingBahamut_ArmSmash": "Brawn Impact",
-    "Unique_KingWhale_AquaBlade": "Aqua Blade",
-    "Unique_KingWhale_AquaTornado": "Aqua Tornado",
-    "Unique_KingWhale_Breaching": "Grand Breach",
-    "Unique_KingWhale_HomingBubble": "Bubble Rain",
-    "Unique_KingWhale_Maelstrom": "Maelstrom",
-    "Unique_KingWhale_WaveTackle": "Tidal Charge",
-    "Unique_Kirin_Ice_IceTackle": "Ice Gale Strike",
-    "Unique_Kirin_LightningTackle": "Lightning Gale",
-    "Unique_LanternButler_LanternFlame": "Lantern Flame",
-    "Unique_LeafMomonga_SomerSault": "Konoha Flip",
-    "Unique_LegendDeer_RadiantPurge_Otomo": "Purifying Light",
-    "Unique_LegendDeer_RadiantWingRush": "Divine Wing",
-    "Unique_LegendDeer_WarpPillarBurst": "Sacred Rain",
-    "Unique_LilyQueen_LilyHealing": "Bountiful Protection",
-    "Unique_LilyQueen_WindBarrier": "Wind Barrier",
-    "Unique_LotusDragon_LotusBloom": "Lotus Bloom",
-    "Unique_Manticore_InfernoStrike": "Volcanic Fang",
-    "Unique_MonochromeQueen_BalletJump": "Black Quilled Ballet",
-    "Unique_MoonQueen_IceMoonBlade": "Seigetsu Flash",
-    "Unique_MoonQueen_MoonBeam": "Moonlight Beam",
-    "Unique_MoonQueen_MoonBlade": "Seigetsu Blade",
-    "Unique_Mothman_GiantSpore": "Giant Spore",
-    "Unique_Mothman_SporeScatter": "Spore Burst",
-    "Unique_MummyPal_MummyAttack": "Mummy Rush",
-    "Unique_MysteryMask_LifeSteal": "Soul Drain",
-    "Unique_NaughtyCat_CatPress": "Cat Press",
-    "Unique_NightBlueHorse_DeathStep": "Lethal Step",
-    "Unique_NightBlueHorse_Neutral_AirStep": "Royal Step",
-    "Unique_NightBlueHorse_Neutral_Tossin": "Silver Steed",
-    "Unique_NightBlueHorse_Tossin": "Spectral Steed",
-    "Unique_NightLady_FlameNightmare": "Flame Waltz",
-    "Unique_NightLady_WarpBeam": "Nightmare Bloom",
-    "Unique_NightLady_WarpBeam_Straight": "Nightmare Ray",
-    "Unique_OctopursGirl_Inkjet": "Smoke Jet",
-    "Unique_PandaGirl_RapidKick": "Rapid Kick",
-    "Unique_PinkCat_CatPunch": "Punch Flurry",
-    "Unique_Plesiosaur_LongBreath": "Deep Breath",
-    "Unique_PoseidonOrca_TorrentLaser": "Thalassonic Laser",
-    "Unique_PurpleSpider_SpiderRaid": "Webstrike Impact",
-    "Unique_QueenBee_SpinLance": "Spinning Staff",
-    "Unique_RedArmorBird_TriplePeck": "Rush Beak",
-    "Unique_RedFlowerBird_JumpKick": "Flower Stomp",
-    "Unique_RobinHood_BowSnipe": "Focus Shot",
-    "Unique_RockBeast_Ice_IceHorn": "Ice Burst",
-    "Unique_RockBeast_RockHorn": "Horn Burst",
-    "Unique_Ronin_Iai": "Iaigiri",
-    "Unique_Ronin_Iai_PartnerSkill": "Iaigiri",
-    "Unique_SaintCentaur_OneSpearRushes": "Spear Thrust",
-    "Unique_SakuraSaurus_SideTackle": "Muscle Slam",
-    "Unique_SakuraSaurus_Water_SplashTackle": "Splash Tackle",
-    "Unique_SamuraiDog_Bite": "Fierce Fang (Ground)",
-    "Unique_SamuraiDog_BiteV2": "Double Fang (Ground)",
-    "Unique_SamuraiDog_DashSlash": "Persistent Slash",
-    "Unique_ScorpionMan_Erectric_UpperThunder": "Thunder Uppercut",
-    "Unique_ScorpionMan_UpperCut": "Upper Smash",
-    "Unique_Sekhmet_RollingScratch": "Rolling Scratch",
-    "Unique_Sekhmet_SomersaultScratch": "Somersault Scratch",
-    "Unique_SheepBall_Roll": "Roly Poly",
-    "Unique_SifuDog_Counter": "Wholehearted Stance",
-    "Unique_SnakeGirl_SnakeShot": "Poison Scatter",
-    "Unique_SnowTigerBeastman_SnowImpact": "Glacial Impact",
-    "Unique_SnowTigerBeastman_TrampleSlash": "Frost Talon",
-    "Unique_SoldierBee_NeedleLance": "Needle Spear",
-    "Unique_StuffedShark_HiddenWeapon": "Trigger Happy",
-    "Unique_SumoDog_SumoStomp": "Sumo Stomp",
-    "Unique_TentacleTurtle_HydroSpin": "Hydro Spin",
-    "Unique_ThunderBird_Ice_SnowStrom": "Glacial Plunge",
-    "Unique_ThunderBird_ThunderStorm": "Lightning Dive",
-    "Unique_ThunderDog_Bite": "Fierce Fang (Electric)",
-    "Unique_ThunderDog_BiteV2": "Double Fang (Electric)",
-    "Unique_ThunderDog_Ice_Bite": "Fierce Fang (Ice)",
-    "Unique_ThunderDog_Ice_BiteV2": "Double Fang (Ice)",
-    "Unique_ThunderDog_Ice_KoriShorai": "Frostcall",
-    "Unique_ThunderDog_InazumaShorai": "Beckon Lightning",
-    "Unique_ThunderDragonMan_NumerousSwordAttack": "Polykeraunos",
-    "Unique_ThunderDragonMan_ThunderSwordAttack": "Kerauno",
-    "Unique_TropicalOstrich_DashKick": "Dash Kick",
-    "Unique_Umihebi_Fire_FireWindingTackle": "Magma Serpent",
-    "Unique_Umihebi_WindingTackle": "Slither Slam",
-    "Unique_VolcanicMonster_Ice_IceAttack": "Frost Burst",
-    "Unique_VolcanicMonster_MagmaAttack": "Volcanic Burst",
-    "Unique_VolcanoDragon_Ice_IceLaser": "Ice Laser",
-    "Unique_VolcanoDragon_Ice_IcicleSpit": "Ice Spit",
-    "Unique_VolcanoDragon_MagmaSpit": "Magma Spit",
-    "Unique_VolcanoDragon_VolcanicLaser": "Magma Laser",
-    "Unique_WeaselDragon_FlyingTackle": "Rocket Slam",
-    "Unique_Werewolf_Ice_SnowScratch": "Snow Claw",
-    "Unique_Werewolf_Scratch": "Jumping Claw",
-    "Unique_WhiteDeer_Dark_DarkPillar": "Dark Nova",
-    "Unique_WhiteDeer_HolyPillar": "Holy Nova",
-    "Unique_WhiteShieldDragon_ShieldTackle": "Aegis Charge",
-    "Unique_WhiteTiger_Ground_IronScratch": "Stone Claw",
-    "Unique_WhiteTiger_IceScratch": "Blizzard Claw",
-    "Unique_WingGolem_Fire_FlameCutter": "Flame Cutter",
-    "Unique_WingGolem_RoundCutter": "Ground Cutter",
-    "Unique_YakushimaBoss001_Small_DemonEyeCharge": "Ocular Rush",
-    "Unique_YakushimaMonster001_SlimePress_Dark": "Slime Press (Dark)",
-    "Unique_YakushimaMonster001_SlimePress_Fire": "Slime Press (Fire)",
-    "Unique_YakushimaMonster001_SlimePress_Leaf": "Slime Press (Grass)",
-    "Unique_YakushimaMonster001_SlimePress_Normal": "Slime Press (Neutral)",
-    "Unique_YakushimaMonster001_SlimePress_Rainbow": "Slime Press (Rainbow)",
-    "Unique_YakushimaMonster001_SlimePress_Water": "Slime Press (Water)",
-    "Unique_YakushimaMonster002_SwordCharge": "Sword Charge",
-    "Unique_YakushimaMonster003_BatCharge": "Winged Assault",
-    "Unique_Yakushima_EyeTossin": "Lock-On Lunge",
-    "Unique_Yakushima_MouthTossin": "Frenzied Charge",
-    "Unique_Yakushima_SummonServant": "Servant Call",
-    "Unique_Yeti_Grass_GrassBall": "Lawn Bowling",
-    "Unique_Yeti_SnowBall": "Snow Bowling",
-    "WallSplash": "Curtain Splash",
-    "WaterBall": "Aqua Burst",
-    "WaterGun": "Aqua Gun",
-    "Weapon_Use": "Use Weapon",
-    "WindBurst": "Wind Burst",
-    "WindCutter": "Wind Cutter",
-    "WindEdge": "Wind Edge"
+  "active_skills": {
+    "AcidRain": {
+      "name": "Acid Rain",
+      "element": "Water",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Creates acidic clouds that\npour down acid rain on enemies."
+    },
+    "AirBlade": {
+      "name": "Air Blade",
+      "element": "Normal",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Sends out sharp blades of air in a fan shape."
+    },
+    "AirCanon": {
+      "name": "Air Cannon",
+      "element": "Normal",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Quickly fires a burst of highly pressurized air."
+    },
+    "Apocalypse": {
+      "name": "Apocalypse",
+      "element": "Dark",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Generates several dark vortexes around the enemy."
+    },
+    "AquaJet": {
+      "name": "Hydro Jet",
+      "element": "Water",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Hurls a high speed ball of water\nat an enemy."
+    },
+    "BeamSlicer": {
+      "name": "Beam Slicer",
+      "element": "Dragon",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Mows down the area in front with a beam imbued with dragon power.\nThe area struck by the beam will also explode after a short delay."
+    },
+    "BlastCanon": {
+      "name": "Blast Cannon",
+      "element": "Dragon",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Fires an energy bullet imbued with dragon power at the enemy's location.\nUpon impact, the bullet shatters and creates a frontal long-range explosion."
+    },
+    "BlizzardLance": {
+      "name": "Iceberg",
+      "element": "Ice",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Summons a sharp ice lance\nunder an enemy."
+    },
+    "BubbleShot": {
+      "name": "Bubble Blast",
+      "element": "Water",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Fires numerous bubbles\nthat slowly pursue an enemy."
+    },
+    "BubbleShower": {
+      "name": "Poison Shower",
+      "element": "Dark",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Focuses energy into the body and scatters poison orbs in all directions."
+    },
+    "ChargeCanon": {
+      "name": "Charge Cannon",
+      "element": "Dragon",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Fires an energy orb infused with draconic power at the enemy.\nThe orb causes a wide-area explosion upon impact."
+    },
+    "Commet": {
+      "name": "Comet Strike",
+      "element": "Dragon",
+      "power": 180,
+      "cool_time": 8,
+      "description": "Drops a meteorite straight down,\ngenerating a shock wave around the impact area."
+    },
+    "CommetRain": {
+      "name": "Meteorain",
+      "element": "Dragon",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Drops countless meteorites,\ngenerating an array of shock waves."
+    },
+    "CreepingBubble": {
+      "name": "Creeping Bubbles",
+      "element": "Water",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Panthalus's exclusive skill.\nGenerates a multitude of bubbles around the enemy to surround and attack them."
+    },
+    "CrossThunder": {
+      "name": "Cross Lightning",
+      "element": "Electricity",
+      "power": 1,
+      "cool_time": 7,
+      "description": "Generates two lightning bolts that advance left and right,\nblocking either direction."
+    },
+    "CrossWind": {
+      "name": "Crosswind",
+      "element": "Leaf",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Conjures blades of wind in front of the enemy, converging to deliver a cutting cross attack."
+    },
+    "DarkArrow": {
+      "name": "Dark Arrow",
+      "element": "Dark",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Fires off dark energy\nthat homes in on an enemy."
+    },
+    "DarkBall": {
+      "name": "Dark Ball",
+      "element": "Dark",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Unleashes a sphere of darkness\nthat slowly tracks down an enemy."
+    },
+    "DarkCanon": {
+      "name": "Dark Cannon",
+      "element": "Dark",
+      "power": 70,
+      "cool_time": 4,
+      "description": "Hurls an energy ball imbued\nwith dark energy at an enemy."
+    },
+    "DarkLaser": {
+      "name": "Dark Laser",
+      "element": "Dark",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Charges dark energy before\nblasting enemies with a powerful beam."
+    },
+    "DarkLegion": {
+      "name": "Dark Whisp",
+      "element": "Dark",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Fires a menacing ball of dark energy that pursues enemies."
+    },
+    "DarkPulse": {
+      "name": "Umbral Surge",
+      "element": "Dark",
+      "power": 60,
+      "cool_time": 4,
+      "description": "Fires high-speed dark orbs in a fan shape,\nspreading as they travel."
+    },
+    "DarkWave": {
+      "name": "Shadow Burst",
+      "element": "Dark",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Quickly discharges dark energy,\ndamaging those around it."
+    },
+    "DiamondFall": {
+      "name": "Diamond Rain",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Creates numerous lumps of ice that are\nconsecutively dropped on a foe's head."
+    },
+    "DiversionLaser": {
+      "name": "Torrential Blast",
+      "element": "Water",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Fires a high-pressure stream of water forward.\nAfter a short delay, the stream branches off to the left and right."
+    },
+    "DoubleIcicleThrow": {
+      "name": "Double Blizzard Spike",
+      "element": "Ice",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Creates two huge ice blocks\nand fires them at the enemy one after another.\nOn impact, it also shocks those close by."
+    },
+    "DragonBreath": {
+      "name": "Dragon Breath",
+      "element": "Dragon",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Exhales breath imbued with draconic energy,\ndealing continuous damage to those in front of it."
+    },
+    "DragonCanon": {
+      "name": "Dragon Cannon",
+      "element": "Dragon",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Hurls an energy ball imbued\nwith draconic energy at an enemy."
+    },
+    "DragonMeteor": {
+      "name": "Dragon Meteor",
+      "element": "Dragon",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Summons numerous small meteorites\nand launches them at an enemy."
+    },
+    "DragonWave": {
+      "name": "Dragon Burst",
+      "element": "Dragon",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Quickly discharges draconic energy,\ndamaging those around it."
+    },
+    "ElecWave": {
+      "name": "Shockwave",
+      "element": "Electricity",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Quickly discharges electricity,\nshocking those around it."
+    },
+    "EnergyShot": {
+      "name": "Ice Missile",
+      "element": "Ice",
+      "power": 1,
+      "cool_time": 5,
+      "description": null
+    },
+    "Eruption": {
+      "name": "Volcanic Rain",
+      "element": "Fire",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Fires countless volcanic bombs into the sky.\nAfter a while, the bombs rain down around their originator."
+    },
+    "FireBall": {
+      "name": "Fire Ball",
+      "element": "Fire",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Creates a giant ball of flame and hurls it at an enemy.\nThe ball explodes over a wide area upon impact."
+    },
+    "FireBlast": {
+      "name": "Ignis Blast",
+      "element": "Fire",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Hurls a ball of fire\nstraight at an enemy."
+    },
+    "FireSeed": {
+      "name": "Spirit Fire",
+      "element": "Fire",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Shoots fireballs towards an enemy.\nThe fireballs explode after a short distance,\ngenerating smaller fireballs that spread forward."
+    },
+    "FlameFunnel": {
+      "name": "Flame Funnel",
+      "element": "Fire",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Creates multiple spheres of fiery energy,\nfrom which countless fireballs shoot towards the enemy."
+    },
+    "FlameWall": {
+      "name": "Flame Wall",
+      "element": "Fire",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Creates a wall of flames at the enemy's location.\nThe wall of flames will remain for a while,\nand deal damage to the enemies it touches."
+    },
+    "Flamethrower": {
+      "name": "Ignis Breath",
+      "element": "Fire",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Shoots flames at an enemy,\ndealing continuous damage."
+    },
+    "FlareArrow": {
+      "name": "Flare Arrow",
+      "element": "Fire",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Fires three flaming arrows in succession\nthat home in on an enemy."
+    },
+    "FlareTornado": {
+      "name": "Flare Storm",
+      "element": "Fire",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Generates two flaming tornadoes on either side\nbefore launching them at an enemy."
+    },
+    "FlareTwister": {
+      "name": "Flare Twister",
+      "element": "Fire",
+      "power": 130,
+      "cool_time": 8,
+      "description": "Creates multiple flame tornadoes.\nThe tornado continues to spin in circles."
+    },
+    "FrostBreath": {
+      "name": "Crystal Breath",
+      "element": "Ice",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Enshrouds an enemy in a frigid blast of air,\ndealing continuous damage."
+    },
+    "GhostFlame": {
+      "name": "Spirit Flame",
+      "element": "Dark",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Fires three balls of malice\nthat relentlessly pursue an enemy."
+    },
+    "GrassTornado": {
+      "name": "Grass Tornado",
+      "element": "Leaf",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Generates two tornadoes on either side\nbefore launching them at an enemy."
+    },
+    "GravityShot": {
+      "name": "Dark Shot",
+      "element": "Dark",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Fires a dark energy projectile\nthat accelerates over time."
+    },
+    "HolyBlast": {
+      "name": "Holy Burst",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Creates a wide explosion of light\nat the enemy's location and around it."
+    },
+    "Human_Punch": {
+      "name": "Punch",
+      "element": "Normal",
+      "power": 12,
+      "cool_time": 1,
+      "description": "Punch with conviction; believe in the power of the fist."
+    },
+    "HydroPump": {
+      "name": "Hydro Laser",
+      "element": "Water",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Shoots pressurized water at extreme velocities,\nsweeping over a wide area in front of it."
+    },
+    "HydroSlicer": {
+      "name": "Hydro Slicer",
+      "element": "Water",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Mows down the frontal area with a blast of compressed water.\nThe area struck by the blast erupts with water after a short delay."
+    },
+    "HyperBeam": {
+      "name": "Pal Blast",
+      "element": "Normal",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Charges destructive energy before firing\na high-powered beam forward across a wide area."
+    },
+    "IceAge": {
+      "name": "Absolute Frost",
+      "element": "Ice",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Throws icicles in a wide area from under the enemy's feet."
+    },
+    "IceBlade": {
+      "name": "Icicle Cutter",
+      "element": "Ice",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Creates a crescent blade of ice\nand hurls it forward."
+    },
+    "IceMissile": {
+      "name": "Ice Missile",
+      "element": "Ice",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Creates ice lances in the air\nthat fly towards enemies."
+    },
+    "IceWall": {
+      "name": "Freeze Wall",
+      "element": "Ice",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Creates a wall of ice that rises from the ground.\nThe ice wall remains standing for a while,\nand breaks after taking enough damage."
+    },
+    "IcicleLine": {
+      "name": "Icicle Line",
+      "element": "Ice",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Generates pillars of ice that move in a straight line in three directions."
+    },
+    "IciclePierce": {
+      "name": "Icicle Bullet",
+      "element": "Ice",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Generates multiple sharp ice blocks in the sky\nand fires them at the enemy."
+    },
+    "IcicleThrow": {
+      "name": "Blizzard Spike",
+      "element": "Ice",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Creates a giant lump of ice and hurls it at an enemy.\nIt deals damage to those in the surrounding area upon impact."
+    },
+    "Inferno": {
+      "name": "Ignis Rage",
+      "element": "Fire",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Infuses the surrounding ground with energy,\ncausing it to explode after a set amount of time."
+    },
+    "Intimidate": {
+      "name": "Intimidate",
+      "element": "Normal",
+      "power": 1,
+      "cool_time": 1,
+      "description": null
+    },
+    "LightningStrike": {
+      "name": "Lightning Strike",
+      "element": "Electricity",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Acts as a lightning rod, calling down thunderbolts\nthat electrocute the surrounding area."
+    },
+    "LineGeyser": {
+      "name": "Splash",
+      "element": "Water",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Generates a column of water that travels in a straight line."
+    },
+    "LineThunder": {
+      "name": "Lightning Streak",
+      "element": "Electricity",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Generates a lightning bolt\nthat moves forward in a line."
+    },
+    "LockonLaser": {
+      "name": "Lock-on Laser",
+      "element": "Electricity",
+      "power": 140,
+      "cool_time": 8,
+      "description": "Takes aim at an enemy before\nfiring a super high speed laser."
+    },
+    "MudShot": {
+      "name": "Bog Blast",
+      "element": "Earth",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Hurls sticky mud\nat an enemy."
+    },
+    "PoisonFog": {
+      "name": "Poison Fog",
+      "element": "Dark",
+      "power": null,
+      "cool_time": 30,
+      "description": "Generates a fog of poison in front,\ncausing the opponent to become poisoned."
+    },
+    "PoisonShot": {
+      "name": "Poison Blast",
+      "element": "Dark",
+      "power": 30,
+      "cool_time": 2,
+      "description": "Hurls poison sludge\nat an enemy."
+    },
+    "PowerBall": {
+      "name": "Power Bomb",
+      "element": "Normal",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Charges a massive amount of energy\nbefore firing a large destructive ball."
+    },
+    "PowerShot": {
+      "name": "Power Shot",
+      "element": "Normal",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Charges energy\ninto a focused blast."
+    },
+    "PredatorBeam": {
+      "name": "Predator Blast",
+      "element": "Normal",
+      "power": 600,
+      "cool_time": 20,
+      "description": null
+    },
+    "PredatorLockon": {
+      "name": "Predator Mark",
+      "element": "Normal",
+      "power": 400,
+      "cool_time": 20,
+      "description": null
+    },
+    "PredatorWave": {
+      "name": "Predator Surge",
+      "element": "Normal",
+      "power": 200,
+      "cool_time": 20,
+      "description": null
+    },
+    "Psychokinesis": {
+      "name": "Psycho Gravity",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Utilizes gravity to deprive enemies of their freedom,\nthen slams them into the ground from high above."
+    },
+    "RadiantBarrage": {
+      "name": "Radiant Barrage",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Unleashes a sphere of light that slowly tracks down an enemy.\nAs it nears its target, it splits into countless light bullets that strike all at once."
+    },
+    "RaidCutter": {
+      "name": "Raid Cutter",
+      "element": "Leaf",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Shoots countless wind swords\nthat fly straight towards the enemy."
+    },
+    "Railbolt": {
+      "name": "Thunder Rail",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Charge the power of lightning to the limit\nand fires multiple simultaneous electric shocks at the enemy."
+    },
+    "RangeThunder": {
+      "name": "All Range Thunder",
+      "element": "Electricity",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Generates lightning strikes that travel\nin a straight line in all directions."
+    },
+    "ReflectiveShuriken": {
+      "name": "Reflect Leaf",
+      "element": "Leaf",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Launches a blade of wind that rebounds off enemies or trees, striking repeatedly.\nCan ricochet up to four times."
+    },
+    "RipTide": {
+      "name": "Aqua Surge",
+      "element": "Water",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Generates waves that surge around the enemy from all sides.\nThey converge and explode at the center, erupting into a column of water."
+    },
+    "RockBeat": {
+      "name": "Rocky Impact",
+      "element": "Earth",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Shakes the ground and lifts a massive boulder into the air."
+    },
+    "RockLance": {
+      "name": "Rock Lance",
+      "element": "Earth",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Generates a sharp rock spear\nunder an enemy."
+    },
+    "RootAttack": {
+      "name": "Spine Vine",
+      "element": "Leaf",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Generates spiny thorns that chase an enemy\nalong the ground, piercing them from below."
+    },
+    "RootLance": {
+      "name": "Circle Vine",
+      "element": "Leaf",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Sprouts sharp roots\nin and around the enemy's location."
+    },
+    "SandTornado": {
+      "name": "Sand Tornado",
+      "element": "Earth",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Generates two sand tornadoes on either side\nbefore launching them at an enemy."
+    },
+    "SandTwister": {
+      "name": "Sand Twister",
+      "element": "Earth",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Creates multiple sand tornadoes.\nThe tornadoes continuously spin in circles."
+    },
+    "SeaGush": {
+      "name": "Geyser Gush",
+      "element": "Water",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Erupts massive pillars of water beneath and around the enemy."
+    },
+    "SeedMachinegun": {
+      "name": "Seed Machine Gun",
+      "element": "Leaf",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Fires a volley of hard seeds\nat enemies in front of it."
+    },
+    "SeedMine": {
+      "name": "Seed Mine",
+      "element": "Leaf",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Launches a deadly seed.\nIf it hits an enemy, the seed explodes."
+    },
+    "SelfDestruct": {
+      "name": "Implode",
+      "element": "Normal",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Risks its life to cause a violent explosion.\nBecomes incapacitated afterwards."
+    },
+    "SelfDestruct_Bee": {
+      "name": "Bee Quiet",
+      "element": "Leaf",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Risks its life to cause a violent explosion,\nbut receives the honor of falling in battle."
+    },
+    "SelfExplosion": {
+      "name": "Megaton Implode",
+      "element": "Normal",
+      "power": 1200,
+      "cool_time": 60,
+      "description": "Risks life to cause a massive explosion.\nThose who perish for their duty become glistening stars in the night sky."
+    },
+    "ShadowBall": {
+      "name": "Nightmare Ball",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Creates a giant ball of darkness\nand hurls it at an enemy."
+    },
+    "ShokeiLaser": {
+      "name": "Lethal Laser",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "After aiming at the enemy,\nfires multiple ultra-fast lightning lasers."
+    },
+    "SolarBeam": {
+      "name": "Solar Blast",
+      "element": "Leaf",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Charges solar energy before\nblasting enemies with a powerful beam."
+    },
+    "SpecialCutter": {
+      "name": "Multicutter",
+      "element": "Leaf",
+      "power": 160,
+      "cool_time": 8,
+      "description": "The user fires three high-speed blades of wind\nin quick succession that fly straight at enemies."
+    },
+    "SpreadPulse": {
+      "name": "Spark Blast",
+      "element": "Electricity",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Releases lightning orbs in a fan shape,\nspreading as they travel."
+    },
+    "StarMine": {
+      "name": "Star Mine",
+      "element": "Normal",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Generates stars around the enemy that explode on contact.\nStars also explode after some time."
+    },
+    "StardustArrow": {
+      "name": "Fireball",
+      "element": "None",
+      "power": null,
+      "cool_time": null,
+      "description": null
+    },
+    "StoneShotgun": {
+      "name": "Stone Blast",
+      "element": "Earth",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Fires a barrage of stones forward."
+    },
+    "ThreeCommet": {
+      "name": "Comet Barrage",
+      "element": "Dragon",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Drops meteorites one after another,\ngenerating shock waves around the impact areas."
+    },
+    "ThreeThunder": {
+      "name": "Tri-Lightning",
+      "element": "Electricity",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Generates lightning that strikes\nan enemy three times from above."
+    },
+    "ThrowRock": {
+      "name": "Stone Cannon",
+      "element": "Earth",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Digs up a boulder\nand hurls it at an enemy."
+    },
+    "ThunderBall": {
+      "name": "Electric Ball",
+      "element": "Electricity",
+      "power": 100,
+      "cool_time": 8,
+      "description": "Fires an electric ball\nthat slowly pursues an enemy."
+    },
+    "ThunderFunnel": {
+      "name": "Plasma Funnel",
+      "element": "Electricity",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Creates two balls of electric energy\nthat fire numerous lightning orbs at enemies."
+    },
+    "ThunderRain": {
+      "name": "Thunder Rain",
+      "element": "Electricity",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Calls lightning that strikes an enemy\nafter a set amount of time has passed."
+    },
+    "ThunderSpear": {
+      "name": "Thunder Spear",
+      "element": "Electricity",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Fires a high-speed lightning spear\nstraight ahead towards the enemy."
+    },
+    "ThunderStorm": {
+      "name": "Thunderstorm",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Generates a huge tornado of lightning\nthat moves slowly towards the enemy."
+    },
+    "Thunderbolt": {
+      "name": "Lightning Bolt",
+      "element": "Electricity",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Charges electric energy before\nblasting enemies with a powerful shock."
+    },
+    "Tremor": {
+      "name": "Rockburst",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Causes the ground to shake before hurling a massive stone mass at its surroundings."
+    },
+    "TriSpark": {
+      "name": "TriSpark",
+      "element": "Electricity",
+      "power": 250,
+      "cool_time": 12,
+      "description": "A high-speed lightning ball that flies in a straight line.\nSimultaneously fires slow lightning balls that track the enemy."
+    },
+    "Unique_Alpaca_Tackle": {
+      "name": "Fluffy Tackle",
+      "element": "Normal",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Melpaca's exclusive skill.\nCharges forward while surrounded by an adorable aura."
+    },
+    "Unique_AmaterasuWolf_Bite": {
+      "name": "Fierce Fang (Fire)",
+      "element": "Fire",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_AmaterasuWolf_BiteV2": {
+      "name": "Double Fang (Fire)",
+      "element": "Fire",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_AmaterasuWolf_Dark_Bite": {
+      "name": "Fierce Fang (Dark)",
+      "element": "Dark",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_AmaterasuWolf_Dark_BiteV2": {
+      "name": "Double Fang (Dark)",
+      "element": "Dark",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_AmaterasuWolf_Dark_DarkCharge": {
+      "name": "Daring Shadowstorm",
+      "element": "Dark",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Kitsun Noct's exclusive skill.\nCharges forward with great speed while enveloped in intense purple flames."
+    },
+    "Unique_AmaterasuWolf_FireCharge": {
+      "name": "Daring Flames",
+      "element": "Fire",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Kitsun's exclusive skill.\nCharges forward with great speed while enveloped in intense blue flames."
+    },
+    "Unique_Anubis_GroundPunch": {
+      "name": "Ground Smash",
+      "element": "Earth",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Anubis' exclusive skill.\nLeaps high into the air and strikes a punch to the ground,\ncausing a shockwave that deals damge over a wide area."
+    },
+    "Unique_Anubis_LowRoundKick": {
+      "name": "Spinning Roundhouse",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Anubis' exclusive skill.\nPerforms a spin kick with its strong legs, sweeping enemies over a wide area."
+    },
+    "Unique_Anubis_Tackle": {
+      "name": "Forceful Charge",
+      "element": "Earth",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Anubis' exclusive skill.\nRapidly pursues its foes while releasing energy\nand unleashing a powerful punch."
+    },
+    "Unique_Baphomet_Dark_DarkKite": {
+      "name": "Nightmare Claw",
+      "element": "Dark",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Incineram Noct's exclusive skill.\nDraws near enemies using its left dark claw to slash them into the air\nbefore cutting them down with its right dark claw."
+    },
+    "Unique_Baphomet_SwallowKite": {
+      "name": "Hellfire Claw",
+      "element": "Fire",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Incineram's exclusive skill.\nDraws near enemies using its left claw to slash them into the air\nbefore cutting them down with its right claw."
+    },
+    "Unique_BirdDragon_FireBreath": {
+      "name": "Flame Breath",
+      "element": "Fire",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Vanwyrms exclusive skill.\nAdvances while breathing fire from its mouth."
+    },
+    "Unique_BirdDragon_Ice_IceBreath": {
+      "name": "Tempest Blizzard",
+      "element": "Ice",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Vanwyrm Cryst's exclusive skill.\nAdvances while exhaling cold air from its mouth."
+    },
+    "Unique_BlackCentaur_TwoSpearRushes": {
+      "name": "Twin Spears",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Necromus' exclusive skill.\nClads its twin spears with vicious whirlwinds and charges forward,\nthrusting them one after the other."
+    },
+    "Unique_BlackGriffon_TackleLaser": {
+      "name": "Divine Disaster",
+      "element": "Dark",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Charges forward, generating orbs of light that automatically target enemies\nand unleash a barrage of lasers."
+    },
+    "Unique_BlackGriffon_TackleLaser2": {
+      "name": "Divine Disaster II",
+      "element": "Dark",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Shadowbeak's exclusive skill.\nAs it charges forward, emits countless blue rays that automatically locate and pursue the enemy."
+    },
+    "Unique_BlackMetalDragon_FirePunch": {
+      "name": "Firefist Breathstorm",
+      "element": "Dragon",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Astegon's exclusive skill.\nAfter throwing two punches forward, it exhales a dragon breath downward."
+    },
+    "Unique_BlackPuppy_Bite": {
+      "name": "Fierce Fang (Dark)",
+      "element": "Dark",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_BlackPuppy_BiteV2": {
+      "name": "Double Fang (Dark)",
+      "element": "Dark",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_BluePlatypus_Toboggan": {
+      "name": "Surfing Slam",
+      "element": "Water",
+      "power": 100,
+      "cool_time": 120,
+      "description": null
+    },
+    "Unique_BluePlatypus_Toboggan_Fire": {
+      "name": "Fire Tackle",
+      "element": "Fire",
+      "power": 115,
+      "cool_time": 120,
+      "description": null
+    },
+    "Unique_BlueSkyDragon_DrainStorm": {
+      "name": "Celestial Vortex",
+      "element": "Water",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Shaolong's exclusive skill.\nSummons a massive vortex reaching into the heavens.\nThe vortex draws in and eliminates all surrounding enemies at once."
+    },
+    "Unique_BlueSkyDragon_SweepBreath": {
+      "name": "Azure Dracoflare",
+      "element": "Dragon",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Shaolong's exclusive skill.\nBreathes Dragon-elemental flames in a sweeping motion, scorching the surrounding area."
+    },
+    "Unique_BlueSkyDragon_Tossin": {
+      "name": "Hydra Charge",
+      "element": "Water",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Shaolong's exclusive skill.\nCloaks the body in water and charges straight forward."
+    },
+    "Unique_BlueThunderHorse_FlashDash": {
+      "name": "Bolt Blink",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Azurmane's exclusive skill.\nMoves with the speed of lightning, engulfing everything in its path."
+    },
+    "Unique_BlueThunderHorse_Tossin": {
+      "name": "Flash Charge",
+      "element": "Electricity",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Azurmane's exclusive skill.\nCloaks the body in lightning and performs a high-speed charge toward the enemy."
+    },
+    "Unique_Boar_Tackle": {
+      "name": "Reckless Charge",
+      "element": "Earth",
+      "power": 60,
+      "cool_time": 4,
+      "description": "Rushoar's exclusive skill.\nTakes aim at a foe and rushes at them with a fierce charge."
+    },
+    "Unique_CaptainPenguin_Black_BodySlide_Electric": {
+      "name": "Thunderslide",
+      "element": "Electricity",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Penking Lux's exclusive skill.\nLies on its belly while generating electric charge all around it\nbefore sliding at enemies at high speed."
+    },
+    "Unique_CaptainPenguin_BodySlide": {
+      "name": "Emperor Slide",
+      "element": "Ice",
+      "power": 140,
+      "cool_time": 8,
+      "description": "Penking's exclusive skill.\nLies on its belly while generating frozen air all around it\nbefore sliding at enemies at high speed."
+    },
+    "Unique_ChickenPal_ChickenPeck": {
+      "name": "Chicken Rush",
+      "element": "Normal",
+      "power": 30,
+      "cool_time": 2,
+      "description": "Chikipi's exclusive skill.\nFlies at enemies in its sights, attacking them with its sharp beak."
+    },
+    "Unique_ClownRabbit_TrickShow": {
+      "name": "Trickster Show",
+      "element": "Fire",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Dupin's exclusive skill.\nCreates two illusions to distract enemies, then launches fire birds from its top hat."
+    },
+    "Unique_CubeTurtle_CubePress": {
+      "name": "Cube Press",
+      "element": "Earth",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Tetroise 's exclusive skill.\nLeaps into the air and crushes enemies with its massive weight."
+    },
+    "Unique_CubeTurtle_Neutral_HolyPress": {
+      "name": "Holy Press",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Tetroise Primo's exclusive skill.\nLeaps into the air and crushes enemies with its massive weight.\nUpon landing, light spreads outward, forming pillars of light that burst forth and strike nearby enemies."
+    },
+    "Unique_CuteMole_DiggingAttack": {
+      "name": "Fuddler Tunneler",
+      "element": "Earth",
+      "power": 60,
+      "cool_time": 4,
+      "description": "Fuddler's exclusive skill.\nBurrows underground and bursts out from beneath enemies."
+    },
+    "Unique_DarkAlien_JumpScractch": {
+      "name": "Evil Slash",
+      "element": "Dark",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Xenovader's exclusive skill.\nSwiftly pounces and slashes with its left hand."
+    },
+    "Unique_DarkCrow_TelePoke": {
+      "name": "Phantom Peck",
+      "element": "Dark",
+      "power": 70,
+      "cool_time": 4,
+      "description": "Cawgnito's exclusive skill.\nTeleports next to an enemy\nbefore attacking with its beak."
+    },
+    "Unique_DarkMechaDragon_BeamSlash": {
+      "name": "Beam Slash",
+      "element": "Dragon",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Xenolord's exclusive skill.\nGenerates a high-output beam sword with the right hand\nand delivers two powerful slashes while moving at high speed."
+    },
+    "Unique_DarkMechaDragon_ConvergentBeam": {
+      "name": "Astral Ray",
+      "element": "Dark",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Xenolord's exclusive skill.\nConcentrates energy filled with darkness and releases it all at once in a straight line."
+    },
+    "Unique_DarkMechaDragon_FunnelLaser": {
+      "name": "Omega Laser",
+      "element": "Dragon",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Xenolord's exclusive skill.\nSummons the light of destruction from subspace and continuously fires it in all directions, burning everything in its sight to ashes."
+    },
+    "Unique_DarkMechaDragon_SetFunnel": {
+      "name": "Satellite Bit",
+      "element": "Dragon",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Xenolord's exclusive skill.\nGenerates four satellite-like wings with auto-attack functionality.\nThese wings will automatically track and attack the enemy when the next attack is launched."
+    },
+    "Unique_DarkMechaDragon_WarpComet": {
+      "name": "Cosmic Meteor",
+      "element": "Dragon",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Xenolord's exclusive skill.\nSoars into the air at the speed of light and releases countless meteor projectiles.\nAfterwards, transforms into a comet and charges forward, causing a massive explosion upon impact."
+    },
+    "Unique_DarkMutant_DarkTackle": {
+      "name": "Apocalypse",
+      "element": "None",
+      "power": null,
+      "cool_time": null,
+      "description": null
+    },
+    "Unique_DarkScorpion_Pierce": {
+      "name": "Jumping Stinger",
+      "element": "Earth",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Menasting's exclusive skill.\nJumps high and forcefully stabs its prey with its tail.\nThe poison from the tail is deadly."
+    },
+    "Unique_Deer_Ground_DirtyHorn": {
+      "name": "Mud Horn",
+      "element": "Earth",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Eikthyrdeer Terra's exclusive skill.\nCharges at foes and uses its antlers to whip mud at them.\nWhen used while riding, the direction of the charge can be controlled."
+    },
+    "Unique_Deer_PushupHorn": {
+      "name": "Antler Uppercut",
+      "element": "Normal",
+      "power": 90,
+      "cool_time": 4,
+      "description": "Eikthyrdeer's exclusive skill.\nCharges at foes and uses antlers to launch them into the air.\nWhen used while riding, the direction of the charge can be controlled."
+    },
+    "Unique_DomeArmorDragon_ExplosiveMissile": {
+      "name": "Missile Burst",
+      "element": "Earth",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Aegidron's exclusive skill.\nLaunches countless explosive missiles from its wings."
+    },
+    "Unique_DrillGame_ShellAttack": {
+      "name": "Shell Spin",
+      "element": "Earth",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Digtoise's exclusive skill.\nMoves while spinning its whole body at high speed.\nDrills through enemies, dealing continuous damage."
+    },
+    "Unique_Eagle_GlidingNail": {
+      "name": "Gale Claw",
+      "element": "Normal",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Galeclaw's exclusive skill.\nWith talons outstretched,\nit glides forward in a ferocious charge."
+    },
+    "Unique_ElecPanda_ElecScratch": {
+      "name": "Lightning Claw",
+      "element": "Electricity",
+      "power": 150,
+      "cool_time": 8,
+      "description": "Grizzbolt's exclusive skill.\nAfter leaping at an enemy and tearing at it twice with its electrically charged claws, it attacks the ground, sending an electric shock throughout the area."
+    },
+    "Unique_ElecPanda_GatlingAttack": {
+      "name": "Heavy Thunder Tank",
+      "element": "Electricity",
+      "power": 550,
+      "cool_time": 24,
+      "description": "Grizzbolt's exclusive skill.\nPulls out a minigun out of nowhere and starts blasting.\nFinishes with a single, charged power shot."
+    },
+    "Unique_ElecPomeranian_Bite": {
+      "name": "Fierce Fang (Electric)",
+      "element": "Electricity",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_ElecPomeranian_BiteV2": {
+      "name": "Double Fang (Electric)",
+      "element": "Electricity",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_ElecSnail_ShellCharge": {
+      "name": "Shell Charge",
+      "element": "Electricity",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Snock's exclusive skill.\nWithdraws into its shell to reduce damage taken while building electric charge.\nOnce fully charged, it discharges, damaging nearby enemies.\nAfter discharging, the Attack of this Pal's Electric skills is increased for a limited time."
+    },
+    "Unique_FairyDragon_FairyTornado": {
+      "name": "Mystic Whirlwind",
+      "element": "Dragon",
+      "power": 150,
+      "cool_time": 8,
+      "description": "Elphidran's exclusive skill.\nGenerates twin whirlwinds imbued with a mysterious power\nthat pursues enemies."
+    },
+    "Unique_FeatherOstrich_Tossin": {
+      "name": "Earth Dash",
+      "element": "Earth",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Dazemu's exclusive skill.\nAccelerates all at once\nand dashes forward at high speed."
+    },
+    "Unique_FengyunDeeper_CloudTempest": {
+      "name": "Cloud Tempest",
+      "element": "Normal",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Fenglope's exclusive skill.\nCharges forward while manipulating the atmosphere\nto create a pressurized wind tunnel around itself."
+    },
+    "Unique_FengyunDeeper_Electric_ThunderTempest": {
+      "name": "Thunder Tempest",
+      "element": "Electricity",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Charges forward while manipulating the atmosphere\nand enveloping itself in thunderclouds."
+    },
+    "Unique_FireKirin_Dark_DarkTossin": {
+      "name": "Dark Charge",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Pyrin Noct's exclusive skill.\nCharges forward while engulfed in a veil of dark flames.\nFlames continue to burn in its path."
+    },
+    "Unique_FireKirin_Tackle": {
+      "name": "Ignis Charge",
+      "element": "Fire",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Pyrin's exclusive skill.\nCharges forward while engulfed in a veil of flames.\nFlames continue to burn in its path."
+    },
+    "Unique_FlameBuffalo_FlameHorn": {
+      "name": "Blazing Horn",
+      "element": "Fire",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Arsox's exclusive skill.\nTakes aim and charges with fierce momentum while raising its horn."
+    },
+    "Unique_FlowerDinosaur_Electric_ThunderWhip": {
+      "name": "Lightning Smash",
+      "element": "Electricity",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Dinossom Lux's exclusive skill.\nUses its large tail to strike the ground in front of it,\ndelivering a bolt of lightning in a straight line."
+    },
+    "Unique_FlowerDinosaur_Whip": {
+      "name": "Botanical Smash",
+      "element": "Leaf",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Dinossom's exclusive skill.\nUses its large tail to strike the ground in front of it,\ndelivering a shockwave in a straight line."
+    },
+    "Unique_FlowerPrince_PoisonGasDance": {
+      "name": "Toxic Dance",
+      "element": "Dark",
+      "power": 800,
+      "cool_time": 30,
+      "description": "Dandilord's exclusive skill.\nPerforms a dance while releasing corrosive mist.\nThe mist remains in the area for a limited time."
+    },
+    "Unique_FlowerPrince_PoisonGasTackle": {
+      "name": "Poison Promenade",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Dandilord's exclusive skill.\nCharges forward while sliding along the ground, spraying corrosive mist.\nThe mist remains in the area for a limited time."
+    },
+    "Unique_Garm_Bite": {
+      "name": "Fierce Fang",
+      "element": "Normal",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Swiftly leaps at an enemy and bites into them."
+    },
+    "Unique_Garm_BiteV2": {
+      "name": "Double Fang",
+      "element": "Normal",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Launches a rapid succession of bites at the enemy."
+    },
+    "Unique_GhostAnglerfish_Fire_SweepBait_Fire": {
+      "name": "Scorching Lantern Sweep",
+      "element": "Fire",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Ghangler Ignis's exclusive skill.\nLashes forward with the flaming lantern atop its head, sweeping broadly ahead."
+    },
+    "Unique_GhostAnglerfish_SweepBait": {
+      "name": "Lantern Sweep",
+      "element": "Water",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Ghangler's exclusive skill.\nLashes forward with the lantern atop its head, sweeping broadly ahead."
+    },
+    "Unique_GhostBeast_Tossin": {
+      "name": "Spirit Dash",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Maraith's exclusive skill.\nWhile running slowly, it continuously launches flickering fireballs toward the enemy."
+    },
+    "Unique_GhostDragon_PhosphorousBeam": {
+      "name": "Blazing Beam",
+      "element": "Dragon",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Eidrolon's exclusive skill.\nEmits a superheated light beam for a short time.\nAt the final moment, the targeted area is engulfed in a massive explosion."
+    },
+    "Unique_GhostDragon_TailSlash": {
+      "name": "Tail Slash",
+      "element": "Dragon",
+      "power": 550,
+      "cool_time": 24,
+      "description": "Eidrolon's exclusive skill.\nCloses in on the enemy at high speed to deliver a cleaving swipe with its tail."
+    },
+    "Unique_GoldenHorse_Bite": {
+      "name": "Fierce Fang (Ground)",
+      "element": "Earth",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_GoldenHorse_BiteV2": {
+      "name": "Double Fang (Ground)",
+      "element": "Earth",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_GoldenHorse_StoneDash": {
+      "name": "Crash Dash",
+      "element": "Earth",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Gildane's exclusive skill.\nCharges forward, hurling rocks to the left and right with great force."
+    },
+    "Unique_Gorilla_GroundPunch": {
+      "name": "Ground Pound",
+      "element": "Normal",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Gorirat's exclusive skill.\nPounds the ground twice before leaping into the air\nand delivers a powerful punch."
+    },
+    "Unique_Gorilla_Ground_EarthPunch": {
+      "name": "Rumble Combo",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Gorirat Terra's exclusive skill.\nPounds the ground twice before leaping into the air\nand delivers a powerful punch infused with the Power of Gaia."
+    },
+    "Unique_GrassGolem_ArmCannon": {
+      "name": "Root Cannon",
+      "element": "Leaf",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Dualiths exclusive skill.\nFires a Grass-elemental energy projectile from its arm.\nUpon impact, the blast transforms into persistent roots that track and pierce the enemy from below."
+    },
+    "Unique_GrassGolem_Dark_DarkArmCannon": {
+      "name": "Dark Root",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Dualith Nocts exclusive skill.\nFires a Dark-elemental energy projectile from its arm.\nUpon impact, the blast transforms into persistent roots that track and pierce the enemy from below."
+    },
+    "Unique_GrassGolem_RocketPunch": {
+      "name": "Rocket Arm",
+      "element": "Earth",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Dualiths exclusive skill.\nDetaches its left arm to sweep enemies, then launches its right arm."
+    },
+    "Unique_GrassMinotaur_BullRush": {
+      "name": "Raging Bull Rush",
+      "element": "Leaf",
+      "power": 650,
+      "cool_time": 30,
+      "description": "Elgrove's exclusive skill.\nEnters a violent frenzy and unleashes four consecutive rage-fueled Grass-element charge attacks."
+    },
+    "Unique_GrassMinotaur_BullRush_Lower": {
+      "name": "Bull Rush",
+      "element": "Leaf",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Elgrove's exclusive skill.\nEnters a wild frenzy and unleashes two consecutive Grass-element charge attacks."
+    },
+    "Unique_GrassMinotaur_Ice_BullRush": {
+      "name": "Raging Snow Rush",
+      "element": "Ice",
+      "power": 650,
+      "cool_time": 30,
+      "description": "Elgrove Cryst's exclusive skill.\nEnters a violent frenzy and unleashes four consecutive rage-fueled Ice-element charge attacks."
+    },
+    "Unique_GrassMinotaur_Ice_BullRush_Lower": {
+      "name": "Snow Rush",
+      "element": "Ice",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Elgrove Cryst's exclusive skill.\nEnters a wild frenzy and unleashes two consecutive Ice-element charge attacks."
+    },
+    "Unique_GrassPanda_Electric_ElectricPunch": {
+      "name": "Blast Punch",
+      "element": "Electricity",
+      "power": 180,
+      "cool_time": 8,
+      "description": "Mossanda Lux's exclusive skill.\nWinds up its right arm before delivering an electrically charged punch."
+    },
+    "Unique_GrassPanda_MusclePunch": {
+      "name": "Crushing Punch",
+      "element": "Leaf",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Mossanda's exclusive skill.\nWinds up its right arm before striking an enemy with a devastating punch."
+    },
+    "Unique_GrassRabbitMan_GrassRoundKick": {
+      "name": "Leaping Roundhouse",
+      "element": "Leaf",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Verdash's exclusive skill.\nWhile jumping forward, it sweeps the surroundings with a high-speed spinning kick."
+    },
+    "Unique_Grassmammoth_Earthquake": {
+      "name": "Earth Impact",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Mammorest's exclusive skill.\nUses its massive body to shake the earth,\ndealing damage over a wide area."
+    },
+    "Unique_GrimGirl_BrutalMachete": {
+      "name": "Grudge Barrage",
+      "element": "Dark",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Splatterina's exclusive skill.\nTeleports instantly and launches a slash. It then teleports above the enemy,\ndrives its weapon into them, and unleashes a wave of dark energy."
+    },
+    "Unique_GuardianDog_Bite": {
+      "name": "Fierce Fang",
+      "element": "Normal",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_GuardianDog_BiteV2": {
+      "name": "Double Fang",
+      "element": "Normal",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_HawkBird_Storm": {
+      "name": "Tornado Attack",
+      "element": "Normal",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Nitewing's exclusive skill.\nGenerates a tornado ahead before soaring towards its target."
+    },
+    "Unique_HerculesBeetle_BeetleTackle": {
+      "name": "Giga Horn",
+      "element": "Earth",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Warsect's exclusive skill.\nSkewers enemies with its four sturdy horns."
+    },
+    "Unique_Horus_FlareBird": {
+      "name": "Phoenix Flare",
+      "element": "Fire",
+      "power": 320,
+      "cool_time": 16,
+      "description": "Faleris' exclusive skill.\nAfter creating scorching tornadoes, it cloaks itself in hellfire and charges forward."
+    },
+    "Unique_Horus_PerfectStorm": {
+      "name": "Raging Flame Wave",
+      "element": "Fire",
+      "power": 650,
+      "cool_time": 30,
+      "description": "Faleris' exclusive skill.\nGenerates multiple scorching tornadoes and charges forward while gliding.\nThe tornadoes converge in the center and eventually merge into a single massive tornado."
+    },
+    "Unique_Horus_Water_AquaStorm": {
+      "name": "Phoenix Tide",
+      "element": "Water",
+      "power": 320,
+      "cool_time": 16,
+      "description": "Faleris Aqua's exclusive skill.\nAfter summoning a massive tornado, it envelops its body in water and charges forward."
+    },
+    "Unique_IceCrocodile_SpitAttack": {
+      "name": "Chaotic Spray",
+      "element": "Ice",
+      "power": 180,
+      "cool_time": 8,
+      "description": "Munchill's exclusive skill.\nCoughs up three cold grenades kept undigested inside its body and lobs them at enemies.\nMay occasionally spit out something more dangerous...?"
+    },
+    "Unique_IceDeer_IceHorn": {
+      "name": "Freezing Charge",
+      "element": "Ice",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Reindrix's exclusive skill.\nCharges at an enemy with antlers adorned in ice."
+    },
+    "Unique_IceHorse_Dark_DarkBladeAttack": {
+      "name": "Dark Wing",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Frostallion Noct's exclusive skill.\nDashes forward while concentrating dark energy around its wings,\nusing them to slash enemies,\nthen converting that energy into homing shots"
+    },
+    "Unique_IceHorse_IceBladeAttack": {
+      "name": "Crystal Wing",
+      "element": "Ice",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Frostallion's exclusive skill.\nDashes forward while concentrating frigid air around its wings,\nusing them to slash enemies with icy blade."
+    },
+    "Unique_IceNarwhal_JumpingHorn": {
+      "name": "High Breach",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Whalaska's exclusive skill.\nCharges straight ahead and briefly submerges, then bursts high into the air to launch an attack.\nAn ice-element explosion occurs upon emerging."
+    },
+    "Unique_JetDragon_JumpBeam": {
+      "name": "Beam Comet",
+      "element": "Dragon",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Jetragon's exclusive skill.\nIlluminates its wings and fires innumerable beams as it flies towards the enemy.\nThe beams explode on impact."
+    },
+    "Unique_KingAlpaca_BodyPress": {
+      "name": "Kingly Slam",
+      "element": "Normal",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Kingpaca's exclusive skill.\nLeaps high into the air before\nsmashing into an enemy with its chubby, massive body."
+    },
+    "Unique_KingAlpaca_Ice_IcePress": {
+      "name": "Frozen Press",
+      "element": "Ice",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Kingpaca Cryst's exclusive skill.\nLeaps high into the air before smashing into\nan enemy with ice and its chubby, massive body."
+    },
+    "Unique_KingBahamut_AirCrash": {
+      "name": "Magna Crush",
+      "element": "Dragon",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Blazamut Ryu's exclusive skill.\nAfter a big jump, moves at high speed in the air,\ngathering strength to unleash a powerful punch."
+    },
+    "Unique_KingBahamut_ArmSmash": {
+      "name": "Brawn Impact",
+      "element": "Fire",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Blazamut's exclusive skill.\nRaises and inflates its arms, then slams them together,\ncausing a massive explosion in the surrounding area."
+    },
+    "Unique_KingWhale_AquaBlade": {
+      "name": "Aqua Blade",
+      "element": "Water",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Panthalus's exclusive skill.\nLaunches sharp water blades at enemies."
+    },
+    "Unique_KingWhale_AquaTornado": {
+      "name": "Aqua Tornado",
+      "element": "Water",
+      "power": 800,
+      "cool_time": 40,
+      "description": "Panthalus's exclusive skill.\nSoars into the sky and generates multiple massive tornadoes that slowly track enemies."
+    },
+    "Unique_KingWhale_Breaching": {
+      "name": "Grand Breach",
+      "element": "Water",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Panthalus's exclusive skill.\nDives underwater and leaps out after a short delay.\nThe momentum of the leap creates ripples that damage the surrounding area."
+    },
+    "Unique_KingWhale_HomingBubble": {
+      "name": "Bubble Rain",
+      "element": "Water",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Panthalus's exclusive skill.\nFires a large cluster of homing bubbles that remain in place upon landing.\nBubbles burst and deal damage upon contact or after several seconds."
+    },
+    "Unique_KingWhale_Maelstrom": {
+      "name": "Maelstrom",
+      "element": "Water",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Panthalus's exclusive skill.\nCreates a vortex around the enemy.\nThe vortex pulls targets toward its center while shrinking, ending in a high-pressure water pillar explosion."
+    },
+    "Unique_KingWhale_WaveTackle": {
+      "name": "Tidal Charge",
+      "element": "Water",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Panthalus's exclusive skill.\nSlams the body into the enemy, generating a massive wave on impact."
+    },
+    "Unique_Kirin_Ice_IceTackle": {
+      "name": "Ice Gale Strike",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Univolt Cryst's exclusive skill.\nGenerates ice pillars around itself while charging toward enemies."
+    },
+    "Unique_Kirin_LightningTackle": {
+      "name": "Lightning Gale",
+      "element": "Electricity",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Univolt's exclusive skill.\nGenerates bolts of lightning all around\nwhile charging at its target."
+    },
+    "Unique_LanternButler_LanternFlame": {
+      "name": "Lantern Flame",
+      "element": "Dark",
+      "power": 650,
+      "cool_time": 30,
+      "description": "Loomen's exclusive skill.\nRaises a lantern and summons multiple spirits that relentlessly pursue enemies."
+    },
+    "Unique_LeafMomonga_SomerSault": {
+      "name": "Konoha Flip",
+      "element": "Leaf",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Herbil's exclusive skill.\nAfter a brief moment of preparation,\ncharges at the enemy at high speed, finishing with a flip."
+    },
+    "Unique_LegendDeer_RadiantPurge_Otomo": {
+      "name": "Purifying Light",
+      "element": "Normal",
+      "power": 250,
+      "cool_time": 100,
+      "description": "Hartalis' exclusive skill.\nLeaps high into the air, condensing immense energy into a descending sphere of light.\nWhen it strikes the ground, it purifies all on the ground below."
+    },
+    "Unique_LegendDeer_RadiantWingRush": {
+      "name": "Divine Wing",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Hartalis' exclusive skill.\nLeaps back and sprouts wings of light,\nthen dives toward the enemy."
+    },
+    "Unique_LegendDeer_WarpPillarBurst": {
+      "name": "Sacred Rain",
+      "element": "Normal",
+      "power": 800,
+      "cool_time": 30,
+      "description": "Hartalis' exclusive skill.\nFades from sight, then calls down a massive barrage of light pillars centered on its position."
+    },
+    "Unique_LilyQueen_LilyHealing": {
+      "name": "Bountiful Protection",
+      "element": "Leaf",
+      "power": null,
+      "cool_time": 240,
+      "description": "Lyleen's exclusive skill.\nRestores health to all allies within range using the power of healing."
+    },
+    "Unique_LilyQueen_WindBarrier": {
+      "name": "Wind Barrier",
+      "element": "Leaf",
+      "power": 60,
+      "cool_time": 4,
+      "description": "A skill exclusive to the Lilikin species.\nSurround yourself with a wind barrier,\nReturns the blade of wind to the attacking opponent."
+    },
+    "Unique_LotusDragon_LotusBloom": {
+      "name": "Lotus Bloom",
+      "element": "Leaf",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Ophydia's exclusive skill.\nBurrows into the ground and vanishes.\nIt then emerges at the surface as a flower bud, blooms, and unleashes a wide-area attack."
+    },
+    "Unique_Manticore_InfernoStrike": {
+      "name": "Volcanic Fang",
+      "element": "Fire",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Blazehowl's exclusive skill.\nWith momentum, it pounces mercilessly on the enemy\nand causes an explosion of fire at the point of impact."
+    },
+    "Unique_MonochromeQueen_BalletJump": {
+      "name": "Black Quilled Ballet",
+      "element": "Dark",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Solenne's exclusive skill.\nJumps diagonally and throws sharp black feathers at enemies."
+    },
+    "Unique_MoonQueen_IceMoonBlade": {
+      "name": "Seigetsu Flash",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Selyne's exclusive skill.\nFires three consecutive high-speed slashes\nimbued with the power of moonlight."
+    },
+    "Unique_MoonQueen_MoonBeam": {
+      "name": "Moonlight Beam",
+      "element": "Normal",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Selyne's exclusive skill.\nStores energy in the moon on its back,\nthen fires a crescent-shaped beam forward."
+    },
+    "Unique_MoonQueen_MoonBlade": {
+      "name": "Seigetsu Blade",
+      "element": "Normal",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Selyne's exclusive skill.\nFires two consecutive high-speed blades\nimbued with the power of moonlight."
+    },
+    "Unique_Mothman_GiantSpore": {
+      "name": "Giant Spore",
+      "element": "Leaf",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Silvance's exclusive skill.\nFires a massive tracking spore that pursues enemies.\nIt explodes on impact, releasing a wide-area blast."
+    },
+    "Unique_Mothman_SporeScatter": {
+      "name": "Spore Burst",
+      "element": "Leaf",
+      "power": 800,
+      "cool_time": 30,
+      "description": "Silvance's exclusive skill.\nScatters explosive spores over a wide area,\nthen triggers a mass explosion after a set period of time."
+    },
+    "Unique_MummyPal_MummyAttack": {
+      "name": "Mummy Rush",
+      "element": "Dark",
+      "power": 500,
+      "cool_time": 24,
+      "description": "Gildra's exclusive skill.\nExtends bandages from its hands to deliver a series of attacks."
+    },
+    "Unique_MysteryMask_LifeSteal": {
+      "name": "Soul Drain",
+      "element": "Dark",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Omasculs exclusive skill.\nSuddenly appears near the enemy, firmly restraining them with its arms,\nand absorbs the HP of the restrained enemy."
+    },
+    "Unique_NaughtyCat_CatPress": {
+      "name": "Cat Press",
+      "element": "Normal",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Grintale's exclusive skill.\nGrins menacingly before leaping into the air\nand smashing foes with its body."
+    },
+    "Unique_NightBlueHorse_DeathStep": {
+      "name": "Lethal Step",
+      "element": "Dark",
+      "power": 550,
+      "cool_time": 24,
+      "description": "Starryon's exclusive skill.\nConfuses enemies with flickering steps and launches slashing attack with its sharp horn."
+    },
+    "Unique_NightBlueHorse_Neutral_AirStep": {
+      "name": "Royal Step",
+      "element": "Normal",
+      "power": 800,
+      "cool_time": 30,
+      "description": "Starryon Primo's exclusive skill.\nConfuses enemies with an elegant stride and launches slashing attack with its sharp horn."
+    },
+    "Unique_NightBlueHorse_Neutral_Tossin": {
+      "name": "Silver Steed",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Starryon Primo's exclusive skill.\nCloaks the body in radiant flames and charges toward the enemy."
+    },
+    "Unique_NightBlueHorse_Tossin": {
+      "name": "Spectral Steed",
+      "element": "Dark",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Starryon's exclusive skill.\nCloaks the body in flickering flames and charges toward the enemy."
+    },
+    "Unique_NightLady_FlameNightmare": {
+      "name": "Flame Waltz",
+      "element": "Dark",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Bellanoir Libero's exclusive skill.\nWith a graceful dance, conjuries expanding rings of fire,\nthen unleashes eerie flames that seek the enemies."
+    },
+    "Unique_NightLady_WarpBeam": {
+      "name": "Nightmare Bloom",
+      "element": "Dark",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Bellanoir Libero's exclusive skill.\nDisappears suddenly, then reappears while firing a barrage of beams.\nThe beams spread like a beautiful flower in bloom."
+    },
+    "Unique_NightLady_WarpBeam_Straight": {
+      "name": "Nightmare Ray",
+      "element": "Dark",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Bellanoir's exclusive skill.\nDisappears suddenly, then reappears while firing a barrage of beams."
+    },
+    "Unique_OctopursGirl_InkJet": {
+      "name": "Smoke Jet",
+      "element": "Water",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Gloopie's exclusive skill.\nReleases smoke to conceal itself, then launches a surprise headbutt from the shadows."
+    },
+    "Unique_PandaGirl_RapidKick": {
+      "name": "Rapid Kick",
+      "element": "Leaf",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Leafan's exclusive skill.\nRapidly delivers a series of consecutive roundhouse kicks, finishing with an engery blast."
+    },
+    "Unique_PinkCat_CatPunch": {
+      "name": "Punch Flurry",
+      "element": "Normal",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Cattiva's exclusive skill.\nChases after enemies, swinging both arms\nand delivering a flurry of punches."
+    },
+    "Unique_Plesiosaur_LongBreath": {
+      "name": "Deep Breath",
+      "element": "Leaf",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Braloha's exclusive skill.\nFrom the base of its long neck to the tip of its snout,\nit gradually spreads the breath of grass element."
+    },
+    "Unique_PoseidonOrca_TorrentLaser": {
+      "name": "Thalassonic Laser",
+      "element": "Water",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Neptilius's exclusive skill.\nRising slightly, it gathers water at its mouth,\nthen sweeps a high-pressure stream vertically and horizontally three times.\nFissures form at the swept locations, erupting with water."
+    },
+    "Unique_PurpleSpider_SpiderRaid": {
+      "name": "Webstrike Impact",
+      "element": "Dark",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Tarantriss's exclusive skill.\nSpits out a ball of thread, entangling the target it hits.\nThen, rushes at full speed to the trapped target and delivers three slashing strikes to finish it off."
+    },
+    "Unique_QueenBee_SpinLance": {
+      "name": "Spinning Staff",
+      "element": "Leaf",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Elizabee's exclusive skill.\nChannels power into its staff, and unleashes it in a whirl."
+    },
+    "Unique_RedArmorBird_TriplePeck": {
+      "name": "Rush Beak",
+      "element": "Fire",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Ragnahawk's exclusive skill.\nWhile flapping forward, it strikes with its beak to ignite fires in front, right, and left, causing a small explosion."
+    },
+    "Unique_RedFlowerBird_JumpKick": {
+      "name": "Flower Stomp",
+      "element": "Leaf",
+      "power": 550,
+      "cool_time": 24,
+      "description": "Tropicaw's exclusive skill.\nLeaps lightly into the air, then forcefully slams its sharp claws into the ground."
+    },
+    "Unique_RobinHood_BowSnipe": {
+      "name": "Focus Shot",
+      "element": "Leaf",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Robinquill's exclusive skill.\nTakes aim while drawing its bow\nbefore releasing a powerful shot at an enemy."
+    },
+    "Unique_RockBeast_Ice_IceHorn": {
+      "name": "Ice Burst",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Pierdon Cryst's exclusive skill.\nRakes the ground with its horn, then hurls a snow chunk at enemies."
+    },
+    "Unique_RockBeast_RockHorn": {
+      "name": "Horn Burst",
+      "element": "Earth",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Pierdon's exclusive skill.\nRakes the ground with its horn, then hurls a rock projectile at enemies."
+    },
+    "Unique_Ronin_Iai": {
+      "name": "Iaigiri",
+      "element": "Fire",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Bushi's exclusive skill.\nTaking hold of the sword, it appears in front of an enemy\nin an instant and unleashes an ultra-fast sword draw attack."
+    },
+    "Unique_Ronin_Iai_PartnerSkill": {
+      "name": "Iaigiri",
+      "element": "Fire",
+      "power": 160,
+      "cool_time": 12,
+      "description": "Bushi's exclusive skill.\nTaking hold of the sword, it appears in front of an enemy\nin an instant and unleashes an ultra-fast sword draw attack."
+    },
+    "Unique_SaintCentaur_OneSpearRushes": {
+      "name": "Spear Thrust",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Paladius' exclusive skill.\nCharges forward while enveloped in holy power with its spear thrust ahead.\nThe shield in its other hand blocks all attacks during the charge."
+    },
+    "Unique_SakuraSaurus_SideTackle": {
+      "name": "Muscle Slam",
+      "element": "Leaf",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Broncherry's exclusive skill.\nTurns sideways before tackling enemies in front of it,\nsending them flying into the air."
+    },
+    "Unique_SakuraSaurus_Water_SplashTackle": {
+      "name": "Splash Tackle",
+      "element": "Water",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Broncherry Aqua's exclusive skill.\nTurns sideways before tackling enemies in front of it,\nsending them flying with a burst of water."
+    },
+    "Unique_SamuraiDog_Bite": {
+      "name": "Fierce Fang (Ground)",
+      "element": "Earth",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_SamuraiDog_BiteV2": {
+      "name": "Double Fang (Ground)",
+      "element": "Earth",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_SamuraiDog_DashSlash": {
+      "name": "Persistent Slash",
+      "element": "Earth",
+      "power": 90,
+      "cool_time": 4,
+      "description": "Pupperai's exclusive skill.\nCharges at full speed, delivering two consecutive slashes with the wooden stick held in its mouth."
+    },
+    "Unique_ScorpionMan_Erectric_UpperThunder": {
+      "name": "Thunder Uppercut",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "ScorpionMan_Erectric's exclusive skill.\nUses superconductivity to closes the distance to the enemy at high speed,\nthen swings its pincers upward with full force."
+    },
+    "Unique_ScorpionMan_Uppercut": {
+      "name": "Upper Smash",
+      "element": "Dark",
+      "power": 350,
+      "cool_time": 16,
+      "description": "Prixter's exclusive skill.\nCloses the distance to the enemy at high speed,\nthen swings its pincers upward with full force."
+    },
+    "Unique_Sekhmet_RollingScratch": {
+      "name": "Rolling Scratch",
+      "element": "Earth",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Sekhmets exclusive skill.\nSpins forward to quickly close the distance and scratch the enemy."
+    },
+    "Unique_Sekhmet_SomersaultScratch": {
+      "name": "Somersault Scratch",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Sekhmets exclusive skill.\nScratches the enemy while performing a backward somersault to create distance."
+    },
+    "Unique_SheepBall_Roll": {
+      "name": "Roly Poly",
+      "element": "Normal",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Lamball's exclusive skill.\nCurls into a ball, rolling after any enemies in its way.\nBecomes dizzy and unable to move after the attack ends."
+    },
+    "Unique_SifuDog_Counter": {
+      "name": "Wholehearted Stance",
+      "element": "Normal",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Dogen's exclusive skill.\nAdopts an aiki stance. While in this stance, nulify any incoming attack,\ninstantly close in on the enemy, and counter with a full-forced palm strike."
+    },
+    "Unique_SnakeGirl_SnakeShot": {
+      "name": "Poison Scatter",
+      "element": "Dark",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Venusa's exclusive skill.\nThe snakes on her head spit toxic globs in a wide arc.\nThe poisonous pool left at the impact point inflicts Poison on anyone who touches it."
+    },
+    "Unique_SnowTigerBeastman_SnowImpact": {
+      "name": "Glacial Impact",
+      "element": "Ice",
+      "power": 650,
+      "cool_time": 30,
+      "description": "Bastigor's exclusive skill.\nLet out a mighty roar and leap into the air. Then, embed both arms into the ground to create a massive ice crack.\nContinue to channel power into the ground, ultimately causing a large explosion of ice energy"
+    },
+    "Unique_SnowTigerBeastman_TrampleSlash": {
+      "name": "Frost Talon",
+      "element": "Ice",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Bastigor's exclusive skill.\nStomps the ground, creating a fissure of ice ahead.\nThen, rapidly closes the distance and slashes with the right hand."
+    },
+    "Unique_SoldierBee_NeedleLance": {
+      "name": "Needle Spear",
+      "element": "Leaf",
+      "power": 120,
+      "cool_time": 8,
+      "description": "Beegarde's exclusive skill.\nCharges at the enemy at high speed, delivering a final thrust with a spear."
+    },
+    "Unique_StuffedShark_HiddenWeapon": {
+      "name": "Trigger Happy",
+      "element": "Water",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Finsider's exclusive skill.\nDraws twin water blasters from its mouth, firing six shots alternately left and right,\nthen finishes by combining both blasters to unleash one powerful shot."
+    },
+    "Unique_SumoDog_SumoStomp": {
+      "name": "Sumo Stomp",
+      "element": "Earth",
+      "power": 550,
+      "cool_time": 24,
+      "description": "Bulldosu's exclusive skill.\nRaises its right hind leg high and stomps the ground, creating a shockwave that strikes enemies in a fan-shaped area ahead."
+    },
+    "Unique_TentacleTurtle_HydroSpin": {
+      "name": "Hydro Spin",
+      "element": "Water",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Turtacle's exclusive skill.\nUses jet-powered propulsion to spin rapidly and launch itself at the enemy."
+    },
+    "Unique_ThunderBird_Ice_SnowStrom": {
+      "name": "Glacial Plunge",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Beakon Cryst's exclusive skill\nIce first erupts from the ground at the target's location.\nThen glides forward in a rushing charge, causing ice to burst from the ground on both sides along its path."
+    },
+    "Unique_ThunderBird_ThunderStorm": {
+      "name": "Lightning Dive",
+      "element": "Electricity",
+      "power": 180,
+      "cool_time": 8,
+      "description": "Beakon's exclusive skill.\nFirst, it strikes the enemy's location with lightning.\nThen, while gliding forward, it drops lightning to the left and right."
+    },
+    "Unique_ThunderDog_Bite": {
+      "name": "Fierce Fang (Electric)",
+      "element": "Electricity",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_ThunderDog_BiteV2": {
+      "name": "Double Fang (Electric)",
+      "element": "Electricity",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_ThunderDog_Ice_Bite": {
+      "name": "Fierce Fang (Ice)",
+      "element": "Ice",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Quickly lunges at the enemy and bites to deal damage."
+    },
+    "Unique_ThunderDog_Ice_BiteV2": {
+      "name": "Double Fang (Ice)",
+      "element": "Ice",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Bites rapidly in succession to attack enemies."
+    },
+    "Unique_ThunderDog_Ice_KoriShorai": {
+      "name": "Frostcall",
+      "element": "Ice",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Rayhound Cryst's exclusive skill.\nGenerates ice pillars ahead and charges forward at high speed through the gaps between them."
+    },
+    "Unique_ThunderDog_InazumaShorai": {
+      "name": "Beckon Lightning",
+      "element": "Electricity",
+      "power": 100,
+      "cool_time": 8,
+      "description": "Rayhound's exclusive skill.\nSummons lightning one after another in front,\nthen charges forward at high speed through the gaps between the falling bolts."
+    },
+    "Unique_ThunderDragonMan_NumerousSwordAttack": {
+      "name": "Polykeraunos",
+      "element": "Electricity",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Orserk's exclusive skill.\nSummons numerous thunder spears and hurls them at the enemy.\nThe first spear is imbued with the power of lightning and explodes after a few seconds."
+    },
+    "Unique_ThunderDragonMan_ThunderSwordAttack": {
+      "name": "Kerauno",
+      "element": "Electricity",
+      "power": 250,
+      "cool_time": 12,
+      "description": "Orserk's exclusive skill.\nSummons a spear of lightning while leaping into the air\nbefore throwing it at an enemy."
+    },
+    "Unique_TropicalOstrich_DashKick": {
+      "name": "Dash Kick",
+      "element": "Leaf",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Palumba's exclusive skill.\nDashes to build up speed, then launches a devastating airborne kick at its target."
+    },
+    "Unique_Umihebi_Fire_FireWindingTackle": {
+      "name": "Magma Serpent",
+      "element": "Fire",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Jormuntide Ignis's exclusive skill.\nLetting out a roar, it charges toward the enemy,\ntwisting its fire-covered body as it advances."
+    },
+    "Unique_Umihebi_WindingTackle": {
+      "name": "Slither Slam",
+      "element": "Water",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Jormuntide's exclusive skill.\nLetting out a roar, it charges toward the enemy,\ntwisting its water-covered body as it advances."
+    },
+    "Unique_VolcanicMonster_Ice_IceAttack": {
+      "name": "Frost Burst",
+      "element": "Ice",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Reptyro Cryst's exclusive skill.\nRaises its front legs and slams them into the ground,\ncausing a frozen blast under its enemies.\nIt simultaneously bombards them with snow balls from above."
+    },
+    "Unique_VolcanicMonster_MagmaAttack": {
+      "name": "Volcanic Burst",
+      "element": "Fire",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Reptyro's exclusive skill.\nRaises its front legs and slams them into the ground,\ncausing a volcanic eruptions under its enemies.\nIt simultaneously bombards them with volcanic bombs from above."
+    },
+    "Unique_VolcanoDragon_Ice_IceLaser": {
+      "name": "Ice Laser",
+      "element": "Ice",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Moldron Cryst's exclusive skill.\nFires a freezing beam from the mouth that coats the ground in ice.\nFrozen ground forms frost pools that freeze and damage enemies on contact."
+    },
+    "Unique_VolcanoDragon_Ice_IcicleSpit": {
+      "name": "Ice Spit",
+      "element": "Ice",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Moldron Cryst's exclusive skill.\nSpits a chunk of ice from its mouth.\nThe impact creates frost pools that freeze and damage enemies on contact."
+    },
+    "Unique_VolcanoDragon_MagmaSpit": {
+      "name": "Magma Spit",
+      "element": "Fire",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Moldron's exclusive skill.\nSpits a mass of magma from its mouth.\nThe impact creates magma pools that damage enemies on contact."
+    },
+    "Unique_VolcanoDragon_VolcanicLaser": {
+      "name": "Magma Laser",
+      "element": "Fire",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Moldron's exclusive skill.\nEmits a thermal beam from its mouth that scorches the ground.\nHeated ground forms magma pools that damage enemies on contact."
+    },
+    "Unique_WeaselDragon_FlyingTackle": {
+      "name": "Rocket Slam",
+      "element": "Dragon",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Chillet's exclusive skill.\nGathers a bit of strength and leaps forward.\nAlways shuts its eyes tight in fear when landing."
+    },
+    "Unique_Werewolf_Ice_SnowScratch": {
+      "name": "Snow Claw",
+      "element": "Ice",
+      "power": 160,
+      "cool_time": 8,
+      "description": "Loupmoon Cryst's exclusive skill.\nLeaps forward and attacks twice with vicious claws\nimbued with ice element."
+    },
+    "Unique_Werewolf_Scratch": {
+      "name": "Jumping Claw",
+      "element": "Dark",
+      "power": 80,
+      "cool_time": 4,
+      "description": "Loupmoon's exclusive skill.\nLeaps forward and attacks twice with vicious claws\nimbued with dark energy."
+    },
+    "Unique_WhiteDeer_Dark_DarkPillar": {
+      "name": "Dark Nova",
+      "element": "Dark",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Celesdir Noct's exclusive skill.\nAfter igniting a burst of darkness across a vast area ahead, it strides forward, generating pillars of darkness around itself."
+    },
+    "Unique_WhiteDeer_HolyPillar": {
+      "name": "Holy Nova",
+      "element": "Normal",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Celesdir's exclusive skill.\nAfter igniting a burst of holy light across a vast area ahead,\nit strides forward, radiating holy light around itself."
+    },
+    "Unique_WhiteShieldDragon_ShieldTackle": {
+      "name": "Aegis Charge",
+      "element": "Dragon",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Silvegis's exclusive skill.\nDeploys a shield in front that reduces all types of attacks, then charges forward, crushing the enemy."
+    },
+    "Unique_WhiteTiger_Ground_IronScratch": {
+      "name": "Stone Claw",
+      "element": "Earth",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Cryolinx Terra's exclusive skill.\nFirst, it strikes with its claws, followed by a second slash, and culminates with a powerful slash using its entire body.\nWhen swinging the claws, rocks are launched forward in a fan shape."
+    },
+    "Unique_WhiteTiger_IceScratch": {
+      "name": "Blizzard Claw",
+      "element": "Ice",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Cryolinx's exclusive skill.\nFirst, it strikes with its claws, followed by a second slash, and culminates with a powerful slash using its entire body.\nWhen swinging the claws, ice pillars are launched forward in a fan shape."
+    },
+    "Unique_WingGolem_Fire_FlameCutter": {
+      "name": "Flame Cutter",
+      "element": "Fire",
+      "power": 700,
+      "cool_time": 30,
+      "description": "Knocklem Ignis's exclusive skill.\nTakes a big swing and throws the flaming ring from its back.\nThe ring flies in a circular trajectory."
+    },
+    "Unique_WingGolem_RoundCutter": {
+      "name": "Ground Cutter",
+      "element": "Earth",
+      "power": 450,
+      "cool_time": 20,
+      "description": "Knocklem's exclusive skill.\nTakes a big swing and throws the ring from its back.\nThe ring flies in a circular trajectory."
+    },
+    "Unique_YakushimaBoss001_Small_DemonEyeCharge": {
+      "name": "Ocular Rush",
+      "element": "Dark",
+      "power": 60,
+      "cool_time": 1,
+      "description": "Demon Eye's exclusive skill.\nCharges at the enemy, bouncing off the ground or walls on impact."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Dark": {
+      "name": "Slime Press (Dark)",
+      "element": "Dark",
+      "power": 50,
+      "cool_time": 1,
+      "description": "Purple Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Fire": {
+      "name": "Slime Press (Fire)",
+      "element": "Fire",
+      "power": 50,
+      "cool_time": 1,
+      "description": "Red Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Leaf": {
+      "name": "Slime Press (Grass)",
+      "element": "Leaf",
+      "power": 50,
+      "cool_time": 1,
+      "description": "Green Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Normal": {
+      "name": "Slime Press (Neutral)",
+      "element": "Normal",
+      "power": 50,
+      "cool_time": 1,
+      "description": "Illuminant Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Rainbow": {
+      "name": "Slime Press (Rainbow)",
+      "element": "Normal",
+      "power": 100,
+      "cool_time": 1,
+      "description": "Rainbow Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster001_SlimePress_Water": {
+      "name": "Slime Press (Water)",
+      "element": "Water",
+      "power": 50,
+      "cool_time": 1,
+      "description": "Blue Slime's exclusive skill.\nLeaps toward the enemy and delivers an attack."
+    },
+    "Unique_YakushimaMonster002_SwordCharge": {
+      "name": "Sword Charge",
+      "element": "Normal",
+      "power": 80,
+      "cool_time": 1,
+      "description": "Enchanted Sword's exclusive skill.\nLunges forward to deliver a sharp thrust."
+    },
+    "Unique_YakushimaMonster003_BatCharge": {
+      "name": "Winged Assault",
+      "element": "Normal",
+      "power": 70,
+      "cool_time": 1,
+      "description": "Cave Bat's exclusive skill.\nUsing its whole body, it lunges at the enemy, bouncing off the ground or walls on impact."
+    },
+    "Unique_Yakushima_EyeTossin": {
+      "name": "Lock-On Lunge",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 15,
+      "description": "Eye of Cthulhu's exclusive skill.\nRepeatedly charges at the enemy."
+    },
+    "Unique_Yakushima_MouthTossin": {
+      "name": "Frenzied Charge",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 15,
+      "description": "Eye of Cthulhu's exclusive skill.\nRepeatedly charges at the enemy at high speed."
+    },
+    "Unique_Yakushima_SummonServant": {
+      "name": "Servant Call",
+      "element": "Dark",
+      "power": 300,
+      "cool_time": 10,
+      "description": "Eye of Cthulhu's exclusive skill.\nSummons four Servants that charge at enemies to deal damage.\nServants disappear after taking damage or after a short time."
+    },
+    "Unique_Yeti_Grass_GrassBall": {
+      "name": "Lawn Bowling",
+      "element": "Leaf",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Wumpo Botan's exclusive skill.\nRolls a ball made of grass as it moves forward, and when it grows large enough,\nit throws it to cause an explosion."
+    },
+    "Unique_Yeti_SnowBall": {
+      "name": "Snow Bowling",
+      "element": "Ice",
+      "power": 400,
+      "cool_time": 20,
+      "description": "Wumpo's exclusive skill.\nRolls a snowball as it moves forward, and when it grows large enough,\nit throws it to cause an explosion."
+    },
+    "WallSplash": {
+      "name": "Curtain Splash",
+      "element": "Water",
+      "power": 300,
+      "cool_time": 16,
+      "description": "Continously creates walls made from water columns at the enemy's location."
+    },
+    "WaterBall": {
+      "name": "Aqua Burst",
+      "element": "Water",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Creates a giant ball of water\nand hurls it at an enemy."
+    },
+    "WaterGun": {
+      "name": "Aqua Gun",
+      "element": "Water",
+      "power": 50,
+      "cool_time": 2,
+      "description": "Hurls a ball of water\nstraight at an enemy."
+    },
+    "Weapon_Use": {
+      "name": "Use Weapon",
+      "element": "Normal",
+      "power": 50,
+      "cool_time": 5,
+      "description": "Attack with held weapon."
+    },
+    "WindBurst": {
+      "name": "Wind Burst",
+      "element": "Leaf",
+      "power": 600,
+      "cool_time": 30,
+      "description": "Summons a massive wind vortex around itself and unleashes a powerful attack."
+    },
+    "WindCutter": {
+      "name": "Wind Cutter",
+      "element": "Leaf",
+      "power": 40,
+      "cool_time": 2,
+      "description": "Fires a high speed blade of wind\nthat flies straight at an enemy."
+    },
+    "WindEdge": {
+      "name": "Wind Edge",
+      "element": "Leaf",
+      "power": 200,
+      "cool_time": 12,
+      "description": "Launches sharp blades of air that fan out."
+    }
   }
 }

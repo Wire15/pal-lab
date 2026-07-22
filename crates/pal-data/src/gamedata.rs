@@ -323,6 +323,27 @@ pub struct GameSettings {
     pub combi_boss_pal_rate: f32,
 }
 
+/// One active-skill (waza) definition, extracted from the game's `DT_WazaDataTable`
+/// (see `tools/pal-extract`). Stored as `(save-side id, ActiveSkill)` pairs in
+/// [`Pack::active_skills`]; the id is the enum-prefix-stripped `WazaType`
+/// (e.g. `"AirCanon"`, `"Unique_SheepBall_Roll"`). Serializes directly to the
+/// `list_active_skills` command's value shape.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ActiveSkill {
+    /// Localized display name (e.g. `"Air Cannon"`).
+    pub name: String,
+    /// `EPalElementType` enum name — the SAME strings species elements use
+    /// (`Normal`/`Fire`/`Water`/`Leaf`/`Electricity`/`Ice`/`Earth`/`Dark`/`Dragon`);
+    /// `"None"` for name-only fallback entries with no waza row.
+    pub element: String,
+    /// Base attack power; `None` for non-damage skills (game value 0).
+    pub power: Option<i32>,
+    /// Cooldown in whole seconds; `None` when absent (game value 0).
+    pub cool_time: Option<i32>,
+    /// Cleaned English description; `None` when the game has none.
+    pub description: Option<String>,
+}
+
 /// The full serialized pack. This is exactly what `bincode` reads/writes; every
 /// field is a `Vec` (deterministic order) — no `HashMap`s cross the wire.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -335,10 +356,10 @@ pub struct Pack {
     /// Species in `db.json` order; index is the interned species id.
     pub species: Vec<PalSpecies>,
     pub passives: Vec<PassiveSkill>,
-    /// Active-skill (waza) display names: `(save-side id, localized name)` pairs
-    /// in sorted id order (e.g. `("Unique_SheepBall_Roll", "Roly Poly")`). Keyed
-    /// by the enum-prefix-stripped waza id the save file carries.
-    pub active_names: Vec<(String, String)>,
+    /// Active-skill (waza) definitions as `(save-side id, ActiveSkill)` pairs in
+    /// sorted id order (e.g. `("AirCanon", ActiveSkill { name: "Air Cannon", .. })`).
+    /// Keyed by the enum-prefix-stripped waza id the save file carries.
+    pub active_skills: Vec<(String, ActiveSkill)>,
     pub breeding: Vec<BreedingEntry>,
     /// Directional min-breeding-steps, row-major `from * n + to`. `UNREACHABLE`
     /// marks pairs with no known path (palcalc's `10000` sentinel is preserved).
@@ -483,10 +504,10 @@ impl GameData {
         &self.pack.passives
     }
 
-    /// Active-skill display names as `(save-side id, localized name)` pairs
-    /// (sorted by id). See [`Pack::active_names`].
-    pub fn active_names(&self) -> &[(String, String)] {
-        &self.pack.active_names
+    /// Active-skill (waza) definitions as `(save-side id, ActiveSkill)` pairs
+    /// (sorted by id). See [`Pack::active_skills`].
+    pub fn active_skills(&self) -> &[(String, ActiveSkill)] {
+        &self.pack.active_skills
     }
 
     /// The full breeding table (species interned to indices).

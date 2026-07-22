@@ -83,15 +83,17 @@ const ELEMENT_ICONS: Record<string, string> = {
 };
 
 /**
- * URL for a passive-skill **rank chevron** icon (palcalc's Passive_Positive_N /
- * Passive_Negative_N glyphs, bundled under `public/elements/`). Positive ranks
- * 1-5 and negative ranks 1-3 have art; rank 0 (no icon) returns null so callers
- * fall back to a CSS chevron. See crates/pal-data/vendor/NOTICE.
+ * URL for a passive-skill **rank glyph** texture — the GAME's own white-on-alpha
+ * 24x24 icon (palcalc's Passive_Positive_1..5 / Passive_Negative_1..3, bundled
+ * under `public/elements/`). The chevron stack is capped at 3, with the `+`
+ * (positive rank 4) and star (positive rank 5) fused into the texture; negatives
+ * point down. Consumed as a CSS mask over `currentColor` so it tints per band.
+ * Positive clamps to 5, negative to 3; rank 0 (unreachable) falls to Positive_1.
+ * See crates/pal-data/vendor/NOTICE.
  */
-export function passiveRankIconUrl(rank: number): string | null {
-  if (rank > 0) return `/elements/Passive_Positive_${Math.min(rank, 5)}_icon.png`;
+export function passiveRankGlyphUrl(rank: number): string {
   if (rank < 0) return `/elements/Passive_Negative_${Math.min(-rank, 3)}_icon.png`;
-  return null;
+  return `/elements/Passive_Positive_${Math.min(Math.max(rank, 1), 5)}_icon.png`;
 }
 
 /**

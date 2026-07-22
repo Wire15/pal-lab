@@ -427,10 +427,14 @@ mod tests {
             serde_json::to_string_pretty(&crate::solver::list_passives()).unwrap(),
         );
 
-        // active-names.json — waza id -> localized name (sorted for determinism).
-        let active: std::collections::BTreeMap<String, String> =
-            crate::solver::list_active_names().into_iter().collect();
-        write("active-names.json", serde_json::to_string_pretty(&active).unwrap());
+        // active-skills.json — waza id -> ActiveSkill (name/element/power/cool_time/
+        // description), sorted by id for determinism.
+        let active_skills: std::collections::BTreeMap<String, pal_data::ActiveSkill> =
+            crate::solver::list_active_skills().into_iter().collect();
+        write(
+            "active-skills.json",
+            serde_json::to_string_pretty(&active_skills).unwrap(),
+        );
 
         // save-summary.json — real summary, pals trimmed to a representative
         // ~60 covering every container kind present.

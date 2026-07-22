@@ -122,8 +122,9 @@ Encoded once in `lib/ui.ts`; reuse those helpers, don't re-derive thresholds.
   (`stripBand(rank, tier)`): `rank < 0` = **red** (`bad`, down chevrons); `tier
   "worldtree"` **or** `rank ≥ 5` = **green→deep-purple** World Tree (teal border,
   pine glyph); `tier "rainbow"` **or** `rank === 4` = **green→blue iridescent**
-  (teal border); else **gold** (`amber`). The cluster caps at **3 chevrons** and
-  appends a **`+`** for `|rank| ≥ 4` — the game never shows 4–5 chevrons.
+  (teal border); `rank === 1` = **plain silver/white** (`neutral`, not gold);
+  else (`rank 2–3`) = **gold** (`amber`). The cluster is the game's own masked
+  rank-glyph texture (chevrons capped at 3, `+`/star fused in for rank 4/5).
   Direction is shown by chevron orientation **and** color (never color alone).
   Name/rank/tier resolve from the cached `list_passives` payload, falling back to
   id-humanization (`passiveView`) for ids the pack lacks.
@@ -137,8 +138,9 @@ Primitives live in `components/primitives.tsx`; compose them, don't reinvent.
 - **PalIcon** `{id,name,size}` — cel-shaded portrait keyed by internal species
   id, `rounded-md`, 1px `line` ring, `abyss` backing, lazy, falls back to
   `UNKNOWN_ICON` on error. Roster 34px, tree 30px, autocomplete/inline 26px.
-- **PassiveStrip** `{id, size?}` — the in-game passive strip (name left, stacked
-  rank chevrons right, tier/rank-tinted border+fill); `sm` for dense contexts
+- **PassiveStrip** `{id, size?}` — the in-game passive strip (name left, the
+  game's masked rank-glyph texture right, tier/rank-tinted border+fill); `sm` for
+  dense contexts
   (solver tree, hover card, roster), `md` for detail/browser. See §5 + §12.
   **PassiveChip** `{id}` is a thin **alias** of `<PassiveStrip size="sm">`, kept
   so legacy callsites render the strip without churn.
@@ -516,16 +518,22 @@ id-humanization (`ui.ts::passiveView`) before it resolves or for unknown ids.
   | **negative** | `rank < 0` | `bad` 50% | `bad` 16%→5% over abyss | `bad` | `bad` (down chevrons) |
   | **worldtree** | `tier "worldtree"` **or** `rank ≥ 5` | teal (`el-ice`×`good`) | `good` 26% → `el-dark` 48% (green→deep-purple) | `ink` | light lavender (+pine glyph) |
   | **rainbow** | `tier "rainbow"` **or** `rank === 4` | teal (`el-ice`×`good`) | `good`→`el-ice`→`el-water` iridescent (30–34% over abyss, green→blue) | `ink` | bright teal |
-  | **positive** | else (`rank ≥ 0`) | `amber` 52% | `amber` 17%→6% over abyss | `amber-bright` | `amber` |
+  | **positive** | else (`rank 2–3`) | `amber` 52% | `amber` 17%→6% over abyss | `amber-bright` | `amber` |
+  | **neutral** | `rank === 1` | `ink-dim` 42% | `ink-dim` 14%→5% over abyss (barely-there cool) | `ink` | `ink`×`ink-dim` (bright silver) |
 
   This mirrors paldb.cc: rank-4 legendaries a green→blue shimmer with a teal
-  border, rank-5 World Tree green→deep-purple, ordinary passives our gold/red.
+  border, rank-5 World Tree green→deep-purple, rank-2/3 our gold — and **rank 1 a
+  plain silver/white chevron, never gold** (matching the game's lone-chevron
+  banner), so single-rank passives don't over-read as premium.
 - **Icon cluster (`RankCluster {rank, band, size}`).** Right-edge anatomy,
-  paldb's `[tree][chevrons][+]`: an optional **pine glyph** (World Tree tier
-  only) + **`min(|rank|, 3)` vector chevrons** (`PassiveChevrons`, `currentColor`,
-  stacked, **up** positive / **down** negative) + a **`+` marker** when
-  `|rank| ≥ 4`. The game caps the chevron column at 3, so we **never draw 4–5
-  chevrons** — the `+` carries the overflow. Rank 0 draws no chevrons.
+  paldb's `[tree][rank-glyph]`: an optional **pine glyph** (World Tree tier only,
+  `TreeGlyph`) + **one masked rank glyph** (`RankGlyph`) — the game's own 24px
+  white-on-alpha texture (`assets.ts::passiveRankGlyphUrl`, `Passive_Positive_1..5`
+  / `Passive_Negative_1..3`) painted as a **CSS mask over `currentColor`** so it
+  tints per band and stays crisp at any size. The chevron stack (up positive /
+  down negative) is **capped at 3 in the source**, with the **`+`** (rank 4) and
+  **star** (rank 5) **fused into the texture** — so we draw ONE element, never a
+  separate mark. Sizes ≈ **17px** `md` / **14px** `sm`. Rank 0 draws nothing.
 - **Left accent.** A thicker left border rail (`sm` 2px / `md` 3px / card 4px)
   echoes the in-game strip's colored edge.
 
@@ -534,7 +542,7 @@ A **wide** card whose header **is** the strip look, sharing
 `stripBand`/`stripTint`/`RankCluster` from the strip so rainbow/worldtree
 passives read as special here too, over an unchanged structured body:
 - **Banner header** — the passive **name** (`font-display`) + the rank **icon
-  cluster** (pine glyph on World Tree, `min(|rank|, 3)` chevrons, `+` past rank 3)
+  cluster** (pine glyph on World Tree, then the game's masked rank-glyph texture)
   on the tier/rank-tinted banner (gold / red-down / green→blue rainbow /
   green→deep-purple World Tree), a 4px left accent. Name color and cluster accent
   come straight from `stripTint`.
@@ -567,3 +575,46 @@ padding beside the multi-line `whitespace-pre-line` description — and the
 When `partner_skill_icon` is null (a bespoke texture not yet
 resolved to a PNG) or the image fails, it degrades to a neutral inline-SVG
 **bond glyph** (`assets.ts::PARTNER_FALLBACK_ICON`) — never a broken `<img>`.
+
+## 13. Round 4 — Equipped active-skill rows (`components/active-skill.tsx`)
+
+The your-pal detail section's **Equipped active skills** are the in-game strip
+from Palworld's Pal Stats screen, a sibling to the passive strip (§12) but tinted
+by **element** instead of passive rank. `ActiveSkillRow {id, skill}` takes a
+prefix-stripped waza id and its resolved {@link ActiveSkill} (`lib/active-skills.ts`:
+`{name, element, power, cool_time, description}`, from the `list_active_skills`
+command / `active-skills.json` fixture).
+
+### Row anatomy
+A block-level, full-width dark bar (`bg-raised`, `border-line`, `rounded-sm`,
+`min-h-30px`) with a **3px element-colored left accent** (`--color-el-<key>`, or
+`amber` when the element is unknown — the rail never disappears). The **name** is
+pinned left (`font-display font-semibold`, `ink`), truncating. The right cluster,
+right to left:
+- **Element segment** — an element-tinted block
+  (`color-mix(el 72%, abyss)`) carrying the flat **white in-game glyph**
+  (`elementGlyphUrl`, white-on-alpha so it reads white on the tint; falls back to
+  the full-color type tile) and the **power** numeral (`font-display font-bold
+  tabular-nums`, `ink`). Shown only when the element resolves to a known type.
+- **Cooldown chip** — a compact `bg-abyss/70` mono chip reading `CT Ns`
+  (`font-mono tabular-nums`, `ink-dim`), left of the element segment.
+
+### Description reveal
+When the skill carries a description, the whole row is a **button**
+(`aria-expanded`, `focus-visible` amber ring, hover lift) with a small caret
+(`▸`→`▾`) beside the name; clicking toggles a **collapsible line under the row**
+(`bg-abyss/40`, `border-line-soft`, `ink-dim`). Keyboard-reachable, no tooltip
+that leaves the page. No description → the row is a plain non-interactive `div`
+with no caret.
+
+### Null-stat handling
+Every stat is independently null-safe: **no element** hides the whole segment
+(and its power numeral), **null power** shows the element glyph alone, **null
+cool_time** hides the CT chip, **null description** makes the row static. An
+**unknown id** (absent from the map) resolves via the humanizer to a stats-less
+skill — a plain name row, name derived by stripping `Unique_<Species>_` and
+title-casing camelCase/underscores. Never a raw id, never a fake number.
+
+### Layout
+`grid grid-cols-1 gap-1.5 sm:grid-cols-2` in the your-pal section — one column on
+narrow, two on `>=sm` where the short rows stay legible side by side.

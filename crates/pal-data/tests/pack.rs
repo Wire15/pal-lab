@@ -374,22 +374,34 @@ fn game_settings_are_extraction_ground_truth() {
 }
 
 #[test]
-fn active_names_resolve() {
+fn active_skills_resolve() {
     let gd = GameData::get();
-    let names = gd.active_names();
-    assert!(!names.is_empty(), "active_names should be non-empty");
-    // Lookup a known waza id: must resolve to a non-empty display name != id.
-    let air = names
-        .iter()
-        .find(|(id, _)| id == "AirCanon")
-        .map(|(_, n)| n.as_str());
-    let air = air.expect("AirCanon present in active_names");
-    assert!(!air.is_empty(), "AirCanon name non-empty");
-    assert_ne!(air, "AirCanon", "AirCanon resolves to a display name, not the raw id");
+    let skills = gd.active_skills();
+    assert!(!skills.is_empty(), "active_skills should be non-empty");
     // Pairs are sorted by id (deterministic pack bytes).
     assert!(
-        names.windows(2).all(|w| w[0].0 <= w[1].0),
-        "active_names sorted by id",
+        skills.windows(2).all(|w| w[0].0 <= w[1].0),
+        "active_skills sorted by id",
+    );
+    // AirCanon: known damage skill with the full contract shape.
+    let air = skills
+        .iter()
+        .find(|(id, _)| id == "AirCanon")
+        .map(|(_, s)| s)
+        .expect("AirCanon present in active_skills");
+    assert_eq!(air.name, "Air Cannon", "AirCanon resolves to its display name");
+    const ELEMENTS: [&str; 9] = [
+        "Normal", "Fire", "Water", "Leaf", "Electricity", "Ice", "Earth", "Dark", "Dragon",
+    ];
+    assert!(
+        ELEMENTS.contains(&air.element.as_str()),
+        "AirCanon element {:?} in the 9-element set",
+        air.element,
+    );
+    assert!(
+        matches!(air.power, Some(p) if p > 0),
+        "AirCanon power is Some(>0), got {:?}",
+        air.power,
     );
 }
 

@@ -116,9 +116,22 @@ export interface PassiveEntry {
   tier?: "rainbow" | "worldtree" | null;
 }
 
-/** Active-skill (waza) display names keyed by save-side waza id
- * (e.g. "Unique_SheepBall_Roll", "AirCanon"), from `list_active_names`. */
-export type ActiveNames = Record<string, string>;
+/** One active-skill (waza) definition from `list_active_skills`, matching the
+ * pack `ActiveSkill` struct. `element` uses the same internal element strings as
+ * species elements ("Normal"/"Fire"/"Water"/"Leaf"/"Electricity"/"Ice"/"Earth"/
+ * "Dark"/"Dragon"), or "None" for name-only entries. `power`/`cool_time` are null
+ * for non-damage / no-cooldown skills; `description` is null when the game has none. */
+export interface ActiveSkill {
+  name: string;
+  element: string;
+  power: number | null;
+  cool_time: number | null;
+  description: string | null;
+}
+
+/** Active-skill definitions keyed by save-side waza id
+ * (e.g. "Unique_SheepBall_Roll", "AirCanon"), from `list_active_skills`. */
+export type ActiveSkills = Record<string, ActiveSkill>;
 
 /**
  * How a plan node is obtained. serde emits an externally-tagged enum:

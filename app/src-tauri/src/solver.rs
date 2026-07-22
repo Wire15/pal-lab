@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use std::path::Path;
 
 use pal_data::gamedata::PassiveTier;
-use pal_data::GameData;
+use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
     resolve_passive, resolve_species, solve as run_solver, BreedingPlan, SolverConfig, TargetPal,
     TargetSpec,
@@ -143,15 +143,16 @@ pub fn list_passives() -> Vec<PassiveEntry> {
         .collect()
 }
 
-/// Active-skill (waza) display names keyed by the save-side waza id
+/// Active-skill (waza) definitions keyed by the save-side waza id
 /// (enum-prefix-stripped, e.g. `"Unique_SheepBall_Roll"`, `"AirCanon"`). The UI
-/// resolves raw active-skill ids from a save to their localized names.
+/// resolves raw active-skill ids from a save to their localized names + stats
+/// (element/power/cooldown/description).
 #[tauri::command]
-pub fn list_active_names() -> HashMap<String, String> {
+pub fn list_active_skills() -> HashMap<String, ActiveSkill> {
     GameData::get()
-        .active_names()
+        .active_skills()
         .iter()
-        .map(|(id, name)| (id.clone(), name.clone()))
+        .map(|(id, s)| (id.clone(), s.clone()))
         .collect()
 }
 

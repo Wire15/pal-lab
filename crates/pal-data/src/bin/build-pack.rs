@@ -18,8 +18,8 @@ use std::path::PathBuf;
 use serde::Deserialize;
 
 use pal_data::gamedata::{
-    BreedingEntry, ElementKind, GameSettings, InheritanceWeights, Pack, PalSpecies, ParentGender,
-    PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
+    ActiveSkill, BreedingEntry, ElementKind, GameSettings, InheritanceWeights, Pack, PalSpecies,
+    ParentGender, PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -114,9 +114,23 @@ struct RawExtract {
     species: HashMap<String, RawExtractSpecies>,
     /// Passive-skill display metadata keyed by internal name (case may drift).
     passives: HashMap<String, RawExtractPassive>,
-    /// Active-skill (waza) display names keyed by prefix-stripped id.
+    /// Active-skill (waza) definitions keyed by prefix-stripped save-side id.
     #[serde(default)]
-    active_names: HashMap<String, String>,
+    active_skills: HashMap<String, RawExtractActive>,
+}
+
+/// One extraction active-skill entry (see `tools/pal-extract`). Field names match
+/// the JSON and the pack [`ActiveSkill`] shape 1:1.
+#[derive(Deserialize)]
+struct RawExtractActive {
+    name: String,
+    element: String,
+    #[serde(default)]
+    power: Option<i32>,
+    #[serde(default)]
+    cool_time: Option<i32>,
+    #[serde(default)]
+    description: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -491,19 +505,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     eprintln!("passive db-not-in-extraction ids ({}): {db_not_in_extract:?}", db_not_in_extract.len());
 
-    // Active-skill names: sorted `(id, name)` pairs for deterministic pack bytes.
-    let mut active_names: Vec<(String, String)> = extract
-        .active_names
+    // Active skills: sorted `(id, ActiveSkill)` pairs for deterministic pack bytes.
+    let mut active_skills: Vec<(String, ActiveSkill)> = extract
+        .active_skills
         .iter()
-        .map(|(k, v)| (k.clone(), v.clone()))
+        .map(|(id, a)| {
+            (
+                id.clone(),
+                ActiveSkill {
+                    name: a.name.clone(),
+                    element: a.element.clone(),
+                    power: a.power,
+                    cool_time: a.cool_time,
+                    description: a.description.clone(),
+                },
+            )
+        })
         .collect();
-    active_names.sort();
+    active_skills.sort_by(|a, b| a.0.cmp(&b.0));
     let tier_count = passives.iter().filter(|p| p.tier.is_some()).count();
     let rainbow = passives.iter().filter(|p| p.tier == Some(PassiveTier::Rainbow)).count();
     let worldtree = passives.iter().filter(|p| p.tier == Some(PassiveTier::WorldTree)).count();
     println!(
-        "passive tiers: {tier_count} tiered (rainbow={rainbow} worldtree={worldtree}) | active_names={}",
-        active_names.len(),
+        "passive tiers: {tier_count} tiered (rainbow={rainbow} worldtree={worldtree}) | active_skills={}",
+        active_skills.len(),
     );
 
     // Breeding table (fail-soft: skip rows referencing unknown species).
@@ -551,7 +576,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         game_build: extract.meta.game_build.clone(),
         species,
         passives,
-        active_names,
+        active_skills,
         breeding,
         min_steps,
         inheritance: InheritanceWeights::default(),

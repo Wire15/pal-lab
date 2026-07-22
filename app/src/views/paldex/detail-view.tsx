@@ -25,7 +25,8 @@ import { ElementBanners } from "../../components/element";
 import { WorkGlyph, nonzeroWork } from "../../components/work-suit";
 import { PartnerIcon } from "../../components/partner";
 import { hexGuid } from "../../components/palbox/selectors";
-import { activeName, loadActiveNames } from "../../lib/active-names";
+import { ActiveSkillRow } from "../../components/active-skill";
+import { loadActiveSkills, type ActiveSkills } from "../../lib/active-skills";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
@@ -292,10 +293,10 @@ function YourPalSection({
   const skills = pal.active_skills ?? [];
   const title = pal.nickname?.trim() || speciesName;
   const [copied, setCopied] = useState(false);
-  const [activeMap, setActiveMap] = useState<Record<string, string>>({});
+  const [activeMap, setActiveMap] = useState<ActiveSkills>({});
 
   useEffect(() => {
-    loadActiveNames().then(setActiveMap).catch(() => {});
+    loadActiveSkills().then(setActiveMap).catch(() => {});
   }, []);
 
   function copyId() {
@@ -395,21 +396,15 @@ function YourPalSection({
           )}
         </div>
 
-        {/* Equipped active skills, resolved to real names */}
+        {/* Equipped active skills, resolved to real name + element/power/CT/desc */}
         <div className="flex flex-col gap-2">
           <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
             Equipped active skills
           </span>
           {skills.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
               {skills.map((s, i) => (
-                <span
-                  key={`${s}-${i}`}
-                  title={s}
-                  className="inline-flex items-center rounded-sm border border-line bg-raised px-2 py-1 text-[12px] leading-none text-ink-dim"
-                >
-                  {activeName(s, activeMap)}
-                </span>
+                <ActiveSkillRow key={`${s}-${i}`} id={s} skill={activeMap[s] ?? null} />
               ))}
             </div>
           ) : (
