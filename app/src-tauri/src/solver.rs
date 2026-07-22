@@ -6,8 +6,10 @@
 //! runtime, and returns `pal_solver`'s `BreedingPlan` tree serialized to JSON.
 //! `list_species` / `list_passives` feed the view's autocomplete inputs.
 
+use std::collections::HashMap;
 use std::path::Path;
 
+use pal_data::gamedata::PassiveTier;
 use pal_data::GameData;
 use pal_solver::solver::{
     resolve_passive, resolve_species, solve as run_solver, BreedingPlan, SolverConfig, TargetPal,
@@ -100,6 +102,10 @@ pub struct PassiveEntry {
     pub effects: Vec<PassiveEffect>,
     pub description: Option<String>,
     pub pal_facing: bool,
+    /// Special lottery-pool tier: `"rainbow"` (mutation pool) / `"worldtree"`
+    /// (world-tree pool) / `null`. Additive; the UI colors the strip by it when
+    /// present, else falls back to rank-based coloring.
+    pub tier: Option<PassiveTier>,
 }
 
 /// One structured effect line (`{type, value, target}`) for [`PassiveEntry`].
@@ -132,7 +138,20 @@ pub fn list_passives() -> Vec<PassiveEntry> {
                 .collect(),
             description: p.description.clone(),
             pal_facing: p.pal_facing,
+            tier: p.tier,
         })
+        .collect()
+}
+
+/// Active-skill (waza) display names keyed by the save-side waza id
+/// (enum-prefix-stripped, e.g. `"Unique_SheepBall_Roll"`, `"AirCanon"`). The UI
+/// resolves raw active-skill ids from a save to their localized names.
+#[tauri::command]
+pub fn list_active_names() -> HashMap<String, String> {
+    GameData::get()
+        .active_names()
+        .iter()
+        .map(|(id, name)| (id.clone(), name.clone()))
         .collect()
 }
 

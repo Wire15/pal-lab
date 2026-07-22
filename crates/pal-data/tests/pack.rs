@@ -372,3 +372,44 @@ fn game_settings_are_extraction_ground_truth() {
         "CDO talent weights must stay decoupled from the solver's empirical model",
     );
 }
+
+#[test]
+fn active_names_resolve() {
+    let gd = GameData::get();
+    let names = gd.active_names();
+    assert!(!names.is_empty(), "active_names should be non-empty");
+    // Lookup a known waza id: must resolve to a non-empty display name != id.
+    let air = names
+        .iter()
+        .find(|(id, _)| id == "AirCanon")
+        .map(|(_, n)| n.as_str());
+    let air = air.expect("AirCanon present in active_names");
+    assert!(!air.is_empty(), "AirCanon name non-empty");
+    assert_ne!(air, "AirCanon", "AirCanon resolves to a display name, not the raw id");
+    // Pairs are sorted by id (deterministic pack bytes).
+    assert!(
+        names.windows(2).all(|w| w[0].0 <= w[1].0),
+        "active_names sorted by id",
+    );
+}
+
+#[test]
+fn passive_tiers_classify_special_pools() {
+    use pal_data::gamedata::PassiveTier;
+    let gd = GameData::get();
+    // The extraction found members (7 world-tree, 5 mutation), so at least one
+    // passive must carry a tier.
+    assert!(
+        gd.passives().iter().any(|p| p.tier.is_some()),
+        "at least one passive carries a tier",
+    );
+    // World-tree pool ⇒ worldtree tier.
+    let wt = gd.passive_by_id("WorldTree_ATK").expect("WorldTree_ATK exists");
+    assert_eq!(wt.tier, Some(PassiveTier::WorldTree), "WorldTree_ATK is worldtree tier");
+    // Mutation pool ⇒ rainbow tier.
+    let mut_pal = gd.passive_by_id("MutationPal_Mutant").expect("MutationPal_Mutant exists");
+    assert_eq!(mut_pal.tier, Some(PassiveTier::Rainbow), "MutationPal_Mutant is rainbow tier");
+    // Ordinary passive has no tier.
+    let lucky = gd.passive_by_id("Rare").expect("Lucky/Rare exists");
+    assert_eq!(lucky.tier, None, "ordinary passive has no tier");
+}

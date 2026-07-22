@@ -7,6 +7,7 @@
 //   - `view`         the active nav view (so the dex can jump to the Solver)
 //   - `solveTarget`  a pending species *name* the Solver pre-fills once
 //   - `dexTarget`    a pending species *id* the Pal-dex opens once
+//   - `dexInstance`  the owned-instance hex guid to enrich that dex page with
 // The last-used folder is persisted to localStorage and used to prefill the
 // startup modal, but the app never auto-loads a save on boot.
 
@@ -61,9 +62,18 @@ export interface AppState {
   clearSolveTarget: () => void;
   /** Species id the Pal-dex should open on its next render, or null. */
   dexTarget: string | null;
-  /** Jump to the Pal-dex with `speciesId` opened in the detail view. */
-  requestDex: (speciesId: string) => void;
-  /** Pal-dex clears the pending target once it has consumed it. */
+  /**
+   * Owned-instance hex guid (per `hexGuid`) the opened dex page should enrich
+   * with save data, or null for a plain species view. Rides alongside
+   * `dexTarget` and is consumed/cleared together.
+   */
+  dexInstance: string | null;
+  /**
+   * Jump to the Pal-dex with `speciesId` opened in the detail view. Pass an
+   * owned-instance hex guid to render that instance's your-pal section.
+   */
+  requestDex: (speciesId: string, instanceId?: string) => void;
+  /** Pal-dex clears the pending target + instance once it has consumed them. */
   clearDexTarget: () => void;
 }
 
@@ -78,6 +88,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [view, setView] = useState<View>("save");
   const [solveTarget, setSolveTarget] = useState<string | null>(null);
   const [dexTarget, setDexTarget] = useState<string | null>(null);
+  const [dexInstance, setDexInstance] = useState<string | null>(null);
 
   const loadSave = useCallback(async (dir: string) => {
     const trimmed = dir.trim();
@@ -137,11 +148,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const clearSolveTarget = useCallback(() => setSolveTarget(null), []);
 
-  const requestDex = useCallback((speciesId: string) => {
+  const requestDex = useCallback((speciesId: string, instanceId?: string) => {
     setDexTarget(speciesId);
+    setDexInstance(instanceId ?? null);
     setView("paldex");
   }, []);
-  const clearDexTarget = useCallback(() => setDexTarget(null), []);
+  const clearDexTarget = useCallback(() => {
+    setDexTarget(null);
+    setDexInstance(null);
+  }, []);
 
   const value = useMemo<AppState>(
     () => ({
@@ -159,6 +174,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       requestSolve,
       clearSolveTarget,
       dexTarget,
+      dexInstance,
       requestDex,
       clearDexTarget,
     }),
@@ -176,6 +192,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       requestSolve,
       clearSolveTarget,
       dexTarget,
+      dexInstance,
       requestDex,
       clearDexTarget,
     ],

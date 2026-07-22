@@ -3,17 +3,29 @@ import { invoke } from "../../lib/tauri";
 import type {
   ChildResult,
   NamedEntry,
+  OwnedPal,
   ParentsResult,
+  PlayerRef,
   RosterCounts,
   SpeciesDetail,
   SpeciesRef,
 } from "../../lib/types";
-import { ivBand, QUALITY_FILL, QUALITY_TEXT, rarityTier } from "../../lib/ui";
-import { PalIcon, PassiveChip, Tag } from "../../components/primitives";
+import {
+  containerLabel,
+  genderView,
+  ivBand,
+  QUALITY_FILL,
+  QUALITY_TEXT,
+  rarityTier,
+} from "../../lib/ui";
+import { PalIcon, Tag } from "../../components/primitives";
+import { PassiveStrip } from "../../components/passive-strip";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { ElementBanners } from "../../components/element";
 import { WorkGlyph, nonzeroWork } from "../../components/work-suit";
 import { PartnerIcon } from "../../components/partner";
+import { hexGuid } from "../../components/palbox/selectors";
+import { activeName, loadActiveNames } from "../../lib/active-names";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
@@ -236,14 +248,193 @@ function BestIv({ label, value }: { label: string; value: number }) {
   );
 }
 
+/** A labelled provenance row: mono faint label left, value right. Moved here
+ *  from the retired palbox detail panel (owner/location/slot/instance). */
+function InstanceRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-3">
+      <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+        {label}
+      </dt>
+      <dd className="min-w-0 truncate text-right text-[13px] text-ink">{children}</dd>
+    </div>
+  );
+}
+
+/**
+ * The your-pal band: an owned instance's save data grafted onto the top of the
+ * species page. Amber-accented so it reads as "this is *your* pal" and native
+ * to the hero, not a bolted-on panel. Renders the instance's vitals, IV bars,
+ * equipped passives (as in-game strips), equipped active skills resolved to
+ * real names, and its owner/storage provenance with an instance-id copy.
+ */
+function YourPalSection({
+  pal,
+  players,
+  speciesName,
+}: {
+  pal: OwnedPal;
+  players: PlayerRef[];
+  speciesName: string;
+}) {
+  const g = genderView(pal.gender);
+  const ownerHex = pal.owner_player_uid ? hexGuid(pal.owner_player_uid) : null;
+  const owner = ownerHex
+    ? players.find((p) => p.uid === ownerHex)?.name ?? null
+    : null;
+  const instanceHex = hexGuid(pal.instance_id);
+  const skills = pal.active_skills ?? [];
+  const title = pal.nickname?.trim() || speciesName;
+  const [copied, setCopied] = useState(false);
+  const [activeMap, setActiveMap] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    loadActiveNames().then(setActiveMap).catch(() => {});
+  }, []);
+
+  function copyId() {
+    navigator.clipboard
+      ?.writeText(instanceHex)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1200);
+      })
+      .catch(() => {});
+  }
+
+  return (
+    <section className="overflow-hidden rounded-lg border border-amber/40 bg-amber/[0.05]">
+      <header className="flex items-center justify-between gap-3 border-b border-amber/25 bg-amber/[0.06] px-4 py-2.5">
+        <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+          Your pal
+        </span>
+        <div className="flex items-center gap-3 font-mono text-[12px] tabular-nums">
+          <span className="text-ink-dim">
+            <span className="text-ink-faint">Lv </span>
+            <span className="text-ink">{pal.level}</span>
+          </span>
+          {pal.rank > 0 && (
+            <span className="text-amber" title={`Condensation rank ${pal.rank}`}>
+              {"\u2605".repeat(pal.rank)}
+            </span>
+          )}
+        </div>
+      </header>
+
+      <div className="flex flex-col gap-5 p-4">
+        {/* Identity + vitals */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <h2 className="min-w-0 truncate font-display text-xl font-bold tracking-wide text-ink">
+            {title}
+          </h2>
+          {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
+          <span className="flex items-center gap-1.5 text-[13px]" title={g.label}>
+            <span className={`text-base leading-none ${g.className}`}>{g.glyph}</span>
+            <span className="text-ink-dim">{g.label}</span>
+          </span>
+          {pal.nickname?.trim() && (
+            <span className="font-mono text-[12px] text-ink-faint">{speciesName}</span>
+          )}
+        </div>
+
+        {/* IVs + provenance, two-up on wide */}
+        <div className="grid gap-5 sm:grid-cols-[1fr_1fr]">
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+              IV talents
+            </span>
+            <div className="grid grid-cols-3 gap-4">
+              <BestIv label="HP" value={pal.ivs.hp} />
+              <BestIv label="ATK" value={pal.ivs.attack} />
+              <BestIv label="DEF" value={pal.ivs.defense} />
+            </div>
+          </div>
+          <dl className="flex flex-col gap-1.5">
+            <InstanceRow label="Owner">{owner ?? "\u2014"}</InstanceRow>
+            <InstanceRow label="Location">
+              <Tag>{containerLabel(pal.container_kind)}</Tag>
+            </InstanceRow>
+            {pal.slot_index !== null && (
+              <InstanceRow label="Slot">
+                <span className="font-mono tabular-nums text-ink-dim">
+                  {pal.slot_index}
+                </span>
+              </InstanceRow>
+            )}
+            <InstanceRow label="Instance">
+              <button
+                onClick={copyId}
+                title="Copy instance id"
+                className="max-w-[20ch] truncate font-mono text-[11px] text-ink-dim transition-colors hover:text-amber"
+              >
+                {copied ? "Copied!" : instanceHex}
+              </button>
+            </InstanceRow>
+          </dl>
+        </div>
+
+        {/* Equipped passives */}
+        <div className="flex flex-col gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+            Equipped passives
+          </span>
+          {pal.passives.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {pal.passives.map((p, i) => (
+                <PassiveStrip key={`${p}-${i}`} id={p} size="md" />
+              ))}
+            </div>
+          ) : (
+            <span className="text-[13px] text-ink-faint">No passives.</span>
+          )}
+        </div>
+
+        {/* Equipped active skills, resolved to real names */}
+        <div className="flex flex-col gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+            Equipped active skills
+          </span>
+          {skills.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {skills.map((s, i) => (
+                <span
+                  key={`${s}-${i}`}
+                  title={s}
+                  className="inline-flex items-center rounded-sm border border-line bg-raised px-2 py-1 text-[12px] leading-none text-ink-dim"
+                >
+                  {activeName(s, activeMap)}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <span className="text-[13px] text-ink-faint">Not recorded.</span>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function PaldexDetail({
   id,
   roster,
+  instance,
+  players,
   onBack,
   onNavigate,
 }: {
   id: string;
   roster: RosterCounts | null;
+  /** Owned instance to enrich this page with, or null for a species-only view. */
+  instance: OwnedPal | null;
+  /** Players from the loaded save, for resolving the instance's owner name. */
+  players: PlayerRef[];
   onBack: () => void;
   onNavigate: (id: string) => void;
 }) {
@@ -319,6 +510,9 @@ export default function PaldexDetail({
   const wildCatchable = wildMin > 0 || wildMax > 0;
   const hasPartner = detail.partner_skill != null;
   const s = detail.stats;
+  // The your-pal band renders only for the owned instance whose species this
+  // page is — guarded so a stale/mismatched instance never shows here.
+  const yourPal = instance && instance.character_id === id ? instance : null;
 
   return (
     <div className="flex h-full flex-col">
@@ -369,6 +563,15 @@ export default function PaldexDetail({
               Solve for this pal
             </button>
           </div>
+
+          {/* Your pal — save-data enrichment for the opened owned instance. */}
+          {yourPal && (
+            <YourPalSection
+              pal={yourPal}
+              players={players}
+              speciesName={detail.name}
+            />
+          )}
 
           {/* Partner skill — only when the pack carries one (~130 species lack it). */}
           {hasPartner && (
@@ -486,9 +689,9 @@ export default function PaldexDetail({
           <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr]">
             <Section eyebrow="Guaranteed passives">
               {detail.guaranteed_passives.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   {detail.guaranteed_passives.map((p) => (
-                    <PassiveChip key={p.id} id={p.id} />
+                    <PassiveStrip key={p.id} id={p.id} size="md" />
                   ))}
                 </div>
               ) : (

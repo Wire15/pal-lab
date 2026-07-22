@@ -27,7 +27,8 @@ import {
 } from "react";
 import { invoke } from "../lib/tauri";
 import type { IvSet, OwnedPal, SpeciesEntry } from "../lib/types";
-import { PalIcon, PassiveChip } from "./primitives";
+import { PalIcon } from "./primitives";
+import { PassiveStrip } from "./passive-strip";
 import { nonzeroWork, WorkGlyph } from "./work-suit";
 import { ElementBadges } from "./element";
 import { PartnerIcon } from "./partner";
@@ -330,7 +331,7 @@ function HoverCardBody({
           {pal.passives.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {pal.passives.map((p, i) => (
-                <PassiveChip key={`${p}-${i}`} id={p} />
+                <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
               ))}
             </div>
           )}

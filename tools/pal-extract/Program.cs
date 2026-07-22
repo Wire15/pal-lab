@@ -182,11 +182,15 @@ static class Program
         // ---- passives ----
         var passives = new SortedDictionary<string, object>(StringComparer.Ordinal);
         int passKept = 0, passFilteredNoName = 0, passFilteredStub = 0;
-        int passAddPal = 0, passPalAny = 0, passPlayer = 0;
+        int passAddPal = 0, passPalAny = 0, passPlayer = 0, passWorld = 0, passMut = 0;
+        var worldMembers = new List<string>();
+        var mutMembers = new List<string>();
+        var allPassiveFields = new SortedSet<string>(StringComparer.Ordinal);
         foreach (var r in passiveMain.RowMap)
         {
             var row = r.Key.Text;
             var pv = Vals(r.Value);
+            foreach (var pf in r.Value.Properties) allPassiveFields.Add(pf.Name.Text);
             var pNameKey = NonNone(S(pv, "OverrideNameTextID")) ?? "PASSIVE_" + row;
             if (!skillNames.TryGetValue(pNameKey, out var pname)) { passFilteredNoName++; continue; }
             pname = Clean(pname);
@@ -214,6 +218,8 @@ static class Program
                 rank = I(pv, "Rank"),
                 is_pal = isPal,
                 is_player = isPlayer,
+                world_tree_pool = addWorld,
+                mutation_pool = addMut,
                 category = StripEnum(S(pv, "Category")),
                 effects,
                 description = desc,
@@ -223,8 +229,14 @@ static class Program
             if (addPal) passAddPal++;
             if (isPal) passPalAny++;
             if (isPlayer) passPlayer++;
+            if (addWorld) { passWorld++; worldMembers.Add(row); }
+            if (addMut) { passMut++; mutMembers.Add(row); }
         }
         Console.WriteLine($"[passives] kept={passKept} filteredNoName={passFilteredNoName} filteredStub={passFilteredStub} isPal(AddPal)={passAddPal} isPal(anyPool)={passPalAny} isPlayer={passPlayer}");
+        Console.WriteLine($"[passive-pools] worldTree={passWorld} mutation={passMut}");
+        Console.WriteLine($"[passive-pools worldTree ids] {string.Join(", ", worldMembers)}");
+        Console.WriteLine($"[passive-pools mutation ids] {string.Join(", ", mutMembers)}");
+        Console.WriteLine($"[passive-fields] {string.Join(", ", allPassiveFields)}");
 
         // ---- partner-skill icons ----
         var (iconExported, iconUnresolved) = ExportPartnerIcons(provider, partnerIconIds);
@@ -236,6 +248,20 @@ static class Program
 
         // ---- element icons ----
         var iconVariants = ExportElementIcons(provider);
+
+        // ---- active-skill names ----
+        // Export every ACTION_SKILL_<id> localized name from DT_SkillNameText_Common,
+        // keyed by the save-side waza id (enum prefix stripped). Skip stubs.
+        var activeNames = new SortedDictionary<string, string>(StringComparer.Ordinal);
+        foreach (var kv in skillNames)
+        {
+            if (!kv.Key.StartsWith("ACTION_SKILL_", StringComparison.OrdinalIgnoreCase)) continue;
+            var aid = kv.Key.Substring("ACTION_SKILL_".Length);
+            var anm = Clean(kv.Value);
+            if (string.IsNullOrEmpty(anm) || anm == "en Text" || anm == "-") continue;
+            activeNames[aid] = anm;
+        }
+        Console.WriteLine($"[active-names] count={activeNames.Count}");
 
         // ---- assemble + write ----
         var root = new
@@ -249,6 +275,7 @@ static class Program
             game_settings = gameSettings,
             species,
             passives,
+            active_names = activeNames,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -319,6 +346,12 @@ static class Program
         if (passPalAny != 114)
             Console.WriteLine($"[WARN] pal-passive count (any pool) {passPalAny} != 114 (paldb ref); AddPal-only={passAddPal} — game version may differ");
 
+        // active-skill names: expect several hundred; the two round-target ids must resolve.
+        Gate(activeNames.Count > 200, $"active_names count {activeNames.Count} unexpectedly low");
+        Gate(activeNames.ContainsKey("AirCanon"), "active_names missing 'AirCanon'");
+        Gate(activeNames.TryGetValue("Unique_SheepBall_Roll", out var sbRoll) && !string.IsNullOrEmpty(sbRoll),
+            "active_names missing 'Unique_SheepBall_Roll'");
+
         // ---- summary ----
         Console.WriteLine("==== SUMMARY ====");
         Console.WriteLine($"species kept={kept} skipped={skipped}");
@@ -344,6 +377,9 @@ static class Program
         Console.WriteLine("sample passive Brittle: " + JsonConvert.SerializeObject(FindPassive("Brittle")));
         Console.WriteLine($"wall time: {sw.Elapsed.TotalSeconds:F1}s");
 
+        Console.WriteLine($"active_names count={activeNames.Count}");
+        foreach (var k in new[] { "Unique_SheepBall_Roll", "AirCanon" })
+            Console.WriteLine($"  active_name[{k}] = {(activeNames.TryGetValue(k, out var an) ? an : "(MISSING)")}");
         if (errors.Count > 0)
         {
             Console.WriteLine("==== VALIDATION FAILED ====");

@@ -1,8 +1,9 @@
 // The Palbox surfaces: the party rail, the paged 6x5 box grid (shared by the
 // physical-layout Palbox and the compact Dimensional Storage), and the base
-// strip. All render the circular Slot primitive and open the shared detail
-// panel via the lifted selection state. Every occupied slot is a PalHoverCard
-// trigger (species-level info); per-instance data lives in the detail panel.
+// strip. All render the circular Slot primitive; clicking a slot opens that
+// pal's Pal-dex page (enriched with its save data) via the lifted `onSelect`.
+// Every occupied slot is also a PalHoverCard trigger for a quick species/
+// instance glance without leaving the palbox.
 
 import type { OwnedPal } from "../../lib/types";
 import { PalHoverCard } from "../pal-hover-card";

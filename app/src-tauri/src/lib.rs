@@ -12,6 +12,7 @@ pub fn run() {
             solver::solve,
             solver::list_species,
             solver::list_passives,
+            solver::list_active_names,
             paldex::paldex_species,
             paldex::paldex_species_detail,
             paldex::breeding_child,

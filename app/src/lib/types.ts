@@ -111,7 +111,14 @@ export interface PassiveEntry {
   effects: PassiveEffect[];
   description: string | null;
   pal_facing: boolean;
+  /** Special lottery-pool tier: "rainbow" (mutation pool) / "worldtree"
+   * (world-tree pool) / null. Absent or null ⇒ rank-based coloring only. */
+  tier?: "rainbow" | "worldtree" | null;
 }
+
+/** Active-skill (waza) display names keyed by save-side waza id
+ * (e.g. "Unique_SheepBall_Roll", "AirCanon"), from `list_active_names`. */
+export type ActiveNames = Record<string, string>;
 
 /**
  * How a plan node is obtained. serde emits an externally-tagged enum:

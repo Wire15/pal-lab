@@ -1,7 +1,7 @@
 {
   "meta": {
     "game_build": "24181527",
-    "extracted_at": "2026-07-22T01:57:45.7011165+00:00",
+    "extracted_at": "2026-07-22T11:00:01.7126375+00:00",
     "usmap": "PalworldModding/UsefulFiles@1.0"
   },
   "game_settings": {
@@ -8356,6 +8356,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8372,6 +8374,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8388,6 +8392,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8404,6 +8410,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8420,6 +8428,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -8446,6 +8456,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8462,6 +8474,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8478,6 +8492,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8494,6 +8510,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8510,6 +8528,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8526,6 +8546,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8542,6 +8564,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8558,6 +8582,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8574,6 +8600,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8590,6 +8618,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8606,6 +8636,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8622,6 +8654,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8638,6 +8672,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -8654,6 +8690,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8670,6 +8708,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8686,6 +8726,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8702,6 +8744,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8718,6 +8762,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8734,6 +8780,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8750,6 +8798,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8766,6 +8816,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8782,6 +8834,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8798,6 +8852,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8814,6 +8870,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8830,6 +8888,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8846,6 +8906,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8862,6 +8924,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8878,6 +8942,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8894,6 +8960,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8910,6 +8978,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8926,6 +8996,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8942,6 +9014,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8958,6 +9032,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8974,6 +9050,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -8990,6 +9068,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9006,6 +9086,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9022,6 +9104,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9038,6 +9122,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9054,6 +9140,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9070,6 +9158,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9086,6 +9176,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9102,6 +9194,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9118,6 +9212,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9134,6 +9230,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9150,6 +9248,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9166,6 +9266,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9182,6 +9284,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9198,6 +9302,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9214,6 +9320,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9230,6 +9338,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9246,6 +9356,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9262,6 +9374,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9278,6 +9392,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9294,6 +9410,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9310,6 +9428,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9326,6 +9446,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9342,6 +9464,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9358,6 +9482,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9374,6 +9500,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9390,6 +9518,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9406,6 +9536,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9422,6 +9554,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9438,6 +9572,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9454,6 +9590,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9470,6 +9608,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9486,6 +9626,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9502,6 +9644,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9518,6 +9662,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9534,6 +9680,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9550,6 +9698,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9566,6 +9716,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9582,6 +9734,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9598,6 +9752,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9614,6 +9770,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9630,6 +9788,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9646,6 +9806,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9662,6 +9824,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9678,6 +9842,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9694,6 +9860,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9710,6 +9878,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9726,6 +9896,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9742,6 +9914,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9758,6 +9932,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9774,6 +9950,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9790,6 +9968,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9806,6 +9986,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9822,6 +10004,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9838,6 +10022,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9854,6 +10040,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9870,6 +10058,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9886,6 +10076,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9902,6 +10094,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9918,6 +10112,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9934,6 +10130,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9950,6 +10148,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9966,6 +10166,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9982,6 +10184,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -9998,6 +10202,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10014,6 +10220,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10030,6 +10238,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10046,6 +10256,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10062,6 +10274,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10078,6 +10292,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10094,6 +10310,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10110,6 +10328,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10126,6 +10346,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10142,6 +10364,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10158,6 +10382,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10174,6 +10400,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10190,6 +10418,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10206,6 +10436,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10222,6 +10454,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10238,6 +10472,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10254,6 +10490,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10270,6 +10508,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10286,6 +10526,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10302,6 +10544,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10318,6 +10562,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10334,6 +10580,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10350,6 +10598,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10366,6 +10616,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10382,6 +10634,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10398,6 +10652,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10414,6 +10670,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10430,6 +10688,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10446,6 +10706,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10462,6 +10724,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10478,6 +10742,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10494,6 +10760,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10510,6 +10778,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10531,6 +10801,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10547,6 +10819,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10568,6 +10842,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10584,6 +10860,8 @@
       "rank": -3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10600,6 +10878,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10616,6 +10896,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10632,6 +10914,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10648,6 +10932,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10664,6 +10950,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10680,6 +10968,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10696,6 +10986,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10712,6 +11004,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10728,6 +11022,8 @@
       "rank": -3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10744,6 +11040,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10760,6 +11058,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10781,6 +11081,8 @@
       "rank": 2,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10802,6 +11104,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10828,6 +11132,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10859,6 +11165,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10875,6 +11183,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10891,6 +11201,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10907,6 +11219,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10923,6 +11237,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10939,6 +11255,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10955,6 +11273,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -10971,6 +11291,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -10987,6 +11309,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11003,6 +11327,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11019,6 +11345,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11035,6 +11363,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11051,6 +11381,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11067,6 +11399,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11083,6 +11417,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11099,6 +11435,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11115,6 +11453,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11131,6 +11471,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11147,6 +11489,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11163,6 +11507,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11179,6 +11525,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11195,6 +11543,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11211,6 +11561,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11227,6 +11579,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11243,6 +11597,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11259,6 +11615,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11275,6 +11633,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11291,6 +11651,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11307,6 +11669,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11323,6 +11687,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11339,6 +11705,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11355,6 +11723,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11371,6 +11741,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11387,6 +11759,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11403,6 +11777,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11419,6 +11795,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11435,6 +11813,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11451,6 +11831,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11467,6 +11849,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11483,6 +11867,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11499,6 +11885,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11515,6 +11903,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11531,6 +11921,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11547,6 +11939,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11563,6 +11957,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11579,6 +11975,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11595,6 +11993,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11611,6 +12011,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11627,6 +12029,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11643,6 +12047,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11659,6 +12065,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11675,6 +12083,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11691,6 +12101,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11707,6 +12119,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11723,6 +12137,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11739,6 +12155,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11755,6 +12173,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11771,6 +12191,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11787,6 +12209,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11803,6 +12227,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11819,6 +12245,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11835,6 +12263,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11851,6 +12281,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11867,6 +12299,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11883,6 +12317,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11899,6 +12335,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11915,6 +12353,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11931,6 +12371,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11947,6 +12389,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -11963,6 +12407,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11979,6 +12425,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -11995,6 +12443,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12011,6 +12461,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12027,6 +12479,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12043,6 +12497,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12059,6 +12515,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12075,6 +12533,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12091,6 +12551,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12107,6 +12569,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12123,6 +12587,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12139,6 +12605,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12155,6 +12623,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12171,6 +12641,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12187,6 +12659,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12203,6 +12677,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12219,6 +12695,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12235,6 +12713,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12251,6 +12731,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12267,6 +12749,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12283,6 +12767,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12299,6 +12785,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12315,6 +12803,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12331,6 +12821,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12347,6 +12839,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12363,6 +12857,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12379,6 +12875,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12395,6 +12893,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12411,6 +12911,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12427,6 +12929,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12443,6 +12947,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12459,6 +12965,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12475,6 +12983,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12491,6 +13001,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12507,6 +13019,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12523,6 +13037,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12539,6 +13055,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12555,6 +13073,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12571,6 +13091,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12587,6 +13109,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12603,6 +13127,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12619,6 +13145,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12635,6 +13163,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12651,6 +13181,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12667,6 +13199,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12683,6 +13217,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12699,6 +13235,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12715,6 +13253,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12731,6 +13271,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12747,6 +13289,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12763,6 +13307,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12779,6 +13325,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12795,6 +13343,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12811,6 +13361,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12827,6 +13379,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12843,6 +13397,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12859,6 +13415,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12875,6 +13433,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -12896,6 +13456,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12912,6 +13474,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12933,6 +13497,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12954,6 +13520,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12975,6 +13543,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -12996,6 +13566,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13017,6 +13589,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13038,6 +13612,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13059,6 +13635,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13075,6 +13653,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13091,6 +13671,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13107,6 +13689,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13123,6 +13707,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13144,6 +13730,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13165,6 +13753,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13181,6 +13771,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13197,6 +13789,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13213,6 +13807,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13229,6 +13825,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13255,6 +13853,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13271,6 +13871,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13287,6 +13889,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13303,6 +13907,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13319,6 +13925,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13335,6 +13943,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13351,6 +13961,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13367,6 +13979,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13393,6 +14007,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13409,6 +14025,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13425,6 +14043,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13441,6 +14061,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": true,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13462,6 +14084,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": true,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13478,6 +14102,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": true,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13504,6 +14130,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": true,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13535,6 +14163,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13551,6 +14181,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13567,6 +14199,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13583,6 +14217,8 @@
       "rank": 2,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13604,6 +14240,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13630,6 +14268,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13646,6 +14286,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13662,6 +14304,8 @@
       "rank": -3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13678,6 +14322,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13694,6 +14340,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13710,6 +14358,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13731,6 +14381,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13752,6 +14404,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13768,6 +14422,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13784,6 +14440,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13800,6 +14458,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13816,6 +14476,8 @@
       "rank": -2,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13832,6 +14494,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13848,6 +14512,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13864,6 +14530,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13880,6 +14548,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13896,6 +14566,8 @@
       "rank": -2,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13912,6 +14584,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -13933,6 +14607,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13954,6 +14630,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13975,6 +14653,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -13996,6 +14676,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14017,6 +14699,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14038,6 +14722,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14054,6 +14740,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14070,6 +14758,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14086,6 +14776,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14102,6 +14794,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14128,6 +14822,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14144,6 +14840,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14160,6 +14858,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": true,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14176,6 +14876,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14197,6 +14899,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14218,6 +14922,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14239,6 +14945,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14260,6 +14968,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14276,6 +14986,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14292,6 +15004,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14308,6 +15022,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14324,6 +15040,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14340,6 +15058,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14356,6 +15076,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14372,6 +15094,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14388,6 +15112,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": true,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14404,6 +15130,8 @@
       "rank": -1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14420,6 +15148,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14436,6 +15166,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14452,6 +15184,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14468,6 +15202,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14484,6 +15220,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14500,6 +15238,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14516,6 +15256,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14532,6 +15274,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14548,6 +15292,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14564,6 +15310,8 @@
       "rank": 1,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14580,6 +15328,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14596,6 +15346,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14612,6 +15364,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14628,6 +15382,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14644,6 +15400,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14660,6 +15418,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14676,6 +15436,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14697,6 +15459,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14713,6 +15477,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14734,6 +15500,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14750,6 +15518,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14771,6 +15541,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14787,6 +15559,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14803,6 +15577,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14819,6 +15595,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14835,6 +15613,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14851,6 +15631,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14867,6 +15649,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14888,6 +15672,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -14909,6 +15695,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14925,6 +15713,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14941,6 +15731,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14957,6 +15749,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14973,6 +15767,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -14989,6 +15785,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15005,6 +15803,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15021,6 +15821,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15037,6 +15839,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15053,6 +15857,8 @@
       "rank": 3,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15069,6 +15875,8 @@
       "rank": 4,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15085,6 +15893,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15111,6 +15921,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15142,6 +15954,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15168,6 +15982,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15194,6 +16010,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15220,6 +16038,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15246,6 +16066,8 @@
       "rank": 5,
       "is_pal": true,
       "is_player": false,
+      "world_tree_pool": true,
+      "mutation_pool": false,
       "category": "SortDisplayable",
       "effects": [
         {
@@ -15272,6 +16094,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15288,6 +16112,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15304,6 +16130,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15320,6 +16148,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15336,6 +16166,8 @@
       "rank": -1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15352,6 +16184,8 @@
       "rank": 1,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15368,6 +16202,8 @@
       "rank": 2,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15384,6 +16220,8 @@
       "rank": 3,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15400,6 +16238,8 @@
       "rank": 4,
       "is_pal": false,
       "is_player": false,
+      "world_tree_pool": false,
+      "mutation_pool": false,
       "category": "SortNotDisplayable",
       "effects": [
         {
@@ -15411,5 +16251,339 @@
       "description": null,
       "lottery_weight": 100
     }
+  },
+  "active_names": {
+    "AcidRain": "Acid Rain",
+    "AirBlade": "Air Blade",
+    "AirCanon": "Air Cannon",
+    "Apocalypse": "Apocalypse",
+    "AquaJet": "Hydro Jet",
+    "BeamSlicer": "Beam Slicer",
+    "BlastCanon": "Blast Cannon",
+    "BlizzardLance": "Iceberg",
+    "BubbleShot": "Bubble Blast",
+    "BubbleShower": "Poison Shower",
+    "ChargeCanon": "Charge Cannon",
+    "Commet": "Comet Strike",
+    "CommetRain": "Meteorain",
+    "CreepingBubble": "Creeping Bubbles",
+    "CrossThunder": "Cross Lightning",
+    "CrossWind": "Crosswind",
+    "DarkArrow": "Dark Arrow",
+    "DarkBall": "Dark Ball",
+    "DarkCanon": "Dark Cannon",
+    "DarkLaser": "Dark Laser",
+    "DarkLegion": "Dark Whisp",
+    "DarkPulse": "Umbral Surge",
+    "DarkWave": "Shadow Burst",
+    "DiamondFall": "Diamond Rain",
+    "DiversionLaser": "Torrential Blast",
+    "DoubleIcicleThrow": "Double Blizzard Spike",
+    "DragonBreath": "Dragon Breath",
+    "DragonCanon": "Dragon Cannon",
+    "DragonMeteor": "Dragon Meteor",
+    "DragonWave": "Dragon Burst",
+    "ElecWave": "Shockwave",
+    "EnergyShot": "Ice Missile",
+    "Eruption": "Volcanic Rain",
+    "FireBall": "Fire Ball",
+    "FireBlast": "Ignis Blast",
+    "FireSeed": "Spirit Fire",
+    "FlameFunnel": "Flame Funnel",
+    "FlameWall": "Flame Wall",
+    "Flamethrower": "Ignis Breath",
+    "FlareArrow": "Flare Arrow",
+    "FlareTornado": "Flare Storm",
+    "FlareTwister": "Flare Twister",
+    "FrostBreath": "Crystal Breath",
+    "GhostFlame": "Spirit Flame",
+    "GrassTornado": "Grass Tornado",
+    "GravityShot": "Dark Shot",
+    "HolyBlast": "Holy Burst",
+    "Human_Punch": "Punch",
+    "HydroPump": "Hydro Laser",
+    "HydroSlicer": "Hydro Slicer",
+    "HyperBeam": "Pal Blast",
+    "IceAge": "Absolute Frost",
+    "IceBlade": "Icicle Cutter",
+    "IceMissile": "Ice Missile",
+    "IceWall": "Freeze Wall",
+    "IcicleLine": "Icicle Line",
+    "IciclePierce": "Icicle Bullet",
+    "IcicleThrow": "Blizzard Spike",
+    "Inferno": "Ignis Rage",
+    "Intimidate": "Intimidate",
+    "LightningStrike": "Lightning Strike",
+    "LineGeyser": "Splash",
+    "LineThunder": "Lightning Streak",
+    "LockonLaser": "Lock-on Laser",
+    "MudShot": "Bog Blast",
+    "PoisonFog": "Poison Fog",
+    "PoisonShot": "Poison Blast",
+    "PowerBall": "Power Bomb",
+    "PowerShot": "Power Shot",
+    "PredatorBeam": "Predator Blast",
+    "PredatorLockon": "Predator Mark",
+    "PredatorWave": "Predator Surge",
+    "Psychokinesis": "Psycho Gravity",
+    "RadiantBarrage": "Radiant Barrage",
+    "RaidCutter": "Raid Cutter",
+    "RailBolt": "Thunder Rail",
+    "RangeThunder": "All Range Thunder",
+    "ReflectiveShuriken": "Reflect Leaf",
+    "RipTide": "Aqua Surge",
+    "RockBeat": "Rocky Impact",
+    "RockLance": "Rock Lance",
+    "RootAttack": "Spine Vine",
+    "RootLance": "Circle Vine",
+    "SandTornado": "Sand Tornado",
+    "SandTwister": "Sand Twister",
+    "SeaGush": "Geyser Gush",
+    "SeedMachinegun": "Seed Machine Gun",
+    "SeedMine": "Seed Mine",
+    "SelfDestruct": "Implode",
+    "SelfDestruct_Bee": "Bee Quiet",
+    "SelfExplosion": "Megaton Implode",
+    "ShadowBall": "Nightmare Ball",
+    "ShokeiLaser": "Lethal Laser",
+    "SolarBeam": "Solar Blast",
+    "SpecialCutter": "Multicutter",
+    "SpreadPulse": "Spark Blast",
+    "StarMine": "Star Mine",
+    "StardustArrow": "Fireball",
+    "StoneShotgun": "Stone Blast",
+    "ThreeCommet": "Comet Barrage",
+    "ThreeThunder": "Tri-Lightning",
+    "ThrowRock": "Stone Cannon",
+    "ThunderBall": "Electric Ball",
+    "ThunderFunnel": "Plasma Funnel",
+    "ThunderRain": "Thunder Rain",
+    "ThunderSpear": "Thunder Spear",
+    "ThunderStorm": "Thunderstorm",
+    "Thunderbolt": "Lightning Bolt",
+    "Tremor": "Rockburst",
+    "TriSpark": "TriSpark",
+    "Unique_Alpaca_Tackle": "Fluffy Tackle",
+    "Unique_AmaterasuWolf_Bite": "Fierce Fang (Fire)",
+    "Unique_AmaterasuWolf_BiteV2": "Double Fang (Fire)",
+    "Unique_AmaterasuWolf_Dark_Bite": "Fierce Fang (Dark)",
+    "Unique_AmaterasuWolf_Dark_BiteV2": "Double Fang (Dark)",
+    "Unique_AmaterasuWolf_Dark_DarkCharge": "Daring Shadowstorm",
+    "Unique_AmaterasuWolf_FireCharge": "Daring Flames",
+    "Unique_Anubis_GroundPunch": "Ground Smash",
+    "Unique_Anubis_LowRoundKick": "Spinning Roundhouse",
+    "Unique_Anubis_Tackle": "Forceful Charge",
+    "Unique_Baphomet_Dark_DarkKite": "Nightmare Claw",
+    "Unique_Baphomet_SwallowKite": "Hellfire Claw",
+    "Unique_BirdDragon_FireBreath": "Flame Breath",
+    "Unique_BirdDragon_Ice_IceBreath": "Tempest Blizzard",
+    "Unique_BlackCentaur_TwoSpearRushes": "Twin Spears",
+    "Unique_BlackGriffon_TackleLaser": "Divine Disaster",
+    "Unique_BlackGriffon_TackleLaser2": "Divine Disaster II",
+    "Unique_BlackMetalDragon_FirePunch": "Firefist Breathstorm",
+    "Unique_BlackPuppy_Bite": "Fierce Fang (Dark)",
+    "Unique_BlackPuppy_BiteV2": "Double Fang (Dark)",
+    "Unique_BluePlatypus_Toboggan": "Surfing Slam",
+    "Unique_BluePlatypus_Toboggan_Fire": "Fire Tackle",
+    "Unique_BlueSkyDragon_DrainStorm": "Celestial Vortex",
+    "Unique_BlueSkyDragon_SweepBreath": "Azure Dracoflare",
+    "Unique_BlueSkyDragon_Tossin": "Hydra Charge",
+    "Unique_BlueThunderHorse_FlashDash": "Bolt Blink",
+    "Unique_BlueThunderHorse_Tossin": "Flash Charge",
+    "Unique_Boar_Tackle": "Reckless Charge",
+    "Unique_CaptainPenguin_Black_BodySlide_Electric": "Thunderslide",
+    "Unique_CaptainPenguin_BodySlide": "Emperor Slide",
+    "Unique_ChickenPal_ChickenPeck": "Chicken Rush",
+    "Unique_ClownRabbit_TrickShow": "Trickster Show",
+    "Unique_CubeTurtle_CubePress": "Cube Press",
+    "Unique_CubeTurtle_Neutral_HolyPress": "Holy Press",
+    "Unique_CuteMole_DiggingAttack": "Fuddler Tunneler",
+    "Unique_DarkAlien_JumpScractch": "Evil Slash",
+    "Unique_DarkCrow_TelePoke": "Phantom Peck",
+    "Unique_DarkMechaDragon_BeamSlash": "Beam Slash",
+    "Unique_DarkMechaDragon_ConvergentBeam": "Astral Ray",
+    "Unique_DarkMechaDragon_FunnelLaser": "Omega Laser",
+    "Unique_DarkMechaDragon_SetFunnel": "Satellite Bit",
+    "Unique_DarkMechaDragon_WarpComet": "Cosmic Meteor",
+    "Unique_DarkMutant_DarkTackle": "Apocalypse",
+    "Unique_DarkScorpion_Pierce": "Jumping Stinger",
+    "Unique_Deer_Ground_DirtyHorn": "Mud Horn",
+    "Unique_Deer_PushupHorn": "Antler Uppercut",
+    "Unique_DomeArmorDragon_ExplosiveMissile": "Missile Burst",
+    "Unique_DrillGame_ShellAttack": "Shell Spin",
+    "Unique_Eagle_GlidingNail": "Gale Claw",
+    "Unique_ElecPanda_ElecScratch": "Lightning Claw",
+    "Unique_ElecPanda_GatlingAttack": "Heavy Thunder Tank",
+    "Unique_ElecPomeranian_Bite": "Fierce Fang (Electric)",
+    "Unique_ElecPomeranian_BiteV2": "Double Fang (Electric)",
+    "Unique_ElecSnail_ShellCharge": "Shell Charge",
+    "Unique_FairyDragon_FairyTornado": "Mystic Whirlwind",
+    "Unique_FeatherOstrich_Tossin": "Earth Dash",
+    "Unique_FengyunDeeper_CloudTempest": "Cloud Tempest",
+    "Unique_FengyunDeeper_Electric_ThunderTempest": "Thunder Tempest",
+    "Unique_FireKirin_Dark_DarkTossin": "Dark Charge",
+    "Unique_FireKirin_Tackle": "Ignis Charge",
+    "Unique_FlameBuffalo_FlameHorn": "Blazing Horn",
+    "Unique_FlowerDinosaur_Electric_ThunderWhip": "Lightning Smash",
+    "Unique_FlowerDinosaur_Whip": "Botanical Smash",
+    "Unique_FlowerPrince_PoisonGasDance": "Toxic Dance",
+    "Unique_FlowerPrince_PoisonGasTackle": "Poison Promenade",
+    "Unique_Garm_Bite": "Fierce Fang",
+    "Unique_Garm_BiteV2": "Double Fang",
+    "Unique_GhostAnglerfish_Fire_SweepBait_Fire": "Scorching Lantern Sweep",
+    "Unique_GhostAnglerfish_SweepBait": "Lantern Sweep",
+    "Unique_GhostBeast_Tossin": "Spirit Dash",
+    "Unique_GhostDragon_PhosphorousBeam": "Blazing Beam",
+    "Unique_GhostDragon_TailSlash": "Tail Slash",
+    "Unique_GoldenHorse_Bite": "Fierce Fang (Ground)",
+    "Unique_GoldenHorse_BiteV2": "Double Fang (Ground)",
+    "Unique_GoldenHorse_StoneDash": "Crash Dash",
+    "Unique_Gorilla_GroundPunch": "Ground Pound",
+    "Unique_Gorilla_Ground_EarthPunch": "Rumble Combo",
+    "Unique_GrassGolem_ArmCannon": "Root Cannon",
+    "Unique_GrassGolem_Dark_DarkArmCannon": "Dark Root",
+    "Unique_GrassGolem_RocketPunch": "Rocket Arm",
+    "Unique_GrassMinotaur_BullRush": "Raging Bull Rush",
+    "Unique_GrassMinotaur_BullRush_Lower": "Bull Rush",
+    "Unique_GrassMinotaur_Ice_BullRush": "Raging Snow Rush",
+    "Unique_GrassMinotaur_Ice_BullRush_Lower": "Snow Rush",
+    "Unique_GrassPanda_Electric_ElectricPunch": "Blast Punch",
+    "Unique_GrassPanda_MusclePunch": "Crushing Punch",
+    "Unique_GrassRabbitMan_GrassRoundKick": "Leaping Roundhouse",
+    "Unique_Grassmammoth_Earthquake": "Earth Impact",
+    "Unique_GrimGirl_BrutalMachete": "Grudge Barrage",
+    "Unique_GuardianDog_Bite": "Fierce Fang",
+    "Unique_GuardianDog_BiteV2": "Double Fang",
+    "Unique_HawkBird_Storm": "Tornado Attack",
+    "Unique_HerculesBeetle_BeetleTackle": "Giga Horn",
+    "Unique_Horus_FlareBird": "Phoenix Flare",
+    "Unique_Horus_PerfectStorm": "Raging Flame Wave",
+    "Unique_Horus_Water_AquaStorm": "Phoenix Tide",
+    "Unique_IceCrocodile_SpitAttack": "Chaotic Spray",
+    "Unique_IceDeer_IceHorn": "Freezing Charge",
+    "Unique_IceHorse_Dark_DarkBladeAttack": "Dark Wing",
+    "Unique_IceHorse_IceBladeAttack": "Crystal Wing",
+    "Unique_IceNarwhal_JumpingHorn": "High Breach",
+    "Unique_JetDragon_JumpBeam": "Beam Comet",
+    "Unique_KingAlpaca_BodyPress": "Kingly Slam",
+    "Unique_KingAlpaca_Ice_IcePress": "Frozen Press",
+    "Unique_KingBahamut_AirCrash": "Magna Crush",
+    "Unique_KingBahamut_ArmSmash": "Brawn Impact",
+    "Unique_KingWhale_AquaBlade": "Aqua Blade",
+    "Unique_KingWhale_AquaTornado": "Aqua Tornado",
+    "Unique_KingWhale_Breaching": "Grand Breach",
+    "Unique_KingWhale_HomingBubble": "Bubble Rain",
+    "Unique_KingWhale_Maelstrom": "Maelstrom",
+    "Unique_KingWhale_WaveTackle": "Tidal Charge",
+    "Unique_Kirin_Ice_IceTackle": "Ice Gale Strike",
+    "Unique_Kirin_LightningTackle": "Lightning Gale",
+    "Unique_LanternButler_LanternFlame": "Lantern Flame",
+    "Unique_LeafMomonga_SomerSault": "Konoha Flip",
+    "Unique_LegendDeer_RadiantPurge_Otomo": "Purifying Light",
+    "Unique_LegendDeer_RadiantWingRush": "Divine Wing",
+    "Unique_LegendDeer_WarpPillarBurst": "Sacred Rain",
+    "Unique_LilyQueen_LilyHealing": "Bountiful Protection",
+    "Unique_LilyQueen_WindBarrier": "Wind Barrier",
+    "Unique_LotusDragon_LotusBloom": "Lotus Bloom",
+    "Unique_Manticore_InfernoStrike": "Volcanic Fang",
+    "Unique_MonochromeQueen_BalletJump": "Black Quilled Ballet",
+    "Unique_MoonQueen_IceMoonBlade": "Seigetsu Flash",
+    "Unique_MoonQueen_MoonBeam": "Moonlight Beam",
+    "Unique_MoonQueen_MoonBlade": "Seigetsu Blade",
+    "Unique_Mothman_GiantSpore": "Giant Spore",
+    "Unique_Mothman_SporeScatter": "Spore Burst",
+    "Unique_MummyPal_MummyAttack": "Mummy Rush",
+    "Unique_MysteryMask_LifeSteal": "Soul Drain",
+    "Unique_NaughtyCat_CatPress": "Cat Press",
+    "Unique_NightBlueHorse_DeathStep": "Lethal Step",
+    "Unique_NightBlueHorse_Neutral_AirStep": "Royal Step",
+    "Unique_NightBlueHorse_Neutral_Tossin": "Silver Steed",
+    "Unique_NightBlueHorse_Tossin": "Spectral Steed",
+    "Unique_NightLady_FlameNightmare": "Flame Waltz",
+    "Unique_NightLady_WarpBeam": "Nightmare Bloom",
+    "Unique_NightLady_WarpBeam_Straight": "Nightmare Ray",
+    "Unique_OctopursGirl_Inkjet": "Smoke Jet",
+    "Unique_PandaGirl_RapidKick": "Rapid Kick",
+    "Unique_PinkCat_CatPunch": "Punch Flurry",
+    "Unique_Plesiosaur_LongBreath": "Deep Breath",
+    "Unique_PoseidonOrca_TorrentLaser": "Thalassonic Laser",
+    "Unique_PurpleSpider_SpiderRaid": "Webstrike Impact",
+    "Unique_QueenBee_SpinLance": "Spinning Staff",
+    "Unique_RedArmorBird_TriplePeck": "Rush Beak",
+    "Unique_RedFlowerBird_JumpKick": "Flower Stomp",
+    "Unique_RobinHood_BowSnipe": "Focus Shot",
+    "Unique_RockBeast_Ice_IceHorn": "Ice Burst",
+    "Unique_RockBeast_RockHorn": "Horn Burst",
+    "Unique_Ronin_Iai": "Iaigiri",
+    "Unique_Ronin_Iai_PartnerSkill": "Iaigiri",
+    "Unique_SaintCentaur_OneSpearRushes": "Spear Thrust",
+    "Unique_SakuraSaurus_SideTackle": "Muscle Slam",
+    "Unique_SakuraSaurus_Water_SplashTackle": "Splash Tackle",
+    "Unique_SamuraiDog_Bite": "Fierce Fang (Ground)",
+    "Unique_SamuraiDog_BiteV2": "Double Fang (Ground)",
+    "Unique_SamuraiDog_DashSlash": "Persistent Slash",
+    "Unique_ScorpionMan_Erectric_UpperThunder": "Thunder Uppercut",
+    "Unique_ScorpionMan_UpperCut": "Upper Smash",
+    "Unique_Sekhmet_RollingScratch": "Rolling Scratch",
+    "Unique_Sekhmet_SomersaultScratch": "Somersault Scratch",
+    "Unique_SheepBall_Roll": "Roly Poly",
+    "Unique_SifuDog_Counter": "Wholehearted Stance",
+    "Unique_SnakeGirl_SnakeShot": "Poison Scatter",
+    "Unique_SnowTigerBeastman_SnowImpact": "Glacial Impact",
+    "Unique_SnowTigerBeastman_TrampleSlash": "Frost Talon",
+    "Unique_SoldierBee_NeedleLance": "Needle Spear",
+    "Unique_StuffedShark_HiddenWeapon": "Trigger Happy",
+    "Unique_SumoDog_SumoStomp": "Sumo Stomp",
+    "Unique_TentacleTurtle_HydroSpin": "Hydro Spin",
+    "Unique_ThunderBird_Ice_SnowStrom": "Glacial Plunge",
+    "Unique_ThunderBird_ThunderStorm": "Lightning Dive",
+    "Unique_ThunderDog_Bite": "Fierce Fang (Electric)",
+    "Unique_ThunderDog_BiteV2": "Double Fang (Electric)",
+    "Unique_ThunderDog_Ice_Bite": "Fierce Fang (Ice)",
+    "Unique_ThunderDog_Ice_BiteV2": "Double Fang (Ice)",
+    "Unique_ThunderDog_Ice_KoriShorai": "Frostcall",
+    "Unique_ThunderDog_InazumaShorai": "Beckon Lightning",
+    "Unique_ThunderDragonMan_NumerousSwordAttack": "Polykeraunos",
+    "Unique_ThunderDragonMan_ThunderSwordAttack": "Kerauno",
+    "Unique_TropicalOstrich_DashKick": "Dash Kick",
+    "Unique_Umihebi_Fire_FireWindingTackle": "Magma Serpent",
+    "Unique_Umihebi_WindingTackle": "Slither Slam",
+    "Unique_VolcanicMonster_Ice_IceAttack": "Frost Burst",
+    "Unique_VolcanicMonster_MagmaAttack": "Volcanic Burst",
+    "Unique_VolcanoDragon_Ice_IceLaser": "Ice Laser",
+    "Unique_VolcanoDragon_Ice_IcicleSpit": "Ice Spit",
+    "Unique_VolcanoDragon_MagmaSpit": "Magma Spit",
+    "Unique_VolcanoDragon_VolcanicLaser": "Magma Laser",
+    "Unique_WeaselDragon_FlyingTackle": "Rocket Slam",
+    "Unique_Werewolf_Ice_SnowScratch": "Snow Claw",
+    "Unique_Werewolf_Scratch": "Jumping Claw",
+    "Unique_WhiteDeer_Dark_DarkPillar": "Dark Nova",
+    "Unique_WhiteDeer_HolyPillar": "Holy Nova",
+    "Unique_WhiteShieldDragon_ShieldTackle": "Aegis Charge",
+    "Unique_WhiteTiger_Ground_IronScratch": "Stone Claw",
+    "Unique_WhiteTiger_IceScratch": "Blizzard Claw",
+    "Unique_WingGolem_Fire_FlameCutter": "Flame Cutter",
+    "Unique_WingGolem_RoundCutter": "Ground Cutter",
+    "Unique_YakushimaBoss001_Small_DemonEyeCharge": "Ocular Rush",
+    "Unique_YakushimaMonster001_SlimePress_Dark": "Slime Press (Dark)",
+    "Unique_YakushimaMonster001_SlimePress_Fire": "Slime Press (Fire)",
+    "Unique_YakushimaMonster001_SlimePress_Leaf": "Slime Press (Grass)",
+    "Unique_YakushimaMonster001_SlimePress_Normal": "Slime Press (Neutral)",
+    "Unique_YakushimaMonster001_SlimePress_Rainbow": "Slime Press (Rainbow)",
+    "Unique_YakushimaMonster001_SlimePress_Water": "Slime Press (Water)",
+    "Unique_YakushimaMonster002_SwordCharge": "Sword Charge",
+    "Unique_YakushimaMonster003_BatCharge": "Winged Assault",
+    "Unique_Yakushima_EyeTossin": "Lock-On Lunge",
+    "Unique_Yakushima_MouthTossin": "Frenzied Charge",
+    "Unique_Yakushima_SummonServant": "Servant Call",
+    "Unique_Yeti_Grass_GrassBall": "Lawn Bowling",
+    "Unique_Yeti_SnowBall": "Snow Bowling",
+    "WallSplash": "Curtain Splash",
+    "WaterBall": "Aqua Burst",
+    "WaterGun": "Aqua Gun",
+    "Weapon_Use": "Use Weapon",
+    "WindBurst": "Wind Burst",
+    "WindCutter": "Wind Cutter",
+    "WindEdge": "Wind Edge"
   }
 }

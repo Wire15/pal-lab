@@ -116,10 +116,16 @@ Encoded once in `lib/ui.ts`; reuse those helpers, don't re-derive thresholds.
   quality bar (`QUALITY_TEXT` / `QUALITY_FILL`).
 - **Breeding success rate (0–1)** — `probBand()` → `high ≥75%` good, `even ≥50%`
   fair, `long ≥25%` warn, `rare <25%` bad. Rendered as an outlined mono pill.
-- **Passives** — `passiveView()` parses the id into `{label, dir, tone, tier}`.
-  `dir up` → good/green, `dir down` → bad/red, `Rare/Legend` → special/amber,
-  else neutral. Direction is shown as ▲/▼ **and** color (never color alone).
-  Tier digit → roman numeral (`ROMAN`). Tones in `PASSIVE_TONE`.
+- **Passives** — rendered as the in-game **strip** (`components/passive-strip.tsx`,
+  §12): name left, a stacked rank-chevron block right, on a tier/rank-colored
+  border+fill. Coloring is **tier-then-rank-sign** (`stripBand(rank, tier)`):
+  positive = **gold** (`amber`), negative = **red** (`bad`, downward chevrons),
+  and the two special lottery-pool tiers override coloring entirely — `rainbow`
+  (mutation pool) an iridescent shimmer, `worldtree` a green→violet duotone.
+  Rank magnitude → chevron count (`min(|rank|, 5)`); direction is shown by
+  chevron orientation **and** color (never color alone). Name/rank/tier resolve
+  from the cached `list_passives` payload, falling back to id-humanization
+  (`passiveView`) for ids the pack lacks.
 - **Sources** — Bred = amber tag; Owned = neutral tag + location; Wild = leaf
   tag with capture count.
 
@@ -130,8 +136,11 @@ Primitives live in `components/primitives.tsx`; compose them, don't reinvent.
 - **PalIcon** `{id,name,size}` — cel-shaded portrait keyed by internal species
   id, `rounded-md`, 1px `line` ring, `abyss` backing, lazy, falls back to
   `UNKNOWN_ICON` on error. Roster 34px, tree 30px, autocomplete/inline 26px.
-- **PassiveChip** `{id}` — 11px, `rounded-sm`, tone border+fill+text, ▲/▼ arrow,
-  truncated label (`max-w-[14ch]`), tier roman, `title` = raw id.
+- **PassiveStrip** `{id, size?}` — the in-game passive strip (name left, stacked
+  rank chevrons right, tier/rank-tinted border+fill); `sm` for dense contexts
+  (solver tree, hover card, roster), `md` for detail/browser. See §5 + §12.
+  **PassiveChip** `{id}` is a thin **alias** of `<PassiveStrip size="sm">`, kept
+  so legacy callsites render the strip without churn.
 - **Tag** `{tone}` — neutral/amber/boss outline badge for categorical metadata
   (containers, cake, "Fastest", "Alpha").
 - **Buttons:** primary = solid `bg-amber text-abyss` → `hover:bg-amber-bright`,
@@ -473,23 +482,47 @@ with a **Reset**. Header count reads `N / 114 pal passives` while filtering,
 `114 pal passives` otherwise. Grid is `auto-fill minmax(240px, 1fr)` (wider than
 the species card to fit effect lines). Empty/loading/no-match states per §8.
 
-### Passive card (`components/passive-card.tsx`)
-In-game/paldb aesthetic within our tokens:
-- **Banner header** — the passive **name** (`font-display`, bright `ink`) on a
-  **rank-tinted gradient strip**, with the rank chevron icon at the right. The
-  tint is driven by `ui.ts::rankBand(rank)` → `RANK_TINT`: **negative ranks =
-  `bad` (danger red)**, **rank 1–2 = `ink-dim` (cool silver)**, **rank 3+ =
-  `amber` (gold/legendary**, incl. the rank-5 World Tree passives). The band's
-  literal `text-*` utility sets `currentColor` on the card (Tailwind v4 only
-  emits a `@theme` var to `:root` when a **generated utility** uses it — a raw
-  `var()` would not tint), and the banner's gradient + border are `color-mix`ed
-  off that `currentColor` (30%→8% fill, 42% border) — the same self-tinting
-  trick as `RarityBadge` (§9.Detail). Never a hardcoded hex.
-- **Rank chevrons** (`PassiveRankIcon`) — palcalc's bundled
-  `Passive_Positive_1–5` / `Passive_Negative_1–3` glyphs
-  (`assets.ts::passiveRankIconUrl`, keyed by signed rank, clamped to the art
-  range). Falls back to a `currentColor` CSS ▲/▼ chevron stack when art is
-  missing.
+### The passive strip (`components/passive-strip.tsx`)
+`PassiveStrip {id, size?}` is the in-game passive from Palworld's Pal Stats
+screen: the **name** on the left (`font-semibold`, truncating), a **stacked
+rank-chevron block** on the right edge, on a tier/rank-colored **border + dark
+fill**. It is the single source of passive coloring — the browse card and the
+`PassiveChip` alias both compose its exports. `md` for detail/browser, `sm` for
+dense contexts (solver tree, hover card, roster). Name/rank/tier come from a
+**module-cached `list_passives` fetch** (one shared request behind every strip),
+falling back to id-humanization (`ui.ts::passiveView`) before it resolves or for
+unknown ids. `title` = the raw id.
+
+- **Tier/band tints (`stripBand` → `stripTint`).** Every color is a `--color-*`
+  token composed via `color-mix` over `abyss` (never a hardcoded hex); all
+  tokens used are emitted as utilities elsewhere so the raw `var()`s resolve.
+  | Band | Trigger | Border | Fill | Name | Chevrons |
+  |---|---|---|---|---|---|
+  | **positive** | rank ≥ 0, no tier | `amber` 52% | `amber` 17%→6% over abyss | `amber-bright` | `amber`, up |
+  | **negative** | rank < 0 | `bad` 50% | `bad` 16%→5% over abyss | `bad` | `bad`, **down** |
+  | **rainbow** | `tier: "rainbow"` (mutation pool) | `el-water` 60% | iridescent `el-leaf`→`el-water`→`el-dragon`→`el-dark` (30–36% over abyss) | `ink` | `el-water`, up |
+  | **worldtree** | `tier: "worldtree"` | `el-dark`×`good` mix 65% | `good` 26% → `el-dark` 44% (green→violet) | `ink` | `el-dark`, up |
+
+  Tier wins over rank sign; absent/null `tier` ⇒ pure positive/negative. This
+  mirrors how paldb.cc tints the game's banners (rank-4 legendaries a green→blue
+  shimmer, rank-5 World Tree green→deep-purple) while keeping our own gold/red
+  for the ordinary positive/negative passives, exactly as the in-game strip.
+- **Rank chevrons (`PassiveChevrons {rank, size}`).** `min(|rank|, 5)` thin
+  chevrons **vector-drawn** in `currentColor`, stacked vertically, pointing
+  **up** for positive tiers and **down** for negatives. Drawn rather than the
+  bundled white `Passive_Positive/Negative` PNGs, which read as flat blobs at
+  strip scale and can't be per-band tinted. Rank 0 renders nothing.
+- **Left accent.** A thicker left border rail (`sm` 2px / `md` 3px / card 4px)
+  echoes the in-game strip's colored edge.
+
+### Passive browse card (`components/passive-card.tsx`)
+The browser card **keeps** its structured body but its header **is** the strip
+look, sharing `stripBand`/`stripTint`/`PassiveChevrons` from the strip so
+rainbow/worldtree passives read as special here too:
+- **Banner header** — the passive **name** (`font-display`) + the stacked rank
+  chevrons on the tier/rank-tinted banner (positive gold, negative red, rainbow
+  iridescent, worldtree green→violet), a 4px left accent. Name color and chevron
+  accent come straight from `stripTint`.
 - **Effect lines** — one per effect: a humanized **label**
   (`ui.ts::effectLabel` — explicit map for the common combat/work/util enums,
   derived `<Element> Attack`/`<Element> Resistance` for the element families,
@@ -499,19 +532,13 @@ In-game/paldb aesthetic within our tokens:
   Nocturnal / Toxic Gas Immunity — the label stands alone), and a quiet
   `(self)`/`(party)`/`(player)` **scope** annotation (`effectTarget`, omitted
   for `None`). The value is **neutral bright `ink`, not green/red**: the `+/-`
-  sign carries direction and the rank banner carries good/bad valence, so a
+  sign carries direction and the banner carries good/bad valence, so a
   "lower is better" effect (SAN Loss −20% on a beneficial gold passive) never
   reads as a red penalty. Passives with no stat effects show a quiet "No stat
   effects" line.
 - **Authored description** — the game's own text (`ink-faint`,
   `whitespace-pre-line`, under a `line-soft` divider) when the pack carries one;
   absent otherwise, never a placeholder.
-
-The instance **`PassiveChip`** (roster/hover/detail) is unchanged: it encodes
-*direction* tone (▲good / ▼bad / special-amber) plus a **roman-numeral** tier —
-it does not color-encode the tier, so there is no tint to reconcile with
-`RANK_TINT`; the two surfaces stay coherent (chip = compact per-instance datum,
-card = full paldb browse).
 
 ### Partner-skill icon (`components/partner.tsx`)
 `PartnerIcon {iconId, size}` renders the species' bundled partner glyph

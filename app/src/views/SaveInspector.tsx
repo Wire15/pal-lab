@@ -2,10 +2,10 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { invoke } from "../lib/tauri";
 import type { NamedEntry, OwnedPal, SpeciesEntry } from "../lib/types";
 import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
-import { PalIcon, PassiveChip, Tag } from "../components/primitives";
+import { PalIcon, Tag } from "../components/primitives";
+import { PassiveStrip } from "../components/passive-strip";
 import { useAppState } from "../state";
 import { FilterBar } from "../components/palbox/filter-bar";
-import { PalDetail } from "../components/palbox/detail-panel";
 import { BaseStrip, BoxGrid, PartyRail } from "../components/palbox/surfaces";
 import { usePalboxState, type PalboxMode } from "../components/palbox/use-palbox-state";
 import {
@@ -15,6 +15,7 @@ import {
   dimensionalPages,
   GRID_COLS,
   guildBases,
+  hexGuid,
   isQueryActive,
   matchesQuery,
   palKey,
@@ -165,9 +166,9 @@ function RosterTable({
               </td>
               <td className="px-4 py-2">
                 {pal.passives.length > 0 ? (
-                  <div className="flex max-w-[22rem] flex-wrap gap-1">
+                  <div className="flex max-w-[24rem] flex-col gap-1">
                     {pal.passives.map((p, i) => (
-                      <PassiveChip key={`${p}-${i}`} id={p} />
+                      <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
                     ))}
                   </div>
                 ) : (
@@ -323,15 +324,11 @@ export default function SaveInspector() {
   // Clamp the page if the underlying page count shrank.
   const safePage = Math.min(page, Math.max(0, pages.length - 1));
 
-  const selected = useMemo(
-    () => saveSummary?.pals.find((p) => palKey(p) === selectedKey) ?? null,
-    [saveSummary, selectedKey],
-  );
-
-  const onSelect = useCallback(
-    (pal: OwnedPal) =>
-      setSelectedKey((cur) => (cur === palKey(pal) ? null : palKey(pal))),
-    [],
+  // Clicking a pal (slot or roster row) opens its Pal-dex page enriched with
+  // this instance's save data — the palbox no longer has its own detail panel.
+  const openPal = useCallback(
+    (pal: OwnedPal) => requestDex(pal.character_id, hexGuid(pal.instance_id)),
+    [requestDex],
   );
 
   // The flat, visual-order list arrow keys walk in grid mode: party, then the
@@ -345,8 +342,9 @@ export default function SaveInspector() {
     return flat;
   }, [mode, rows, partyCells, pages, safePage, visibleBases]);
 
-  // Keyboard: Esc closes; arrows move the selection; [ ] / PgUp / PgDn page the
-  // grid. Grid nav uses row geometry (±1 horizontal, ±cols vertical).
+  // Keyboard: arrows move a highlight cursor (grid geometry: ±1 horizontal,
+  // ±cols vertical), Enter/Space opens the cursor's pal, Esc clears it, and
+  // [ ] / PgUp / PgDn page the box grid.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
@@ -364,7 +362,15 @@ export default function SaveInspector() {
         setPage((p) => Math.min(pages.length - 1, Math.max(0, p + (back ? -1 : 1))));
         return;
       }
-      if (!selectedKey) return;
+      // Open the cursor's pal.
+      if ((e.key === "Enter" || e.key === " ") && selectedKey) {
+        const cur = navList.find((p) => palKey(p) === selectedKey);
+        if (cur) {
+          e.preventDefault();
+          openPal(cur);
+        }
+        return;
+      }
       const arrows: Record<string, number> = {
         ArrowLeft: -1,
         ArrowRight: 1,
@@ -373,6 +379,11 @@ export default function SaveInspector() {
       };
       if (!(e.key in arrows)) return;
       e.preventDefault();
+      // Establish a cursor on first arrow if none is set yet.
+      if (!selectedKey) {
+        if (navList.length > 0) setSelectedKey(palKey(navList[0]));
+        return;
+      }
       const idx = navList.findIndex((p) => palKey(p) === selectedKey);
       if (idx === -1) return;
       const next = Math.min(navList.length - 1, Math.max(0, idx + arrows[e.key]));
@@ -384,7 +395,7 @@ export default function SaveInspector() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedKey, navList, mode, pages.length]);
+  }, [selectedKey, navList, mode, pages.length, openPal]);
 
   const hasDimensional = containers.dimensional.length > 0;
 
@@ -503,7 +514,7 @@ export default function SaveInspector() {
                     slots={partyCells}
                     nameOf={nameOf}
                     selectedKey={selectedKey}
-                    onSelect={onSelect}
+                    onSelect={openPal}
                     size={slotSize}
                   />
                   <div className="min-w-0 flex-1">
@@ -514,7 +525,7 @@ export default function SaveInspector() {
                       pagerLabel={surface === "palbox" ? "Box" : "Page"}
                       nameOf={nameOf}
                       selectedKey={selectedKey}
-                      onSelect={onSelect}
+                      onSelect={openPal}
                       size={slotSize}
                       emptyHint={
                         active
@@ -531,7 +542,7 @@ export default function SaveInspector() {
                   bases={visibleBases}
                   nameOf={nameOf}
                   selectedKey={selectedKey}
-                  onSelect={onSelect}
+                  onSelect={openPal}
                   size={slotSize}
                 />
               </div>
@@ -555,26 +566,9 @@ export default function SaveInspector() {
                   )
                 }
                 selectedKey={selectedKey}
-                onSelect={onSelect}
+                onSelect={openPal}
               />
             </div>
-          )}
-
-          {selected && (
-            <>
-              {/* Scrim below xl, where the panel overlays the surface. */}
-              <div
-                className="absolute inset-0 z-10 bg-abyss/40 xl:hidden"
-                onClick={() => setSelectedKey(null)}
-              />
-              <PalDetail
-                pal={selected}
-                players={saveSummary.players}
-                displayName={nameOf(selected)}
-                onClose={() => setSelectedKey(null)}
-                onViewInDex={requestDex}
-              />
-            </>
           )}
         </div>
       ) : saveLoading ? (

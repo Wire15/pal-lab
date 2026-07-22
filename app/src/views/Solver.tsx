@@ -8,7 +8,8 @@ import type {
   SolveRequest,
 } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
-import { PalIcon, PassiveChip, Tag } from "../components/primitives";
+import { PalIcon, Tag } from "../components/primitives";
+import { PassiveStrip } from "../components/passive-strip";
 import { useAppState } from "../state";
 
 /** Count wild-caught leaves in a plan tree (header summary cross-check). */
@@ -95,7 +96,7 @@ function TreeNode({
       {node.passives.length > 0 && (
         <div className="flex flex-wrap gap-1 pl-[3.6rem]">
           {node.passives.map((p, i) => (
-            <PassiveChip key={`${p}-${i}`} id={p} />
+            <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
           ))}
         </div>
       )}

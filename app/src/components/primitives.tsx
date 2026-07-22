@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { palIconUrl, UNKNOWN_ICON } from "../lib/assets";
-import { passiveView, PASSIVE_TONE, ROMAN } from "../lib/ui";
+import { PassiveStrip } from "./passive-strip";
 
 /** Cel-shaded pal portrait keyed by internal species id, with icon fallback. */
 export function PalIcon({
@@ -35,27 +35,10 @@ export function PalIcon({
   );
 }
 
-/** A single passive as a tier-colored chip (green up / red down / gold rare). */
+/** A single passive. Thin alias of the in-game {@link PassiveStrip} (dense
+ *  `sm` size) so every legacy callsite renders the new strip look. */
 export function PassiveChip({ id }: { id: string }) {
-  const { label, tone, tier, dir } = passiveView(id);
-  return (
-    <span
-      title={id}
-      className={`inline-flex items-center gap-1 rounded-sm border px-1.5 py-0.5 text-[11px] leading-none ${PASSIVE_TONE[tone]}`}
-    >
-      {dir && (
-        <span className="text-[9px] leading-none opacity-90">
-          {dir === "up" ? "\u25b2" : "\u25bc"}
-        </span>
-      )}
-      <span className="max-w-[14ch] truncate">{label}</span>
-      {tier > 0 && (
-        <span className="font-mono text-[9px] font-semibold opacity-80">
-          {ROMAN[tier] ?? tier}
-        </span>
-      )}
-    </span>
-  );
+  return <PassiveStrip id={id} size="sm" />;
 }
 
 /** Neutral outline badge for categorical metadata (containers, cake, counts). */

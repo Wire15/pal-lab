@@ -200,6 +200,17 @@ pub struct PassiveEffect {
     pub target: String,
 }
 
+/// Special passive lottery-pool membership from the own-install extraction.
+/// Mutation-pool passives are "rainbow" tier, world-tree-pool passives are
+/// "worldtree" tier (mutation wins if a passive is somehow in both). Serialized
+/// lowercase to match the frozen TS `PassiveEntry.tier` contract.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PassiveTier {
+    Rainbow,
+    WorldTree,
+}
+
 /// A passive skill definition.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassiveSkill {
@@ -219,6 +230,10 @@ pub struct PassiveSkill {
     /// (extraction `is_pal`) OR guaranteed on some species. Drives the UI's
     /// pal-only passive browse filter.
     pub pal_facing: bool,
+    /// Special lottery-pool tier (mutation ⇒ Rainbow, world-tree ⇒ WorldTree),
+    /// `None` for ordinary passives. Additive display metadata; the solver
+    /// ignores it.
+    pub tier: Option<PassiveTier>,
 }
 
 /// Parent-gender constraint on a breeding entry. Most entries are `Any`
@@ -320,6 +335,10 @@ pub struct Pack {
     /// Species in `db.json` order; index is the interned species id.
     pub species: Vec<PalSpecies>,
     pub passives: Vec<PassiveSkill>,
+    /// Active-skill (waza) display names: `(save-side id, localized name)` pairs
+    /// in sorted id order (e.g. `("Unique_SheepBall_Roll", "Roly Poly")`). Keyed
+    /// by the enum-prefix-stripped waza id the save file carries.
+    pub active_names: Vec<(String, String)>,
     pub breeding: Vec<BreedingEntry>,
     /// Directional min-breeding-steps, row-major `from * n + to`. `UNREACHABLE`
     /// marks pairs with no known path (palcalc's `10000` sentinel is preserved).
@@ -462,6 +481,12 @@ impl GameData {
     /// All passive-skill definitions.
     pub fn passives(&self) -> &[PassiveSkill] {
         &self.pack.passives
+    }
+
+    /// Active-skill display names as `(save-side id, localized name)` pairs
+    /// (sorted by id). See [`Pack::active_names`].
+    pub fn active_names(&self) -> &[(String, String)] {
+        &self.pack.active_names
     }
 
     /// The full breeding table (species interned to indices).

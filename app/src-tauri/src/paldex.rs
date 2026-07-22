@@ -427,6 +427,11 @@ mod tests {
             serde_json::to_string_pretty(&crate::solver::list_passives()).unwrap(),
         );
 
+        // active-names.json — waza id -> localized name (sorted for determinism).
+        let active: std::collections::BTreeMap<String, String> =
+            crate::solver::list_active_names().into_iter().collect();
+        write("active-names.json", serde_json::to_string_pretty(&active).unwrap());
+
         // save-summary.json — real summary, pals trimmed to a representative
         // ~60 covering every container kind present.
         let mut summary = crate::save::load_save(testdata_dir()).expect("load save");
