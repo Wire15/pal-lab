@@ -129,8 +129,14 @@ pub struct PalSpecies {
     /// no partner-skill descriptions).
     pub partner_skill: Option<String>,
     /// Partner-skill effect description, paired with [`Self::partner_skill`];
-    /// `None` when the name is `None` or the source carried no text.
+    /// `None` when the name is `None` or the source carried no text. Sourced
+    /// from the own-install extraction (`DT_PalFirstActivatedInfoText`).
     pub partner_skill_desc: Option<String>,
+    /// Partner-skill icon key — the numeric `TextureID` string (e.g. `"17"`)
+    /// from the extraction. `Some` only when a PNG resolves at
+    /// `app/public/partner/<id>.png`; `None` when unresolved (UI falls back to
+    /// a generic glyph).
+    pub partner_skill_icon: Option<String>,
     /// Active only at night (`Nocturnal`).
     pub nocturnal: bool,
     /// Food-meter cost per feeding (`FoodAmount`, ~1..=10).
@@ -182,6 +188,18 @@ impl PalSpecies {
     }
 }
 
+/// One structured effect line of a passive skill (own-install extraction).
+/// `effect_type`/`target` are the game's raw enum tokens (e.g. `"ShotAttack"`,
+/// `"ToSelf"`); `value` is signed (percent or flat, per effect kind). Serialized
+/// with the `type` key to match the frozen TS `PassiveEntry.effects` contract.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PassiveEffect {
+    #[serde(rename = "type")]
+    pub effect_type: String,
+    pub value: f32,
+    pub target: String,
+}
+
 /// A passive skill definition.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PassiveSkill {
@@ -192,6 +210,15 @@ pub struct PassiveSkill {
     pub rank: i8,
     /// A "standard" random-inheritable passive (excludes test/special entries).
     pub is_standard: bool,
+    /// Structured effect lines from the own-install extraction; empty when the
+    /// passive has no extraction join (test/NPC-only ids in db.json).
+    pub effects: Vec<PassiveEffect>,
+    /// Authored in-game description, when the extraction carries one.
+    pub description: Option<String>,
+    /// True when this passive appears on pals: it is in a lottery pool
+    /// (extraction `is_pal`) OR guaranteed on some species. Drives the UI's
+    /// pal-only passive browse filter.
+    pub pal_facing: bool,
 }
 
 /// Parent-gender constraint on a breeding entry. Most entries are `Any`

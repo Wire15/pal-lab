@@ -30,6 +30,7 @@ import type { IvSet, OwnedPal, SpeciesEntry } from "../lib/types";
 import { PalIcon, PassiveChip } from "./primitives";
 import { nonzeroWork, WorkGlyph } from "./work-suit";
 import { ElementBadges } from "./element";
+import { PartnerIcon } from "./partner";
 import { genderView, ivBand, QUALITY_TEXT, rarityTier, type RarityTier } from "../lib/ui";
 import { alphaIconUrl } from "../lib/assets";
 
@@ -342,14 +343,19 @@ function HoverCardBody({
           <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
             Partner skill
           </div>
-          <div className="mt-1 text-[12px] font-medium leading-snug text-amber-bright">
-            {entry.partner_skill}
-          </div>
-          {entry.partner_skill_desc && (
-            <div className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-ink-dim">
-              {entry.partner_skill_desc}
+          <div className="mt-1 flex items-start gap-2">
+            <PartnerIcon iconId={entry.partner_skill_icon} size={26} />
+            <div className="min-w-0">
+              <div className="text-[12px] font-medium leading-snug text-amber-bright">
+                {entry.partner_skill}
+              </div>
+              {entry.partner_skill_desc && (
+                <div className="mt-0.5 line-clamp-2 whitespace-pre-line text-[11px] leading-snug text-ink-dim">
+                  {entry.partner_skill_desc}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       )}
 

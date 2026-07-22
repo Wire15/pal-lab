@@ -13,6 +13,7 @@ import { PalIcon, PassiveChip, Tag } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { ElementBanners } from "../../components/element";
 import { WorkGlyph, nonzeroWork } from "../../components/work-suit";
+import { PartnerIcon } from "../../components/partner";
 import { useAppState } from "../../state";
 
 /** Parent pairs shown before collapsing into an "and N more" note. */
@@ -372,15 +373,18 @@ export default function PaldexDetail({
           {/* Partner skill — only when the pack carries one (~130 species lack it). */}
           {hasPartner && (
             <Section eyebrow="Partner skill">
-              <div className="flex flex-col gap-1.5">
-                <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
-                  {detail.partner_skill}
-                </span>
-                {detail.partner_skill_desc && (
-                  <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
-                    {detail.partner_skill_desc}
-                  </p>
-                )}
+              <div className="flex items-start gap-3">
+                <PartnerIcon iconId={detail.partner_skill_icon} size={40} />
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
+                    {detail.partner_skill}
+                  </span>
+                  {detail.partner_skill_desc && (
+                    <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
+                      {detail.partner_skill_desc}
+                    </p>
+                  )}
+                </div>
               </div>
             </Section>
           )}

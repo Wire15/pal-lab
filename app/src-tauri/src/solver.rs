@@ -88,13 +88,51 @@ pub fn list_species() -> Vec<NamedEntry> {
         .collect()
 }
 
-/// Every passive as `{id, name}` for the required-passives multi-select.
+/// A passive row for the pal-dex passive browse + the Solver's required-passive
+/// multi-select. Mirrors the frozen `PassiveEntry` TS contract: identity/rank
+/// stay the pack's, `effects`/`description`/`pal_facing` are extraction-sourced
+/// display metadata. ALL passives are emitted (the UI filters on `pal_facing`).
+#[derive(Debug, Clone, Serialize)]
+pub struct PassiveEntry {
+    pub id: String,
+    pub name: String,
+    pub rank: i8,
+    pub effects: Vec<PassiveEffect>,
+    pub description: Option<String>,
+    pub pal_facing: bool,
+}
+
+/// One structured effect line (`{type, value, target}`) for [`PassiveEntry`].
+#[derive(Debug, Clone, Serialize)]
+pub struct PassiveEffect {
+    #[serde(rename = "type")]
+    pub effect_type: String,
+    pub value: f32,
+    pub target: String,
+}
+
+/// Every passive with its full display metadata; UI filters to `pal_facing`.
 #[tauri::command]
-pub fn list_passives() -> Vec<NamedEntry> {
+pub fn list_passives() -> Vec<PassiveEntry> {
     GameData::get()
         .passives()
         .iter()
-        .map(|p| NamedEntry { id: p.internal_name.clone(), name: p.name.clone() })
+        .map(|p| PassiveEntry {
+            id: p.internal_name.clone(),
+            name: p.name.clone(),
+            rank: p.rank,
+            effects: p
+                .effects
+                .iter()
+                .map(|e| PassiveEffect {
+                    effect_type: e.effect_type.clone(),
+                    value: e.value,
+                    target: e.target.clone(),
+                })
+                .collect(),
+            description: p.description.clone(),
+            pal_facing: p.pal_facing,
+        })
         .collect()
 }
 

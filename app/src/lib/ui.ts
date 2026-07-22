@@ -173,3 +173,155 @@ export function rarityTier(n: number): RarityTier {
   if (n <= 10) return { name: "Epic", tokenKey: "epic" };
   return { name: "Legendary", tokenKey: "legendary" };
 }
+
+// --- Passive skill cards (paldb-style browse) -------------------------------
+// The pack's passives carry a signed `rank` (-3..5), a list of structured
+// `effects` ({type, value, target}), and an optional authored `description`.
+// These helpers turn that raw data into the banner tint, the humanized effect
+// lines, and the target annotations the passive card renders.
+
+export type RankBand = "danger" | "neutral" | "gold";
+
+/**
+ * Passive rank -> color band. Negative ranks (debuffs) read as danger red; low
+ * positive ranks (1-2) as a cool silver neutral; high ranks (3+, incl. the
+ * rank-5 World Tree passives) as the gold/legendary amber accent.
+ */
+export function rankBand(rank: number): RankBand {
+  if (rank < 0) return "danger";
+  if (rank >= 3) return "gold";
+  return "neutral";
+}
+
+/**
+ * Literal `text-*` utility per band. Referencing the generated class (not a raw
+ * `var(--color-*)`) is what makes Tailwind v4 emit the token, and it sets
+ * `currentColor` so the banner's gradient + border can `color-mix` off it
+ * (the same self-tinting trick as RarityBadge).
+ */
+export const RANK_TINT: Record<RankBand, string> = {
+  danger: "text-bad",
+  neutral: "text-ink-dim",
+  gold: "text-amber",
+};
+
+/**
+ * Human-readable label for a passive effect enum. The common combat/work/util
+ * types are mapped explicitly; the element damage/resistance families are
+ * derived ("ElementBoost_Fire" -> "Fire Attack"); anything unmapped falls back
+ * to a humanized enum name so an effect is never hidden.
+ */
+const EFFECT_LABEL: Record<string, string> = {
+  ShotAttack: "Attack",
+  Defense: "Defense",
+  MaxHP: "Max Health",
+  CraftSpeed: "Work Speed",
+  MoveSpeed: "Movement Speed",
+  SwimSpeed: "Swim Speed",
+  MaxInventoryWeight: "Carry Capacity",
+  CollectItem: "Gathering",
+  CollectItemDrop_NaturalObject: "Gathering Drops",
+  CaptureLevel: "Capture Power",
+  Sanity_Decrease: "SAN Loss",
+  FullStomatch_Decrease: "Hunger Loss",
+  AutoHPRegeneRate: "HP Regeneration",
+  ActiveSkillCoolTime_Decrease: "Skill Cooldown",
+  ExplosionResist: "Explosion Resistance",
+  TemperatureResist_Cold: "Cold Resistance",
+  TemperatureResist_Heat: "Heat Resistance",
+  JumpCount_Increase: "Jump Count",
+  RideJumpCount_Increase: "Mount Jump Count",
+  JumpPower_Increase: "Jump Power",
+  AirDash: "Air Dash",
+  LifeSteal: "Life Steal",
+  PalExp_Increase: "Pal EXP",
+  PalSP_Increase: "Pal SP",
+  PlayerSP_DecreaseRate: "Player SP Cost",
+  ShopSellPrice_Money_Increase: "Sell Price",
+  ShopBuyPrice_Money_Increase: "Buy Price",
+  SelfDeathAddItemDrop: "Death Drops",
+  WorldTreeDecayImmunity: "World Tree Decay Immunity",
+  FriendshipPoint_Increase: "Friendship Gain",
+  PalEggHatchingSpeed: "Egg Hatching Speed",
+  BreedSpeed: "Breeding Speed",
+  BreedSpeed_InBaseCamp: "Base Breeding Speed",
+  ReloadSpeedUp: "Reload Speed",
+  AvoidDurationUp_EquipSkill: "Dodge Duration",
+  NonKilling: "Non-Lethal Capture",
+  Nocturnal: "Nocturnal",
+  NightOwl: "Night Owl",
+  InvalidToxicGas: "Toxic Gas Immunity",
+  KnockbackInvalid_ForPassiveSkill: "Knockback Immunity",
+  LeanBackInvalid_ForPassiveSkill: "Stagger Immunity",
+  Defuser_ExplosiveSpore: "Spore Defusal",
+  ResistAdditionalEffect_Burn: "Burn Resistance",
+  ResistAdditionalEffect_Poison: "Poison Resistance",
+  WorkSuitabilityAddRank_MonsterFarm: "Ranch Work Rank",
+  Logging: "Logging",
+  Mining: "Mining",
+  CurveType: "Curve Type",
+};
+
+export function effectLabel(type: string): string {
+  const explicit = EFFECT_LABEL[type];
+  if (explicit) return explicit;
+  let m = type.match(/^ElementBoost_(.+)$/);
+  if (m) return `${m[1]} Attack`;
+  m = type.match(/^(?:ElementResist|TemperatureResist|ResistAdditionalEffect)_(.+)$/);
+  if (m) return `${m[1]} Resistance`;
+  // Fallback: humanize the enum (never hide) — drop qualifier suffixes, split
+  // underscores + camelCase, then space-normalize.
+  return type
+    .replace(/_ForPassiveSkill$/, "")
+    .replace(/_(?:Increase|Decrease|Up)$/, "")
+    .split("_")
+    .map((seg) => seg.replace(/([a-z])([A-Z])/g, "$1 $2"))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Effect enums whose `value` is a raw count/level, not a percent. Everything
+ * else is a percentage multiplier (Attack +50%, Work Speed -30%, ...).
+ */
+const EFFECT_COUNT_UNITS: Record<string, true> = {
+  AirDash: true,
+  JumpCount_Increase: true,
+  RideJumpCount_Increase: true,
+  CaptureLevel: true,
+  CurveType: true,
+  Defuser_ExplosiveSpore: true,
+  WorkSuitabilityAddRank_MonsterFarm: true,
+};
+
+/**
+ * Signed, unit-aware value string for one effect. A zero value marks a flag /
+ * toggle passive (e.g. Nocturnal, Toxic Gas Immunity) whose label stands alone,
+ * so we return "" and the card renders no number.
+ */
+export function formatEffectValue(type: string, value: number): string {
+  if (value === 0) return "";
+  const suffix = EFFECT_COUNT_UNITS[type] ? "" : "%";
+  return `${value > 0 ? "+" : ""}${value}${suffix}`;
+}
+
+const TARGET_LABEL: Record<string, string> = {
+  ToSelf: "self",
+  ToOtomo: "party",
+  ToTrainer: "player",
+  ToBuildObject: "structures",
+  ToSelfAndTrainer: "self & player",
+};
+
+/** Quiet "(self)"-style scope annotation; null when the effect has no target. */
+export function effectTarget(target: string): string | null {
+  if (!target || target === "None") return null;
+  return (
+    TARGET_LABEL[target] ??
+    target
+      .replace(/^To/, "")
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .toLowerCase()
+  );
+}

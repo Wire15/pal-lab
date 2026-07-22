@@ -87,10 +87,30 @@ export interface SolveRequest {
   max_irrelevant?: number;
 }
 
-/** `{id, name}` from list_species / list_passives. */
+/** `{id, name}` from `list_species`. */
 export interface NamedEntry {
   id: string;
   name: string;
+}
+
+/** One structured effect line of a passive (`list_passives`). `type`/`target`
+ * are raw game enum tokens (e.g. "ShotAttack", "ToSelf"); `value` is signed. */
+export interface PassiveEffect {
+  type: string;
+  value: number;
+  target: string;
+}
+
+/** A passive row from `list_passives`. Identity/rank are the pack's; effects,
+ * description, and pal_facing are extraction-sourced display metadata. All
+ * passives are returned; the UI filters the browse to `pal_facing`. */
+export interface PassiveEntry {
+  id: string;
+  name: string;
+  rank: number;
+  effects: PassiveEffect[];
+  description: string | null;
+  pal_facing: boolean;
 }
 
 /**
@@ -192,11 +212,14 @@ export interface SpeciesEntry {
    * Planting, GenerateElectricity, Handiwork, Gathering, Lumbering, Mining,
    * MedicineProduction, Cooling, Transporting, Farming). */
   work_suitability: number[];
-  /** Partner-skill display name, or null when the pack has none (~130 species,
-   * mostly DLC, have no permissive partner-skill source). */
+  /** Partner-skill display name (every species has one, from the extraction). */
   partner_skill: string | null;
-  /** Partner-skill effect description, paired with {@link partner_skill}. */
+  /** Partner-skill effect description (real in-game text, from the extraction;
+   * 299/299). */
   partner_skill_desc: string | null;
+  /** Partner-skill icon key: numeric TextureID string when a PNG exists at
+   * `public/partner/<id>.png`, else null (UI shows a generic fallback glyph). */
+  partner_skill_icon: string | null;
   /** Whether the species is nocturnal. */
   nocturnal: boolean;
   /** Food-bowl demand (bars). */

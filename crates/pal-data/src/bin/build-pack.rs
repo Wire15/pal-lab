@@ -1,9 +1,10 @@
 //! Converts the vendored JSON (`vendor/db.json`, `vendor/breeding.json`,
-//! `vendor/extracted-game-data.json`, `vendor/partner-skills.json`) into the
-//! compact bincode pack embedded by the library (`pack/paldata.pack`). Elements,
-//! partner-skill names, and extended stats come from the own-install extraction;
-//! partner-skill descriptions from partner-skills.json; everything else from
-//! palcalc's db.json/breeding.json.
+//! `vendor/extracted-game-data.json`) into the compact bincode pack embedded by
+//! the library (`pack/paldata.pack`). Elements, partner-skill names/descriptions/
+//! icons, extended stats, and passive effect/description/pal_facing metadata come
+//! from the own-install extraction (joined case-insensitively by internal name);
+//! everything else (passive id set + rank, breeding) from palcalc's
+//! db.json/breeding.json.
 //!
 //! Run with: `cargo run -p pal-data --bin build-pack`
 //!
@@ -18,7 +19,7 @@ use serde::Deserialize;
 
 use pal_data::gamedata::{
     BreedingEntry, ElementKind, GameSettings, InheritanceWeights, Pack, PalSpecies, ParentGender,
-    PassiveSkill, UNREACHABLE,
+    PassiveEffect, PassiveSkill, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -76,15 +77,6 @@ struct RawWork {
     farming: u8,
 }
 
-/// One entry of `vendor/partner-skills.json` (lowercase keys). Only the authored
-/// `description` is consumed now — the partner-skill NAME comes from the
-/// own-install extraction. `#[serde(default)]` tolerates the `name` key.
-#[derive(Deserialize)]
-struct RawPartnerSkill {
-    #[serde(default)]
-    description: Option<String>,
-}
-
 #[derive(Deserialize)]
 #[serde(rename_all = "PascalCase")]
 struct RawPassive {
@@ -120,6 +112,8 @@ struct RawExtract {
     meta: RawExtractMeta,
     game_settings: RawGameSettings,
     species: HashMap<String, RawExtractSpecies>,
+    /// Passive-skill display metadata keyed by internal name (case may drift).
+    passives: HashMap<String, RawExtractPassive>,
 }
 
 #[derive(Deserialize)]
@@ -145,6 +139,31 @@ struct RawExtractSpecies {
 #[derive(Deserialize)]
 struct RawExtractPartner {
     name: Option<String>,
+    #[serde(default)]
+    description: Option<String>,
+    /// Numeric `TextureID` string (partner-skill icon key), when present.
+    #[serde(default)]
+    icon: Option<String>,
+}
+
+/// One extraction passive entry (additive display metadata; joined by internal
+/// name onto the db.json passive set — rank/id semantics stay db.json's).
+#[derive(Deserialize)]
+struct RawExtractPassive {
+    /// True when the passive is in a lottery pool (AddPal/AddRarePal/...).
+    is_pal: bool,
+    #[serde(default)]
+    effects: Vec<RawExtractEffect>,
+    #[serde(default)]
+    description: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct RawExtractEffect {
+    #[serde(rename = "type")]
+    effect_type: String,
+    value: f32,
+    target: String,
 }
 
 #[derive(Deserialize)]
@@ -195,13 +214,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|(k, v)| (k.to_ascii_lowercase(), v))
         .collect();
 
-    // Per-species partner skill (internal_name -> {name, description}), sourced
-    // from mlg404/palworld-paldex-api's `aura` field with game-accurate
-    // variant->base inheritance (see vendor/NOTICE). Coverage is partial (base
-    // game only); the ~130 species without a permissive source carry None.
-    let partner_bytes = std::fs::read(vendor.join("partner-skills.json"))?;
-    let partner_skills: HashMap<String, RawPartnerSkill> =
-        serde_json::from_slice(&partner_bytes)?;
+    // Extraction passive metadata (additive): joined case-insensitively onto the
+    // db.json passive set. Ids/rank stay db.json's; effects/description/pal_facing
+    // are display-only enrichment.
+    let extract_passives_ci: HashMap<String, &RawExtractPassive> = extract
+        .passives
+        .iter()
+        .map(|(k, v)| (k.to_ascii_lowercase(), v))
+        .collect();
+
+    // Partner-skill icon keys resolve to a shipped PNG at app/public/partner/<id>.png
+    // (crate is crates/pal-data, so repo-root app/ is two levels up). An icon id
+    // with no PNG stays None so the UI can show a generic fallback glyph.
+    let partner_icon_dir = dir.join("../../app/public/partner");
+    let partner_pngs: std::collections::HashSet<String> = std::fs::read_dir(&partner_icon_dir)
+        .map(|rd| {
+            rd.filter_map(|e| e.ok())
+                .filter_map(|e| {
+                    let p = e.path();
+                    (p.extension().and_then(|x| x.to_str()) == Some("png"))
+                        .then(|| p.file_stem().and_then(|s| s.to_str()).map(String::from))
+                        .flatten()
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    eprintln!(
+        "partner icons: {} PNGs present at {}",
+        partner_pngs.len(),
+        partner_icon_dir.display()
+    );
 
     // Intern species by db.json order.
     let mut index: HashMap<String, u16> = HashMap::with_capacity(db.pals.len());
@@ -286,11 +328,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .name
                     .clone()
                     .filter(|nm| !nm.trim().is_empty() && nm != "-"),
-                // DESCRIPTION from partner-skills.json when present, else None
-                // (game files carry no partner-skill descriptions).
-                partner_skill_desc: partner_skills
-                    .get(&p.internal_name)
-                    .and_then(|ps| ps.description.clone()),
+                // DESCRIPTION from the extraction (DT_PalFirstActivatedInfoText —
+                // real in-game text); replaces the former partner-skills.json.
+                partner_skill_desc: ex
+                    .partner_skill
+                    .description
+                    .clone()
+                    .filter(|d| !d.trim().is_empty()),
+                // ICON key: the extraction's numeric TextureID, kept only when a
+                // PNG for it is shipped in app/public/partner/. Unresolved -> None.
+                partner_skill_icon: ex
+                    .partner_skill
+                    .icon
+                    .clone()
+                    .filter(|id| partner_pngs.contains(id)),
                 nocturnal: p.nocturnal,
                 food_amount: p.food_amount.min(u8::MAX as u32) as u8,
                 // 13 uncatchable pals (bosses/quest) have null wild levels ->
@@ -346,16 +397,80 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         extra
     );
 
+    // Guaranteed-passive id set across every species (case-insensitive): an
+    // always-on passive like `Legend` is pal-facing even though its lottery
+    // flag is false.
+    let guaranteed_ci: std::collections::HashSet<String> = species
+        .iter()
+        .flat_map(|s| s.guaranteed_passives.iter())
+        .map(|g| g.to_ascii_lowercase())
+        .collect();
+
     let passives: Vec<PassiveSkill> = db
         .passive_skills
         .iter()
-        .map(|s| PassiveSkill {
-            internal_name: s.internal_name.clone(),
-            name: s.name.clone(),
-            rank: s.rank.clamp(i8::MIN as i32, i8::MAX as i32) as i8,
-            is_standard: s.is_standard_passive_skill,
+        .map(|s| {
+            let ci = s.internal_name.to_ascii_lowercase();
+            let ex = extract_passives_ci.get(&ci);
+            // pal_facing = in a lottery pool (extraction is_pal) OR guaranteed on
+            // some species (catches always-on passives absent from lottery pools).
+            let pal_facing = ex.map(|e| e.is_pal).unwrap_or(false) || guaranteed_ci.contains(&ci);
+            PassiveSkill {
+                internal_name: s.internal_name.clone(),
+                name: s.name.clone(),
+                rank: s.rank.clamp(i8::MIN as i32, i8::MAX as i32) as i8,
+                is_standard: s.is_standard_passive_skill,
+                effects: ex
+                    .map(|e| {
+                        e.effects
+                            .iter()
+                            .map(|f| PassiveEffect {
+                                effect_type: f.effect_type.clone(),
+                                value: f.value,
+                                target: f.target.clone(),
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default(),
+                description: ex.and_then(|e| e.description.clone()),
+                pal_facing,
+            }
         })
         .collect();
+
+    // Passive join reconciliation (both directions), reported honestly.
+    let db_passive_ci: std::collections::HashSet<String> = db
+        .passive_skills
+        .iter()
+        .map(|s| s.internal_name.to_ascii_lowercase())
+        .collect();
+    let mut db_not_in_extract: Vec<&str> = db
+        .passive_skills
+        .iter()
+        .filter(|s| !extract_passives_ci.contains_key(&s.internal_name.to_ascii_lowercase()))
+        .map(|s| s.internal_name.as_str())
+        .collect();
+    db_not_in_extract.sort_unstable();
+    let mut extract_not_in_db: Vec<&str> = extract
+        .passives
+        .keys()
+        .filter(|k| !db_passive_ci.contains(&k.to_ascii_lowercase()))
+        .map(|k| k.as_str())
+        .collect();
+    extract_not_in_db.sort_unstable();
+    let pal_facing_count = passives.iter().filter(|p| p.pal_facing).count();
+    println!(
+        "passive join: db={} extraction={} | db-not-in-extraction={} (mostly test/NPC ids) | extraction-not-in-db={} | pal_facing={} (paldb reference 114)",
+        db.passive_skills.len(),
+        extract.passives.len(),
+        db_not_in_extract.len(),
+        extract_not_in_db.len(),
+        pal_facing_count,
+    );
+    if !extract_not_in_db.is_empty() {
+        println!("  extraction passives absent from db.json: {extract_not_in_db:?}");
+    }
+    eprintln!("passive db-not-in-extraction ids ({}): {db_not_in_extract:?}", db_not_in_extract.len());
 
     // Breeding table (fail-soft: skip rows referencing unknown species).
     let mut breeding = Vec::with_capacity(br.breeding.len());
@@ -423,8 +538,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let with_elements = pack.species.iter().filter(|s| !s.elements.is_empty()).count();
     let with_partner = pack.species.iter().filter(|s| s.partner_skill.is_some()).count();
     let with_partner_desc = pack.species.iter().filter(|s| s.partner_skill_desc.is_some()).count();
+    let with_partner_icon = pack.species.iter().filter(|s| s.partner_skill_icon.is_some()).count();
     println!(
-        "wrote {} ({} bytes) | build={} | species={} (elements {}/{}, partner name {}/{} desc {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
+        "wrote {} ({} bytes) | build={} | species={} (elements {}/{}, partner name {}/{} desc {}/{} icon {}/{}) passives={} breeding={} (skipped {}) | vendor JSON={} bytes ({:.1}% of JSON)",
         out.display(),
         bytes.len(),
         pack.game_build,
@@ -434,6 +550,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         with_partner,
         pack.species.len(),
         with_partner_desc,
+        pack.species.len(),
+        with_partner_icon,
         pack.species.len(),
         pack.passives.len(),
         pack.breeding.len(),

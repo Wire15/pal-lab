@@ -4,6 +4,7 @@ import { PalIcon } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { CardWorkBadges } from "../../components/work-suit";
 import { ElementBadges, ElementIcon } from "../../components/element";
+import { DexTabs, type DexTab } from "../../components/dex-tabs";
 
 type SortKey = "paldex" | "name" | "rank";
 type SortDir = "asc" | "desc";
@@ -31,10 +32,14 @@ export default function PaldexIndex({
   species,
   roster,
   onSelect,
+  tab,
+  onTab,
 }: {
   species: SpeciesEntry[];
   roster: RosterCounts | null;
   onSelect: (id: string) => void;
+  tab: DexTab;
+  onTab: (t: DexTab) => void;
 }) {
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("paldex");
@@ -94,14 +99,17 @@ export default function PaldexIndex({
   return (
     <div className="flex h-full flex-col">
       <header className="shrink-0 border-b border-line bg-panel/60 px-6 pb-4 pt-5">
-        <div className="flex items-baseline justify-between">
-          <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              Pal-dex
+        <div className="flex items-baseline justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+                Pal-dex
+              </div>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink">
+                Reference
+              </h1>
             </div>
-            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-              Reference
-            </h1>
+            <DexTabs tab={tab} onTab={onTab} />
           </div>
           <div className="text-right font-mono text-xs text-ink-dim">
             <span className="text-ink">{species.length}</span> species

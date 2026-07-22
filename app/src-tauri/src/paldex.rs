@@ -94,6 +94,9 @@ pub struct SpeciesEntry {
     pub partner_skill: Option<String>,
     /// Partner-skill effect description, paired with `partner_skill`.
     pub partner_skill_desc: Option<String>,
+    /// Partner-skill icon key (numeric `TextureID` string) when a PNG resolves
+    /// at `app/public/partner/<id>.png`; `null` -> UI shows a generic glyph.
+    pub partner_skill_icon: Option<String>,
     pub nocturnal: bool,
     pub food_amount: u8,
     /// `(min, max)` wild spawn level; `(0, 0)` means not found in the wild.
@@ -137,6 +140,7 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
         work_suitability: sp.work_suitability.to_vec(),
         partner_skill: sp.partner_skill.clone(),
         partner_skill_desc: sp.partner_skill_desc.clone(),
+        partner_skill_icon: sp.partner_skill_icon.clone(),
         nocturnal: sp.nocturnal,
         food_amount: sp.food_amount,
         wild_levels: sp.wild_levels,

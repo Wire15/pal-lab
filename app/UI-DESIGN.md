@@ -447,3 +447,78 @@ The Bases section is scoped to the selected player tab's **guild**:
 appear on **every** member's tab (correct). **Graceful fallback:** when the
 backend hasn't published `bases` (stale fixture / pre-contract), every base is
 shown as the combined view with the default `Base N` labels — nothing is hidden.
+
+## 12. Round 3 — Passive-skill browse & partner-skill icons
+
+The Pal-dex gains a second reference browser (passive skills) alongside the
+species grid, and the partner-skill surfaces gain an icon. Both compose the
+existing tokens, ink ramp, and amber accent — no new visual language.
+
+### Section switcher (`components/dex-tabs.tsx`)
+The Pal-dex is now two browsers behind one container (`views/Paldex.tsx`): a
+segmented **`DexTabs`** `[Pals | Passives]` control sits beside the `Pal-dex`
+eyebrow/title in each index header, styled exactly like the sort control (§6):
+active = amber on `raised`, inactive = muted `ink-faint` with a hover lift.
+Selecting a species always drops into the shared detail view and snaps the tab
+back to **Pals** (a species detail has no passive-browse context).
+
+### Passive browse (`views/paldex/passives-view.tsx`)
+A paldb-style card grid of **only pal-facing passives** — the ones a pal can
+actually roll, the same split paldb makes (114, matching their count). The
+`pal_facing` flag is the pack's (`is_pal` lottery pools **or** any species'
+guaranteed passives); the view filters `list_passives` to it, sorts
+strongest-rank-first then alphabetical, and offers a name/effect **search**
+(matches the name, the humanized effect labels, and the authored description)
+with a **Reset**. Header count reads `N / 114 pal passives` while filtering,
+`114 pal passives` otherwise. Grid is `auto-fill minmax(240px, 1fr)` (wider than
+the species card to fit effect lines). Empty/loading/no-match states per §8.
+
+### Passive card (`components/passive-card.tsx`)
+In-game/paldb aesthetic within our tokens:
+- **Banner header** — the passive **name** (`font-display`, bright `ink`) on a
+  **rank-tinted gradient strip**, with the rank chevron icon at the right. The
+  tint is driven by `ui.ts::rankBand(rank)` → `RANK_TINT`: **negative ranks =
+  `bad` (danger red)**, **rank 1–2 = `ink-dim` (cool silver)**, **rank 3+ =
+  `amber` (gold/legendary**, incl. the rank-5 World Tree passives). The band's
+  literal `text-*` utility sets `currentColor` on the card (Tailwind v4 only
+  emits a `@theme` var to `:root` when a **generated utility** uses it — a raw
+  `var()` would not tint), and the banner's gradient + border are `color-mix`ed
+  off that `currentColor` (30%→8% fill, 42% border) — the same self-tinting
+  trick as `RarityBadge` (§9.Detail). Never a hardcoded hex.
+- **Rank chevrons** (`PassiveRankIcon`) — palcalc's bundled
+  `Passive_Positive_1–5` / `Passive_Negative_1–3` glyphs
+  (`assets.ts::passiveRankIconUrl`, keyed by signed rank, clamped to the art
+  range). Falls back to a `currentColor` CSS ▲/▼ chevron stack when art is
+  missing.
+- **Effect lines** — one per effect: a humanized **label**
+  (`ui.ts::effectLabel` — explicit map for the common combat/work/util enums,
+  derived `<Element> Attack`/`<Element> Resistance` for the element families,
+  and a humanized enum fallback so an effect is **never hidden**), a signed
+  **value** (`formatEffectValue`: `%` for stat multipliers, bare `+N` for the
+  count/level enums, and **omitted for flag effects** whose value is 0, e.g.
+  Nocturnal / Toxic Gas Immunity — the label stands alone), and a quiet
+  `(self)`/`(party)`/`(player)` **scope** annotation (`effectTarget`, omitted
+  for `None`). The value is **neutral bright `ink`, not green/red**: the `+/-`
+  sign carries direction and the rank banner carries good/bad valence, so a
+  "lower is better" effect (SAN Loss −20% on a beneficial gold passive) never
+  reads as a red penalty. Passives with no stat effects show a quiet "No stat
+  effects" line.
+- **Authored description** — the game's own text (`ink-faint`,
+  `whitespace-pre-line`, under a `line-soft` divider) when the pack carries one;
+  absent otherwise, never a placeholder.
+
+The instance **`PassiveChip`** (roster/hover/detail) is unchanged: it encodes
+*direction* tone (▲good / ▼bad / special-amber) plus a **roman-numeral** tier —
+it does not color-encode the tier, so there is no tint to reconcile with
+`RANK_TINT`; the two surfaces stay coherent (chip = compact per-instance datum,
+card = full paldb browse).
+
+### Partner-skill icon (`components/partner.tsx`)
+`PartnerIcon {iconId, size}` renders the species' bundled partner glyph
+(`public/partner/<textureId>.png`, via `assets.ts::partnerIconUrl`) as a
+`rounded-md` `abyss` chip with a `line` ring — left of the skill name in both
+the **detail** Partner-skill section (40px, full multi-line
+`whitespace-pre-line` description) and the **hover card** partner line (26px,
+`line-clamp-2`). When `partner_skill_icon` is null (a bespoke texture not yet
+resolved to a PNG) or the image fails, it degrades to a neutral inline-SVG
+**bond glyph** (`assets.ts::PARTNER_FALLBACK_ICON`) — never a broken `<img>`.

@@ -29,11 +29,18 @@ usmap). It is the AUTHORITATIVE source for:
 
   - element types (replaces the former vendored elements.json, now removed);
   - partner-skill NAMES (populated for every species);
+  - partner-skill DESCRIPTIONS (real in-game text from
+    DT_PalFirstActivatedInfoText; populated for every species — replaces the
+    former vendored partner-skills.json, now removed);
+  - partner-skill ICONS (numeric TextureID keys -> app/public/partner/<id>.png);
+  - passive-skill effects, authored descriptions, and lottery/pal-facing flags
+    (additive display metadata joined by internal name onto db.json's passives);
   - extended stats (price, craft/slow-walk/walk/run/ride-sprint/transport
     speeds, stamina, max-full-stomach, size).
 
-Partner-skill DESCRIPTIONS are NOT present in the game files, so they continue
-to come from partner-skills.json below (merged by internal name).
+Note: DT_PalFirstActivatedInfoText descriptions retain the game's own
+{PassiveN_EffectValueN}/{ReferenceMsgId_*}/{ActiveSkill*} runtime templates,
+which the game substitutes per partner-skill level at display time.
 
 These facts are game data from Palworld (c) Pocketpair, Inc., extracted from a
 personal copy and included here for personal, non-commercial use only. All
@@ -66,36 +73,12 @@ the underlying artwork remain with Pocketpair.
 Per-species partner skills
 ==========================
 
-  partner-skills.json - internal_name -> { name, description } for each pal's
-                        Partner Skill (the game's "PartnerSkill" / "aura").
-
-palcalc's db.json ships PartnerSkill=null for every species, so this is a
-DERIVED mapping built from the `aura` { name, description } field of
-mlg404/palworld-paldex-api's src/pals.json. Match method: exact (normalized)
-English display-name match against palcalc's `Name` (paldex-api's numeric
-`id`/`key` is its own sequential index and does NOT align with the game
-PalDexNo, so it is not used for matching); slug names like "fluffy_shield" are
-title-cased to "Fluffy Shield" (articles/prepositions kept lowercase, e.g.
-"Guardian of the Desert"). Elemental variants with no paldex-api entry inherit
-their base form's partner skill (game-accurate: Palworld variants share the
-base PartnerSkill), resolved via palcalc's `Base_Suffix` internal-name scheme.
-
-Description coverage: 169 / 299 species (138 exact name matches + 31 variant->base
-inheritances). The remaining ~130 (Sakurajima + Feybreak DLC and the Terraria
-collab pals) have no permissive description source and carry null descriptions;
-their partner-skill NAME still comes from the own-install extraction, so every
-species now has a name. The UI shows the name and omits the description
-gracefully when null.
-
-Source:  https://github.com/mlg404/palworld-paldex-api  (src/pals.json)
-Author:  Victor Eyer and palworld-paldex-api contributors
-License: MIT
-
-build-pack merges only the `description` from partner-skills.json into the pack
-(PalSpecies.partner_skill_desc); the partner-skill NAME (PalSpecies.partner_skill)
-comes from the own-install extraction instead. The underlying partner-skill facts
-are game data from Palworld (c) Pocketpair, Inc., included here for personal,
-non-commercial use only.
+partner-skills.json (formerly the description source; mlg404/palworld-paldex-api
+`aura` text, 169/299 coverage) has been REMOVED. Partner-skill names AND
+descriptions now both come from the own-install extraction
+(extracted-game-data.json, documented above): descriptions are the real in-game
+DT_PalFirstActivatedInfoText text at 299/299 coverage, so the derived paldex-api
+mapping is no longer needed.
 
 Alpha / UI marker icon
 ======================

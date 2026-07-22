@@ -168,14 +168,17 @@ fn species_metadata_round_trips() {
     assert_eq!(cat.food_amount, 6, "Nyafia food amount");
     assert!(cat.nocturnal, "Nyafia is nocturnal");
     assert_eq!(cat.wild_levels, (30, 60), "Nyafia wild level range");
-    // Partner-skill spot check: BadCatgirl (Nyafia) now carries a NAME from the
-    // own-install extraction even though it has no vendored DESCRIPTION.
+    // Partner-skill spot check: BadCatgirl (Nyafia) carries both a NAME and a
+    // DESCRIPTION from the own-install extraction.
     assert_eq!(
         cat.partner_skill.as_deref(),
         Some("Shot-Nyan Mode"),
         "BadCatgirl partner skill name (from extraction)",
     );
-    assert_eq!(cat.partner_skill_desc, None, "BadCatgirl partner desc (no vendored source)");
+    assert!(
+        cat.partner_skill_desc.as_deref().is_some_and(|d| !d.is_empty()),
+        "BadCatgirl partner desc now populated from extraction",
+    );
     assert!(
         gd.species().all(|s| s.partner_skill.as_deref() != Some("")),
         "partner_skill is never an empty string",
@@ -241,15 +244,15 @@ fn partner_skill_spot_checks() {
 }
 
 #[test]
-fn partner_skill_name_full_desc_partial() {
+fn partner_skill_name_and_desc_full_coverage() {
     let gd = GameData::get();
     // Own-install extraction populates a NAME for every species.
     let with_name = gd.species().filter(|s| s.partner_skill.is_some()).count();
     assert_eq!(with_name, 299, "partner-skill name coverage (all species)");
-    // DESCRIPTIONS still come from vendor/partner-skills.json: 138 exact + 31
-    // variant->base = 169. Locked so a broken desc merge is caught.
+    // DESCRIPTIONS now come from the extraction (DT_PalFirstActivatedInfoText —
+    // real in-game text): every species covered.
     let with_desc = gd.species().filter(|s| s.partner_skill_desc.is_some()).count();
-    assert_eq!(with_desc, 169, "partner-skill description coverage (of 299)");
+    assert_eq!(with_desc, 299, "partner-skill description coverage (all species)");
     // A description present implies a name present (never a desc without a name).
     for sp in gd.species() {
         if sp.partner_skill_desc.is_some() {
@@ -260,6 +263,53 @@ fn partner_skill_name_full_desc_partial() {
             );
         }
     }
+    // Lamball (SheepBall)'s authored text is the real in-game description.
+    let lamball = gd.species_by_id("SheepBall").expect("Lamball exists");
+    let desc = lamball.partner_skill_desc.as_deref().unwrap_or("");
+    assert!(
+        desc.to_ascii_lowercase().contains("becomes a shield"),
+        "Lamball partner desc should contain 'becomes a shield', got: {desc:?}",
+    );
+}
+
+/// Assertion-free: report partner-icon resolution coverage for the record.
+#[test]
+fn partner_skill_icon_coverage_report() {
+    let gd = GameData::get();
+    let total = gd.species().count();
+    let with_icon = gd.species().filter(|s| s.partner_skill_icon.is_some()).count();
+    eprintln!("partner-skill icon coverage: {with_icon}/{total} species resolve to a shipped PNG");
+}
+
+#[test]
+fn passive_extraction_metadata_joins() {
+    let gd = GameData::get();
+    // Lucky (internal id `Rare`): rank 4, three effects, pal-facing (lottery).
+    let lucky = gd.passive_by_id("Rare").expect("Lucky/Rare passive exists");
+    assert_eq!(lucky.name, "Lucky", "Rare -> display name Lucky");
+    assert_eq!(lucky.rank, 4, "Lucky rank");
+    assert_eq!(lucky.effects.len(), 3, "Lucky has 3 effects");
+    assert!(lucky.pal_facing, "Lucky is pal-facing (lottery pool)");
+
+    // Legend: not in a lottery pool but guaranteed on some species -> pal-facing;
+    // effects present.
+    let legend = gd.passive_by_id("Legend").expect("Legend passive exists");
+    assert!(legend.pal_facing, "Legend is pal-facing via guaranteed_passives");
+    assert!(!legend.effects.is_empty(), "Legend has effects");
+    assert_eq!(legend.rank, 4, "Legend rank");
+
+    // Brittle (internal id `Deffence_down2`): negative rank, a negative-value effect.
+    let brittle = gd.passive_by_id("Deffence_down2").expect("Brittle passive exists");
+    assert_eq!(brittle.name, "Brittle", "Deffence_down2 -> display name Brittle");
+    assert_eq!(brittle.rank, -3, "Brittle rank is -3");
+    assert!(
+        brittle.effects.iter().any(|e| e.value < 0.0),
+        "Brittle has a negative-value effect",
+    );
+
+    // pal_facing count matches paldb's Pal passive count of 114.
+    let pal_facing = gd.passives().iter().filter(|p| p.pal_facing).count();
+    assert_eq!(pal_facing, 114, "pal_facing passive count matches paldb (114)");
 }
 
 #[test]

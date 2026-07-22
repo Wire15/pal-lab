@@ -32,6 +32,8 @@ static class Program
 
     static readonly Regex Ws = new(@"[ \t]+");
     static readonly Regex RichTag = new(@"<[^>]+>");
+    // <itemName id=|Wool| style=|X|/>, <characterName id=|Anubis|/>, <img id=|ElemIcon_Ice|/>, ...
+    static readonly Regex IdTag = new(@"<(\w+)\s+id=\|([^|]+)\|[^>]*?/?>");
 
     static int Main(string[] args)
     {
@@ -47,16 +49,42 @@ static class Program
         provider.LoadVirtualPaths();
         Console.WriteLine($"[mount] files={provider.Files.Count} ({sw.Elapsed.TotalSeconds:F1}s)");
 
+        if (args.Contains("--discover")) { Discover(provider); return 0; }
+
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
         var skillDescs = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillDescText_Common");
         var palNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_PalNameText_Common");
-        Console.WriteLine($"[tables] monsters={monsters.RowMap.Count} skillNames={skillNames.Count} skillDescs={skillDescs.Count}");
+        var firstActRaw = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_PalFirstActivatedInfoText");
+        var itemNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_ItemNameText_Common");
+        var mapObjNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapObjectNameText_Common");
+        var uiCommon = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_UI_Common_Text_Common");
+        var passiveMain = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PassiveSkill_Main");
+        // partner-skill template resolution sources (see ResolvePartnerTemplates):
+        var partnerParam = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PartnerSkillParameter");
+        var partnerParamByName = new Dictionary<string, FStructFallback>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pr in partnerParam.RowMap) partnerParamByName[pr.Key.Text] = pr.Value;
+        var passiveRowByName = new Dictionary<string, FStructFallback>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pr in passiveMain.RowMap) passiveRowByName[pr.Key.Text] = pr.Value;
+        var partnerAppend = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_PartnerSkillAppendText");
+        var partnerTemplateMiss = new SortedSet<string>(StringComparer.Ordinal);
+        var partnerTemplateFam = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        int partnerTemplatedDescs = 0, partnerTemplatedDescsClean = 0;
+        var iconTab = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PartnerSkill/DT_partnerSkillIconDataTable");
+        var iconTexField = iconTab.RowMap.First().Value.Properties.First(p => p.Name.Text.StartsWith("TextureID")).Name.Text;
+        var iconInfo = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var ir in iconTab.RowMap) iconInfo[ir.Key.Text] = ir.Value.Get<int?>(iconTexField) ?? -1;
+        Console.WriteLine($"[tables] monsters={monsters.RowMap.Count} skillNames={skillNames.Count} skillDescs={skillDescs.Count} firstAct={firstActRaw.Count} icons={iconInfo.Count} passiveRows={passiveMain.RowMap.Count}");
+
+        if (args.Contains("--export-named-partner-icons"))
+        { ExportNamedPartnerIcons(provider, iconInfo); return 0; }
 
         var species = new SortedDictionary<string, object>(StringComparer.Ordinal);
         int kept = 0, skipped = 0;
         int partnerHit = 0;
         var partnerMisses = new List<string>();
+        int partnerDescHit = 0; var partnerDescMiss = new List<string>();
+        var partnerIconIds = new SortedSet<int>(); var partnerIconMiss = new List<string>();
         var elementKinds = new SortedSet<string>(StringComparer.Ordinal);
         // internalName -> english display, for validation only
         var displayByInternal = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -87,17 +115,37 @@ static class Program
                 if (!string.IsNullOrEmpty(e) && e != "None") { elements.Add(e); elementKinds.Add(e); }
             }
 
-            // partner skill: override key, else PARTNERSKILL_<InternalName>, else strip variant suffix (_Ice/_Fire/_Flower/...) to the base species key
+            // partner skill: name from skillNames (variant-aware); description from the in-game "first activated" info text; icon from icon table
             var nameKey = ResolvePartnerKey(skillNames, NonNone(S(v, "OverridePartnerSkillNameTextID")), name);
-            var descKey = ResolvePartnerKey(skillDescs, NonNone(S(v, "OverridePartnerSkillDescTextID")), name);
             object partner = null;
             if (nameKey != null && skillNames.TryGetValue(nameKey, out var pName))
             {
                 partnerHit++;
-                string pDesc = descKey != null && skillDescs.TryGetValue(descKey, out var d) ? d : null;
-                partner = new { name = Clean(pName), description = pDesc == null ? null : Clean(pDesc) };
+                var descKey = ResolveVariantKey(k => firstActRaw.ContainsKey(k), "PAL_FIRST_SPAWN_DESC_", name)
+                    ?? (name.Contains('_') ? ResolveVariantKey(k => firstActRaw.ContainsKey(k), "PAL_FIRST_SPAWN_DESC_", name.Substring(name.IndexOf('_') + 1)) : null);
+                // per-rank template data lives in DT_PartnerSkillParameter, keyed by species internal name.
+                // Element-swap variants (e.g. ElecSnail_Fire) carry a STUB param row with no template data
+                // and inherit the base pal's partner skill, so skip data-less rows and fall back to the base.
+                var paramKey = ResolveVariantKey(k => partnerParamByName.ContainsKey(k) && HasTemplateData(partnerParamByName[k]), "", name);
+                var paramRow = paramKey != null ? partnerParamByName[paramKey] : null;
+                bool hadTemplate = descKey != null && firstActRaw[descKey].Contains('{');
+                var descMiss = new SortedSet<string>(StringComparer.Ordinal);
+                string pDesc = descKey != null ? CleanPartnerDesc(firstActRaw[descKey], palNames, itemNames, mapObjNames, uiCommon,
+                    skillNames, paramRow, passiveRowByName, partnerAppend, descMiss, partnerTemplateFam) : null;
+                if (pDesc != null) partnerDescHit++; else partnerDescMiss.Add(name);
+                if (hadTemplate)
+                {
+                    partnerTemplatedDescs++;
+                    if (descMiss.Count == 0) partnerTemplatedDescsClean++;
+                    foreach (var t in descMiss) partnerTemplateMiss.Add($"{name}:{t}");
+                }
+                var iconKey = ResolveVariantKey(k => iconInfo.ContainsKey(k), "", name);
+                string icon = null;
+                if (iconKey != null && iconInfo[iconKey] >= 0) { icon = iconInfo[iconKey].ToString(); partnerIconIds.Add(iconInfo[iconKey]); }
+                else partnerIconMiss.Add(name);
+                partner = new { name = Clean(pName), description = pDesc, icon };
             }
-            else partnerMisses.Add($"{name}");
+            else partnerMisses.Add(name);
 
             var stats = new
             {
@@ -124,6 +172,64 @@ static class Program
         Console.WriteLine($"[elements] distinct=[{string.Join(",", elementKinds)}]");
         if (partnerMisses.Count > 0)
             Console.WriteLine($"[partner misses {partnerMisses.Count}] {string.Join(" | ", partnerMisses)}");
+        Console.WriteLine($"[partner-desc] hit={partnerDescHit}/{kept} miss={partnerDescMiss.Count}");
+        if (partnerDescMiss.Count > 0) Console.WriteLine($"[partner-desc misses] {string.Join(" | ", partnerDescMiss)}");
+        Console.WriteLine($"[partner-templates] templatedDescs={partnerTemplatedDescs} fullyResolved={partnerTemplatedDescsClean} unresolved={partnerTemplateMiss.Count}");
+        Console.WriteLine($"[partner-templates by family] {string.Join(", ", partnerTemplateFam.Select(kv => $"{kv.Key}={kv.Value}"))}");
+        if (partnerTemplateMiss.Count > 0) Console.WriteLine($"[partner-template UNRESOLVED] {string.Join(" | ", partnerTemplateMiss)}");
+        if (partnerIconMiss.Count > 0) Console.WriteLine($"[partner-icon species w/o icon-table row {partnerIconMiss.Count}] {string.Join(" | ", partnerIconMiss)}");
+
+        // ---- passives ----
+        var passives = new SortedDictionary<string, object>(StringComparer.Ordinal);
+        int passKept = 0, passFilteredNoName = 0, passFilteredStub = 0;
+        int passAddPal = 0, passPalAny = 0, passPlayer = 0;
+        foreach (var r in passiveMain.RowMap)
+        {
+            var row = r.Key.Text;
+            var pv = Vals(r.Value);
+            var pNameKey = NonNone(S(pv, "OverrideNameTextID")) ?? "PASSIVE_" + row;
+            if (!skillNames.TryGetValue(pNameKey, out var pname)) { passFilteredNoName++; continue; }
+            pname = Clean(pname);
+            if (string.IsNullOrEmpty(pname) || pname == "en Text" || pname == "-") { passFilteredStub++; continue; }
+
+            var effects = new List<object>();
+            for (int i = 1; i <= 4; i++)
+            {
+                var et = StripEnum(S(pv, "EffectType" + i));
+                if (string.IsNullOrEmpty(et) || et == "no" || et == "None") continue;
+                effects.Add(new { type = et, value = IntOrRound(F(pv, "EffectValue" + i)), target = StripEnum(S(pv, "TargetType" + i)) });
+            }
+            bool addPal = B(pv, "AddPal"), addRare = B(pv, "AddRarePal"), addWorld = B(pv, "AddWorldTreePal"), addMut = B(pv, "AddMutationPal");
+            bool isPal = addPal || addRare || addWorld || addMut;
+            bool isPlayer = B(pv, "AddShotWeapon") || B(pv, "AddMeleeWeapon") || B(pv, "AddArmor") || B(pv, "AddAccessory");
+
+            var descKey = NonNone(S(pv, "OverrideDescMsgID")) ?? "PASSIVE_" + row + "_DESC";
+            string desc = null;
+            if (skillDescs.TryGetValue(descKey, out var rawDesc) && !string.IsNullOrWhiteSpace(rawDesc) && rawDesc != "-")
+                desc = CleanPassiveDesc(rawDesc, pv);
+
+            passives[row] = new
+            {
+                name = pname,
+                rank = I(pv, "Rank"),
+                is_pal = isPal,
+                is_player = isPlayer,
+                category = StripEnum(S(pv, "Category")),
+                effects,
+                description = desc,
+                lottery_weight = I(pv, "LotteryWeight"),
+            };
+            passKept++;
+            if (addPal) passAddPal++;
+            if (isPal) passPalAny++;
+            if (isPlayer) passPlayer++;
+        }
+        Console.WriteLine($"[passives] kept={passKept} filteredNoName={passFilteredNoName} filteredStub={passFilteredStub} isPal(AddPal)={passAddPal} isPal(anyPool)={passPalAny} isPlayer={passPlayer}");
+
+        // ---- partner-skill icons ----
+        var (iconExported, iconUnresolved) = ExportPartnerIcons(provider, partnerIconIds);
+        Console.WriteLine($"[partner-icons] distinctUsed={partnerIconIds.Count} exportedPng={iconExported} unresolvedTextureIds={iconUnresolved.Count}");
+        if (iconUnresolved.Count > 0) Console.WriteLine($"[partner-icons unresolved ids] {string.Join(",", iconUnresolved)}");
 
         // ---- game settings CDO ----
         var gameSettings = ReadGameSettings(provider);
@@ -142,6 +248,7 @@ static class Program
             },
             game_settings = gameSettings,
             species,
+            passives,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -178,6 +285,40 @@ static class Program
         }
         Gate(partnerHit == kept, $"partner coverage {partnerHit}/{kept}");
 
+        // partner description contains the authored shield text
+        string lamballDesc = lamball == null ? null : (string)GetProp(GetProp(lamball, "partner_skill"), "description");
+        Gate(lamballDesc != null && lamballDesc.Contains("becomes a shield", StringComparison.OrdinalIgnoreCase),
+            $"Lamball partner desc missing 'becomes a shield': '{lamballDesc}'");
+
+        // partner-skill template resolution: no description may retain an unresolved {placeholder}
+        int descsWithBraces = species.Values.Count(sp =>
+        {
+            var ps = GetProp(sp, "partner_skill"); var d = ps == null ? null : (string)GetProp(ps, "description");
+            return d != null && d.Contains('{');
+        });
+        Gate(descsWithBraces == 0, $"{descsWithBraces} partner descriptions still contain unresolved '{{' placeholders (see [partner-template UNRESOLVED])");
+        Gate(partnerTemplateMiss.Count == 0, $"{partnerTemplateMiss.Count} unresolved partner-skill templates: {string.Join(" | ", partnerTemplateMiss.Take(20))}");
+        // Cattiva (PinkCat) carry-capacity {Passive1_EffectValue1} must resolve to the numeric range
+        var cattiva = species.TryGetValue("PinkCat", out var pc) ? pc : null;
+        string cattivaDesc = cattiva == null ? null : (string)GetProp(GetProp(cattiva, "partner_skill"), "description");
+        Gate(cattivaDesc != null && cattivaDesc.Contains("100~200"),
+            $"Cattiva(PinkCat) partner desc missing carry-capacity range '100~200': '{cattivaDesc}'");
+
+        // passives sanity
+        object FindPassive(string dn) => passives.Values.FirstOrDefault(p => (string)GetProp(p, "name") == dn);
+        int EffCount(object p) => p == null ? 0 : ((List<object>)GetProp(p, "effects")).Count;
+        var legend = FindPassive("Legend");
+        Gate(legend != null && (int)GetProp(legend, "rank") >= 3 && EffCount(legend) > 0,
+            $"Legend passive missing / rank<3 / no effects (rank={(legend == null ? "n/a" : GetProp(legend, "rank"))}, eff={EffCount(legend)})");
+        var lucky = FindPassive("Lucky");
+        Gate(lucky != null && EffCount(lucky) > 0, $"Lucky passive missing / no effects (eff={EffCount(lucky)})");
+        var brittle = FindPassive("Brittle") ?? passives.Values.FirstOrDefault(p => (int)GetProp(p, "rank") < 0);
+        Gate(brittle != null && (int)GetProp(brittle, "rank") < 0,
+            $"no negative-rank passive found (Brittle rank={(brittle == null ? "n/a" : GetProp(brittle, "rank"))})");
+        Gate(passKept > 200, $"passive count {passKept} unexpectedly low");
+        if (passPalAny != 114)
+            Console.WriteLine($"[WARN] pal-passive count (any pool) {passPalAny} != 114 (paldb ref); AddPal-only={passAddPal} — game version may differ");
+
         // ---- summary ----
         Console.WriteLine("==== SUMMARY ====");
         Console.WriteLine($"species kept={kept} skipped={skipped}");
@@ -194,6 +335,13 @@ static class Program
             Console.WriteLine("Lamball stats: " + JsonConvert.SerializeObject(GetProp(lamball, "stats")));
             Console.WriteLine("Lamball elements: " + JsonConvert.SerializeObject(GetProp(lamball, "elements")));
         }
+        if (lamball != null)
+            Console.WriteLine("Lamball partner desc: " + JsonConvert.SerializeObject(lamballDesc));
+        Console.WriteLine($"passives kept={passKept} (filtered noName={passFilteredNoName} stub={passFilteredStub}); is_pal(anyPool)={passPalAny} is_pal(AddPal)={passAddPal} is_player={passPlayer}");
+        Console.WriteLine($"partner-desc coverage={partnerDescHit}/{kept}; partner-icon distinct={partnerIconIds.Count} pngExported={iconExported}");
+        Console.WriteLine("sample passive Lucky:   " + JsonConvert.SerializeObject(FindPassive("Lucky")));
+        Console.WriteLine("sample passive Legend:  " + JsonConvert.SerializeObject(FindPassive("Legend")));
+        Console.WriteLine("sample passive Brittle: " + JsonConvert.SerializeObject(FindPassive("Brittle")));
         Console.WriteLine($"wall time: {sw.Elapsed.TotalSeconds:F1}s");
 
         if (errors.Count > 0)
@@ -204,6 +352,308 @@ static class Program
         }
         Console.WriteLine("==== ALL GATES PASSED ====");
         return 0;
+    }
+
+    // Reusable discovery pass (`--discover`): full-text search every L10N/en text DataTable
+    // for target UI strings, reporting the containing table path + row key. Used to locate
+    // authored descriptions whose row-key scheme is unknown (e.g. partner-skill descriptions).
+    static void Discover(IFileProvider provider)
+    {
+        string[] needles = { "becomes a shield", "Sometimes drops" };
+        Console.WriteLine($"[discover] needles: {string.Join(" | ", needles)}");
+        int scanned = 0, hits = 0;
+        foreach (var f in provider.Files.Keys.OrderBy(x => x, StringComparer.Ordinal))
+        {
+            if (!f.EndsWith(".uasset") || !f.Contains("/L10N/en/", StringComparison.OrdinalIgnoreCase)) continue;
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            UDataTable dt;
+            try { if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable d) continue; dt = d; }
+            catch { continue; }
+            scanned++;
+            foreach (var row in dt.RowMap)
+            {
+                string txt;
+                try { txt = row.Value.Get<FText>("TextData")?.Text; } catch { continue; }
+                if (txt == null) continue;
+                foreach (var needle in needles)
+                    if (txt.Contains(needle, StringComparison.OrdinalIgnoreCase))
+                    { Console.WriteLine($"  HIT [{needle}] {pkgPath} row='{row.Key.Text}' :: {txt.Replace("\n", " ").Trim()}"); hits++; }
+            }
+        }
+        Console.WriteLine($"[discover] scanned={scanned} datatables hits={hits}");
+    }
+
+    // ---- partner-skill template resolution ----
+    // Partner-skill descriptions (DT_PalFirstActivatedInfoText) embed {templates} the game fills
+    // per partner-skill LEVEL (rank 1..N). Mapping learned by dumping DT_PartnerSkillParameter
+    // (Pal/Content/Pal/DataTable/PassiveSkill/DT_PartnerSkillParameter, keyed by species internal name):
+    //   PassiveSkills[]              one entry per rank; entry.SkillAndParametersArray[N-1].SkillName.Key
+    //                                -> a DT_PassiveSkill_Main row whose EffectValue<M> feeds {PassiveN_EffectValueM}.
+    //   TextReferencePassiveSkills[] one entry per rank; entry.PassiveSkillIds[N-1].Key -> a
+    //                                DT_PassiveSkill_Main row -> {ReferencePassiveN_EffectValueM}.
+    //   ActiveSkill.ActiveSkill_MainValueByRank[]           -> {ActiveSkillMainValueByRank}
+    //   ActiveSkill.ActiveSkill_OverWriteEffectTimeByRank[] -> {ActiveSkillOverWriteEffectTime}
+    //   {ReferenceMsgId_X} -> DT_PartnerSkillAppendText row "X_Rank_1" (the game shows the Lv.1 append
+    //     message; every current _Rank_1 row is blank, so paldb renders these as nothing). Resolved
+    //     text is re-substituted (cycle-guarded) then rich-tag-cleaned by the shared Clean() pass.
+    // POLICY (matches paldb): compute each numeric placeholder at EVERY rank; emit the single value
+    //   if constant across ranks, else "(min~max)". Unresolvable templates are left verbatim + reported.
+
+    // True if a DT_PartnerSkillParameter row carries any per-rank template data (non-stub); used to
+    // skip element-swap variant stubs and inherit the base pal's row.
+    static bool HasTemplateData(FStructFallback param)
+    {
+        if (param == null) return false;
+        if (AsArray(Prop(param, "PassiveSkills"))?.Properties.Count > 0) return true;
+        if (AsArray(Prop(param, "TextReferencePassiveSkills"))?.Properties.Count > 0) return true;
+        var active = AsStruct(Prop(param, "ActiveSkill"));
+        return AsArray(Prop(active, "ActiveSkill_MainValueByRank"))?.Properties.Count > 0
+            || AsArray(Prop(active, "ActiveSkill_OverWriteEffectTimeByRank"))?.Properties.Count > 0;
+    }
+    static readonly Regex TplRefPassive = new(@"\{ReferencePassive(\d+)_EffectValue(\d+)\}");
+    static readonly Regex TplPassive = new(@"\{Passive(\d+)_EffectValue(\d+)\}");
+    static readonly Regex TplRefMsg = new(@"\{ReferenceMsgId_([A-Za-z0-9_]+)\}");
+
+    static string ResolvePartnerTemplates(string raw, FStructFallback param,
+        Dictionary<string, FStructFallback> passiveRows, Dictionary<string, string> append,
+        ISet<string> unresolved, IDictionary<string, int> fam)
+        => raw == null ? null : Sub(raw, param, passiveRows, append, unresolved, fam, new HashSet<string>());
+
+    static string Sub(string s, FStructFallback param, Dictionary<string, FStructFallback> passiveRows,
+        Dictionary<string, string> append, ISet<string> unresolved, IDictionary<string, int> fam, HashSet<string> seenMsg)
+    {
+        s = TplRefPassive.Replace(s, m => Tally("ReferencePassive", ResolveRankPassive(param, "TextReferencePassiveSkills", "PassiveSkillIds",
+            int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), passiveRows), m.Value, unresolved, fam));
+        s = TplPassive.Replace(s, m => Tally("Passive", ResolveRankPassive(param, "PassiveSkills", "SkillAndParametersArray",
+            int.Parse(m.Groups[1].Value), int.Parse(m.Groups[2].Value), passiveRows), m.Value, unresolved, fam));
+        s = ReplaceActive(s, "{ActiveSkillMainValueByRank}", param, "ActiveSkill_MainValueByRank", "ActiveSkillMainValueByRank", unresolved, fam);
+        s = ReplaceActive(s, "{ActiveSkillOverWriteEffectTime}", param, "ActiveSkill_OverWriteEffectTimeByRank", "ActiveSkillOverWriteEffectTime", unresolved, fam);
+        s = TplRefMsg.Replace(s, m =>
+        {
+            var id = m.Groups[1].Value;
+            if (!seenMsg.Add(id)) return "";                                  // cycle guard
+            if (!append.TryGetValue(id + "_Rank_1", out var txt) || txt == null) { unresolved.Add(m.Value); return m.Value; }
+            Bump(fam, "ReferenceMsgId");
+            return Sub(txt, param, passiveRows, append, unresolved, fam, seenMsg); // recurse into referenced text
+        });
+        return s;
+    }
+
+    static string Tally(string family, string resolved, string original, ISet<string> unresolved, IDictionary<string, int> fam)
+    { if (resolved == null) { unresolved.Add(original); return original; } Bump(fam, family); return resolved; }
+    static void Bump(IDictionary<string, int> fam, string k) => fam[k] = fam.TryGetValue(k, out var c) ? c + 1 : 1;
+
+    // For placeholder {PassiveN_EffectValueM}/{ReferencePassiveN_EffectValueM}: gather EffectValueM of the
+    // rank-r passive N across all ranks r; single number if constant, else "(min~max)". null if none resolve.
+    static string ResolveRankPassive(FStructFallback param, string arrayField, string innerField,
+        int n, int m, Dictionary<string, FStructFallback> passiveRows)
+    {
+        var ranks = AsArray(Prop(param, arrayField));
+        if (ranks == null) return null;
+        var vals = new List<double>();
+        foreach (var rankEl in ranks.Properties)
+        {
+            var inner = AsArray(Prop(AsStruct(rankEl.GenericValue), innerField));
+            if (inner == null || inner.Properties.Count < n) continue;
+            var entry = AsStruct(inner.Properties[n - 1].GenericValue);
+            // RefPassive entries expose Key directly; PassiveSkills entries nest it under SkillName.
+            var key = FNameText(Prop(entry, "Key")) ?? FNameText(Prop(AsStruct(Prop(entry, "SkillName")), "Key"));
+            if (key != null && passiveRows.TryGetValue(key, out var prow))
+            {
+                var ev = Prop(prow, "EffectValue" + m);
+                if (ev != null) vals.Add(Convert.ToDouble(ev));
+            }
+        }
+        return FmtRange(vals);
+    }
+
+    static string ResolveActiveArray(FStructFallback param, string field)
+    {
+        var arr = AsArray(Prop(AsStruct(Prop(param, "ActiveSkill")), field));
+        if (arr == null || arr.Properties.Count == 0) return null;
+        return FmtRange(arr.Properties.Select(p => Convert.ToDouble(p.GenericValue)).ToList());
+    }
+
+    static string ReplaceActive(string s, string token, FStructFallback param, string field, string family, ISet<string> unresolved, IDictionary<string, int> fam)
+    {
+        if (!s.Contains(token)) return s;
+        var v = ResolveActiveArray(param, field);
+        if (v == null) { unresolved.Add(token); return s; }
+        Bump(fam, family);
+        return s.Replace(token, v);
+    }
+
+    static object Prop(FStructFallback s, string name) => s?.Properties.FirstOrDefault(p => p.Name.Text == name)?.Tag?.GenericValue;
+    static UScriptArray AsArray(object v) => v as UScriptArray;
+    static FStructFallback AsStruct(object v) => v as FStructFallback ?? (v as FScriptStruct)?.StructType as FStructFallback;
+    static string FNameText(object v) => v is FName fn ? fn.Text : null;
+    static string FmtNum(double d) => d == Math.Floor(d) && Math.Abs(d) < 9.2e18
+        ? ((long)d).ToString(System.Globalization.CultureInfo.InvariantCulture)
+        : d.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+    static string FmtRange(List<double> vals)
+    {
+        if (vals == null || vals.Count == 0) return null;
+        double mn = vals.Min(), mx = vals.Max();
+        return mn == mx ? FmtNum(mn) : $"({FmtNum(mn)}~{FmtNum(mx)})";
+    }
+
+    // internalName -> matching table key, stripping trailing _Variant suffixes until a key exists
+    static string ResolveVariantKey(Func<string, bool> exists, string prefix, string internalName)
+    {
+        var n = internalName;
+        while (true)
+        {
+            if (exists(prefix + n)) return prefix + n;
+            var idx = n.LastIndexOf('_');
+            if (idx < 0) return null;
+            n = n.Substring(0, idx);
+        }
+    }
+
+    // resolve <itemName id=|X|/> style rich tags to their English display text, drop <img>, then
+    // substitute the per-rank {templates} (see ResolvePartnerTemplates), and strip remaining tags.
+    static string CleanPartnerDesc(string raw, Dictionary<string, string> pal, Dictionary<string, string> item,
+        Dictionary<string, string> mapobj, Dictionary<string, string> ui, Dictionary<string, string> skill,
+        FStructFallback param, Dictionary<string, FStructFallback> passiveRows, Dictionary<string, string> append,
+        ISet<string> unresolved, IDictionary<string, int> fam)
+    {
+        if (raw == null) return null;
+        string s = IdTag.Replace(raw, m =>
+        {
+            var tag = m.Groups[1].Value; var id = m.Groups[2].Value;
+            return tag switch
+            {
+                "itemName" => item.TryGetValue("ITEM_NAME_" + id, out var x) ? x : id,
+                "mapObjectName" => mapobj.TryGetValue("MAPOBJECT_NAME_" + id, out var x) ? x : id,
+                "characterName" => pal.TryGetValue("PAL_NAME_" + id, out var x) ? x : id,
+                "uiCommon" => ui.TryGetValue(id, out var x) ? x : id,
+                "img" => "",
+                // active-skill refs (e.g. Unique_Baphomet_SwallowKite -> "Hellfire Claw"); safe: only replaces on lookup hit
+                _ => skill.TryGetValue("ACTION_SKILL_" + id, out var x) ? x : id,
+            };
+        });
+        s = ResolvePartnerTemplates(s, param, passiveRows, append, unresolved, fam);
+        var cleaned = Clean(s);
+        return string.IsNullOrEmpty(cleaned) ? null : cleaned;
+    }
+
+    // substitute {EffectValueN} placeholders with the row's numeric effect values, then strip tags
+    static string CleanPassiveDesc(string raw, Dictionary<string, object> pv)
+    {
+        string s = Regex.Replace(raw, @"\{EffectValue(\d)\}", m =>
+            IntOrRound(F(pv, "EffectValue" + m.Groups[1].Value)).ToString());
+        var cleaned = Clean(s);
+        return string.IsNullOrEmpty(cleaned) ? null : cleaned;
+    }
+
+    // export each distinct partner-skill icon (T_icon_skill_pal_<NNN>) once; return (exported, unresolved ids)
+    static (int, List<int>) ExportPartnerIcons(IFileProvider provider, IEnumerable<int> ids)
+    {
+        var dir = Path.Combine(OutDir, "icons", "partner");
+        Directory.CreateDirectory(dir);
+        int exported = 0; var unresolved = new List<int>();
+        foreach (var id in ids.Distinct().OrderBy(x => x))
+        {
+            var assetPath = "Pal/Content/Pal/Texture/UI/InGame/SkillIcon/T_icon_skill_pal_" + id.ToString("000");
+            try
+            {
+                if (provider.TryLoadPackageObject(assetPath, out var obj) && obj is UTexture2D tex)
+                {
+                    using var bmp = tex.Decode(ETexturePlatform.DesktopMobile)?.ToSkBitmap();
+                    if (bmp != null)
+                    {
+                        using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
+                        using var fs = File.Create(Path.Combine(dir, $"{id}.png"));
+                        data.SaveTo(fs);
+                        exported++;
+                        continue;
+                    }
+                }
+                unresolved.Add(id);
+            }
+            catch { unresolved.Add(id); }
+        }
+        return (exported, unresolved);
+    }
+
+    // `--export-named-partner-icons`: enumerate every bespoke partner-skill icon
+    // texture (`T_icon_skill_pal_<Name>`, excluding the numbered `_<NNN>` glyphs
+    // handled by ExportPartnerIcons), export each to out/icons/partner-named/<Name>.png,
+    // then join by matching the texture-name suffix (case-insensitive, common
+    // prefixes stripped) to a `DT_partnerSkillIconDataTable` row key — whose value
+    // is the numeric TextureID the pack/UI keys off. On a confident exact match,
+    // copy the PNG to app/public/partner/<id>.png so the numeric key resolves.
+    //
+    // Reality of this build: most bespoke row keys (species names, TextureID 21+)
+    // have NO individual texture — the named textures are mostly shared category
+    // glyphs plus a few species-specific ones; only the latter join to a row key.
+    // No fuzzy number->glyph guessing (no authoritative ordering exists).
+    static void ExportNamedPartnerIcons(IFileProvider provider, Dictionary<string, int> iconInfo)
+    {
+        var namedDir = Path.Combine(OutDir, "icons", "partner-named");
+        Directory.CreateDirectory(namedDir);
+        var appDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "app", "public", "partner"));
+        Directory.CreateDirectory(appDir);
+
+        // TextureID -> icon-table row keys (the join keys; a species name resolves
+        // to one of these via ResolveVariantKey).
+        var idToKeys = new Dictionary<int, List<string>>();
+        foreach (var kv in iconInfo)
+            if (kv.Value >= 0) (idToKeys.TryGetValue(kv.Value, out var l) ? l : (idToKeys[kv.Value] = new List<string>())).Add(kv.Key);
+        // Normalized row-key -> TextureID for suffix matching.
+        static string Norm(string s) => Regex.Replace(s.ToLowerInvariant(), @"^(t_icon_skill_pal_|skill_|waza_|partnerskill_)", "");
+        var normKeyToId = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (var kv in iconInfo)
+            if (kv.Value >= 0) normKeyToId[Norm(kv.Key)] = kv.Value;
+
+        // Distinct named textures (basename, prefer .uasset paths).
+        var suffixes = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var f in provider.Files.Keys)
+        {
+            var fn = Path.GetFileNameWithoutExtension(f);
+            if (!fn.StartsWith("T_icon_skill_pal_", StringComparison.OrdinalIgnoreCase)) continue;
+            var suffix = fn.Substring("T_icon_skill_pal_".Length);
+            if (suffix.Length == 0 || Regex.IsMatch(suffix, @"^\d+$")) continue; // numbered handled elsewhere
+            suffixes.Add(suffix);
+        }
+        Console.WriteLine($"[named-icons] found {suffixes.Count} bespoke T_icon_skill_pal_<Name> textures");
+
+        int exported = 0, matched = 0, copied = 0;
+        var manifest = new List<object>();
+        foreach (var suffix in suffixes)
+        {
+            var assetPath = "Pal/Content/Pal/Texture/UI/InGame/SkillIcon/T_icon_skill_pal_" + suffix;
+            int? textureId = null; bool didCopy = false; bool didExport = false;
+            try
+            {
+                if (provider.TryLoadPackageObject(assetPath, out var obj) && obj is UTexture2D tex)
+                {
+                    using var bmp = tex.Decode(ETexturePlatform.DesktopMobile)?.ToSkBitmap();
+                    if (bmp != null)
+                    {
+                        using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
+                        var namedPng = Path.Combine(namedDir, $"{suffix}.png");
+                        using (var fs = File.Create(namedPng)) data.SaveTo(fs);
+                        exported++; didExport = true;
+
+                        // Confident join: suffix (normalized) == an icon-table row key.
+                        if (normKeyToId.TryGetValue(Norm(suffix), out var tid))
+                        {
+                            textureId = tid; matched++;
+                            var appPng = Path.Combine(appDir, $"{tid}.png");
+                            if (!File.Exists(appPng)) { File.Copy(namedPng, appPng, false); copied++; didCopy = true; }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Console.WriteLine($"[named-icons] {suffix}: {e.Message}"); }
+            manifest.Add(new { name = suffix, texture_id = textureId, exported = didExport, copied = didCopy, row_keys = textureId is int t && idToKeys.TryGetValue(t, out var ks) ? ks : null });
+        }
+
+        File.WriteAllText(Path.Combine(namedDir, "index.json"),
+            JsonConvert.SerializeObject(new { count = suffixes.Count, exported, matched, copied, textures = manifest }, Formatting.Indented));
+        Console.WriteLine($"[named-icons] exported={exported} matchedToTextureId={matched} copiedToApp={copied} (unmatched={suffixes.Count - matched})");
+        Console.WriteLine($"[named-icons] app partner dir now has {Directory.GetFiles(appDir, "*.png").Length} PNGs");
     }
 
     static IDictionary<string, object> ReadGameSettings(IFileProvider provider)
@@ -343,6 +793,8 @@ static class Program
         s = s.Replace("\r\n", "\n").Replace("\r", "\n");
         s = RichTag.Replace(s, "");
         s = Ws.Replace(s, " ");
+        s = Regex.Replace(s, @" *\n *", "\n");   // trim spaces around authored line breaks
+        s = Regex.Replace(s, @"\n{2,}", "\n");   // collapse blank-line runs
         return s.Trim();
     }
 
