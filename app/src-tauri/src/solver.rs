@@ -12,8 +12,8 @@ use std::path::Path;
 use pal_data::gamedata::PassiveTier;
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve as run_solver, BreedingPlan, SolverConfig, TargetPal,
-    TargetSpec,
+    resolve_passive, resolve_species, solve_with_catching, BreedingPlan, Catching, ModeResult,
+    SolverConfig, TargetPal, TargetSpec,
 };
 use serde::{Deserialize, Serialize};
 
@@ -27,6 +27,19 @@ pub struct SolveRequest {
     pub max_steps: Option<u32>,
     pub include_wild: Option<bool>,
     pub max_irrelevant: Option<u8>,
+    /// Catch policy (only meaningful when `include_wild` is set). Defaults to
+    /// `BreedingOnly` — prefer pure owned breeding, fall back to catch-assisted
+    /// only when the target is unreachable owned-only.
+    #[serde(default)]
+    pub catching: Catching,
+}
+
+/// Response for the [`solve`] command: the plans plus whether a `BreedingOnly`
+/// request fell back to catch-assisted plans (no pure owned-breeding path).
+#[derive(Debug, Clone, Serialize)]
+pub struct SolveResponse {
+    pub plans: Vec<BreedingPlan>,
+    pub fallback_used: bool,
 }
 
 /// An `{id, name}` pair (internal id + English display name) for autocomplete.
@@ -37,7 +50,7 @@ pub struct NamedEntry {
 }
 
 /// The command body, factored out so tests can drive it synchronously.
-fn run(save_dir: &str, req: SolveRequest) -> Result<Vec<BreedingPlan>, String> {
+fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
     if save_dir.trim().is_empty() {
         return Err("No save folder selected.".into());
     }
@@ -69,13 +82,15 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<Vec<BreedingPlan>, String> {
     let save =
         pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
 
-    Ok(run_solver(gd, &spec, &save.pals, &cfg))
+    let ModeResult { plans, fallback_used } =
+        solve_with_catching(gd, &spec, &save.pals, &cfg, req.catching);
+    Ok(SolveResponse { plans, fallback_used })
 }
 
 /// Solve for breeding plans toward `spec.target_species` with the required
 /// passives. The solver is CPU-bound (seconds), so it runs on the blocking pool.
 #[tauri::command]
-pub async fn solve(save_dir: String, spec: SolveRequest) -> Result<Vec<BreedingPlan>, String> {
+pub async fn solve(save_dir: String, spec: SolveRequest) -> Result<SolveResponse, String> {
     tauri::async_runtime::spawn_blocking(move || run(&save_dir, spec))
         .await
         .map_err(|e| format!("solver task panicked: {e}"))?
@@ -175,18 +190,49 @@ mod tests {
             max_steps: Some(5),
             include_wild: None,
             max_irrelevant: None,
+            catching: Catching::default(),
         };
-        let plans = run(&testdata_dir(), req).expect("solve should succeed");
-        assert!(!plans.is_empty(), "expected >=1 plan");
+        let resp = run(&testdata_dir(), req).expect("solve should succeed");
+        assert!(!resp.plans.is_empty(), "expected >=1 plan");
+        assert!(!resp.fallback_used, "owned-only never sets fallback_used");
 
-        let best = &plans[0];
+        let best = &resp.plans[0];
         assert!(best.total_steps > 0, "expected total_steps > 0, got 0");
         eprintln!(
             "solve summary: {} plan(s); best = {} steps, {:.0}s total ({} wild)",
-            plans.len(),
+            resp.plans.len(),
             best.total_steps,
             best.total_time_secs,
             best.total_wild_pals
         );
+    }
+
+    /// breeding_only + include_wild for a target the testdata roster can breed
+    /// from owned pals: the command must return the pure owned-breeding plans
+    /// (no fallback, no wild nodes) even though wild seeding was requested.
+    #[test]
+    fn breeding_only_prefers_owned_over_catch() {
+        use pal_solver::solver::PlanSource;
+        fn has_wild(node: &pal_solver::solver::PlanNode) -> bool {
+            matches!(node.source, PlanSource::Wild { .. })
+                || node.children.iter().any(has_wild)
+        }
+        let req = SolveRequest {
+            target_species: "Anubis".into(),
+            required_passives: vec!["Runner".into()],
+            max_steps: Some(5),
+            include_wild: Some(true),
+            max_irrelevant: None,
+            catching: Catching::BreedingOnly,
+        };
+        let resp = run(&testdata_dir(), req).expect("solve should succeed");
+        assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
+        assert!(
+            !resp.fallback_used,
+            "Anubis is owned-breedable — breeding_only must not fall back to catching"
+        );
+        for p in &resp.plans {
+            assert!(!has_wild(&p.root), "breeding_only owned-reachable plan has no wild nodes");
+        }
     }
 }

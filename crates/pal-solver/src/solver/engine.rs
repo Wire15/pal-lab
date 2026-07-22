@@ -25,7 +25,7 @@ use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
 };
-use crate::solver::results::BreedingPlan;
+use crate::solver::results::{filter_trivial_wild, BreedingPlan};
 use crate::solver::spec::{TargetPal, TargetSpec};
 use crate::solver::working_set::WorkingSet;
 
@@ -496,4 +496,67 @@ pub fn solve(
 
     let pruned = crate::solver::pruning::prune_results(results, cfg.result_limit);
     pruned.iter().map(|r| BreedingPlan::from_ref(gd, r, cfg.cake)).collect()
+}
+
+/// Catch policy for a wild-enabled solve (only consulted when
+/// [`SolverConfig::include_wild`] is set — owned-only solves ignore it).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Catching {
+    /// Prefer pure owned-breeding plans; catches are a last resort. The solve
+    /// runs owned-only FIRST and returns those plans if any exist; only when the
+    /// target is unreachable owned-only does it fall back to a catch-assisted
+    /// run (flagged via [`ModeResult::fallback_used`]).
+    #[default]
+    BreedingOnly,
+    /// Catches may fill ingredient gaps freely; a single owned-or-wild run.
+    Allowed,
+}
+
+/// Outcome of [`solve_with_catching`]: the plans plus whether a `BreedingOnly`
+/// request had to fall back to catch-assisted plans (no pure-breeding path).
+#[derive(Debug, Clone)]
+pub struct ModeResult {
+    pub plans: Vec<BreedingPlan>,
+    pub fallback_used: bool,
+}
+
+/// Catching-mode-aware solve orchestration (the engine [`solve`] stays
+/// single-mode). Trivial "catch the target" plans are dropped by
+/// [`filter_trivial_wild`] whenever a real plan survives.
+///
+/// - Owned-only (`!cfg.include_wild`): `catching` is ignored; a single owned
+///   run, `fallback_used = false`.
+/// - `Allowed` + wild: one wild-enabled run, filtered, `fallback_used = false`.
+/// - `BreedingOnly` + wild: an owned-only run first; if it yields any plan those
+///   are returned (`fallback_used = false`). Otherwise a wild-enabled run is
+///   filtered and returned with `fallback_used = true`.
+pub fn solve_with_catching(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+    catching: Catching,
+) -> ModeResult {
+    if !cfg.include_wild {
+        return ModeResult { plans: solve(gd, spec, owned, cfg), fallback_used: false };
+    }
+    match catching {
+        Catching::Allowed => ModeResult {
+            plans: filter_trivial_wild(solve(gd, spec, owned, cfg)),
+            fallback_used: false,
+        },
+        Catching::BreedingOnly => {
+            let owned_cfg = SolverConfig { include_wild: false, ..cfg.clone() };
+            let owned_plans = solve(gd, spec, owned, &owned_cfg);
+            if !owned_plans.is_empty() {
+                ModeResult { plans: owned_plans, fallback_used: false }
+            } else {
+                ModeResult {
+                    plans: filter_trivial_wild(solve(gd, spec, owned, cfg)),
+                    fallback_used: true,
+                }
+            }
+        }
+    }
 }

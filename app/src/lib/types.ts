@@ -87,6 +87,13 @@ export interface SolveRequest {
    * CATCH steps so same-species-only legendaries (Jetragon, …) get plans. */
   include_wild?: boolean;
   max_irrelevant?: number;
+  /** Catch policy, only meaningful when `include_wild` is true. Defaults to
+   * `"breeding_only"` server-side: pure owned breeding, auto-falling back to
+   * catch-assisted plans (with `SolveResponse.fallback_used`) only when the
+   * target is unreachable owned-only. `"allowed"` lets catches fill ingredient
+   * gaps freely. Either way, trivial 0-step "catch the target" plans are
+   * dropped whenever a real plan exists. */
+  catching?: "allowed" | "breeding_only";
 }
 
 /** `{id, name}` from `list_species`. */
@@ -173,6 +180,15 @@ export interface BreedingPlan {
   cake: CakeKind;
   /** Estimated cakes consumed across all steps (0 for Normal). */
   cake_count: number;
+}
+
+/** Response from the `solve` command: the ranked breeding plans plus whether a
+ * `"breeding_only"` request had to fall back to catch-assisted plans because no
+ * pure owned-breeding path existed. `fallback_used` is always false for
+ * `"allowed"` and for owned-only (`include_wild=false`) solves. */
+export interface SolveResponse {
+  plans: BreedingPlan[];
+  fallback_used: boolean;
 }
 
 // --- Pal-dex (mirrors app/src-tauri/src/paldex.rs) ---

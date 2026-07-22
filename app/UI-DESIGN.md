@@ -256,6 +256,38 @@ keep working.
   `PlanNodePanel` inspector on the right. Switching plans or re-solving clears
   the selection.
 
+### Catching mode & the required-catches callout (Round 8)
+
+When solving with **"Include pals I don't own"**, two surfaces govern and explain
+how wild catches enter a plan (`views/Solver.tsx` only; backend policy in §15).
+
+- **`CATCHING` control (left briefing).** A second segmented radiogroup directly
+  under `SOURCE POOL`, sharing its exact anatomy (stacked full-width rows, leading
+  dot, `bg-raised`+amber active, `role="radiogroup"`). **Rendered only when the
+  pool is "Include pals I don't own"** — hidden for owned-only, where the policy
+  is meaningless. Options: **`Breeding only`** (default) and **`Catching
+  allowed`**, with a microcopy line describing the active mode (breeding-first
+  auto-fallback vs. catches filling ingredient gaps). The `SOURCE POOL` microcopy
+  is reworded to describe pool **scope** only. Selection rides the `solve` request
+  as `catching: "breeding_only" | "allowed"` (only meaningful with `include_wild`).
+- **Required-catches callout.** A slim `el-leaf`-tinted banner (`border-b
+  border-el-leaf/25 bg-el-leaf/[0.06]`, mono uppercase eyebrow) for the **active
+  plan**, rendered **once, below the plan tabs and above the stats header /
+  canvas / cards** so it reads in **both Graph and List** views. Catches are
+  derived **client-side** from the active plan's tree Wild leaves (`catchChips` in
+  `Solver.tsx`): captures summed per species, the highest `min_wild_level` floor
+  kept. Three states:
+  - **Fallback** (`SolveResponse.fallback_used`): eyebrow `NEEDS CATCHING`, copy
+    "No pure-breeding path from your pals — this plan needs catches:", then one
+    chip per species — `[PalIcon] Name[ ×N] · Lv M+` in the shared `el-leaf`
+    catch-chip style (mirrors the graph/ladder `CATCH`/`Lv N+` cluster).
+  - **Catch-only** (a lone plan whose root is a 0-step Wild catch): eyebrow
+    `CATCH ONLY`, copy "{Target} can't be bred from any other species — catch it
+    in the wild (Lv N+)."; the single `CATCH` node still renders below.
+  - **No banner** otherwise (active plan has no Wild leaves and `fallback_used` is
+    false) — e.g. a normal `Catching allowed` plan whose catches already show as
+    node badges and in the stats-header `N wild` count.
+
 ## 8. Window chrome & quality floor
 
 - **Scrollbars:** thin, `line` thumb on transparent track, rounded, brighten on
@@ -785,6 +817,27 @@ breeders (raid/quest pals: Blazamut Ryu, Bellanoir, the Xeno line, …) stay
 "no plan" even with wild on — they are genuinely unobtainable by catch+breed.
 Wild plan nodes carry `source:{Wild:{captures,min_wild_level}}`; owned/bred node
 shapes are unchanged.
+
+**Catching modes (Round 8 — breeding-first policy).** The `solve` command grew a
+`catching` param (`"breeding_only"` default | `"allowed"`, only meaningful when
+`include_wild` is on) and now returns a `SolveResponse {plans, fallback_used}`
+wrapper instead of a bare plan array. Orchestration lives in `pal_solver`
+(`solve_with_catching` → `ModeResult`); the engine `solve` stays single-mode.
+  - **`breeding_only`** runs an **owned-only pass first**; if it yields any plan
+    those are returned untouched (`fallback_used=false`). Only when the target is
+    unreachable owned-only does it rerun with wild seeding and return the
+    catch-assisted plans with `fallback_used=true` (the UI's honest "no pure
+    breeding path" callout). This is why a directly-catchable target like Anubis
+    still shows its owned breeding chain first rather than a one-tap catch.
+  - **`allowed`** is a single wild-enabled pass; catches fill ingredient gaps
+    freely, `fallback_used` always false.
+  - **Trivial-catch filter** (`results::filter_trivial_wild`, both modes): a plan
+    whose root is a `Wild` source with `total_steps==0` (just catch the target)
+    is **dropped whenever any other plan survives**, so real breeding chains are
+    never buried under a 0-step catch. When such a catch is the *only* plan (a
+    catchable same-species-only legendary with no owned pair, or a 1-wild-pal
+    budget), it is returned as the sole plan and the UI renders the catch-only
+    callout from it. The CLI mirrors all of this via `--catching breeding-only|allowed`.
 
 ## 16. Round 7 — Solver graph node inspector (`components/plan-node-panel.tsx`)
 

@@ -12,12 +12,12 @@ pub mod spec;
 pub mod working_set;
 
 pub use config::{CakeKind, SolverConfig};
-pub use engine::{build_initial_content, solve};
+pub use engine::{build_initial_content, solve, solve_with_catching, Catching, ModeResult};
 pub use refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef,
 };
 pub use resolve::{resolve_passive, resolve_species};
-pub use results::{BreedingPlan, PlanNode, PlanSource};
+pub use results::{filter_trivial_wild, is_trivial_wild_plan, BreedingPlan, PlanNode, PlanSource};
 pub use spec::{TargetPal, TargetSpec};
 pub use working_set::{key_of, RefKey, WorkingSet};

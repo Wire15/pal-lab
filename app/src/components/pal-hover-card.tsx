@@ -25,6 +25,7 @@ import {
   type ReactElement,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import { invoke } from "../lib/tauri";
 import type { IvSet, OwnedPal, SpeciesEntry } from "../lib/types";
 import { PalIcon } from "./primitives";
@@ -192,27 +193,36 @@ export function PalHoverCard({
   return (
     <>
       {trigger}
-      {open && (entry || pal) && (
-        <div
-          ref={cardRef}
-          role="tooltip"
-          style={{
-            position: "fixed",
-            left: pos ? pos.left : -9999,
-            top: pos ? pos.top : -9999,
-            width: CARD_W,
-            pointerEvents: "none",
-            zIndex: 60,
-            visibility: pos ? "visible" : "hidden",
-            ...glow,
-          }}
-          className={`overflow-hidden rounded-md border bg-panel/95 text-left ${
-            prized ? "border-transparent" : "border-line ring-1 ring-abyss/70"
-          }`}
-        >
-          <HoverCardBody entry={entry} pal={pal} tier={tier} />
-        </div>
-      )}
+      {open &&
+        (entry || pal) &&
+        // Portal to <body>: `position: fixed` is resolved against the nearest
+        // transformed/filtered ancestor, not the viewport. On the Solver graph
+        // the trigger lives inside plan-graph's translate+scale canvas div, so
+        // an inline fixed card would offset by the canvas transform. Anchoring
+        // at body escapes any such containing block; the rect math is already
+        // viewport-space, so it stays correct at every pan/zoom.
+        createPortal(
+          <div
+            ref={cardRef}
+            role="tooltip"
+            style={{
+              position: "fixed",
+              left: pos ? pos.left : -9999,
+              top: pos ? pos.top : -9999,
+              width: CARD_W,
+              pointerEvents: "none",
+              zIndex: 60,
+              visibility: pos ? "visible" : "hidden",
+              ...glow,
+            }}
+            className={`overflow-hidden rounded-md border bg-panel/95 text-left ${
+              prized ? "border-transparent" : "border-line ring-1 ring-abyss/70"
+            }`}
+          >
+            <HoverCardBody entry={entry} pal={pal} tier={tier} />
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

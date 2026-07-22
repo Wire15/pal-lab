@@ -5,6 +5,7 @@ import type {
   NamedEntry,
   PlanNode,
   SolveRequest,
+  SolveResponse,
 } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
@@ -12,6 +13,42 @@ import { PassiveStrip } from "../components/passive-strip";
 import { useAppState } from "../state";
 import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
+
+/** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
+type CatchingMode = NonNullable<SolveRequest["catching"]>;
+
+/** One wild species the active plan needs caught, aggregated across the tree. */
+interface CatchChip {
+  id: string | null;
+  name: string;
+  captures: number;
+  minLevel: number;
+}
+
+/** Walk a plan tree and aggregate its Wild leaves by species: captures sum,
+ *  min-wild-level is the highest floor seen. Drives the required-catches callout. */
+function catchChips(root: PlanNode, nameToId: Map<string, string>): CatchChip[] {
+  const acc = new Map<string, CatchChip>();
+  (function walk(n: PlanNode) {
+    if (typeof n.source === "object" && "Wild" in n.source) {
+      const w = n.source.Wild;
+      const cur = acc.get(n.species_name);
+      if (cur) {
+        cur.captures += w.captures;
+        cur.minLevel = Math.max(cur.minLevel, w.min_wild_level);
+      } else {
+        acc.set(n.species_name, {
+          id: nameToId.get(n.species_name) ?? null,
+          name: n.species_name,
+          captures: w.captures,
+          minLevel: w.min_wild_level,
+        });
+      }
+    }
+    n.children.forEach(walk);
+  })(root);
+  return [...acc.values()];
+}
 
 /** Count wild-caught leaves in a plan tree (header summary cross-check). */
 function countWild(node: PlanNode): number {
@@ -153,11 +190,13 @@ export default function Solver() {
   const [passives, setPassives] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
   const [includeWild, setIncludeWild] = useState(false);
+  const [catching, setCatching] = useState<CatchingMode>("breeding_only");
 
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
   const [passiveList, setPassiveList] = useState<NamedEntry[]>([]);
 
   const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
+  const [fallbackUsed, setFallbackUsed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [solving, setSolving] = useState(false);
   const [viewMode, setViewMode] = useState<"graph" | "list">("graph");
@@ -208,6 +247,12 @@ export default function Solver() {
   );
   const targetId = nameToId.get(species) ?? null;
 
+  // Required-catches summary for the ACTIVE plan (client-derived, contract #4).
+  const catchAgg = useMemo(() => {
+    const p = plans && plans.length > 0 ? plans[activePlan] : null;
+    return p ? catchChips(p.root, nameToId) : [];
+  }, [plans, activePlan, nameToId]);
+
   function addPassive() {
     const v = passiveInput.trim();
     if (v && !passives.includes(v)) setPassives((p) => [...p, v]);
@@ -222,15 +267,19 @@ export default function Solver() {
     setSolving(true);
     setError(null);
     setPlans(null);
+    setFallbackUsed(false);
     try {
+      // `catching` only matters with include_wild; harmless when owned-only.
       const spec: SolveRequest = {
         target_species: species,
         required_passives: passives,
         max_steps: maxSteps,
         include_wild: includeWild,
+        catching,
       };
-      const result = await invoke<BreedingPlan[]>("solve", { saveDir, spec });
-      setPlans(result);
+      const resp = await invoke<SolveResponse>("solve", { saveDir, spec });
+      setPlans(resp.plans);
+      setFallbackUsed(resp.fallback_used);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -242,6 +291,25 @@ export default function Solver() {
   const fastestIdx = plans && plans.length > 1
     ? plans.reduce((best, p, idx, arr) => (p.total_time_secs < arr[best].total_time_secs ? idx : best), 0)
     : -1;
+
+  // Required-catches callout state for the active plan (contract #2).
+  const activePlanObj = plans && plans.length > 0 ? plans[activePlan] : null;
+  const activeRootWild =
+    activePlanObj &&
+    typeof activePlanObj.root.source === "object" &&
+    "Wild" in activePlanObj.root.source
+      ? activePlanObj.root.source.Wild
+      : null;
+  // A lone plan whose root is a 0-step wild catch = catch-the-target-only.
+  const catchOnly = !!(
+    plans &&
+    plans.length === 1 &&
+    activeRootWild &&
+    activePlanObj &&
+    activePlanObj.total_steps === 0
+  );
+  const showCatchCallout =
+    !!activePlanObj && (catchOnly || (fallbackUsed && catchAgg.length > 0));
 
   return (
     <div className="flex h-full">
@@ -388,10 +456,55 @@ export default function Solver() {
             </div>
             {includeWild && (
               <p className="text-[12px] leading-relaxed text-ink-faint">
-                Plans may include pals you&rsquo;d need to catch first.
+                Also considers wild-catchable species you don&rsquo;t own yet.
               </p>
             )}
           </div>
+          {includeWild && (
+            <div className="flex flex-col gap-1.5">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                Catching
+              </span>
+              <div
+                className="flex flex-col overflow-hidden rounded-md border border-line"
+                role="radiogroup"
+                aria-label="Whether the solver may use wild catches"
+              >
+                {[
+                  { mode: "breeding_only" as const, label: "Breeding only" },
+                  { mode: "allowed" as const, label: "Catching allowed" },
+                ].map((m) => {
+                  const active = catching === m.mode;
+                  return (
+                    <button
+                      key={m.mode}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setCatching(m.mode)}
+                      className={`flex items-center gap-2 border-b border-line px-2.5 py-1.5 text-left text-[12px] transition-colors last:border-b-0 ${
+                        active
+                          ? "bg-raised text-amber"
+                          : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                      }`}
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          active ? "bg-amber" : "bg-line"
+                        }`}
+                      />
+                      {m.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[12px] leading-relaxed text-ink-faint">
+                {catching === "breeding_only"
+                  ? "Pure breeding from your pals. Falls back to catches only when no breeding path exists."
+                  : "Wild catches may fill ingredient gaps anywhere in the chain."}
+              </p>
+            </div>
+          )}
         </div>
 
         <button
@@ -490,6 +603,52 @@ export default function Solver() {
                 })}
               </div>
             </div>
+            {showCatchCallout && activePlanObj && (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-el-leaf/25 bg-el-leaf/[0.06] px-4 py-2.5">
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-el-leaf">
+                  {catchOnly ? "Catch only" : "Needs catching"}
+                </span>
+                {catchOnly ? (
+                  <span className="text-[12.5px] leading-relaxed text-ink-dim">
+                    <span className="font-medium text-ink">
+                      {activePlanObj.root.species_name}
+                    </span>{" "}
+                    can&rsquo;t be bred from any other species &mdash; catch it in
+                    the wild
+                    {activeRootWild && activeRootWild.min_wild_level
+                      ? ` (Lv ${activeRootWild.min_wild_level}+)`
+                      : ""}
+                    .
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-[12.5px] leading-relaxed text-ink-dim">
+                      No pure-breeding path from your pals &mdash; this plan needs
+                      catches:
+                    </span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {catchAgg.map((c) => (
+                        <span
+                          key={c.name}
+                          className="inline-flex items-center gap-1.5 rounded-sm border border-el-leaf/40 bg-el-leaf/[0.08] px-1.5 py-0.5 text-[11px] text-el-leaf"
+                        >
+                          <PalIcon id={c.id} name={c.name} size={16} />
+                          <span className="font-medium">
+                            {c.name}
+                            {c.captures > 1 ? `\u00a0\u00d7${c.captures}` : ""}
+                          </span>
+                          {c.minLevel > 0 && (
+                            <span className="font-mono tabular-nums text-el-leaf/90">
+                              &middot; Lv {c.minLevel}+
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             {viewMode === "graph" ? (
               <>

@@ -120,6 +120,26 @@ impl BreedingPlan {
     }
 }
 
+/// True when a plan's root is a direct wild catch with no breeding — a trivial
+/// "just catch the target" plan (contract: catch-the-target should never crowd
+/// out real breeding chains).
+pub fn is_trivial_wild_plan(p: &BreedingPlan) -> bool {
+    matches!(p.root.source, PlanSource::Wild { .. }) && p.total_steps == 0
+}
+
+/// Drop trivial catch-the-target plans ([`is_trivial_wild_plan`]) whenever any
+/// non-trivial plan survives. When *every* plan is a trivial wild catch (the
+/// target is only obtainable by catching it — no owned pair, self-pair-only
+/// legendary, etc.), the plans are returned unchanged so the UI can render the
+/// catch-only callout from the sole plan.
+pub fn filter_trivial_wild(plans: Vec<BreedingPlan>) -> Vec<BreedingPlan> {
+    if plans.iter().any(|p| !is_trivial_wild_plan(p)) {
+        plans.into_iter().filter(|p| !is_trivial_wild_plan(p)).collect()
+    } else {
+        plans
+    }
+}
+
 /// Sum estimated breeding attempts over every bred node in the plan tree.
 fn cake_attempts(r: &PalRef) -> u32 {
     match r {

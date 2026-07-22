@@ -544,10 +544,20 @@ mod tests {
                 plans.push(p);
             }
         }
-        let solve_json = serde_json::to_string_pretty(&plans).unwrap();
+        // Wrap into the `solve` command's SolveResponse shape {plans, fallback_used}.
+        // fallback_used=false: this is the realistic breeding-first response for an
+        // owned-reachable target (the Icelyn chain is appended purely to exercise
+        // the wild-node rendering + the "N wild" stat). The UI's fallback / catch-only
+        // callouts key off fallback_used=true or a lone 0-step wild-root plan.
+        let response = crate::solver::SolveResponse { plans, fallback_used: false };
+        let solve_json = serde_json::to_string_pretty(&response).unwrap();
         assert!(
             solve_json.contains("\"Wild\""),
             "solve-result fixture must contain a wild node example (include_wild chain)",
+        );
+        assert!(
+            solve_json.contains("\"fallback_used\""),
+            "solve-result fixture must carry the SolveResponse wrapper",
         );
         write("solve-result.json", solve_json);
 

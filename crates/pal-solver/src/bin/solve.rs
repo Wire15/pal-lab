@@ -2,11 +2,16 @@
 //! print the best breeding plans as an indented tree.
 //!
 //! Usage:
-//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--include-wild] [--cake <kind>]
+//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--include-wild] [--catching <mode>] [--cake <kind>]
 //!
 //! `--include-wild` (alias `--wild`) seeds the search with catchable wild pals
 //! ("include pals I don't own"), so self-only legendaries and non-catchable
 //! breed targets get catch / catch->breed plans.
+//!
+//! `--catching` accepts `breeding-only` (default when `--include-wild`; prefer
+//! pure owned breeding, fall back to catch-assisted only when unreachable) or
+//! `allowed` (catches fill gaps freely). Trivial "just catch the target" plans
+//! are dropped whenever any real plan exists. Inert without `--include-wild`.
 //!
 //! `--cake` accepts normal (default), mushroom, vegetable, deluxe, special.
 //!
@@ -18,8 +23,8 @@ use std::process::ExitCode;
 use pal_data::types::PassiveId;
 use pal_data::GameData;
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve, CakeKind, PlanNode, PlanSource, SolverConfig,
-    TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve_with_catching, CakeKind, Catching, ModeResult,
+    PlanNode, PlanSource, SolverConfig, TargetPal, TargetSpec,
 };
 
 fn main() -> ExitCode {
@@ -41,6 +46,7 @@ fn run(args: &[String]) -> Result<(), String> {
     let mut max_steps: Option<u32> = None;
     let mut wild = false;
     let mut cake = CakeKind::Normal;
+    let mut catching: Option<Catching> = None;
 
     let mut i = 0;
     while i < args.len() {
@@ -55,6 +61,15 @@ fn run(args: &[String]) -> Result<(), String> {
                 i += 1;
                 let v = args.get(i).ok_or("--cake needs a value")?;
                 cake = v.parse()?;
+            }
+            "--catching" => {
+                i += 1;
+                let v = args.get(i).ok_or("--catching needs a value")?;
+                catching = Some(match v.as_str() {
+                    "breeding-only" | "breeding_only" => Catching::BreedingOnly,
+                    "allowed" => Catching::Allowed,
+                    _ => return Err(format!("invalid --catching: {v} (breeding-only|allowed)")),
+                });
             }
             other => positional.push(other),
         }
@@ -97,19 +112,28 @@ fn run(args: &[String]) -> Result<(), String> {
         eprintln!("warning: {w}");
     }
 
+    // Default: breeding-only when wild is enabled (matches the app), else the
+    // mode is inert (owned-only ignores catching).
+    let catching = catching.unwrap_or(Catching::BreedingOnly);
     let target_display = gd.species_at(target_species).map(|s| s.name.as_str()).unwrap_or(target_name);
     println!(
-        "Solving for {target_display} with [{}]  (max_steps={}, wild={}, cake={:?})\n",
+        "Solving for {target_display} with [{}]  (max_steps={}, wild={}, catching={:?}, cake={:?})\n",
         passive_names.join(", "),
         cfg.max_breeding_steps,
         wild,
+        catching,
         cake
     );
 
-    let plans = solve(gd, &spec, &save.pals, &cfg);
+    let ModeResult { plans, fallback_used } = solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
     if plans.is_empty() {
         println!("No breeding path found.");
         return Ok(());
+    }
+    if fallback_used {
+        println!(
+            "note: no pure owned-breeding path exists — showing catch-assisted plans.\n"
+        );
     }
 
     for (idx, plan) in plans.iter().enumerate() {

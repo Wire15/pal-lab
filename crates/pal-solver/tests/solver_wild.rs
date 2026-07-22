@@ -15,7 +15,9 @@ use pal_data::GameData;
 use pal_solver::solver::config::SolverConfig;
 use pal_solver::solver::results::PlanSource;
 use pal_solver::solver::spec::{TargetPal, TargetSpec};
-use pal_solver::solver::{resolve_species, solve, PlanNode};
+use pal_solver::solver::{
+    resolve_species, solve, solve_with_catching, Catching, ModeResult, PlanNode,
+};
 
 /// A synthetic owned pal of `species`/`gender`, no passives, level 1.
 fn owned(gd: &GameData, species: u16, gender: Gender) -> OwnedPal {
@@ -200,4 +202,143 @@ fn legendary_self_pairs_breed_true() {
             "{name} self-pair (M x F) must breed {name}"
         );
     }
+}
+
+// ---- CATCHING modes (breeding_only vs allowed) -------------------------------
+
+fn has_wild(node: &PlanNode) -> bool {
+    matches!(node.source, PlanSource::Wild { .. }) || node.children.iter().any(has_wild)
+}
+
+/// Find the first breeding recipe `(a, b) -> t` with three distinct species,
+/// optionally requiring the child `t` to be wild-catchable.
+fn find_recipe(gd: &GameData, child_catchable: bool) -> Option<(u16, u16, u16)> {
+    let n = gd.species_count() as u16;
+    for t in 0..n {
+        if child_catchable && !catchable(gd, t) {
+            continue;
+        }
+        for a in 0..n {
+            for b in a..n {
+                if a == t || b == t {
+                    continue;
+                }
+                if gd.child_of(a, Gender::Female, b, Gender::Male) == Some(t) {
+                    return Some((a, b, t));
+                }
+            }
+        }
+    }
+    None
+}
+
+/// Own both genders of `a` and `b`.
+fn roster_of(gd: &GameData, a: u16, b: u16) -> Vec<OwnedPal> {
+    vec![
+        owned(gd, a, Gender::Male),
+        owned(gd, a, Gender::Female),
+        owned(gd, b, Gender::Male),
+        owned(gd, b, Gender::Female),
+    ]
+}
+
+/// (a) breeding_only + include_wild for an owned-breedable target: pure owned
+/// breeding plans, `fallback_used = false`, and NO wild nodes anywhere (the
+/// wild seeding is never consulted because the owned-only run succeeds first).
+#[test]
+fn breeding_only_owned_reachable_stays_pure() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd, false).expect("a distinct 1-step breeding recipe exists");
+    let roster = roster_of(gd, a, b);
+    let spec = TargetSpec::new(TargetPal::Species(t));
+    let cfg = with_wild();
+
+    let ModeResult { plans, fallback_used } =
+        solve_with_catching(gd, &spec, &roster, &cfg, Catching::BreedingOnly);
+    assert!(!plans.is_empty(), "owned-breedable target must yield a plan");
+    assert!(!fallback_used, "owned path exists — no catch fallback");
+    for p in &plans {
+        assert!(!has_wild(&p.root), "breeding_only owned-reachable plan has zero wild nodes");
+    }
+}
+
+/// (b) breeding_only + include_wild for an owned-unreachable, catchable target
+/// (self-pair-only legendary, roster of unrelated commons): the search falls
+/// back to catch-assisted plans, `fallback_used = true`, and every returned plan
+/// uses at least one catch.
+#[test]
+fn breeding_only_unreachable_falls_back_to_catch() {
+    let gd = GameData::get();
+    let jet = resolve_species(gd, "JetDragon").expect("Jetragon in pack");
+    assert!(catchable(gd, jet), "Jetragon must be wild-spawnable");
+    let lamball = resolve_species(gd, "SheepBall").or_else(|| resolve_species(gd, "Lamball"));
+    let mut roster = Vec::new();
+    if let Some(s) = lamball {
+        roster.push(owned(gd, s, Gender::Male));
+        roster.push(owned(gd, s, Gender::Female));
+    }
+    let spec = TargetSpec::new(TargetPal::Species(jet));
+    let cfg = with_wild();
+
+    // owned-only truly cannot reach it (guards the fallback trigger).
+    assert!(solve(gd, &spec, &roster, &owned_only()).is_empty());
+
+    let ModeResult { plans, fallback_used } =
+        solve_with_catching(gd, &spec, &roster, &cfg, Catching::BreedingOnly);
+    assert!(!plans.is_empty(), "include_wild fallback must reach Jetragon");
+    assert!(fallback_used, "no pure-breeding path — fallback_used must be true");
+    for p in &plans {
+        assert!(has_wild(&p.root), "fallback plans are catch-assisted (>=1 wild node)");
+    }
+}
+
+/// (c) catching=allowed for a catchable-AND-breedable target with owned parents:
+/// the trivial 0-step "catch the target" plan is dropped while a breeding plan
+/// survives. `fallback_used = false` (allowed never falls back).
+#[test]
+fn allowed_drops_trivial_catch_when_breeding_exists() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd, true).expect("a catchable, distinctly-breedable target exists");
+    let roster = roster_of(gd, a, b);
+    let spec = TargetSpec::new(TargetPal::Species(t));
+    let cfg = with_wild();
+
+    let ModeResult { plans, fallback_used } =
+        solve_with_catching(gd, &spec, &roster, &cfg, Catching::Allowed);
+    assert!(!fallback_used, "allowed mode never sets fallback_used");
+    assert!(!plans.is_empty(), "expected surviving plans");
+    assert!(
+        plans.iter().any(|p| p.total_steps >= 1),
+        "a real breeding plan must survive"
+    );
+    for p in &plans {
+        let trivial_catch =
+            matches!(p.root.source, PlanSource::Wild { .. }) && p.total_steps == 0;
+        assert!(!trivial_catch, "0-step catch-the-target plan must be dropped");
+    }
+}
+
+/// (d) A catch-only target: a self-pair-only legendary with no owned pair and a
+/// one-wild-pal budget (so catch->breed chains, which need >=2 catches, are
+/// impossible). The sole surviving plan is the single 0-step wild catch.
+#[test]
+fn catch_only_target_keeps_single_wild_plan() {
+    let gd = GameData::get();
+    let jet = resolve_species(gd, "JetDragon").expect("Jetragon in pack");
+    let spec = TargetSpec::new(TargetPal::Species(jet));
+    // max_wild_pals = 1: breeding two wild Jetragons is over budget, so only the
+    // direct catch remains.
+    let cfg = SolverConfig { include_wild: true, max_wild_pals: 1, ..SolverConfig::default() };
+
+    let ModeResult { plans, fallback_used } =
+        solve_with_catching(gd, &spec, &[], &cfg, Catching::Allowed);
+    assert!(!fallback_used, "allowed mode never sets fallback_used");
+    assert_eq!(plans.len(), 1, "exactly one plan (the single catch) survives");
+    let only = &plans[0];
+    assert_eq!(only.total_steps, 0, "the surviving plan is a 0-step catch");
+    assert!(
+        matches!(only.root.source, PlanSource::Wild { .. }),
+        "the surviving plan's root is a wild catch"
+    );
+    assert_eq!(only.root.species, jet, "it catches the target itself");
 }
