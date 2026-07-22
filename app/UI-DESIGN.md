@@ -288,6 +288,42 @@ how wild catches enter a plan (`views/Solver.tsx` only; backend policy in §15).
     false) — e.g. a normal `Catching allowed` plan whose catches already show as
     node badges and in the stats-header `N wild` count.
 
+### Required-passives picker (`components/passive-picker.tsx`)
+
+The left briefing's **Required passives** field is a **rarity-legible picker**,
+not a bare `<datalist>`: it feeds only the passives a pal can roll (matching the
+§12 browse split), each shown in its own tier/rank band so a user picks by
+color. `PassivePicker {selected: string[], onAdd, onRemove}` owns its own
+`list_passives` fetch and name↔entry map; the selected value stays the **frozen
+`string[]` of passive NAMES** `runSolve` sends as `required_passives` (the
+picker never touches that shape).
+
+- **Filter.** Rows are `pal_facing === true` **and** not already selected —
+  1905 raw passives (player/weapon/tech bloat, `en Text` junk) collapse to the
+  **114 pal passives**. The old datalist fed all 1905.
+- **Search input.** A `combobox` well (`bg-abyss`, amber focus) that opens the
+  popover on focus/typing; typing filters by **case-insensitive substring on the
+  name** (not effects — effect search stays a §12 browse affordance).
+- **Row anatomy.** Each row is the §12 `PassiveStrip size="sm"` (full band:
+  gold positive / silver neutral / red-down negative / green→blue **rainbow** /
+  green→purple **worldtree** + pine glyph) over a one-line **dim effect gloss**
+  (`ink-faint`, humanized labels + signed values, or the first description line
+  for flag-only passives). Highlighted/hovered row lifts to `bg-hover`.
+- **Sort.** Tier + high rank first (worldtree > rainbow > gold, penalties last),
+  then alphabetical — the browse ordering, guaranteeing the special pools crown
+  the list.
+- **Popover.** Portaled to `<body>` (`position: fixed`, `z-70`) so the form
+  column's overflow never clips it; anchored under the input, flipping above
+  when the space below is tight, `max-height` capped with its own scroll. Mirrors
+  the §10 hover-card portal escape. Outside-`mousedown` or Escape closes.
+- **Keyboard.** ArrowDown/Up move the highlight (ArrowDown also opens),
+  **Enter** adds the highlighted row, **Escape** closes; the highlight scrolls
+  into view. Adding clears the query and re-focuses the input for rapid multi-add.
+- **Selected chips.** Replace the old flat amber chips with **band-tinted chips**
+  (`PassiveChipRemovable`, same `stripBand`/`stripTint`/`RankCluster` tokens as
+  the strip): a compact pill in the passive's own tier color, name + `sm` rank
+  cluster, and an integrated **× remove** carrying `aria-label="Remove {name}"`.
+
 ## 8. Window chrome & quality floor
 
 - **Scrollbars:** thin, `line` thumb on transparent track, rounded, brighten on

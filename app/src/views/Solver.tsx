@@ -10,6 +10,7 @@ import type {
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
+import { PassivePicker } from "../components/passive-picker";
 import { useAppState } from "../state";
 import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
@@ -186,14 +187,12 @@ function TreeNode({
 export default function Solver() {
   const { saveDir, solveTarget, clearSolveTarget, requestDex } = useAppState();
   const [species, setSpecies] = useState("");
-  const [passiveInput, setPassiveInput] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
   const [includeWild, setIncludeWild] = useState(false);
   const [catching, setCatching] = useState<CatchingMode>("breeding_only");
 
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
-  const [passiveList, setPassiveList] = useState<NamedEntry[]>([]);
 
   const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
   const [fallbackUsed, setFallbackUsed] = useState(false);
@@ -208,7 +207,6 @@ export default function Solver() {
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
-    invoke<NamedEntry[]>("list_passives").then(setPassiveList).catch(() => {});
   }, []);
 
   // Pre-fill the target when the Pal-dex jumps here via "Solve for this pal".
@@ -237,10 +235,6 @@ export default function Solver() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const passiveNames = useMemo(
-    () => new Set(passiveList.map((p) => p.name)),
-    [passiveList],
-  );
   const nameToId = useMemo(
     () => new Map(speciesList.map((s) => [s.name, s.id])),
     [speciesList],
@@ -252,12 +246,6 @@ export default function Solver() {
     const p = plans && plans.length > 0 ? plans[activePlan] : null;
     return p ? catchChips(p.root, nameToId) : [];
   }, [plans, activePlan, nameToId]);
-
-  function addPassive() {
-    const v = passiveInput.trim();
-    if (v && !passives.includes(v)) setPassives((p) => [...p, v]);
-    setPassiveInput("");
-  }
 
   function removePassive(name: string) {
     setPassives((p) => p.filter((x) => x !== name));
@@ -345,63 +333,11 @@ export default function Solver() {
           </div>
         </label>
 
-        <div className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Required passives
-          </span>
-          <div className="flex gap-2">
-            <input
-              className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-              list="passive-options"
-              placeholder="Add a passive..."
-              value={passiveInput}
-              onChange={(e) => {
-                const v = e.currentTarget.value;
-                setPassiveInput(v);
-                if (passiveNames.has(v)) {
-                  if (!passives.includes(v)) setPassives((p) => [...p, v]);
-                  setPassiveInput("");
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addPassive();
-                }
-              }}
-            />
-            <button
-              className="rounded-md border border-line bg-raised px-2.5 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-              onClick={addPassive}
-            >
-              Add
-            </button>
-            <datalist id="passive-options">
-              {passiveList.map((p) => (
-                <option key={p.id} value={p.name} />
-              ))}
-            </datalist>
-          </div>
-          {passives.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-1">
-              {passives.map((p) => (
-                <span
-                  key={p}
-                  className="inline-flex items-center gap-1 rounded-sm border border-amber/35 bg-amber/10 px-1.5 py-0.5 text-[11px] text-amber"
-                >
-                  {p}
-                  <button
-                    className="text-amber/60 hover:text-amber"
-                    onClick={() => removePassive(p)}
-                    aria-label={`Remove ${p}`}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+        <PassivePicker
+          selected={passives}
+          onAdd={(name) => setPassives((p) => (p.includes(name) ? p : [...p, name]))}
+          onRemove={removePassive}
+        />
 
         <div className="flex flex-col gap-3">
           <label className="flex items-center gap-2 text-[13px] text-ink-dim">
