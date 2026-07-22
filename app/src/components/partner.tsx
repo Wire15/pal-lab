@@ -23,18 +23,20 @@ export function PartnerIcon({
   const [failed, setFailed] = useState(false);
   const resolved = partnerIconUrl(iconId);
   const src = resolved && !failed ? resolved : PARTNER_FALLBACK_ICON;
+  // Padding scales with the glyph so the tile reads the same at 22px (row) and
+  // ~96px (detail section); the fallback SVG rides the same width/height and
+  // stays crisp because it's vector.
+  const pad = size <= 32 ? 2 : Math.round(size * 0.1);
   return (
     <img
       src={src}
       alt=""
       aria-hidden="true"
-      width={size}
-      height={size}
       loading="lazy"
       draggable={false}
       onError={() => setFailed(true)}
-      className={`shrink-0 rounded-md bg-abyss/60 object-contain p-0.5 ring-1 ring-line/70 ${className}`}
-      style={{ width: size, height: size }}
+      className={`shrink-0 rounded-md bg-abyss/60 object-contain ring-1 ring-line/70 ${className}`}
+      style={{ width: size, height: size, padding: pad }}
     />
   );
 }

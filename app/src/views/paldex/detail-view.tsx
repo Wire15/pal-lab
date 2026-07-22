@@ -385,7 +385,7 @@ function YourPalSection({
             Equipped passives
           </span>
           {pal.passives.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
+            <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
               {pal.passives.map((p, i) => (
                 <PassiveStrip key={`${p}-${i}`} id={p} size="md" />
               ))}
@@ -576,8 +576,8 @@ export default function PaldexDetail({
           {/* Partner skill — only when the pack carries one (~130 species lack it). */}
           {hasPartner && (
             <Section eyebrow="Partner skill">
-              <div className="flex items-start gap-3">
-                <PartnerIcon iconId={detail.partner_skill_icon} size={40} />
+              <div className="flex items-start gap-4">
+                <PartnerIcon iconId={detail.partner_skill_icon} size={96} />
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
                     {detail.partner_skill}
@@ -689,7 +689,7 @@ export default function PaldexDetail({
           <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr]">
             <Section eyebrow="Guaranteed passives">
               {detail.guaranteed_passives.length > 0 ? (
-                <div className="flex flex-col gap-1.5">
+                <div className="grid grid-cols-1 gap-1.5">
                   {detail.guaranteed_passives.map((p) => (
                     <PassiveStrip key={p.id} id={p.id} size="md" />
                   ))}

@@ -117,15 +117,16 @@ Encoded once in `lib/ui.ts`; reuse those helpers, don't re-derive thresholds.
 - **Breeding success rate (0–1)** — `probBand()` → `high ≥75%` good, `even ≥50%`
   fair, `long ≥25%` warn, `rare <25%` bad. Rendered as an outlined mono pill.
 - **Passives** — rendered as the in-game **strip** (`components/passive-strip.tsx`,
-  §12): name left, a stacked rank-chevron block right, on a tier/rank-colored
-  border+fill. Coloring is **tier-then-rank-sign** (`stripBand(rank, tier)`):
-  positive = **gold** (`amber`), negative = **red** (`bad`, downward chevrons),
-  and the two special lottery-pool tiers override coloring entirely — `rainbow`
-  (mutation pool) an iridescent shimmer, `worldtree` a green→violet duotone.
-  Rank magnitude → chevron count (`min(|rank|, 5)`); direction is shown by
-  chevron orientation **and** color (never color alone). Name/rank/tier resolve
-  from the cached `list_passives` payload, falling back to id-humanization
-  (`passiveView`) for ids the pack lacks.
+  §12): a full-width horizontal bar, bold name left, a rank **icon cluster** right,
+  on a tier/rank-colored border+fill. Coloring is **sign-then-magnitude/tier**
+  (`stripBand(rank, tier)`): `rank < 0` = **red** (`bad`, down chevrons); `tier
+  "worldtree"` **or** `rank ≥ 5` = **green→deep-purple** World Tree (teal border,
+  pine glyph); `tier "rainbow"` **or** `rank === 4` = **green→blue iridescent**
+  (teal border); else **gold** (`amber`). The cluster caps at **3 chevrons** and
+  appends a **`+`** for `|rank| ≥ 4` — the game never shows 4–5 chevrons.
+  Direction is shown by chevron orientation **and** color (never color alone).
+  Name/rank/tier resolve from the cached `list_passives` payload, falling back to
+  id-humanization (`passiveView`) for ids the pack lacks.
 - **Sources** — Bred = amber tag; Owned = neutral tag + location; Wild = leaf
   tag with capture count.
 
@@ -398,16 +399,20 @@ Shared voice:
 
 ## 11. Palbox — full-screen layout & the game-style slot
 
-The Save Inspector's grid view clones the in-game Palbox screen and must **fill
-the content area**, never sit as a small centered island. Owned by
-`components/palbox/**` + `views/SaveInspector.tsx`.
+The Save Inspector's grid view clones the in-game Palbox screen. The composition
+(party rail + box grid + bases) **fills the content area** and grows with it;
+once the fluid slots hit their `160px` cap on wide screens it stops growing and
+**centers** its intrinsic width (`mx-auto` on an inner wrapper) instead of
+hugging the left edge — the palbox is a centered composition, never a small
+island, never a left-clung block. Owned by `components/palbox/**` +
+`views/SaveInspector.tsx`.
 
 ### Layout
 - **Vertical party rail (left).** `PARTY_SIZE` (5) fluid slots stacked
   top-to-bottom under a mono `PARTY` eyebrow, mirroring the game. `shrink-0` so
   it never collapses; the box grid takes the remaining width to its right
   (`flex items-start gap-6`). The surface toggle (Palbox / Dimensional) sits
-  above the row, left-aligned.
+  above the row, left-aligned to the composition's left edge (the party rail).
 - **Box grid (right).** The paged 6-wide game box (`GRID_COLS = 6`,
   `PAGE_SIZE = 30` → 6×5), left-aligned (`justify-start`), packed. Physical
   layout renders trailing empty slots (faint dashed circles); compact/filtered
@@ -422,8 +427,10 @@ with a fixed `12px` grid gap. Driving the size off the wrapper — not the flex-
 box column — avoids a size↔layout feedback loop. The single `size` flows to
 `PartyRail`, `BoxGrid`/`PalGrid`, and `BaseStrip` (base slots stay compact:
 `clamp(44, size, 56)`). Result: the grid **grows on wider screens** (≈132px at
-1280 → 160px at 1600) and shrinks gracefully when the detail panel opens
-(≈77px), always filling the available width.
+1280, filling the width edge-to-edge → the `160px` cap at 1600, where the now
+intrinsic-width composition centers in the surplus). The `contentRef` wrapper it
+measures stays full-width (the centered inner wrapper is a separate child), so
+centering never perturbs the measurement loop.
 
 ### Gender glyph badge (replaces the colored dot)
 Gender is shown as a **glyph, never a bare colored dot**: the Mars/Venus glyph
@@ -479,50 +486,58 @@ guaranteed passives); the view filters `list_passives` to it, sorts
 strongest-rank-first then alphabetical, and offers a name/effect **search**
 (matches the name, the humanized effect labels, and the authored description)
 with a **Reset**. Header count reads `N / 114 pal passives` while filtering,
-`114 pal passives` otherwise. Grid is `auto-fill minmax(240px, 1fr)` (wider than
-the species card to fit effect lines). Empty/loading/no-match states per §8.
+`114 pal passives` otherwise. Grid is **centered** (`mx-auto max-w-[1160px]`) at
+**up to 3 columns of wide cards** (`grid-cols-1 md:grid-cols-2 xl:grid-cols-3`),
+matching paldb's wide 3-column layout. Empty/loading/no-match states per §8.
 
 ### The passive strip (`components/passive-strip.tsx`)
 `PassiveStrip {id, size?}` is the in-game passive from Palworld's Pal Stats
-screen: the **name** on the left (`font-semibold`, truncating), a **stacked
-rank-chevron block** on the right edge, on a tier/rank-colored **border + dark
-fill**. It is the single source of passive coloring — the browse card and the
-`PassiveChip` alias both compose its exports. `md` for detail/browser, `sm` for
-dense contexts (solver tree, hover card, roster). Name/rank/tier come from a
-**module-cached `list_passives` fetch** (one shared request behind every strip),
-falling back to id-humanization (`ui.ts::passiveView`) before it resolves or for
-unknown ids. `title` = the raw id.
+screen, rendered as a true **STRIP**: a **block-level, full-width horizontal bar**
+(clearly wider than tall) with the **name** pinned left (`font-semibold`,
+truncating) and a rank **icon cluster** pinned right, on a tier/rank-colored
+**border + dark fill**. Heights: **`md` ≈ 30px** (`min-h-[30px]`, detail/browser),
+**`sm` ≈ 22px** (`min-h-[22px]`, dense — solver tree, hover card, roster, the
+`PassiveChip` alias). It is the single source of passive coloring — the browse
+card composes its exports too. Callers lay strips out in a **grid** (the strip
+fills its cell), never inline pills. Name/rank/tier come from a **module-cached
+`list_passives` fetch** (one shared request behind every strip), falling back to
+id-humanization (`ui.ts::passiveView`) before it resolves or for unknown ids.
+`title` = the raw id.
 
-- **Tier/band tints (`stripBand` → `stripTint`).** Every color is a `--color-*`
-  token composed via `color-mix` over `abyss` (never a hardcoded hex); all
-  tokens used are emitted as utilities elsewhere so the raw `var()`s resolve.
-  | Band | Trigger | Border | Fill | Name | Chevrons |
+- **Grid contract.** Callers wrap strip lists in a grid, not `flex-wrap`:
+  detail-view + solver nodes use `grid grid-cols-2 gap-1.5`; narrow containers
+  (hover card 268px, roster cell) use `grid-cols-1`.
+- **Band tints (`stripBand(rank, tier)` → `stripTint`).** Every color is a
+  `--color-*` token composed via `color-mix` (never a hardcoded hex); all tokens
+  used are emitted as utilities elsewhere so the raw `var()`s resolve. Derivation
+  is **sign first, then magnitude/tier**:
+  | Band | Trigger | Border | Fill | Name | Accent |
   |---|---|---|---|---|---|
-  | **positive** | rank ≥ 0, no tier | `amber` 52% | `amber` 17%→6% over abyss | `amber-bright` | `amber`, up |
-  | **negative** | rank < 0 | `bad` 50% | `bad` 16%→5% over abyss | `bad` | `bad`, **down** |
-  | **rainbow** | `tier: "rainbow"` (mutation pool) | `el-water` 60% | iridescent `el-leaf`→`el-water`→`el-dragon`→`el-dark` (30–36% over abyss) | `ink` | `el-water`, up |
-  | **worldtree** | `tier: "worldtree"` | `el-dark`×`good` mix 65% | `good` 26% → `el-dark` 44% (green→violet) | `ink` | `el-dark`, up |
+  | **negative** | `rank < 0` | `bad` 50% | `bad` 16%→5% over abyss | `bad` | `bad` (down chevrons) |
+  | **worldtree** | `tier "worldtree"` **or** `rank ≥ 5` | teal (`el-ice`×`good`) | `good` 26% → `el-dark` 48% (green→deep-purple) | `ink` | light lavender (+pine glyph) |
+  | **rainbow** | `tier "rainbow"` **or** `rank === 4` | teal (`el-ice`×`good`) | `good`→`el-ice`→`el-water` iridescent (30–34% over abyss, green→blue) | `ink` | bright teal |
+  | **positive** | else (`rank ≥ 0`) | `amber` 52% | `amber` 17%→6% over abyss | `amber-bright` | `amber` |
 
-  Tier wins over rank sign; absent/null `tier` ⇒ pure positive/negative. This
-  mirrors how paldb.cc tints the game's banners (rank-4 legendaries a green→blue
-  shimmer, rank-5 World Tree green→deep-purple) while keeping our own gold/red
-  for the ordinary positive/negative passives, exactly as the in-game strip.
-- **Rank chevrons (`PassiveChevrons {rank, size}`).** `min(|rank|, 5)` thin
-  chevrons **vector-drawn** in `currentColor`, stacked vertically, pointing
-  **up** for positive tiers and **down** for negatives. Drawn rather than the
-  bundled white `Passive_Positive/Negative` PNGs, which read as flat blobs at
-  strip scale and can't be per-band tinted. Rank 0 renders nothing.
+  This mirrors paldb.cc: rank-4 legendaries a green→blue shimmer with a teal
+  border, rank-5 World Tree green→deep-purple, ordinary passives our gold/red.
+- **Icon cluster (`RankCluster {rank, band, size}`).** Right-edge anatomy,
+  paldb's `[tree][chevrons][+]`: an optional **pine glyph** (World Tree tier
+  only) + **`min(|rank|, 3)` vector chevrons** (`PassiveChevrons`, `currentColor`,
+  stacked, **up** positive / **down** negative) + a **`+` marker** when
+  `|rank| ≥ 4`. The game caps the chevron column at 3, so we **never draw 4–5
+  chevrons** — the `+` carries the overflow. Rank 0 draws no chevrons.
 - **Left accent.** A thicker left border rail (`sm` 2px / `md` 3px / card 4px)
   echoes the in-game strip's colored edge.
 
 ### Passive browse card (`components/passive-card.tsx`)
-The browser card **keeps** its structured body but its header **is** the strip
-look, sharing `stripBand`/`stripTint`/`PassiveChevrons` from the strip so
-rainbow/worldtree passives read as special here too:
-- **Banner header** — the passive **name** (`font-display`) + the stacked rank
-  chevrons on the tier/rank-tinted banner (positive gold, negative red, rainbow
-  iridescent, worldtree green→violet), a 4px left accent. Name color and chevron
-  accent come straight from `stripTint`.
+A **wide** card whose header **is** the strip look, sharing
+`stripBand`/`stripTint`/`RankCluster` from the strip so rainbow/worldtree
+passives read as special here too, over an unchanged structured body:
+- **Banner header** — the passive **name** (`font-display`) + the rank **icon
+  cluster** (pine glyph on World Tree, `min(|rank|, 3)` chevrons, `+` past rank 3)
+  on the tier/rank-tinted banner (gold / red-down / green→blue rainbow /
+  green→deep-purple World Tree), a 4px left accent. Name color and cluster accent
+  come straight from `stripTint`.
 - **Effect lines** — one per effect: a humanized **label**
   (`ui.ts::effectLabel` — explicit map for the common combat/work/util enums,
   derived `<Element> Attack`/`<Element> Resistance` for the element families,
@@ -543,9 +558,12 @@ rainbow/worldtree passives read as special here too:
 ### Partner-skill icon (`components/partner.tsx`)
 `PartnerIcon {iconId, size}` renders the species' bundled partner glyph
 (`public/partner/<textureId>.png`, via `assets.ts::partnerIconUrl`) as a
-`rounded-md` `abyss` chip with a `line` ring — left of the skill name in both
-the **detail** Partner-skill section (40px, full multi-line
-`whitespace-pre-line` description) and the **hover card** partner line (26px,
-`line-clamp-2`). When `partner_skill_icon` is null (a bespoke texture not yet
+`rounded-md` `abyss` chip with a `line` ring; its padding **scales with `size`**
+(`≈0.1·size` past 32px, `2px` below) so the tile reads the same tight glyph at
+every scale. Left of the skill name in both the **detail** Partner-skill section
+— a large **~96px** tile scaled to the section, the glyph filling it with
+padding beside the multi-line `whitespace-pre-line` description — and the
+**hover card** partner line (26px, `line-clamp-2`).
+When `partner_skill_icon` is null (a bespoke texture not yet
 resolved to a PNG) or the image fails, it degrades to a neutral inline-SVG
 **bond glyph** (`assets.ts::PARTNER_FALLBACK_ICON`) — never a broken `<img>`.

@@ -329,7 +329,7 @@ function HoverCardBody({
             <IvRow ivs={pal.ivs} />
           </div>
           {pal.passives.length > 0 && (
-            <div className="flex flex-wrap gap-1">
+            <div className="grid grid-cols-1 gap-1">
               {pal.passives.map((p, i) => (
                 <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
               ))}

@@ -107,7 +107,7 @@ export default function PassivesIndex({
         </div>
       ) : (
         <div className="flex-1 overflow-auto px-6 py-5">
-          <div className="grid gap-2.5 [grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]">
+          <div className="mx-auto grid w-full max-w-[1160px] grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {rows.map((p) => (
               <PassiveCard key={p.id} passive={p} />
             ))}

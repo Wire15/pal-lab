@@ -25,11 +25,15 @@ export type PassiveTier = "rainbow" | "worldtree" | null | undefined;
  *  rank; the two special tiers override coloring entirely. */
 export type StripBand = "positive" | "negative" | "rainbow" | "worldtree";
 
-/** Resolve the strip band: tier wins when present, else sign of the rank. */
+/** Resolve the strip band. Sign wins first (any negative rank is a penalty),
+ *  then the two special tiers — which the pack marks explicitly AND the rank
+ *  magnitude implies: rank 4 is the rainbow (green→blue iridescent) pool, rank
+ *  5 the World Tree (green→deep-purple) pool. Everything else is ordinary gold. */
 export function stripBand(rank: number, tier?: PassiveTier): StripBand {
-  if (tier === "worldtree") return "worldtree";
-  if (tier === "rainbow") return "rainbow";
-  return rank < 0 ? "negative" : "positive";
+  if (rank < 0) return "negative";
+  if (tier === "worldtree" || rank >= 5) return "worldtree";
+  if (tier === "rainbow" || rank === 4) return "rainbow";
+  return "positive";
 }
 
 /** Banner surface (border + fill), name text color, and chevron accent per
@@ -46,6 +50,10 @@ export interface StripTint {
 const OVER_ABYSS = (token: string, pct: number) =>
   `color-mix(in srgb, var(${token}) ${pct}%, var(--color-abyss))`;
 
+/** The teal banner border both special tiers share — paldb's rgb(104,255,216),
+ *  approximated from the ice+good tokens (no raw hex). */
+const TEAL = "color-mix(in srgb, var(--color-el-ice) 58%, var(--color-good))";
+
 export function stripTint(band: StripBand): StripTint {
   switch (band) {
     case "negative":
@@ -58,22 +66,27 @@ export function stripTint(band: StripBand): StripTint {
         accent: "var(--color-bad)",
       };
     case "rainbow":
+      // rank-4 mutation pool. Ground truth (paldb): a bright teal border over a
+      // GREEN→BLUE iridescent fill. Border teal ≈ rgb(104,255,216), mixed from
+      // the ice+good tokens; fill sweeps good→ice→water over abyss.
       return {
         banner: {
-          borderColor: "color-mix(in srgb, var(--color-el-water) 60%, transparent)",
-          background: `linear-gradient(100deg, ${OVER_ABYSS("--color-el-leaf", 30)}, ${OVER_ABYSS("--color-el-water", 32)}, ${OVER_ABYSS("--color-el-dragon", 32)}, ${OVER_ABYSS("--color-el-dark", 36)})`,
+          borderColor: TEAL,
+          background: `linear-gradient(100deg, ${OVER_ABYSS("--color-good", 30)}, ${OVER_ABYSS("--color-el-ice", 34)}, ${OVER_ABYSS("--color-el-water", 34)})`,
         },
         nameColor: "var(--color-ink)",
-        accent: "var(--color-el-water)",
+        accent: "color-mix(in srgb, var(--color-el-ice) 65%, var(--color-ink))",
       };
     case "worldtree":
+      // rank-5 World Tree pool. Same teal border, but a GREEN→DEEP-PURPLE fill
+      // (good→el-dark over abyss). A pine glyph prefixes the chevron cluster.
       return {
         banner: {
-          borderColor: "color-mix(in srgb, var(--color-el-dark) 65%, var(--color-good))",
-          background: `linear-gradient(100deg, ${OVER_ABYSS("--color-good", 26)}, ${OVER_ABYSS("--color-el-dark", 44)})`,
+          borderColor: TEAL,
+          background: `linear-gradient(100deg, ${OVER_ABYSS("--color-good", 26)}, ${OVER_ABYSS("--color-el-dark", 48)})`,
         },
         nameColor: "var(--color-ink)",
-        accent: "var(--color-el-dark)",
+        accent: "color-mix(in srgb, var(--color-el-dark) 45%, var(--color-ink))",
       };
     default: // positive
       return {
@@ -90,11 +103,12 @@ export function stripTint(band: StripBand): StripTint {
 // --- rank chevron block ------------------------------------------------------
 
 /**
- * The stacked-chevron rank block on a strip's right edge: `min(|rank|, 5)`
- * thin chevrons, pointing up for positive tiers and down for negatives, drawn
- * in `currentColor` so the parent tints them. Vector-drawn (not the bundled
- * white rank PNGs, which read as flat blobs at strip scale and can't be tinted
- * per band). Rank 0 renders nothing.
+ * The stacked-chevron rank block: `min(|rank|, 3)` thin chevrons, pointing up
+ * for positive tiers and down for negatives, drawn in `currentColor` so the
+ * parent tints them. The game itself caps the chevron column at 3 and shows a
+ * separate `+` marker for higher ranks (see {@link RankCluster}) — so we NEVER
+ * draw 4–5 chevrons. Vector-drawn (not the bundled white rank PNGs, which read
+ * as flat blobs at strip scale and can't be tinted per band). Rank 0 → nothing.
  */
 export function PassiveChevrons({
   rank,
@@ -105,7 +119,7 @@ export function PassiveChevrons({
   size?: "sm" | "md";
   className?: string;
 }) {
-  const n = Math.min(Math.abs(rank), 5);
+  const n = Math.min(Math.abs(rank), 3);
   if (n === 0) return null;
   const down = rank < 0;
   const w = size === "sm" ? 9 : 11;
@@ -144,6 +158,75 @@ export function PassiveChevrons({
         />
       ))}
     </svg>
+  );
+}
+
+/** A small filled pine glyph in `currentColor`, prefixing the rank cluster on
+ *  World Tree strips — mirrors paldb's [tree][chevrons] arrangement. */
+function TreeGlyph({ size = "md" }: { size?: "sm" | "md" }) {
+  const h = size === "sm" ? 11 : 13;
+  const w = Math.round(h * (12 / 14));
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox="0 0 12 14"
+      className="shrink-0"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {/* three stacked canopy tiers + a short trunk */}
+      <path d="M6 0.5 L9 4.4 H3 Z M6 3.3 L10 8 H2 Z M6 6.4 L10.6 11.4 H1.4 Z M5.1 11 H6.9 V13.6 H5.1 Z" />
+    </svg>
+  );
+}
+
+/** The `+` overflow marker in `currentColor`: shown when |rank| ≥ 4, where the
+ *  game stops adding chevrons (capped at 3) and appends this instead. */
+function PlusMark({ size = "md" }: { size?: "sm" | "md" }) {
+  const s = size === "sm" ? 8 : 10;
+  const stroke = size === "sm" ? 1.6 : 1.8;
+  return (
+    <svg
+      width={s}
+      height={s}
+      viewBox="0 0 10 10"
+      className="shrink-0"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 1.3 V8.7 M1.3 5 H8.7"
+        stroke="currentColor"
+        strokeWidth={stroke}
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/**
+ * The right-edge rank cluster: an optional pine glyph (World Tree tier), the
+ * `min(|rank|, 3)` chevron column, then a `+` marker when |rank| ≥ 4 — exactly
+ * the game's anatomy. All in `currentColor`; the parent sets the tint.
+ */
+export function RankCluster({
+  rank,
+  band,
+  size = "md",
+  className = "",
+}: {
+  rank: number;
+  band: StripBand;
+  size?: "sm" | "md";
+  className?: string;
+}) {
+  return (
+    <span className={`inline-flex items-center ${size === "sm" ? "gap-1" : "gap-1.5"} ${className}`}>
+      {band === "worldtree" && <TreeGlyph size={size} />}
+      <PassiveChevrons rank={rank} size={size} />
+      {Math.abs(rank) >= 4 && <PlusMark size={size} />}
+    </span>
   );
 }
 
@@ -202,20 +285,25 @@ export function resolvePassive(
 // --- the strip ---------------------------------------------------------------
 
 /**
- * A single passive rendered as the in-game strip. `md` for detail/browser
- * surfaces, `sm` for dense contexts (solver tree, hover card, the PassiveChip
- * alias). Name resolves from the cached pack payload; coloring from tier/rank.
+ * A single passive as the in-game STRIP: a block-level, full-width horizontal
+ * bar (clearly wider than tall, like Palworld's Pal Stats passive rows) with
+ * the bold name pinned left and the rank cluster pinned right. `md` (~30px) for
+ * detail/browser surfaces, `sm` (~22px) for dense contexts (solver tree, hover
+ * card, roster, the PassiveChip alias). Callers lay strips out in a grid — this
+ * strip fills its cell. Name resolves from the cached pack payload; coloring +
+ * cluster anatomy from tier/rank.
  */
 export function PassiveStrip({ id, size = "md" }: { id: string; size?: "sm" | "md" }) {
   const row = usePassiveRow(id);
   const { name, rank, tier } = resolvePassive(id, row);
-  const tint = stripTint(stripBand(rank, tier));
+  const band = stripBand(rank, tier);
+  const tint = stripTint(band);
   const sm = size === "sm";
   return (
-    <span
+    <div
       title={id}
-      className={`inline-flex max-w-full min-w-0 items-center justify-between rounded-sm border font-semibold leading-tight ${
-        sm ? "gap-1.5 px-2 py-0.5 text-[11px]" : "gap-2 px-2.5 py-1 text-[13px] tracking-wide"
+      className={`flex w-full min-w-0 items-center justify-between rounded-sm border font-semibold leading-tight ${
+        sm ? "min-h-[22px] gap-2 px-2 text-[11px]" : "min-h-[30px] gap-2.5 px-3 text-[13px] tracking-wide"
       }`}
       style={{
         ...tint.banner,
@@ -225,8 +313,8 @@ export function PassiveStrip({ id, size = "md" }: { id: string; size?: "sm" | "m
     >
       <span className="min-w-0 truncate">{name}</span>
       <span className="shrink-0" style={{ color: tint.accent }}>
-        <PassiveChevrons rank={rank} size={size} />
+        <RankCluster rank={rank} band={band} size={size} />
       </span>
-    </span>
+    </div>
   );
 }

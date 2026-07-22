@@ -265,6 +265,17 @@ export default function SaveInspector() {
     return Math.max(56, Math.min(160, raw));
   }, [contentWidth]);
 
+  // The intrinsic width of the palbox composition once slots saturate (clamped
+  // at 160px on wide screens): party column + row gap + the GRID_COLS box grid.
+  // Below saturation this equals the usable width, so centering it is a no-op;
+  // once saturated it's narrower than the content area and mx-auto centers it
+  // instead of letting the grid hug the left edge.
+  const composeWidth = useMemo(() => {
+    const ROW_GAP = 24;
+    const SLOT_GAP = 12;
+    return slotSize * (GRID_COLS + 1) + ROW_GAP + (GRID_COLS - 1) * SLOT_GAP;
+  }, [slotSize]);
+
   const active = isQueryActive(query);
 
   // The pool that both the list table and the shown/total counter range over:
@@ -487,7 +498,11 @@ export default function SaveInspector() {
         <div className="relative flex flex-1 overflow-hidden">
           {mode === "grid" ? (
             <div className="flex-1 overflow-auto px-6 py-5">
-              <div ref={contentRef} className="flex flex-col gap-6">
+              <div ref={contentRef} className="w-full">
+                <div
+                  className="mx-auto flex w-full flex-col gap-6"
+                  style={{ maxWidth: composeWidth }}
+                >
                 {/* Surface toggle (Palbox / Dimensional) */}
                 {hasDimensional && (
                   <div className="flex items-center gap-1 self-start rounded-md border border-line p-0.5">
@@ -545,6 +560,7 @@ export default function SaveInspector() {
                   onSelect={openPal}
                   size={slotSize}
                 />
+                </div>
               </div>
             </div>
           ) : rows.length === 0 ? (

@@ -7,7 +7,7 @@
 
 import type { PassiveEntry } from "../lib/types";
 import { effectLabel, effectTarget, formatEffectValue } from "../lib/ui";
-import { PassiveChevrons, stripBand, stripTint, type PassiveTier } from "./passive-strip";
+import { RankCluster, stripBand, stripTint, type PassiveTier } from "./passive-strip";
 
 /** One structured effect line: humanized label, signed value, quiet scope. The
  *  value is neutral bright ink — the +/- sign carries direction and the rank
@@ -35,11 +35,12 @@ function EffectLine({ type, value, target }: { type: string; value: number; targ
  */
 export function PassiveCard({ passive }: { passive: PassiveEntry }) {
   const tier = (passive as PassiveEntry & { tier?: PassiveTier }).tier;
-  const tint = stripTint(stripBand(passive.rank, tier));
+  const band = stripBand(passive.rank, tier);
+  const tint = stripTint(band);
   return (
     <div className="flex flex-col overflow-hidden rounded-md border border-line bg-panel">
       <header
-        className="flex items-center justify-between gap-2 border-b px-3 py-2"
+        className="flex min-h-[38px] items-center justify-between gap-2 border-b px-3.5 py-2"
         style={{ ...tint.banner, borderLeftWidth: 4 }}
       >
         <span
@@ -49,7 +50,7 @@ export function PassiveCard({ passive }: { passive: PassiveEntry }) {
           {passive.name}
         </span>
         <span className="shrink-0" style={{ color: tint.accent }}>
-          <PassiveChevrons rank={passive.rank} size="md" />
+          <RankCluster rank={passive.rank} band={band} size="md" />
         </span>
       </header>
       <div className="flex flex-1 flex-col gap-1 px-3 py-2.5">

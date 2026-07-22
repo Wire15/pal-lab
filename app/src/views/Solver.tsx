@@ -94,7 +94,7 @@ function TreeNode({
       </div>
 
       {node.passives.length > 0 && (
-        <div className="flex flex-wrap gap-1 pl-[3.6rem]">
+        <div className="grid grid-cols-2 gap-1.5 pl-[3.6rem]">
           {node.passives.map((p, i) => (
             <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
           ))}
