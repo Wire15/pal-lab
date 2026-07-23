@@ -2,7 +2,10 @@
 //! print the best breeding plans as an indented tree.
 //!
 //! Usage:
-//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--include-wild] [--catching <mode>] [--cake <kind>]
+//!   solve <save-dir> <target-species> [passive]... [--max-steps N] [--include-wild] [--catching <mode>] [--cake <kind>] [--progress]
+//!
+//! `--progress` prints per-step working-set size, pair-batch size, and elapsed
+//! time to stderr (profiling via the solver's progress hooks).
 //!
 //! `--include-wild` (alias `--wild`) seeds the search with catchable wild pals
 //! ("include pals I don't own"), so self-only legendaries and non-catchable
@@ -23,8 +26,9 @@ use std::process::ExitCode;
 use pal_data::types::PassiveId;
 use pal_data::GameData;
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve_with_catching, CakeKind, Catching, ModeResult,
-    PlanNode, PlanSource, SolverConfig, TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve_with_catching, solve_with_catching_monitored, CakeKind,
+    Catching, ModeResult, PlanNode, PlanSource, SolveMonitor, SolvePhase, SolveProgress,
+    SolverConfig, TargetPal, TargetSpec,
 };
 
 fn main() -> ExitCode {
@@ -47,6 +51,7 @@ fn run(args: &[String]) -> Result<(), String> {
     let mut wild = false;
     let mut cake = CakeKind::Normal;
     let mut catching: Option<Catching> = None;
+    let mut progress = false;
 
     let mut i = 0;
     while i < args.len() {
@@ -71,6 +76,7 @@ fn run(args: &[String]) -> Result<(), String> {
                     _ => return Err(format!("invalid --catching: {v} (breeding-only|allowed)")),
                 });
             }
+            "--progress" => progress = true,
             other => positional.push(other),
         }
         i += 1;
@@ -125,7 +131,39 @@ fn run(args: &[String]) -> Result<(), String> {
         cake
     );
 
-    let ModeResult { plans, fallback_used, .. } = solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
+    let start = std::time::Instant::now();
+    let ModeResult { plans, fallback_used, .. } = if progress {
+        let cb = |p: SolveProgress| {
+            let ms = start.elapsed().as_millis();
+            match p.phase {
+                SolvePhase::Seeding => {
+                    eprintln!("[progress] seeding: working_set={} ({ms}ms)", p.working_set)
+                }
+                SolvePhase::Step if p.pairs_done == 0 => eprintln!(
+                    "[progress] step {}/{}: working_set={} pairs_total={} ({ms}ms)",
+                    p.step, p.max_steps, p.working_set, p.pairs_total
+                ),
+                SolvePhase::CatchFallback => eprintln!("[progress] catch_fallback ({ms}ms)"),
+                SolvePhase::Finalizing => {
+                    eprintln!("[progress] finalizing: working_set={} ({ms}ms)", p.working_set)
+                }
+                _ => {}
+            }
+        };
+        let r = solve_with_catching_monitored(
+            gd,
+            &spec,
+            &save.pals,
+            &cfg,
+            catching,
+            SolveMonitor::new(Some(&cb), None),
+        )
+        .expect("no cancel flag => never cancelled");
+        eprintln!("[progress] total solve time: {}ms", start.elapsed().as_millis());
+        r
+    } else {
+        solve_with_catching(gd, &spec, &save.pals, &cfg, catching)
+    };
     if plans.is_empty() {
         println!("No breeding path found.");
         return Ok(());

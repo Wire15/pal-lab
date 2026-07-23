@@ -28,6 +28,7 @@ import {
 } from "../components/breeding-setup";
 import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel } from "../components/plan-node-panel";
+import { SolveProgress } from "../components/solve-progress";
 import {
   downloadBlob,
   encodePlanCode,
@@ -706,6 +707,9 @@ export default function Solver() {
     pinsSatisfied,
     error,
     solving,
+    progress,
+    cancelled,
+    cancel,
     activePlan,
     setActivePlan,
     selection,
@@ -719,6 +723,7 @@ export default function Solver() {
     queueError,
     solveQueue,
     clearQueue,
+    reset,
   } = useSolve();
 
   // Pre-fill the target when the Pal-dex jumps here via "Solve for this pal".
@@ -762,6 +767,21 @@ export default function Solver() {
 
   function runSolve() {
     return solve(buildSpec());
+  }
+
+  // RESET the query: clear the target, passives, pins, and the results — restore
+  // max-steps / source-pool / catching to their defaults. Deliberately KEEPS the
+  // breeding setup (boosters/cake/hatch) and the saved queue list: those describe
+  // the farm, not this one query. `reset()` handles the results half in the hook.
+  function resetForm() {
+    setSpecies("");
+    setPassives([]);
+    setPins([]);
+    setMaxSteps(5);
+    setIncludeWild(false);
+    setCatching("breeding_only");
+    setNaming(false);
+    reset();
   }
 
   function addPin(id: Guid) {
@@ -877,13 +897,23 @@ export default function Solver() {
     <div className="flex h-full">
       {/* Mission briefing */}
       <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-auto border-r border-line bg-panel px-5 pb-6 pt-5">
-        <div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Solver
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+              Solver
+            </div>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
+              Breeding plan
+            </h1>
           </div>
-          <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-            Breeding plan
-          </h1>
+          <button
+            type="button"
+            onClick={resetForm}
+            title="Clear target, passives, pins and results (keeps breeding setup & queue)"
+            className="mt-0.5 shrink-0 rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
+          >
+            Reset
+          </button>
         </div>
 
         <label className="flex flex-col gap-1.5">
@@ -1058,6 +1088,21 @@ export default function Solver() {
 
       {/* Results */}
       <section className="flex flex-1 flex-col overflow-hidden">
+        {solving || queueSolving ? (
+          <SolveProgress
+            progress={progress}
+            onCancel={cancel}
+            queueTargets={
+              queueSolving ? queue.map((e) => e.spec.target_species) : undefined
+            }
+          />
+        ) : (
+          <>
+            {cancelled && !plans && !queueResult && (
+              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">
+                Solve cancelled.
+              </div>
+            )}
         {queueError && (
           <div className="m-6 rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
             {queueError}
@@ -1199,6 +1244,8 @@ export default function Solver() {
                 </p>
               </div>
             )}
+          </>
+        )}
           </>
         )}
 

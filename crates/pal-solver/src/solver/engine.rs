@@ -28,8 +28,15 @@ use crate::solver::refs::{
 use crate::solver::results::BreedingPlan;
 use crate::solver::spec::{TargetPal, TargetSpec};
 use crate::solver::working_set::{key_of, RefKey, WorkingSet};
+use crate::solver::progress::{SolveCancelled, SolveMonitor, SolvePhase, SolveProgress};
 
 const MAX_TOTAL_PASSIVES: usize = 4;
+
+/// Pair-batch chunk size for the step loop. Each chunk is bred in parallel then
+/// concatenated in pair order (so results are byte-identical to a single
+/// `par_iter`), while cancellation is polled and progress reported between
+/// chunks — bounding cancel latency to one chunk's wall time even mid-step.
+const PAIR_CHUNK: usize = 8192;
 
 /// palcalc `PreferredLocationPruning` ordering (palbox first, then base, party…).
 fn location_order(c: pal_data::types::ContainerKind) -> u8 {
@@ -533,7 +540,8 @@ pub fn solve_reporting(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
 ) -> (Vec<BreedingPlan>, bool) {
-    let (refs, pins_satisfied) = solve_core(gd, spec, owned, cfg);
+    let (refs, pins_satisfied) =
+        solve_core(gd, spec, owned, cfg, SolveMonitor::noop()).expect("noop monitor never cancels");
     (plans_of(gd, &refs, cfg.cake), pins_satisfied)
 }
 
@@ -547,7 +555,8 @@ fn solve_core(
     spec: &TargetSpec,
     owned: &[OwnedPal],
     cfg: &SolverConfig,
-) -> (Vec<PalRef>, bool) {
+    monitor: SolveMonitor,
+) -> Result<(Vec<PalRef>, bool), SolveCancelled> {
     let mut spec = spec.clone();
     spec.normalize();
     // Mushroom/DeluxeVegetable cakes raise the egg's IV floor; model it by
@@ -586,18 +595,72 @@ fn solve_core(
         ws.insert(r.clone());
     }
 
+    // Phase: seeding — working set built from owned (+ wild), no breeding yet.
+    let max_steps = cfg.max_solver_iterations;
+    monitor.report(SolveProgress {
+        phase: SolvePhase::Seeding,
+        step: 0,
+        max_steps,
+        pairs_done: 0,
+        pairs_total: 0,
+        working_set: ws.len(),
+    });
+
+    // Incremental frontier: only breed pairs touching a ref added or improved in
+    // the PREVIOUS step. `breed_pair`'s only step-dependent behavior is the
+    // reachability prune (line ~433), which strictly tightens as `step` grows,
+    // and `WorkingSet` keeps the incumbent on ties — so a pair of two unchanged
+    // refs was already bred at an earlier step with a >= remaining budget and
+    // can yield nothing new. Skipping it is result-preserving. All seeded refs
+    // start on the frontier.
+    let mut frontier: HashSet<RefKey> = ws.iter().map(key_of).collect();
+
     for step in 0..cfg.max_solver_iterations {
+        monitor.check()?;
         let pals = ws.to_vec();
         let n = pals.len();
-        let pairs: Vec<(usize, usize)> =
-            (0..n).flat_map(|i| (i + 1..n).map(move |j| (i, j))).collect();
-
-        let children: Vec<PalRef> = pairs
-            .par_iter()
-            .flat_map_iter(|&(i, j)| {
-                breed_pair(gd, &spec, cfg, weights, &ws, step, &pals[i], &pals[j]).into_iter()
-            })
+        let is_new: Vec<bool> = pals.iter().map(|r| frontier.contains(&key_of(r))).collect();
+        let pairs: Vec<(usize, usize)> = (0..n)
+            .flat_map(|i| (i + 1..n).map(move |j| (i, j)))
+            .filter(|&(i, j)| is_new[i] || is_new[j])
             .collect();
+        let pairs_total = pairs.len() as u64;
+
+        // Step boundary (always emitted): batch sized, nothing bred yet.
+        monitor.report(SolveProgress {
+            phase: SolvePhase::Step,
+            step: step + 1,
+            max_steps,
+            pairs_done: 0,
+            pairs_total,
+            working_set: ws.len(),
+        });
+
+        // Breed the pair batch in fixed-size chunks. Each chunk is parallelized
+        // then appended in pair order, so `children` is byte-identical to a
+        // single `par_iter().collect()`; the boundary between chunks is where we
+        // poll cancellation and report intra-step progress.
+        let mut children: Vec<PalRef> = Vec::new();
+        let mut pairs_done: u64 = 0;
+        for chunk in pairs.chunks(PAIR_CHUNK) {
+            monitor.check()?;
+            let mut part: Vec<PalRef> = chunk
+                .par_iter()
+                .flat_map_iter(|&(i, j)| {
+                    breed_pair(gd, &spec, cfg, weights, &ws, step, &pals[i], &pals[j]).into_iter()
+                })
+                .collect();
+            children.append(&mut part);
+            pairs_done += chunk.len() as u64;
+            monitor.report(SolveProgress {
+                phase: SolvePhase::Step,
+                step: step + 1,
+                max_steps,
+                pairs_done,
+                pairs_total,
+                working_set: ws.len(),
+            });
+        }
 
         // Reduce to the best instance per key, then merge into the working set.
         let mut step_best = WorkingSet::new();
@@ -608,16 +671,29 @@ fn solve_core(
             step_best.insert(c.clone());
         }
 
-        let mut changed = false;
+        // Merge, recording which keys were added/improved — next step's frontier.
+        let mut next_frontier: HashSet<RefKey> = HashSet::new();
         for c in step_best.to_vec() {
+            let k = key_of(&c);
             if ws.insert(c) {
-                changed = true;
+                next_frontier.insert(k);
             }
         }
-        if !changed {
+        if next_frontier.is_empty() {
             break;
         }
+        frontier = next_frontier;
     }
+
+    // Phase: finalizing — search done, about to pin-filter / prune / map.
+    monitor.report(SolveProgress {
+        phase: SolvePhase::Finalizing,
+        step: 0,
+        max_steps,
+        pairs_done: 0,
+        pairs_total: 0,
+        working_set: ws.len(),
+    });
 
     // Pin post-filter (Wave A): keep only plans whose tree contains every
     // pinned owned instance. `pins_satisfied` distinguishes "pinning killed a
@@ -629,7 +705,7 @@ fn solve_core(
     let pins_satisfied = spec.pinned_parents.is_empty() || !(had_results && results.is_empty());
 
     let pruned = crate::solver::pruning::prune_results(results, cfg.result_limit);
-    (pruned, pins_satisfied)
+    Ok((pruned, pins_satisfied))
 }
 
 /// Catch policy for a wild-enabled solve (only consulted when
@@ -684,23 +760,47 @@ pub fn solve_modes(
     cfg: &SolverConfig,
     catching: Catching,
 ) -> (Vec<PalRef>, bool, bool) {
+    solve_modes_monitored(gd, spec, owned, cfg, catching, SolveMonitor::noop())
+        .expect("noop monitor never cancels")
+}
+
+/// [`solve_modes`] threaded with a [`SolveMonitor`] for progress + cancellation.
+/// Returns `Err(SolveCancelled)` if the monitor's cancel flag tripped mid-search
+/// (checked at chunk/step boundaries inside [`solve_core`]).
+pub fn solve_modes_monitored(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+    catching: Catching,
+    monitor: SolveMonitor,
+) -> Result<(Vec<PalRef>, bool, bool), SolveCancelled> {
     if !cfg.include_wild {
-        let (refs, pins) = solve_core(gd, spec, owned, cfg);
-        return (refs, false, pins);
+        let (refs, pins) = solve_core(gd, spec, owned, cfg, monitor)?;
+        return Ok((refs, false, pins));
     }
     match catching {
         Catching::Allowed => {
-            let (refs, pins) = solve_core(gd, spec, owned, cfg);
-            (filter_trivial_wild_refs(refs), false, pins)
+            let (refs, pins) = solve_core(gd, spec, owned, cfg, monitor)?;
+            Ok((filter_trivial_wild_refs(refs), false, pins))
         }
         Catching::BreedingOnly => {
             let owned_cfg = SolverConfig { include_wild: false, ..cfg.clone() };
-            let (owned_refs, owned_pins) = solve_core(gd, spec, owned, &owned_cfg);
+            let (owned_refs, owned_pins) = solve_core(gd, spec, owned, &owned_cfg, monitor)?;
             if !owned_refs.is_empty() {
-                (owned_refs, false, owned_pins)
+                Ok((owned_refs, false, owned_pins))
             } else {
-                let (wild_refs, wild_pins) = solve_core(gd, spec, owned, cfg);
-                (filter_trivial_wild_refs(wild_refs), true, wild_pins)
+                // No pure-owned path: re-run with catching allowed.
+                monitor.report(SolveProgress {
+                    phase: SolvePhase::CatchFallback,
+                    step: 0,
+                    max_steps: cfg.max_solver_iterations,
+                    pairs_done: 0,
+                    pairs_total: 0,
+                    working_set: 0,
+                });
+                let (wild_refs, wild_pins) = solve_core(gd, spec, owned, cfg, monitor)?;
+                Ok((filter_trivial_wild_refs(wild_refs), true, wild_pins))
             }
         }
     }
@@ -725,6 +825,21 @@ pub fn solve_with_catching(
     cfg: &SolverConfig,
     catching: Catching,
 ) -> ModeResult {
-    let (refs, fallback_used, pins_satisfied) = solve_modes(gd, spec, owned, cfg, catching);
-    ModeResult { plans: plans_of(gd, &refs, cfg.cake), fallback_used, pins_satisfied }
+    solve_with_catching_monitored(gd, spec, owned, cfg, catching, SolveMonitor::noop())
+        .expect("noop monitor never cancels")
+}
+
+/// [`solve_with_catching`] threaded with a [`SolveMonitor`]. Returns
+/// `Err(SolveCancelled)` when cancellation tripped mid-search.
+pub fn solve_with_catching_monitored(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+    catching: Catching,
+    monitor: SolveMonitor,
+) -> Result<ModeResult, SolveCancelled> {
+    let (refs, fallback_used, pins_satisfied) =
+        solve_modes_monitored(gd, spec, owned, cfg, catching, monitor)?;
+    Ok(ModeResult { plans: plans_of(gd, &refs, cfg.cake), fallback_used, pins_satisfied })
 }

@@ -96,9 +96,145 @@ function arg(args: InvokeArgs | undefined, key: string): string {
   return String((args as Record<string, unknown> | undefined)?.[key] ?? "");
 }
 
+// ------------------------------------------------------------------ *
+// Dev-mode progress simulation (fixture mode only).
+//
+// Real mode streams `solve-progress` events from Rust while a solve runs; the
+// fixture shim has no backend and resolves instantly. To keep the in-flight
+// progress panel reviewable in `bun run dev`, fixture mode synthesizes a
+// realistic event sequence (seeding -> steps 1..3 -> finalizing) over ~3s and
+// delays the fixture resolve until it finishes. `use-solve` subscribes via
+// `devListenProgress` (mirroring the Tauri `listen("solve-progress")` it uses
+// in real mode); `cancel_solve` interrupts the sequence with a "cancelled"
+// throw, matching the backend's `Err("cancelled")` resolution.
+// ------------------------------------------------------------------ */
+
+/** A subscriber to simulated `solve-progress` payloads (fixture mode only). */
+type DevProgressListener = (payload: Record<string, unknown>) => void;
+
+const devProgressListeners = new Set<DevProgressListener>();
+const devCancelled = new Set<number>();
+
+/** True in a plain browser (`bun run dev`): no Tauri backend, fixtures serve.
+ *  Gates the dev-only progress simulator so real mode is never affected. */
+export function isFixtureMode(): boolean {
+  return !isTauri;
+}
+
+/** Subscribe to simulated progress in fixture mode — the fixture-mode analogue
+ *  of `listen("solve-progress", …)`. Returns an unlisten fn. */
+export function devListenProgress(cb: DevProgressListener): () => void {
+  devProgressListeners.add(cb);
+  return () => {
+    devProgressListeners.delete(cb);
+  };
+}
+
+const devSleep = (ms: number): Promise<void> => {
+  const { promise, resolve } = Promise.withResolvers<void>();
+  setTimeout(resolve, ms);
+  return promise;
+};
+
+/** Play a realistic seeding -> steps 1..3 -> finalizing sequence for `token`
+ *  over ~3s, emitting `solve-progress`-shaped payloads to every subscriber and
+ *  honoring a mid-flight `cancel_solve`. Throws `Error("cancelled")` when the
+ *  matching token was cancelled, so the awaiting solve rejects like real mode. */
+async function devSimulateProgress(
+  token: number,
+  queue?: { index: number; len: number },
+): Promise<void> {
+  const start = performance.now();
+  const kind = queue ? "queue" : "single";
+  const queueMeta = queue
+    ? { queue_index: queue.index, queue_len: queue.len }
+    : {};
+  const maxSteps = 3;
+  const stepTotals = [820_000, 2_400_000, 3_600_000];
+  const stepWorkingSet = [1_200, 5_400, 14_800];
+
+  const bail = () => {
+    if (devCancelled.has(token)) throw new Error("cancelled");
+  };
+  const emit = (fields: Record<string, unknown>) => {
+    bail();
+    const payload = {
+      token,
+      kind,
+      ...queueMeta,
+      max_steps: maxSteps,
+      elapsed_ms: Math.round(performance.now() - start),
+      ...fields,
+    };
+    for (const cb of devProgressListeners) cb(payload);
+  };
+
+  emit({ phase: "seeding", step: 0, pairs_done: 0, pairs_total: 0, working_set: 0 });
+  await devSleep(500);
+  bail();
+
+  for (let s = 0; s < maxSteps; s++) {
+    const total = stepTotals[s];
+    for (let frame = 1; frame <= 5; frame++) {
+      emit({
+        phase: "step",
+        step: s + 1,
+        pairs_done: Math.round((total * frame) / 5),
+        pairs_total: total,
+        working_set: stepWorkingSet[s],
+      });
+      await devSleep(160);
+      bail();
+    }
+  }
+
+  emit({
+    phase: "finalizing",
+    step: maxSteps,
+    pairs_done: 0,
+    pairs_total: 0,
+    working_set: stepWorkingSet[maxSteps - 1],
+  });
+  await devSleep(350);
+  bail();
+}
+
 /** Serve a command from the dev fixtures, with graceful fallbacks. */
 async function invokeDev<T>(cmd: string, args?: InvokeArgs): Promise<T> {
   const dev = await loadDev();
+
+  // Cancel a simulated solve: flag the token so the running sequence bails.
+  if (cmd === "cancel_solve") {
+    const token = Number((args as Record<string, unknown> | undefined)?.token);
+    if (Number.isFinite(token)) devCancelled.add(token);
+    return undefined as T;
+  }
+
+  // Solves carry a `progress_token` when the caller wants events. In fixture
+  // mode there is no backend to emit them, so drive the simulated sequence here
+  // (and delay the fixture resolve behind it) before returning the static plan.
+  if (cmd === "solve" || cmd === "solve_queue") {
+    const raw = args as Record<string, unknown> | undefined;
+    const spec = raw?.spec as Record<string, unknown> | undefined;
+    const items = raw?.items as Record<string, unknown>[] | undefined;
+    const token =
+      cmd === "solve" ? spec?.progress_token : items?.[0]?.progress_token;
+    if (typeof token === "number") {
+      try {
+        if (cmd === "solve") {
+          await devSimulateProgress(token);
+        } else {
+          const len = items?.length ?? 0;
+          for (let i = 0; i < len; i++) {
+            await devSimulateProgress(token, { index: i, len });
+          }
+        }
+      } finally {
+        devCancelled.delete(token);
+      }
+    }
+    return dev.simple[cmd] as T;
+  }
 
   if (cmd === "paldex_species_detail") {
     const id = arg(args, "id");

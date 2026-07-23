@@ -24,7 +24,10 @@ use pal_data::types::{ContainerKind, Gender, IvSet, OwnedPal, PassiveId};
 use pal_data::GameData;
 
 use crate::solver::config::SolverConfig;
-use crate::solver::engine::solve_modes;
+use std::sync::atomic::AtomicBool;
+
+use crate::solver::engine::solve_modes_monitored;
+use crate::solver::progress::{SolveCancelled, SolveMonitor, SolveProgress};
 use crate::solver::refs::{PalRef, SolverIv};
 use crate::solver::results::BreedingPlan;
 use crate::solver::spec::{TargetPal, TargetSpec};
@@ -68,14 +71,39 @@ pub fn solve_queue(
     items: &[QueueItem],
     stop_on_failure: bool,
 ) -> QueueResult {
+    solve_queue_monitored(gd, owned, items, stop_on_failure, None, None)
+        .expect("noop monitor never cancels")
+}
+
+/// [`solve_queue`] threaded with progress + cancellation. `cancel` is a
+/// queue-wide flag (polled inside each item's search); `progress` receives each
+/// item's [`SolveProgress`] tagged with its 0-based `queue_index` (the queue
+/// itself adds nothing else — `queue_len`/`kind`/`elapsed` are the Tauri
+/// layer's job). Returns `Err(SolveCancelled)` if cancellation tripped.
+pub fn solve_queue_monitored(
+    gd: &GameData,
+    owned: &[OwnedPal],
+    items: &[QueueItem],
+    stop_on_failure: bool,
+    cancel: Option<&AtomicBool>,
+    progress: Option<&(dyn Fn(usize, SolveProgress) + Sync)>,
+) -> Result<QueueResult, SolveCancelled> {
     let mut pool: Vec<OwnedPal> = owned.to_vec();
     let mut counter: u32 = 0;
     let mut out: Vec<QueueItemResult> = Vec::with_capacity(items.len());
     let mut combined_effort_secs = 0.0f64;
 
-    for item in items {
+    for (idx, item) in items.iter().enumerate() {
+        // Per-item monitor: tag every snapshot with this item's queue index for
+        // the outer callback, sharing the queue-wide cancel flag.
+        let item_cb = progress.map(|outer| move |p: SolveProgress| outer(idx, p));
+        let monitor = SolveMonitor::new(
+            item_cb.as_ref().map(|f| f as &(dyn Fn(SolveProgress) + Sync)),
+            cancel,
+        );
+
         let (refs, fallback_used, pins_satisfied) =
-            solve_modes(gd, &item.spec, &pool, &item.cfg, item.catching);
+            solve_modes_monitored(gd, &item.spec, &pool, &item.cfg, item.catching, monitor)?;
         let plans: Vec<BreedingPlan> =
             refs.iter().map(|r| BreedingPlan::from_ref(gd, r, item.cfg.cake)).collect();
 
@@ -100,7 +128,7 @@ pub fn solve_queue(
         }
     }
 
-    QueueResult { items: out, combined_effort_secs }
+    Ok(QueueResult { items: out, combined_effort_secs })
 }
 
 /// Collect every bred node in a reference tree (the root if bred, plus every

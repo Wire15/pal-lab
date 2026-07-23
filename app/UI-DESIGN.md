@@ -1249,3 +1249,77 @@ Two items over existing fixture species: **Anubis** carries the full
 `solve-result.json` plans (demoing an expandable multi-tab item); **Mycora** has
 empty `plans` + `pins_satisfied:false` (demoing the `PINS UNSATISFIED` status
 chip and the shared banner). `combined_effort_secs` sums the best-plan effort.
+
+## Wave B — Solve progress, cancel & reset (`components/solve-progress.tsx`, `lib/use-solve.ts`, `views/Solver.tsx`)
+
+While a solve or queue-solve is in flight the results pane is replaced by the
+**in-flight panel** — an honest, live readout of the solver's own
+`solve-progress` event stream — with a **CANCEL** escape hatch. The solver form
+header also gains a **RESET** affordance that clears the current *query* without
+disturbing the *farm*.
+
+### In-flight panel anatomy (`SolveProgress`)
+
+A single `panel`/`line` card (`rounded-lg`, `m-6 p-5`) — the §6 raised-surface
+treatment, one **amber** accent, **mono** labels, matching the SETUP strip and
+queue-header voice. No spinner, no glow, no second color. Top to bottom:
+
+- **Queue line** (queue mode only) — `QUEUE` mono eyebrow (amber) +
+  `Target {i+1} of {n} — {name}` from `queue_index`/`queue_len` (the target name
+  is passed in from the Solver's live queue specs, not the event).
+- **Phase line** — a pulsing amber dot + a `font-display` phrase mapped from the
+  contract's four phases: `Seeding working set…` / `Breeding step 2 of 5` /
+  `Retrying with catching allowed…` / `Finalizing plans…`. Right-aligned on the
+  same row: the **elapsed timer** (`0:03`), ticking client-side on a 100ms
+  interval but resynced to each event's authoritative `elapsed_ms` so it never
+  drifts.
+- **Progress bar** — the current **step's** pair batch. During phase `step`
+  (`pairs_total > 0`): an amber fill whose width animates
+  (`transition-[width] duration-200 ease-out`) to `pairs_done / pairs_total`.
+  During seeding/finalizing (no pair batch to measure): an **indeterminate**
+  pulsing `amber/40` bar — never a fake percentage.
+- **Counts + rate** — under the bar, mono `tabular-nums`:
+  `1.4M / 3.2M pairs · 210k pairs/s`. Counts humanized (k/M/B); the rate is
+  computed from **event deltas within the same step** (a step boundary rebaselines
+  rather than reporting a negative), lightly EMA-smoothed so it doesn't jitter.
+- **Remaining estimate** — right of the counts, the honesty centerpiece (below).
+- **Working set** — a subtle `working set: N` stat (humanized), and the
+  danger-outline **Cancel** button on the same row.
+
+### Honesty rule for estimates
+
+The panel shows a remaining estimate for the **current step only**
+(`~Ns left in this step`, or `step est.…` before a rate is known) — derived from
+`(pairs_total − pairs_done) / rate`. It **never** fabricates a total-solve ETA:
+cross-step working-set sizes are unknowable in advance, so any whole-solve
+countdown would be a guess dressed as a fact. The elapsed timer is real;
+the only forward-looking number is scoped to the batch we can actually measure.
+
+### Cancel semantics
+
+Each solve/queue mints a monotonic **generation token** (`use-solve`), which (a)
+rides the request as `progress_token`, (b) tags every emitted event so the hook
+**filters stale generations** (a superseded solve's late events are dropped), and
+(c) is the cancel handle. **Cancel** calls `cancel_solve(token)`; the backend
+resolves the in-flight solve to `Err("cancelled")`, which the hook recognizes and
+treats as a **quiet return to idle** — no error banner, just a small
+`Solve cancelled.` inline note (`raised` surface, `ink-dim`) until the next solve.
+The `solve-progress` listener is unsubscribed on every settle (success, error, or
+cancel). In browser dev (fixture mode, no backend) `lib/tauri.ts` synthesizes the
+event stream — seeding → steps 1..3 with pairs ramping → finalizing over ~3s,
+delaying the fixture resolve behind it — and honors `cancel_solve`, so the whole
+panel and cancel path are reviewable in the screenshot loop. This is gated
+strictly on fixture-mode detection and never affects real mode.
+
+### Reset scope
+
+The header **RESET** (subtle ghost button, top-right of the SOLVER eyebrow,
+away from Solve to avoid misclicks; keyboard-reachable; `hover`/`focus` tint to
+`bad`) is confirm-free and clears the current **query**: target species, required
+passives, pinned parents, plans/queue results + restored/naming bar, and restores
+`max steps → 5`, `source pool → Only pals I own`, `catching → breeding only`. It
+deliberately **keeps** everything that describes the *farm* rather than this one
+query: the whole BREEDING SETUP (boosters / cake / hatch time) and the saved
+BREEDING QUEUE item list. The results half of the reset lives in
+`useSolve().reset()` (shared with the save-switch invalidation); the form half
+lives in the view.

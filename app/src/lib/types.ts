@@ -122,6 +122,33 @@ export interface SolveRequest {
    * array) that MUST appear as leaves in every returned plan tree. Absent/empty
    * => no pin constraint. */
   pinned_parents?: Guid[];
+  /** Opaque token correlating `solve-progress` events and `cancelSolve` to this
+   * request. Absent => no progress events emitted and the solve is not
+   * cancellable. For `solve_queue`, the first item's token governs the whole
+   * queue run. */
+  progress_token?: number;
+}
+
+/** Payload of the throttled `solve-progress` Tauri event (snake_case, emitted
+ * during a solve carrying a `progress_token`). Phase/step boundaries always
+ * emit; intra-step progress is throttled to >=100ms apart. `step` is 1-based
+ * for display (0 during seeding/finalizing/catch_fallback); during phase
+ * `"step"`, `pairs_done`/`pairs_total` describe the current step's pair batch.
+ * `queue_index`/`queue_len` are present only for `kind === "queue"`. */
+export interface SolveProgressEvent {
+  token: number;
+  kind: "single" | "queue";
+  /** 0-based index of the queue item being solved (queue only). */
+  queue_index?: number;
+  /** Total items in the queue (queue only). */
+  queue_len?: number;
+  phase: "seeding" | "step" | "catch_fallback" | "finalizing";
+  step: number;
+  max_steps: number;
+  pairs_done: number;
+  pairs_total: number;
+  working_set: number;
+  elapsed_ms: number;
 }
 
 /** IV floor thresholds for `SolveRequest.ivs`. Each is a 0-100 minimum; `0`

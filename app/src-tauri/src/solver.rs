@@ -8,16 +8,21 @@
 
 use std::collections::HashMap;
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
 use pal_data::types::Guid;
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve_queue as engine_solve_queue, solve_with_catching,
-    BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel, ModeResult, QueueItem, SolverConfig,
-    TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve_queue_monitored, solve_with_catching_monitored,
+    BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel, ModeResult, QueueItem, SolveMonitor,
+    SolvePhase, SolveProgress, SolverConfig, TargetPal, TargetSpec,
 };
+use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
+use tauri::{Emitter, State};
 
 /// Solve request from the frontend Solver view. Optional fields fall back to
 /// `SolverConfig` / `TargetSpec` defaults when absent.
@@ -56,6 +61,10 @@ pub struct SolveRequest {
     /// Absent/empty => no pin constraint. See `TargetSpec::pinned_parents`.
     #[serde(default)]
     pub pinned_parents: Vec<Guid>,
+    /// Opaque token correlating `solve-progress` events + `cancel_solve` to this
+    /// request. Absent => no events emitted and the solve is not cancellable.
+    #[serde(default)]
+    pub progress_token: Option<u64>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -87,6 +96,127 @@ pub struct SolveResponse {
 pub struct NamedEntry {
     pub id: String,
     pub name: String,
+}
+
+/// The `solve-progress` event payload (frozen snake_case contract). `queue_*`
+/// fields are present only for queue solves.
+#[derive(Debug, Clone, Serialize)]
+struct SolveProgressEvent {
+    token: u64,
+    kind: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    queue_index: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    queue_len: Option<u32>,
+    phase: &'static str,
+    step: u32,
+    max_steps: u32,
+    pairs_done: u64,
+    pairs_total: u64,
+    working_set: u32,
+    elapsed_ms: u64,
+}
+
+fn phase_str(p: SolvePhase) -> &'static str {
+    match p {
+        SolvePhase::Seeding => "seeding",
+        SolvePhase::Step => "step",
+        SolvePhase::CatchFallback => "catch_fallback",
+        SolvePhase::Finalizing => "finalizing",
+    }
+}
+
+/// Emits throttled `solve-progress` events through the app handle. Phase/step
+/// boundaries (`pairs_done == 0`) always emit; intra-step chunk progress is
+/// throttled to at most one event per 100ms.
+struct ProgressEmitter {
+    app: tauri::AppHandle,
+    token: u64,
+    kind: &'static str,
+    start: Instant,
+    last_emit: Mutex<Option<Instant>>,
+}
+
+impl ProgressEmitter {
+    fn new(app: tauri::AppHandle, token: u64, kind: &'static str) -> Self {
+        ProgressEmitter { app, token, kind, start: Instant::now(), last_emit: Mutex::new(None) }
+    }
+
+    fn emit(&self, queue_index: Option<u32>, queue_len: Option<u32>, p: SolveProgress) {
+        let boundary = p.pairs_done == 0;
+        {
+            let mut last = self.last_emit.lock();
+            if !boundary {
+                if let Some(t) = *last {
+                    if t.elapsed() < Duration::from_millis(100) {
+                        return;
+                    }
+                }
+            }
+            *last = Some(Instant::now());
+        }
+        let ev = SolveProgressEvent {
+            token: self.token,
+            kind: self.kind,
+            queue_index,
+            queue_len,
+            phase: phase_str(p.phase),
+            step: p.step,
+            max_steps: p.max_steps,
+            pairs_done: p.pairs_done,
+            pairs_total: p.pairs_total,
+            working_set: p.working_set as u32,
+            elapsed_ms: self.start.elapsed().as_millis() as u64,
+        };
+        let _ = self.app.emit("solve-progress", ev);
+    }
+}
+
+/// Generation guard for the in-flight solve: the currently-registered progress
+/// token and its cancel flag. `cancel_solve(token)` trips the flag only when the
+/// token matches the live generation, so a stale cancel can't touch a newer or
+/// already-finished solve.
+#[derive(Default)]
+pub struct SolveGate {
+    inner: Mutex<GateInner>,
+}
+
+#[derive(Default)]
+struct GateInner {
+    token: Option<u64>,
+    cancel: Option<Arc<AtomicBool>>,
+}
+
+impl SolveGate {
+    /// Register a fresh cancel flag under `token`, replacing any prior
+    /// generation; returns the flag for the solve to poll.
+    fn register(&self, token: u64) -> Arc<AtomicBool> {
+        let flag = Arc::new(AtomicBool::new(false));
+        let mut g = self.inner.lock();
+        g.token = Some(token);
+        g.cancel = Some(flag.clone());
+        flag
+    }
+
+    /// Trip the cancel flag iff `token` is the live generation.
+    fn cancel(&self, token: u64) {
+        let g = self.inner.lock();
+        if g.token == Some(token) {
+            if let Some(f) = &g.cancel {
+                f.store(true, Ordering::Relaxed);
+            }
+        }
+    }
+
+    /// Clear the registration iff `token` is still the live generation (a newer
+    /// solve may have already replaced it).
+    fn clear(&self, token: u64) {
+        let mut g = self.inner.lock();
+        if g.token == Some(token) {
+            g.token = None;
+            g.cancel = None;
+        }
+    }
 }
 
 /// Resolve a [`SolveRequest`] into the solver's `(spec, cfg, catching)` triple,
@@ -135,8 +265,22 @@ fn build_request(
     Ok((spec, cfg, req.catching))
 }
 
-/// The command body, factored out so tests can drive it synchronously.
+/// The command body, factored out so tests can drive it synchronously (no
+/// AppHandle => no progress events, no cancellation).
+#[cfg(test)]
 fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
+    run_with_progress(None, save_dir, req, None)
+}
+
+/// [`run`] with optional progress emission + cooperative cancellation. Progress
+/// events fire only when both an `app` handle and `req.progress_token` are
+/// present; a tripped `cancel` flag maps to `Err("cancelled")`.
+fn run_with_progress(
+    app: Option<tauri::AppHandle>,
+    save_dir: &str,
+    req: SolveRequest,
+    cancel: Option<Arc<AtomicBool>>,
+) -> Result<SolveResponse, String> {
     if save_dir.trim().is_empty() {
         return Err("No save folder selected.".into());
     }
@@ -146,18 +290,48 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
     let save =
         pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
 
-    let ModeResult { plans, fallback_used, pins_satisfied } =
-        solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
-    Ok(SolveResponse { plans, fallback_used, pins_satisfied })
+    let emitter = match (app, req.progress_token) {
+        (Some(app), Some(token)) => Some(ProgressEmitter::new(app, token, "single")),
+        _ => None,
+    };
+    let cb = |p: SolveProgress| {
+        if let Some(e) = &emitter {
+            e.emit(None, None, p);
+        }
+    };
+    let progress: Option<&(dyn Fn(SolveProgress) + Sync)> =
+        emitter.as_ref().map(|_| &cb as &(dyn Fn(SolveProgress) + Sync));
+    let monitor = SolveMonitor::new(progress, cancel.as_deref());
+
+    match solve_with_catching_monitored(gd, &spec, &save.pals, &cfg, catching, monitor) {
+        Ok(ModeResult { plans, fallback_used, pins_satisfied }) => {
+            Ok(SolveResponse { plans, fallback_used, pins_satisfied })
+        }
+        Err(_) => Err("cancelled".into()),
+    }
 }
 
 /// Solve for breeding plans toward `spec.target_species` with the required
 /// passives. The solver is CPU-bound (seconds), so it runs on the blocking pool.
+/// When `spec.progress_token` is set, `solve-progress` events are emitted and
+/// the solve becomes cancellable via [`cancel_solve`].
 #[tauri::command]
-pub async fn solve(save_dir: String, spec: SolveRequest) -> Result<SolveResponse, String> {
-    tauri::async_runtime::spawn_blocking(move || run(&save_dir, spec))
-        .await
-        .map_err(|e| format!("solver task panicked: {e}"))?
+pub async fn solve(
+    app: tauri::AppHandle,
+    gate: State<'_, SolveGate>,
+    save_dir: String,
+    spec: SolveRequest,
+) -> Result<SolveResponse, String> {
+    let token = spec.progress_token;
+    let cancel = token.map(|t| gate.register(t));
+    let joined = tauri::async_runtime::spawn_blocking(move || {
+        run_with_progress(Some(app), &save_dir, spec, cancel)
+    })
+    .await;
+    if let Some(t) = token {
+        gate.clear(t);
+    }
+    joined.map_err(|e| format!("solver task panicked: {e}"))?
 }
 
 /// One resolved queue item in a [`QueueResponse`]. `target_species` echoes the
@@ -180,11 +354,26 @@ pub struct QueueResponse {
     pub combined_effort_secs: f64,
 }
 
-/// Body of [`solve_queue`], factored out for synchronous tests.
+/// Body of [`solve_queue`], factored out for synchronous tests (no AppHandle =>
+/// no progress events, no cancellation).
+#[cfg(test)]
 fn run_queue(
     save_dir: &str,
     requests: Vec<SolveRequest>,
     stop_on_failure: bool,
+) -> Result<QueueResponse, String> {
+    run_queue_with_progress(None, save_dir, requests, stop_on_failure, None)
+}
+
+/// [`run_queue`] with optional progress emission + cooperative cancellation. The
+/// queue's token is the first item's `progress_token` (one token per queue run);
+/// each item's progress is tagged with its 0-based `queue_index` + `queue_len`.
+fn run_queue_with_progress(
+    app: Option<tauri::AppHandle>,
+    save_dir: &str,
+    requests: Vec<SolveRequest>,
+    stop_on_failure: bool,
+    cancel: Option<Arc<AtomicBool>>,
 ) -> Result<QueueResponse, String> {
     if save_dir.trim().is_empty() {
         return Err("No save folder selected.".into());
@@ -194,6 +383,8 @@ fn run_queue(
     // Resolve every request up front (echoing target ids for the response) so a
     // bad request fails the whole queue before any solving.
     let target_ids: Vec<String> = requests.iter().map(|r| r.target_species.clone()).collect();
+    let token = requests.iter().find_map(|r| r.progress_token);
+    let queue_len = requests.len() as u32;
     let items: Vec<QueueItem> = requests
         .iter()
         .map(|req| {
@@ -205,7 +396,23 @@ fn run_queue(
     let save =
         pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
 
-    let result = engine_solve_queue(gd, &save.pals, &items, stop_on_failure);
+    let emitter = match (app, token) {
+        (Some(app), Some(token)) => Some(ProgressEmitter::new(app, token, "queue")),
+        _ => None,
+    };
+    let cb = |idx: usize, p: SolveProgress| {
+        if let Some(e) = &emitter {
+            e.emit(Some(idx as u32), Some(queue_len), p);
+        }
+    };
+    let progress: Option<&(dyn Fn(usize, SolveProgress) + Sync)> =
+        emitter.as_ref().map(|_| &cb as &(dyn Fn(usize, SolveProgress) + Sync));
+
+    let result =
+        match solve_queue_monitored(gd, &save.pals, &items, stop_on_failure, cancel.as_deref(), progress) {
+            Ok(r) => r,
+            Err(_) => return Err("cancelled".into()),
+        };
     let items = result
         .items
         .into_iter()
@@ -222,16 +429,35 @@ fn run_queue(
 
 /// Solve a queue of targets sequentially, seeding each item's owned pool with
 /// the previous items' bred output (see `pal_solver::solver::queue`). CPU-bound,
-/// so it runs on the blocking pool.
+/// so it runs on the blocking pool. When the first item carries a
+/// `progress_token`, `solve-progress` events (kind `"queue"`) are emitted and
+/// the whole queue becomes cancellable via [`cancel_solve`].
 #[tauri::command]
 pub async fn solve_queue(
+    app: tauri::AppHandle,
+    gate: State<'_, SolveGate>,
     save_dir: String,
     items: Vec<SolveRequest>,
     stop_on_failure: bool,
 ) -> Result<QueueResponse, String> {
-    tauri::async_runtime::spawn_blocking(move || run_queue(&save_dir, items, stop_on_failure))
-        .await
-        .map_err(|e| format!("solver task panicked: {e}"))?
+    let token = items.iter().find_map(|r| r.progress_token);
+    let cancel = token.map(|t| gate.register(t));
+    let joined = tauri::async_runtime::spawn_blocking(move || {
+        run_queue_with_progress(Some(app), &save_dir, items, stop_on_failure, cancel)
+    })
+    .await;
+    if let Some(t) = token {
+        gate.clear(t);
+    }
+    joined.map_err(|e| format!("solver task panicked: {e}"))?
+}
+
+/// Cancel the in-flight solve/queue whose `progress_token` matches `token`. A
+/// no-op when `token` doesn't match the live generation (already finished, or a
+/// newer solve replaced it). The cancelled solve resolves to `Err("cancelled")`.
+#[tauri::command]
+pub fn cancel_solve(token: u64, gate: State<'_, SolveGate>) {
+    gate.cancel(token);
 }
 
 /// World-setting values the Solver view needs (currently just egg hatch time).
@@ -404,6 +630,7 @@ mod tests {
             iv_model: None,
             setup: None,
             pinned_parents: vec![],
+            progress_token: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -442,6 +669,7 @@ mod tests {
             iv_model: None,
             setup: None,
             pinned_parents: vec![],
+            progress_token: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -477,6 +705,7 @@ mod tests {
                 egg_hatch_hours: 24.0,
             }),
             pinned_parents: vec![],
+            progress_token: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
         assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
@@ -527,6 +756,7 @@ mod tests {
             iv_model: None,
             setup: None,
             pinned_parents: vec![],
+            progress_token: None,
         };
         let resp = run_queue(&dir, vec![mk("Anubis"), mk("Anubis")], false)
             .expect("queue solve should succeed");

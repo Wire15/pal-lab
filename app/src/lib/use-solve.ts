@@ -16,11 +16,14 @@
 // fields), so the hook merges verbatim — `{ ...spec, setup, cake }`.
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { invoke } from "./tauri";
+import { listen } from "@tauri-apps/api/event";
+import type { UnlistenFn } from "@tauri-apps/api/event";
+import { invoke, isFixtureMode, devListenProgress } from "./tauri";
 import type {
   BreedingPlan,
   NamedEntry,
   QueueResponse,
+  SolveProgressEvent,
   SolveRequest,
   SolveResponse,
 } from "./types";
@@ -73,6 +76,15 @@ export interface UseSolve {
   error: string | null;
   /** True while a solve is in flight. */
   solving: boolean;
+  /** Latest `solve-progress` event for the in-flight solve/queue (filtered to
+   *  the current generation's token), or null when idle. Drives the panel. */
+  progress: SolveProgressEvent | null;
+  /** True when the last solve/queue was aborted via {@link cancel} (backend
+   *  resolved `Err("cancelled")`); cleared when the next solve starts. */
+  cancelled: boolean;
+  /** Cancel the in-flight solve/queue by its token; a no-op when idle. The
+   *  pending solve then resolves via the cancelled path (no error). */
+  cancel: () => void;
   /** Index of the active plan tab. */
   activePlan: number;
   setActivePlan: (i: number) => void;
@@ -104,6 +116,9 @@ export interface UseSolve {
   solveQueue: (items: SolveSpec[]) => Promise<void>;
   /** Drop the queue result (back to the single-solve view). */
   clearQueue: () => void;
+  /** Clear the whole result set (plans, queue result, restored/error meta) —
+   *  the results half of the Solver's RESET. Form fields live in the view. */
+  reset: () => void;
 }
 
 export function useSolve(): UseSolve {
@@ -123,6 +138,13 @@ export function useSolve(): UseSolve {
   const [queueResult, setQueueResult] = useState<QueueResponse | null>(null);
   const [queueSolving, setQueueSolving] = useState(false);
   const [queueError, setQueueError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<SolveProgressEvent | null>(null);
+  const [cancelled, setCancelled] = useState(false);
+  // Monotonic generation token per solve/queue. Rides the request as
+  // `progress_token`, tags every emitted event, and is the cancel handle. The
+  // ref holds the live generation so `cancel()` targets the current run only.
+  const nextTokenRef = useRef(Date.now());
+  const activeTokenRef = useRef<number | null>(null);
   // A rehydrate wants to land on the saved active-plan index, but setting `plans`
   // fires the reset-to-0 effect below. This ref carries the desired index across
   // that render so the restored tab survives; null means "default to 0".
@@ -132,19 +154,28 @@ export function useSolve(): UseSolve {
     invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
   }, []);
 
-  // Switching saves invalidates a solve: last save's plans, owned tags and
-  // donor kin no longer apply, so clear the whole result before save B renders.
-  useEffect(() => {
+  // Clear the whole result set (plans, queue, restored/error meta). Shared by
+  // the save-switch invalidation below and the Solver's RESET affordance. Does
+  // NOT touch the in-flight generation — a solve owns its own lifecycle.
+  function resetResults() {
     setPlans(null);
     setActivePlan(0);
     setSelection(null);
     setError(null);
+    setCancelled(false);
     setFallbackUsed(false);
     setLastRequest(null);
     setRestoredFrom(null);
     setPinsSatisfied(true);
     setQueueResult(null);
     setQueueError(null);
+  }
+
+  // Switching saves invalidates a solve: last save's plans, owned tags and
+  // donor kin no longer apply, so clear the whole result before save B renders.
+  useEffect(() => {
+    resetResults();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saveDir]);
 
   // A fresh result resets to the first plan; switching plans (or a new result)
@@ -183,9 +214,54 @@ export function useSolve(): UseSolve {
     [plans],
   );
 
+  /** Mint the next generation token for a solve/queue run. */
+  function nextToken(): number {
+    nextTokenRef.current += 1;
+    return nextTokenRef.current;
+  }
+
+  /** True when a rejection is the backend's `Err("cancelled")` (or the dev
+   *  simulator's `Error("cancelled")`) — the quiet return-to-idle path. */
+  function isCancelled(e: unknown): boolean {
+    return String(e instanceof Error ? e.message : e).includes("cancelled");
+  }
+
+  /** Subscribe to `solve-progress` for `token`, dropping stale-generation
+   *  events. Real mode listens on the Tauri event; fixture mode taps the dev
+   *  simulator. Returns an unlisten fn to call on settle. */
+  async function subscribeProgress(
+    token: number,
+    onEvent: (e: SolveProgressEvent) => void,
+  ): Promise<() => void> {
+    if (isFixtureMode()) {
+      return devListenProgress((p) => {
+        const ev = p as unknown as SolveProgressEvent;
+        if (ev.token === token) onEvent(ev);
+      });
+    }
+    const unlisten: UnlistenFn = await listen<SolveProgressEvent>(
+      "solve-progress",
+      (e) => {
+        if (e.payload.token === token) onEvent(e.payload);
+      },
+    );
+    return unlisten;
+  }
+
+  /** Cancel the live solve/queue by its token; no-op when idle. */
+  function cancel() {
+    const token = activeTokenRef.current;
+    if (token === null) return;
+    invoke("cancel_solve", { token }).catch(() => {});
+  }
+
   async function solve(spec: SolveSpec) {
+    const token = nextToken();
+    activeTokenRef.current = token;
     setSolving(true);
     setError(null);
+    setCancelled(false);
+    setProgress(null);
     setPlans(null);
     setFallbackUsed(false);
     setRestoredFrom(null);
@@ -193,20 +269,31 @@ export function useSolve(): UseSolve {
     // A single solve exits the queue view (they share the one results pane).
     setQueueResult(null);
     setQueueError(null);
+    let unlisten: (() => void) | null = null;
     try {
+      unlisten = await subscribeProgress(token, setProgress);
       // `setup`/`cake` ride the shared BREEDING SETUP store (contract #3); the
-      // caller owns everything else, so per-view field sets stay intact.
+      // caller owns everything else, so per-view field sets stay intact. The
+      // ephemeral `progress_token` rides the wire request only — never
+      // `lastRequest`, which save/export/plan-code encode.
       const full: SolveRequest = { ...spec, setup, cake };
       setLastRequest(full);
-      const resp = await invoke<SolveResponse>("solve", { saveDir, spec: full });
+      const resp = await invoke<SolveResponse>("solve", {
+        saveDir,
+        spec: { ...full, progress_token: token },
+      });
       setPlans(resp.plans);
       setFallbackUsed(resp.fallback_used);
       // Serde-defaults to `true` for responses predating the pin field.
       setPinsSatisfied(resp.pins_satisfied ?? true);
     } catch (e) {
-      setError(String(e));
+      if (isCancelled(e)) setCancelled(true);
+      else setError(String(e));
     } finally {
+      unlisten?.();
+      setProgress(null);
       setSolving(false);
+      if (activeTokenRef.current === token) activeTokenRef.current = null;
     }
   }
 
@@ -217,21 +304,33 @@ export function useSolve(): UseSolve {
   // setup. Deliberately leaves the single-solve state (plans/activePlan/…)
   // untouched; `queueResult` alone flips the Solver to its queue view.
   async function solveQueue(items: SolveSpec[]) {
+    const token = nextToken();
+    activeTokenRef.current = token;
     setQueueSolving(true);
     setQueueError(null);
+    setCancelled(false);
+    setProgress(null);
     setQueueResult(null);
+    let unlisten: (() => void) | null = null;
     try {
+      unlisten = await subscribeProgress(token, setProgress);
+      // Every item shares the one generation token; the backend tags each
+      // event with its `queue_index`/`queue_len` so the panel can name targets.
       const full: SolveRequest[] = items.map((it) => ({ ...it, setup, cake }));
       const resp = await invoke<QueueResponse>("solve_queue", {
         saveDir,
-        items: full,
+        items: full.map((f) => ({ ...f, progress_token: token })),
         stopOnFailure: false,
       });
       setQueueResult(resp);
     } catch (e) {
-      setQueueError(String(e));
+      if (isCancelled(e)) setCancelled(true);
+      else setQueueError(String(e));
     } finally {
+      unlisten?.();
+      setProgress(null);
       setQueueSolving(false);
+      if (activeTokenRef.current === token) activeTokenRef.current = null;
     }
   }
 
@@ -271,6 +370,9 @@ export function useSolve(): UseSolve {
     pinsSatisfied,
     error,
     solving,
+    progress,
+    cancelled,
+    cancel,
     activePlan,
     setActivePlan,
     selection,
@@ -285,5 +387,6 @@ export function useSolve(): UseSolve {
     queueError,
     solveQueue,
     clearQueue,
+    reset: resetResults,
   };
 }

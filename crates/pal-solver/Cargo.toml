@@ -13,3 +13,4 @@ thiserror.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true
+parking_lot = "0.12"
