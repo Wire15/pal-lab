@@ -803,7 +803,8 @@ static class Program
     // (EPalPassiveSkillEffectType), never as parsed description text. Discovered set (build
     // 24181527, see `--discover-breeding`): BreedSpeed / BreedSpeed_InBaseCamp (farm egg-
     // production speed), PalEggHatchingSpeed (incubation), EggObtainExtraEgg (extra-egg
-    // chance), EggAlphaConversion (alpha-egg chance, cosmetic). Partner skills grant these
+    // chance), EggAlphaConversion (alpha-egg chance: raises the odds the hatched Pal is an
+    // Alpha (+20% HP, larger size), no breeding-effort impact). Partner skills grant these
     // via their per-rank PassiveSkills[] refs; passives (e.g. Babysitter) carry them inline.
     // The frozen `effect` contract collapses the five raw types onto four buckets.
     static readonly Dictionary<string, string> BreedEffectMap = new(StringComparer.Ordinal)

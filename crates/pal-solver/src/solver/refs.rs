@@ -8,7 +8,7 @@
 //! palcalc's `BreedingEffort`/`SelfBreedingEffort` (see `README-BREED-ESTIMATE.md`).
 //! Probability inputs to bred refs are supplied by the caller (the engine, via
 //! [`crate::probabilities`]) — this module never calls the probability model, so
-//! its effort math is unit-testable without the (sibling-owned) `todo!()` bodies.
+//! its effort math is unit-testable in isolation from that model.
 
 use pal_data::types::{ContainerKind, Gender, Guid, PassiveId};
 use pal_data::GameData;
@@ -424,7 +424,27 @@ impl PalRef {
     /// their desired names plus anonymous randoms.
     pub fn pool_contribution(&self) -> (Vec<PassiveId>, u32) {
         match self {
-            PalRef::Owned(o) => (o.primary.real_passives.clone(), 0),
+            // palcalc `CompositeOwnedPalReference.ActualPassives`: a wildcard
+            // composite contributes the INTERSECTION of both members' real
+            // passives (shared ids dedupe), padded with anonymous randoms up to
+            // the effective-passive count (the more-passive'd member). A single
+            // owned instance contributes all its real passives, no randoms.
+            PalRef::Owned(o) => match &o.alt {
+                None => (o.primary.real_passives.clone(), 0),
+                Some(alt) => {
+                    let alt_set: std::collections::HashSet<&PassiveId> =
+                        alt.real_passives.iter().collect();
+                    let named: Vec<PassiveId> = o
+                        .primary
+                        .real_passives
+                        .iter()
+                        .filter(|p| alt_set.contains(p))
+                        .cloned()
+                        .collect();
+                    let random = o.effective_passives.len().saturating_sub(named.len()) as u32;
+                    (named, random)
+                }
+            },
             PalRef::Wild(w) => split_effective(&w.effective_passives),
             PalRef::Bred(b) => split_effective(&b.effective_passives),
         }
@@ -559,6 +579,8 @@ impl BredPalRef {
         passives_prob: f64,
         ivs: SolverIvSet,
         ivs_prob: f64,
+        setup: &crate::solver::config::BreedingSetup,
+        egg_multiplier: f64,
     ) -> BredPalRef {
         let avg = if passives_prob <= 0.0 || ivs_prob <= 0.0 {
             u32::MAX
@@ -580,10 +602,10 @@ impl BredPalRef {
             num_breeding_steps: 0,
             num_wild_pals: 0,
             num_eggs: 0,
-            egg_multiplier: 1.0,
-            farm_speed_bonus: 0.0,
-            incubation_reduction: 0.0,
-            egg_hatch_hours: DEFAULT_EGG_HATCH_HOURS,
+            egg_multiplier,
+            farm_speed_bonus: setup.farm_speed_bonus,
+            incubation_reduction: setup.incubation_reduction,
+            egg_hatch_hours: setup.egg_hatch_hours,
         };
         r.recompute_effort(gd);
         r
@@ -601,8 +623,8 @@ impl BredPalRef {
         let rarity = gd.species_at(self.species).map(|s| s.rarity).unwrap_or(0);
         let massive_secs = self.egg_hatch_hours * 3600.0;
         let incubation = incubation_secs(rarity, massive_secs) * (1.0 - self.incubation_reduction);
-        let (self_effort, total_time) = if self.avg_required_breedings == u32::MAX {
-            (f64::INFINITY, f64::INFINITY)
+        let self_effort = if self.avg_required_breedings == u32::MAX {
+            f64::INFINITY
         } else {
             // Breeding-Farm speed boosts (partner skills) shorten each attempt:
             // time_per_breed = base / (1 + farm_speed_bonus). No boost => base.
@@ -612,15 +634,13 @@ impl BredPalRef {
             // the breeding time — divide by the egg multiplier.
             let total_breeding_time =
                 self.avg_required_breedings as f64 * time_per_breed / self.egg_multiplier;
-            let self_effort = if MULTIPLE_INCUBATORS {
+            if MULTIPLE_INCUBATORS {
                 total_breeding_time + incubation
             } else {
                 let total_incubation = self.avg_required_breedings as f64 * incubation;
                 (total_incubation + time_per_breed).max(total_breeding_time + incubation)
-            };
-            (self_effort, self_effort)
+            }
         };
-        let _ = total_time;
         self.self_effort = self_effort;
         self.total_effort = self_effort + self.parent_effort();
         self.num_breeding_steps = 1 + self.parent1.num_breeding_steps() + self.parent2.num_breeding_steps();
@@ -642,30 +662,6 @@ impl BredPalRef {
             (self.avg_required_breedings as f64 / prob).ceil() as u32
         };
         let mut r = BredPalRef { gender, avg_required_breedings: avg, ..self.clone() };
-        r.recompute_effort(gd);
-        r
-    }
-
-    /// Return a copy with a cake egg-multiplier applied (Vegetable/DeluxeVegetable
-    /// `BreedCount=2`), recomputing effort. `1.0` is the no-cake default.
-    pub fn with_egg_multiplier(&self, gd: &GameData, egg_multiplier: f64) -> BredPalRef {
-        let mut r = BredPalRef { egg_multiplier, ..self.clone() };
-        r.recompute_effort(gd);
-        r
-    }
-
-    /// Return a copy with the breeding-farm [`BreedingSetup`] applied (farm-speed
-    /// bonus, incubation reduction, world egg-hatch time), recomputing effort.
-    /// The egg multiplier (cake `BreedCount`) is set separately via
-    /// [`Self::with_egg_multiplier`], composed by the engine with the setup's
-    /// `extra_egg_chance`.
-    pub fn with_setup(&self, gd: &GameData, setup: &crate::solver::config::BreedingSetup) -> BredPalRef {
-        let mut r = BredPalRef {
-            farm_speed_bonus: setup.farm_speed_bonus,
-            incubation_reduction: setup.incubation_reduction,
-            egg_hatch_hours: setup.egg_hatch_hours,
-            ..self.clone()
-        };
         r.recompute_effort(gd);
         r
     }

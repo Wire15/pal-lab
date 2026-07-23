@@ -242,8 +242,9 @@ pub struct BreedingBoostEntry {
 
 /// Every breeding/egg/incubation boost the pack carries, each with a resolved
 /// display name. Mechanical mirror of [`list_passives`] over `breeding_boosts()`;
-/// ALL entries are emitted (including cosmetic `alpha_egg_chance`) — the UI
-/// filters cosmetics out of the BOOSTERS list.
+/// ALL entries are emitted, including `alpha_egg_chance` (which only raises the
+/// odds a hatched Pal is an Alpha — no breeding-effort impact). The UI renders
+/// those as read-only info rows rather than effort toggles.
 #[tauri::command]
 pub fn list_breeding_boosts() -> Vec<BreedingBoostEntry> {
     let gd = GameData::get();

@@ -8,6 +8,7 @@ use pal_solver::solver::refs::{
 };
 use pal_solver::solver::results::{BreedingPlan, PlanSource};
 use pal_solver::solver::CakeKind;
+use pal_solver::solver::config::BreedingSetup;
 
 #[test]
 fn plan_serializes_and_roundtrips() {
@@ -37,6 +38,8 @@ fn plan_serializes_and_roundtrips() {
         vec![EffPassive::Desired("Swift".into()), EffPassive::Random],
         0.25,
         SolverIvSet::RANDOM,
+        1.0,
+        &BreedingSetup::default(),
         1.0,
     )));
 

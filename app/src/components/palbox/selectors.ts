@@ -6,7 +6,7 @@
 // (PALBOX-SORT-SPEC.md) are cloned here read-only: we never rewrite slots, we
 // reorder virtually.
 
-import type { OwnedPal, SaveSummary, SpeciesEntry } from "../../lib/types";
+import { isAlpha, type OwnedPal, type SaveSummary, type SpeciesEntry } from "../../lib/types";
 
 /** Slots per Palbox / Dimensional page (6x5), matching the game. */
 export const PAGE_SIZE = 30;
@@ -166,7 +166,7 @@ export function matchesQuery(
 
   if (q.gender !== "any" && pal.gender !== q.gender) return false;
 
-  if (q.alphaOnly && !pal.is_boss) return false;
+  if (q.alphaOnly && !isAlpha(pal)) return false;
 
   const pq = q.passive.trim().toLowerCase();
   if (pq) {
@@ -231,8 +231,8 @@ export function compareBy(
         if (b.level !== a.level) return b.level - a.level;
         return physicalOrder(a, b);
       case "alpha":
-        // Alpha-first: bosses lead on ascending.
-        primary = (b.is_boss ? 1 : 0) - (a.is_boss ? 1 : 0);
+        // Alpha-first: alphas (boss origin or lucky) lead on ascending.
+        primary = (isAlpha(b) ? 1 : 0) - (isAlpha(a) ? 1 : 0);
         if (primary) return sign * primary;
         primary = paldexNo(a, species) - paldexNo(b, species);
         if (primary) return primary;

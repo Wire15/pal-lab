@@ -149,7 +149,7 @@ impl Default for BreedingSetup {
             farm_speed_bonus: 0.0,
             incubation_reduction: 0.0,
             extra_egg_chance: 0.0,
-            egg_hatch_hours: 72.0,
+            egg_hatch_hours: crate::solver::refs::DEFAULT_EGG_HATCH_HOURS,
         }
     }
 }

@@ -484,6 +484,8 @@ pub struct GameData {
 pub enum PackError {
     #[error("failed to decode pack: {0}")]
     Decode(#[from] bincode::Error),
+    #[error("invalid pack: {0}")]
+    Invalid(String),
 }
 
 static PACK_BYTES: &[u8] = include_bytes!("../pack/paldata.pack");
@@ -505,6 +507,22 @@ impl GameData {
     /// Decode a pack from raw bincode bytes and build lookup indices.
     pub fn decode(bytes: &[u8]) -> Result<GameData, PackError> {
         let pack: Pack = bincode::deserialize(bytes)?;
+        let n = pack.species.len();
+        // Fail loudly at decode on a shape mismatch, rather than panicking later
+        // on an out-of-bounds index (`min_steps` is addressed `from * n + to`).
+        if pack.min_steps.len() != n * n {
+            return Err(PackError::Invalid(format!(
+                "min_steps matrix is {} entries, expected n*n = {} for {n} species",
+                pack.min_steps.len(),
+                n * n
+            )));
+        }
+        if pack.learnsets.len() != n {
+            return Err(PackError::Invalid(format!(
+                "learnsets is {} entries, expected one per species (n = {n})",
+                pack.learnsets.len()
+            )));
+        }
         Ok(GameData::from_pack(pack))
     }
 
@@ -678,5 +696,41 @@ impl GameData {
     pub fn gender_probability(&self, idx: u16) -> Option<(f32, f32)> {
         self.species_at(idx)
             .map(|s| (s.male_probability, 1.0 - s.male_probability))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A `min_steps` matrix whose length is not `n*n` must be rejected at decode
+    /// (otherwise [`GameData::min_steps`] would panic on an out-of-bounds index).
+    #[test]
+    fn decode_rejects_mismatched_min_steps_length() {
+        let mut pack: Pack = bincode::deserialize(PACK_BYTES).expect("embedded pack");
+        pack.min_steps.pop();
+        let bytes = bincode::serialize(&pack).expect("reserialize");
+        match GameData::decode(&bytes) {
+            Err(PackError::Invalid(msg)) => assert!(
+                msg.contains("min_steps"),
+                "expected min_steps invalidity, got: {msg}"
+            ),
+            other => panic!("expected PackError::Invalid, got {other:?}"),
+        }
+    }
+
+    /// A `learnsets` array not parallel to `species` must be rejected at decode.
+    #[test]
+    fn decode_rejects_mismatched_learnsets_length() {
+        let mut pack: Pack = bincode::deserialize(PACK_BYTES).expect("embedded pack");
+        pack.learnsets.pop();
+        let bytes = bincode::serialize(&pack).expect("reserialize");
+        match GameData::decode(&bytes) {
+            Err(PackError::Invalid(msg)) => assert!(
+                msg.contains("learnsets"),
+                "expected learnsets invalidity, got: {msg}"
+            ),
+            other => panic!("expected PackError::Invalid, got {other:?}"),
+        }
     }
 }

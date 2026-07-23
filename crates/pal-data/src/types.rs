@@ -47,8 +47,16 @@ pub enum ContainerKind {
 pub struct OwnedPal {
     pub instance_id: Guid,
     pub character_id: PalId,
-    /// Alpha/boss variant (`BOSS_` prefix in the raw `CharacterID`).
+    /// Field-boss origin: the raw `CharacterID` carried a `BOSS_`/`Boss_`
+    /// prefix. Distinct from `is_lucky` below; both grant +20% HP and a larger
+    /// size in-game, so the UI labels either one "Alpha".
     pub is_boss: bool,
+    /// Lucky/rare instance flag: the save instance carried `IsRarePal=true`
+    /// (a shiny/lucky wild catch or a bred alpha). An instance property, not a
+    /// field-boss origin. Grants +20% HP and larger size, same as `is_boss`.
+    /// Defaults to `false` for older serialized data.
+    #[serde(default)]
+    pub is_lucky: bool,
     /// A catchable human NPC (merchant, hunter, villager) rather than a pal.
     /// Data-driven: an owned entity whose (prefix-stripped) `CharacterID` is
     /// absent from the species pack AND whose save record carries no `Gender`

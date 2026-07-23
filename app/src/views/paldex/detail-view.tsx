@@ -10,6 +10,7 @@ import type {
   SpeciesDetail,
   SpeciesRef,
 } from "../../lib/types";
+import { isAlpha } from "../../lib/types";
 import {
   containerLabel,
   genderView,
@@ -335,7 +336,7 @@ function YourPalSection({
           <h2 className="min-w-0 truncate font-display text-xl font-bold tracking-wide text-ink">
             {title}
           </h2>
-          {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
+          {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
           <span className="flex items-center gap-1.5 text-[13px]" title={g.label}>
             <span className={`text-base leading-none ${g.className}`}>{g.glyph}</span>
             <span className="text-ink-dim">{g.label}</span>

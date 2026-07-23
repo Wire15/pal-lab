@@ -539,7 +539,8 @@ Shared voice:
   size 16) at the right edge.
 - **Instance strip** (owned variant only, on `bg-abyss/30`): a wrap row of
   **`Lv n`** pill, **gender** glyph+label (`genderView`), the real **Alpha**
-  marker (`alphaIconUrl`) when `is_boss`, **condensation** `★n` when `rank>0`,
+  marker (`alphaIconUrl`) when the pal is an Alpha (`isAlpha` = `is_boss` field-boss
+  origin OR `is_lucky` IsRarePal instance; both +20% HP), **condensation** `★n` when `rank>0`,
   and right-aligned **IVs** (HP/ATK/DEF, `ivBand`-colored, hidden when all 0);
   then a wrap of **passive chips** (`PassiveChip`), omitted when none.
 - **Partner skill** (species): mono eyebrow + amber-bright **name**, with the
@@ -938,9 +939,14 @@ an **estimate** from extracted game data.
   (default 72) with the microcopy "Dedicated servers keep this in
   PalWorldSettings.ini — enter your world's Egg Incubation setting." Either way it
   feeds `setup.egg_hatch_hours`.
-- **Boosters.** One toggle row per non-cosmetic booster **source** (cosmetic
-  `alpha_egg_chance` is dropped), from `list_breeding_boosts`. A source's effects
-  toggle together (Babysitter carries both farm + incubation), so each row is one
+- **Boosters.** One toggle row per effort-affecting booster **source**, from
+  `list_breeding_boosts`. `alpha_egg_chance` sources are NOT toggles — they change
+  no breeding effort — so they render at the list tail as read-only **info rows**
+  (Broncherry, Broncherry Aqua) showing the display name, owned state, and a range
+  like `+35–45% Alpha-egg chance`, plus one caption: raises the chance the hatched
+  Pal is an Alpha (+20% HP, larger size), doesn't affect breeding steps or passives.
+  For the real toggle rows, a source's effects toggle together (Babysitter carries
+  both farm + incubation), so each row is one
   `role="switch"`: a `PalIcon` (partner) or an amber diamond **band** (passive),
   the display name, and a mono effect summary tinted `good` (idle) / `amber-bright`
   (on) — `-33% breed time` (farm speed as `1 − 1/(1+v)`), `-40% hatch time`
@@ -951,7 +957,10 @@ an **estimate** from extracted game data.
   max-rank **what-ifs** (`N★ max` / `what-if`). Toggling composes fractions
   additively per effect into the store; a mono `APPLIED` line echoes the running
   total, and one line of microcopy warns that mixed-source stacking is untested
-  in-game.
+  in-game. The selected set persists in localStorage, but on a roster change any
+  selected booster whose owned-state flipped is dropped (owned uses the real rank,
+  unowned a max-rank what-if, so a silent switch would change its value) — the user
+  re-toggles deliberately.
 - **Cake.** The §6 stacked segmented control (leading dot, `bg-raised`+amber
   active, `role="radiogroup"`) over None / Mushroom / Vegetable / Deluxe Veg /
   Special (mapping to the `CakeToken`s), with the selected option's one-line effect

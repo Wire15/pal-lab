@@ -6,26 +6,22 @@
 // strategy note, and a BEST DONORS scan of the owned pals that could seed the
 // line. Farm setup + cake are shared with the Solver via useBreedingSetup().
 
-import { useEffect, useMemo, useState } from "react";
-import { invoke } from "../lib/tauri";
+import { useMemo, useState } from "react";
 import type {
-  BreedingPlan,
   CakeToken,
   IvModel,
-  NamedEntry,
   OwnedPal,
   PlanNode,
-  SolveRequest,
-  SolveResponse,
 } from "../lib/types";
 import { formatDuration, genderView, ivBand, QUALITY_TEXT } from "../lib/ui";
 import { PalIcon } from "../components/primitives";
 import { PassivePicker } from "../components/passive-picker";
 import { PlanGraph } from "../components/plan-graph";
-import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
+import { PlanNodePanel } from "../components/plan-node-panel";
 import { hexGuid } from "../components/palbox/selectors";
 import { useAppState, useBreedingSetup } from "../state";
 import { ivSum, rankDonors, type StatKey } from "./ivlab/donors";
+import { useSolve } from "../lib/use-solve";
 
 const STAT_KEYS: readonly StatKey[] = ["hp", "attack", "defense"];
 const STAT_LABEL: Record<StatKey, string> = {
@@ -56,16 +52,18 @@ const IV_MODEL_COPY: Record<IvModel, string> = {
 };
 
 /**
- * Estimated eggs to hatch across a plan: the geometric expectation `1/p` summed
- * over every bred step (owned / wild leaves cost no eggs). This mirrors the
- * solver's internal `num_eggs`, which the frozen plan payload doesn't surface,
- * so it stays an ESTIMATE and is always labelled as one.
+ * Estimated eggs (egg batches) to hatch across a plan: the geometric
+ * expectation `1/p` summed over every bred step (owned / wild leaves cost no
+ * eggs), divided by the effective eggs-per-cycle multiplier `eggMult` (cake
+ * BreedCount x the extra-egg chance) so this agrees with the backend-adjusted
+ * `total_time` shown beside it. Mirrors the solver's internal `num_eggs`, which
+ * the frozen plan payload doesn't surface, so it stays an ESTIMATE, labelled one.
  */
-function expectedEggs(root: PlanNode): number {
+function expectedEggs(root: PlanNode, eggMult: number): number {
   let eggs = 0;
   (function walk(n: PlanNode) {
     if (n.source === "Bred" && n.probability > 0 && Number.isFinite(n.probability)) {
-      eggs += Math.max(1, Math.round(1 / n.probability));
+      eggs += Math.max(1, Math.round(1 / n.probability / eggMult));
     }
     n.children.forEach(walk);
   })(root);
@@ -185,40 +183,20 @@ export default function IvLab() {
   const [ivModel, setIvModel] = useState<IvModel>("empirical");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
-  const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [solving, setSolving] = useState(false);
-  const [activePlan, setActivePlan] = useState(0);
-  const [selection, setSelection] = useState<{
-    nodeId: string;
-    data: PlanNodeSelection;
-  } | null>(null);
+  const {
+    speciesList,
+    nameToId,
+    plans,
+    error,
+    solving,
+    activePlan,
+    setActivePlan,
+    selection,
+    setSelection,
+    fastestIdx,
+    solve,
+  } = useSolve();
 
-  useEffect(() => {
-    invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
-  }, []);
-  // Fresh result resets to the first plan; switching plans clears the node
-  // selection (node ids are per-plan-render path ids, like the Solver).
-  useEffect(() => {
-    setActivePlan(0);
-  }, [plans]);
-  useEffect(() => {
-    setSelection(null);
-  }, [activePlan, plans]);
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setSelection(null);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const nameToId = useMemo(
-    () => new Map(speciesList.map((s) => [s.name, s.id])),
-    [speciesList],
-  );
   const idToName = useMemo(
     () => new Map(speciesList.map((s) => [s.id, s.name])),
     [speciesList],
@@ -229,6 +207,13 @@ export default function IvLab() {
   const floorCovered =
     IV_FLOOR_CAKES.includes(cake) &&
     STAT_KEYS.some((k) => ivs[k] > 0 && ivs[k] <= IV_FLOOR);
+
+  // Effective eggs-per-cycle multiplier: Vegetable/Deluxe Veg cakes yield 2 eggs
+  // per breeding cycle, composed with the extra-egg chance — mirrors the solver's
+  // `egg_mult` so the ~eggs estimate agrees with the backend-adjusted total time.
+  const eggMult =
+    (cake === "vegetable" || cake === "deluxe_vegetable" ? 2 : 1) *
+    (1 + setup.extra_egg_chance);
 
   // Donor pool: owned pals of the target species, plus any owned pal that shows
   // up in the returned plans (plan node species_names -> internal id -> owned).
@@ -251,38 +236,19 @@ export default function IvLab() {
 
   const showDonors = donorGroups !== null;
 
-  async function runSolve() {
-    setSolving(true);
-    setError(null);
-    setPlans(null);
-    try {
-      const spec: SolveRequest = {
-        target_species: species,
-        required_passives: passives,
-        max_steps: maxSteps,
-        ivs,
-        cake,
-        iv_model: ivModel,
-        setup,
-      };
-      const resp = await invoke<SolveResponse>("solve", { saveDir, spec });
-      setPlans(resp.plans);
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setSolving(false);
-    }
+  // IV Lab sends only its own field set ({ ivs, iv_model }); the hook injects
+  // the shared setup/cake.
+  function runSolve() {
+    return solve({
+      target_species: species,
+      required_passives: passives,
+      max_steps: maxSteps,
+      ivs,
+      iv_model: ivModel,
+    });
   }
 
   const canSolve = saveDir.trim() !== "" && species.trim() !== "" && !solving;
-  const fastestIdx =
-    plans && plans.length > 1
-      ? plans.reduce(
-          (best, p, idx, arr) =>
-            p.total_time_secs < arr[best].total_time_secs ? idx : best,
-          0,
-        )
-      : -1;
   const active = plans && plans.length > 0 ? plans[activePlan] : null;
 
   return (
@@ -356,7 +322,9 @@ export default function IvLab() {
             min={1}
             className="w-16 rounded-md border border-line bg-abyss px-2 py-1 text-center font-mono text-[13px] text-ink focus:border-amber/60"
             value={maxSteps}
-            onChange={(e) => setMaxSteps(Number(e.currentTarget.value))}
+            onChange={(e) =>
+              setMaxSteps(Math.max(1, Math.round(Number(e.currentTarget.value) || 1)))
+            }
           />
         </label>
 
@@ -364,15 +332,20 @@ export default function IvLab() {
           <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
             Breeding cake
           </span>
-          <div className="grid grid-cols-3 gap-1">
+          <div
+            className="grid grid-cols-3 gap-1"
+            role="radiogroup"
+            aria-label="Breeding cake fed at the farm"
+          >
             {CAKES.map((c) => {
               const on = cake === c.token;
               return (
                 <button
                   key={c.token}
                   type="button"
+                  role="radio"
+                  aria-checked={on}
                   onClick={() => setCake(c.token)}
-                  aria-pressed={on}
                   className={`rounded-md border px-2 py-1.5 text-[12px] font-medium transition-colors ${
                     on
                       ? "border-amber/50 bg-amber/10 text-amber"
@@ -598,7 +571,7 @@ export default function IvLab() {
                 </span>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
                   <span>
-                    <span className="text-ink">~{expectedEggs(active.root)}</span>{" "}
+                    <span className="text-ink">~{expectedEggs(active.root, eggMult)}</span>{" "}
                     eggs
                   </span>
                   <span className="text-line">|</span>

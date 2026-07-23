@@ -50,6 +50,11 @@ fn owned_ref(species: u16, gender: Gender) -> PalRef {
 
 /// A bred ref with owned (zero-effort) parents so `total_effort == self_effort`.
 fn bred(gd: &GameData, passives_prob: f64) -> BredPalRef {
+    bred_egg(gd, passives_prob, 1.0)
+}
+
+/// As [`bred`], but with a cake egg multiplier applied at construction.
+fn bred_egg(gd: &GameData, passives_prob: f64, egg_mult: f64) -> BredPalRef {
     BredPalRef::new(
         gd,
         0,
@@ -59,6 +64,8 @@ fn bred(gd: &GameData, passives_prob: f64) -> BredPalRef {
         passives_prob,
         SolverIvSet::RANDOM,
         1.0,
+        &BreedingSetup::default(),
+        egg_mult,
     )
 }
 
@@ -109,7 +116,7 @@ fn vegetable_halves_breeding_time() {
     // passives_prob 0.5, ivs 1.0 -> avg 2 breedings.
     let normal = bred(gd, 0.5);
     assert_eq!(normal.avg_required_breedings, 2);
-    let veg = normal.with_egg_multiplier(gd, CakeKind::Vegetable.egg_multiplier());
+    let veg = bred_egg(gd, 0.5, CakeKind::Vegetable.egg_multiplier());
 
     let incubation =
         incubation_secs(gd.species_at(0).unwrap().rarity, DEFAULT_EGG_HATCH_HOURS * 3600.0);
@@ -204,7 +211,7 @@ fn cake_count_sums_breeding_attempts() {
     assert_eq!(child.avg_required_breedings, 4);
     // Normal/Special: one egg per cycle -> 4 attempts. Vegetable: 2 eggs -> 2.
     assert_eq!(child.attempts_estimate(), 4);
-    assert_eq!(child.with_egg_multiplier(gd, 2.0).attempts_estimate(), 2);
+    assert_eq!(bred_egg(gd, 0.25, 2.0).attempts_estimate(), 2);
 
     // A one-step plan needs `attempts` cakes when a cake is used.
     let r = PalRef::Bred(Box::new(child));

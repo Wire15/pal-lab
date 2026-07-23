@@ -20,6 +20,16 @@ use crate::SaveError;
 /// Fixed header length preceding the compressed payload.
 const HEADER_LEN: usize = 12;
 
+/// Upper bound on the decompressed GVAS blob. Real files: `Level.sav` ~30 MB,
+/// and a `*_dps.sav` (dimensional pal storage) legitimately decompresses to
+/// ~73 MB from ~40 KB — a ~1850x ratio, because the storage is mostly empty.
+/// 512 MiB clears real saves with wide headroom while still rejecting a forged
+/// `uncompressed_len` that would otherwise drive a multi-gigabyte allocation
+/// (the Oodle path allocates `uncompressed_len` bytes up front). A ratio-based
+/// guard is deliberately NOT used: real dps ratios (~1850x) make any ratio
+/// ceiling that passes real data too loose to add protection over this bound.
+const MAX_UNCOMPRESSED_LEN: usize = 512 * 1024 * 1024;
+
 /// Inspect the header and decompress the payload into the raw GVAS blob.
 pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
     if data.len() < HEADER_LEN {
@@ -42,6 +52,14 @@ pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
         )));
     }
     let payload = &payload[..compressed_len];
+
+    // Guard the decompressed size BEFORE dispatching: a forged header must fail
+    // as a clean `SaveError::Compression`, never a giant allocation.
+    if uncompressed_len > MAX_UNCOMPRESSED_LEN {
+        return Err(SaveError::Compression(format!(
+            "implausible uncompressed length {uncompressed_len} exceeds {MAX_UNCOMPRESSED_LEN}-byte ceiling"
+        )));
+    }
 
     match magic {
         b"PlZ" => decompress_zlib(payload, save_type, uncompressed_len),
@@ -135,4 +153,33 @@ fn oodle_decompress(src: &[u8], expected_len: usize) -> Result<Vec<u8>, SaveErro
     }
     out.truncate(written);
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Build a `.sav` header + payload with the given size fields, `PlM` magic.
+    fn forged(uncompressed_len: u32, compressed_len: u32, payload: &[u8]) -> Vec<u8> {
+        let mut out = Vec::with_capacity(HEADER_LEN + payload.len());
+        out.extend_from_slice(&uncompressed_len.to_le_bytes());
+        out.extend_from_slice(&compressed_len.to_le_bytes());
+        out.extend_from_slice(b"PlM");
+        out.push(0x31);
+        out.extend_from_slice(payload);
+        out
+    }
+
+    /// A header claiming ~4 GB uncompressed must be rejected as a clean
+    /// `SaveError::Compression` before any allocation is attempted.
+    #[test]
+    fn oversized_uncompressed_len_rejected() {
+        let data = forged(u32::MAX, 4, &[0u8; 4]);
+        match decompress_sav(&data) {
+            Err(SaveError::Compression(msg)) => {
+                assert!(msg.contains("implausible"), "unexpected message: {msg}");
+            }
+            other => panic!("expected compression error, got {other:?}"),
+        }
+    }
 }

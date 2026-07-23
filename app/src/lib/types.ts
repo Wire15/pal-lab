@@ -25,7 +25,14 @@ export interface OwnedPal {
   instance_id: Guid;
   /** Species id with any BOSS_/PREDATOR_/GYM_ prefix stripped. */
   character_id: string;
+  /** Field-boss origin (BOSS_/Boss_ prefix in the raw CharacterID). */
   is_boss: boolean;
+  /**
+   * Lucky/rare instance (save carried IsRarePal=true): a shiny/lucky wild
+   * catch or a bred alpha. Distinct from is_boss, but both grant +20% HP and a
+   * larger size in-game, so the UI labels either one "Alpha". Defaults false.
+   */
+  is_lucky: boolean;
   /**
    * Catchable human NPC (merchant/hunter/villager) rather than a pal. Set when
    * the species id is absent from the pack and the save record has no gender.
@@ -44,6 +51,15 @@ export interface OwnedPal {
   container_id: Guid | null;
   slot_index: number | null;
   container_kind: ContainerKind;
+}
+
+/**
+ * Whether a pal reads as an "Alpha" in the UI. True for a field-boss origin
+ * (`is_boss`) OR a lucky/rare instance (`is_lucky`); both grant +20% HP and a
+ * larger size in-game, so they share one badge.
+ */
+export function isAlpha(pal: Pick<OwnedPal, "is_boss" | "is_lucky">): boolean {
+  return pal.is_boss || pal.is_lucky;
 }
 
 export interface PlayerRef {
@@ -151,9 +167,11 @@ export interface WorldOptionsResponse {
  * the effect inline. */
 export type BreedingBoostSource = "partner_base" | "partner_party" | "passive";
 
-/** The breeding-relevant effect a boost applies. `alpha_egg_chance` is cosmetic
- * (alpha egg conversion) with no breeding-effort impact — the setup panel filters
- * it out of the BOOSTERS list. The other three compose into `BreedingSetup`:
+/** The breeding-relevant effect a boost applies. `alpha_egg_chance` raises the
+ * chance the hatched Pal is an Alpha (+20% HP, larger size); it does NOT change
+ * the number of breeding steps or which passives are inherited, so the solver
+ * ignores it and the setup panel shows those boosts as read-only info rows
+ * rather than effort toggles. The other three compose into `BreedingSetup`:
  * `farm_speed` -> `farm_speed_bonus`, `incubation_speed` -> `incubation_reduction`,
  * `extra_egg_chance` -> `extra_egg_chance`. */
 export type BreedingEffect =

@@ -499,6 +499,19 @@ mod tests {
                 *per_kind.entry(k).or_default() += 1;
             }
         }
+        // pass 1c: guarantee a couple of lucky (IsRarePal) pals so the dev shim
+        // exercises the is_lucky "Alpha" rendering path (13 exist in the real
+        // save but the representative-per-kind passes above may miss them all).
+        for pal in &summary.pals {
+            if trimmed.iter().filter(|p| p.is_lucky).count() >= 2 {
+                break;
+            }
+            if pal.is_lucky && !trimmed.iter().any(|p| p.instance_id == pal.instance_id) {
+                let k = format!("{:?}", pal.container_kind);
+                trimmed.push(pal.clone());
+                *per_kind.entry(k).or_default() += 1;
+            }
+        }
         // pass 2: fill to ~60, <=12 per kind.
         for pal in &summary.pals {
             if trimmed.len() >= 60 {

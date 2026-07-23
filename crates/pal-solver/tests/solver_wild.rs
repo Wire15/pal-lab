@@ -25,6 +25,7 @@ fn owned(gd: &GameData, species: u16, gender: Gender) -> OwnedPal {
         instance_id: [0u8; 16],
         character_id: gd.species_at(species).unwrap().internal_name.clone(),
         is_boss: false,
+        is_lucky: false,
         gender: Some(gender),
         level: 1,
         rank: 0,

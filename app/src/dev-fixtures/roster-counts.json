@@ -1,173 +1,11 @@
 {
-  "FluffyBird": {
-    "male": 13,
-    "female": 7,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 100,
-      "def": 99
-    }
-  },
-  "Boar": {
-    "male": 8,
-    "female": 12,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 100,
-      "def": 99
-    }
-  },
-  "IceSeal": {
-    "male": 2,
-    "female": 0,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 96,
-      "def": 100
-    }
-  },
-  "FlameBambi": {
-    "male": 8,
-    "female": 8,
-    "best_ivs": {
-      "hp": 89,
-      "atk": 93,
-      "def": 70
-    }
-  },
-  "Werewolf": {
-    "male": 10,
-    "female": 10,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 95,
-      "def": 99
-    }
-  },
-  "VolcanoDragon": {
-    "male": 3,
-    "female": 3,
-    "best_ivs": {
-      "hp": 93,
-      "atk": 84,
-      "def": 94
-    }
-  },
-  "ElecCat": {
-    "male": 10,
-    "female": 5,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 99,
-      "def": 91
-    }
-  },
-  "YakushimaMonster001_Purple": {
+  "GrassPanda_Electric": {
     "male": 1,
     "female": 0,
     "best_ivs": {
-      "hp": 95,
-      "atk": 20,
-      "def": 84
-    }
-  },
-  "RockBeast": {
-    "male": 3,
-    "female": 3,
-    "best_ivs": {
-      "hp": 94,
-      "atk": 91,
-      "def": 98
-    }
-  },
-  "SalesPerson": {
-    "male": 0,
-    "female": 0,
-    "best_ivs": {
-      "hp": 73,
-      "atk": 51,
-      "def": 19
-    }
-  },
-  "FlyingManta": {
-    "male": 11,
-    "female": 13,
-    "best_ivs": {
-      "hp": 97,
-      "atk": 94,
-      "def": 98
-    }
-  },
-  "SmallYeti": {
-    "male": 3,
-    "female": 3,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 89,
-      "def": 82
-    }
-  },
-  "BluePlatypus_Fire": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 48,
-      "atk": 31,
-      "def": 84
-    }
-  },
-  "HerculesBeetle": {
-    "male": 4,
-    "female": 2,
-    "best_ivs": {
-      "hp": 93,
-      "atk": 90,
-      "def": 88
-    }
-  },
-  "IceFox": {
-    "male": 5,
-    "female": 8,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 91,
-      "def": 97
-    }
-  },
-  "TentacleTurtle_Ground": {
-    "male": 0,
-    "female": 3,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 86,
-      "def": 78
-    }
-  },
-  "PinkLizard": {
-    "male": 1,
-    "female": 1,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 53,
-      "def": 40
-    }
-  },
-  "CuteButterfly": {
-    "male": 8,
-    "female": 10,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 100,
-      "def": 95
-    }
-  },
-  "FeatherOstrich": {
-    "male": 4,
-    "female": 1,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 92,
-      "def": 83
+      "hp": 68,
+      "atk": 68,
+      "def": 79
     }
   },
   "Hedgehog": {
@@ -179,174 +17,30 @@
       "def": 94
     }
   },
-  "WizardOwl": {
-    "male": 4,
-    "female": 7,
+  "IceSeal": {
+    "male": 2,
+    "female": 0,
     "best_ivs": {
-      "hp": 89,
-      "atk": 99,
-      "def": 99
-    }
-  },
-  "DarkCrow": {
-    "male": 10,
-    "female": 9,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 88,
-      "def": 84
-    }
-  },
-  "ElecPomeranian": {
-    "male": 3,
-    "female": 3,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 78,
-      "def": 76
-    }
-  },
-  "VioletFairy": {
-    "male": 3,
-    "female": 5,
-    "best_ivs": {
-      "hp": 82,
-      "atk": 99,
-      "def": 83
-    }
-  },
-  "BirdDragon_Ice": {
-    "male": 3,
-    "female": 5,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 87,
-      "def": 80
-    }
-  },
-  "Deer": {
-    "male": 11,
-    "female": 12,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 97,
-      "def": 98
-    }
-  },
-  "CatBat": {
-    "male": 6,
-    "female": 6,
-    "best_ivs": {
-      "hp": 92,
-      "atk": 99,
-      "def": 95
-    }
-  },
-  "Ronin": {
-    "male": 7,
-    "female": 4,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 99,
+      "hp": 91,
+      "atk": 96,
       "def": 100
     }
   },
-  "FireKirin_Dark": {
-    "male": 4,
-    "female": 4,
+  "Werewolf": {
+    "male": 10,
+    "female": 10,
     "best_ivs": {
-      "hp": 96,
-      "atk": 93,
-      "def": 97
+      "hp": 100,
+      "atk": 95,
+      "def": 99
     }
   },
-  "GhostBeast": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 36,
-      "atk": 83,
-      "def": 92
-    }
-  },
-  "BlueDragon": {
-    "male": 3,
-    "female": 2,
-    "best_ivs": {
-      "hp": 87,
-      "atk": 96,
-      "def": 95
-    }
-  },
-  "Baphomet": {
-    "male": 4,
-    "female": 6,
-    "best_ivs": {
-      "hp": 89,
-      "atk": 88,
-      "def": 90
-    }
-  },
-  "LizardMan_Fire": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 67,
-      "atk": 30,
-      "def": 11
-    }
-  },
-  "Umihebi": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 69,
-      "atk": 54,
-      "def": 89
-    }
-  },
-  "HadesBird": {
-    "male": 3,
-    "female": 3,
+  "WindChimes": {
+    "male": 5,
+    "female": 12,
     "best_ivs": {
       "hp": 99,
-      "atk": 99,
-      "def": 85
-    }
-  },
-  "SwordCutlassfish_Fire": {
-    "male": 2,
-    "female": 3,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 65,
-      "def": 92
-    }
-  },
-  "Male_People03": {
-    "male": 0,
-    "female": 0,
-    "best_ivs": {
-      "hp": 50,
-      "atk": 69,
-      "def": 65
-    }
-  },
-  "ThunderDog": {
-    "male": 1,
-    "female": 1,
-    "best_ivs": {
-      "hp": 35,
-      "atk": 58,
-      "def": 34
-    }
-  },
-  "LazyCatfish": {
-    "male": 6,
-    "female": 11,
-    "best_ivs": {
-      "hp": 93,
-      "atk": 100,
+      "atk": 94,
       "def": 96
     }
   },
@@ -359,93 +53,111 @@
       "def": 96
     }
   },
-  "Kelpie": {
-    "male": 11,
-    "female": 23,
+  "CowPal": {
+    "male": 5,
+    "female": 11,
     "best_ivs": {
-      "hp": 99,
-      "atk": 96,
-      "def": 100
+      "hp": 98,
+      "atk": 93,
+      "def": 83
     }
   },
-  "LizardMan": {
-    "male": 9,
+  "SkyDragon": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 4,
+      "atk": 38,
+      "def": 96
+    }
+  },
+  "MopBaby": {
+    "male": 14,
     "female": 8,
     "best_ivs": {
-      "hp": 100,
-      "atk": 93,
-      "def": 99
+      "hp": 99,
+      "atk": 99,
+      "def": 91
     }
   },
-  "SamuraiDog": {
-    "male": 5,
-    "female": 9,
-    "best_ivs": {
-      "hp": 87,
-      "atk": 90,
-      "def": 98
-    }
-  },
-  "CuteMole": {
+  "SheepBall": {
     "male": 13,
     "female": 9,
     "best_ivs": {
       "hp": 100,
-      "atk": 94,
-      "def": 98
+      "atk": 100,
+      "def": 97
     }
   },
-  "BluePlatypus": {
-    "male": 14,
-    "female": 12,
+  "Ronin": {
+    "male": 7,
+    "female": 4,
     "best_ivs": {
-      "hp": 100,
-      "atk": 98,
-      "def": 95
-    }
-  },
-  "GrassMinotaur": {
-    "male": 5,
-    "female": 1,
-    "best_ivs": {
-      "hp": 78,
-      "atk": 86,
-      "def": 96
-    }
-  },
-  "FlyingManta_Thunder": {
-    "male": 2,
-    "female": 1,
-    "best_ivs": {
-      "hp": 76,
-      "atk": 90,
-      "def": 99
-    }
-  },
-  "ThunderBird": {
-    "male": 5,
-    "female": 6,
-    "best_ivs": {
-      "hp": 100,
+      "hp": 98,
       "atk": 99,
       "def": 100
     }
   },
-  "CactusDoll": {
-    "male": 2,
-    "female": 4,
+  "SwordCutlassfish": {
+    "male": 0,
+    "female": 1,
     "best_ivs": {
-      "hp": 95,
-      "atk": 61,
-      "def": 76
+      "hp": 67,
+      "atk": 88,
+      "def": 53
     }
   },
-  "WhiteMoth": {
+  "RedArmorBird": {
     "male": 2,
+    "female": 1,
+    "best_ivs": {
+      "hp": 90,
+      "atk": 82,
+      "def": 64
+    }
+  },
+  "HadesBird": {
+    "male": 3,
     "female": 3,
     "best_ivs": {
-      "hp": 94,
-      "atk": 100,
+      "hp": 99,
+      "atk": 99,
+      "def": 85
+    }
+  },
+  "RaijinDaughter": {
+    "male": 2,
+    "female": 8,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 99,
+      "def": 91
+    }
+  },
+  "PlantSlime": {
+    "male": 12,
+    "female": 13,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 95,
+      "def": 99
+    }
+  },
+  "Kirin": {
+    "male": 6,
+    "female": 7,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 98,
+      "def": 82
+    }
+  },
+  "DreamDemon": {
+    "male": 8,
+    "female": 6,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 96,
       "def": 97
     }
   },
@@ -458,168 +170,6 @@
       "def": 95
     }
   },
-  "VolcanicMonster_Ice": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 19,
-      "atk": 99,
-      "def": 70
-    }
-  },
-  "GrassPanda": {
-    "male": 1,
-    "female": 5,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 76,
-      "def": 98
-    }
-  },
-  "FlowerDoll": {
-    "male": 8,
-    "female": 5,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 90,
-      "def": 98
-    }
-  },
-  "Alpaca": {
-    "male": 9,
-    "female": 6,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 98,
-      "def": 82
-    }
-  },
-  "CaptainPenguin": {
-    "male": 9,
-    "female": 5,
-    "best_ivs": {
-      "hp": 97,
-      "atk": 98,
-      "def": 100
-    }
-  },
-  "NegativeOctopus": {
-    "male": 9,
-    "female": 10,
-    "best_ivs": {
-      "hp": 82,
-      "atk": 100,
-      "def": 98
-    }
-  },
-  "Serpent": {
-    "male": 4,
-    "female": 10,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 97,
-      "def": 94
-    }
-  },
-  "SakuraSaurus": {
-    "male": 3,
-    "female": 4,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 98,
-      "def": 98
-    }
-  },
-  "RobinHood": {
-    "male": 1,
-    "female": 1,
-    "best_ivs": {
-      "hp": 83,
-      "atk": 95,
-      "def": 98
-    }
-  },
-  "GrassGolem": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 44,
-      "atk": 59,
-      "def": 96
-    }
-  },
-  "IceCrocodile": {
-    "male": 6,
-    "female": 5,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 100,
-      "def": 100
-    }
-  },
-  "FairyDragon": {
-    "male": 9,
-    "female": 5,
-    "best_ivs": {
-      "hp": 92,
-      "atk": 100,
-      "def": 100
-    }
-  },
-  "SharkKid_Fire": {
-    "male": 0,
-    "female": 3,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 86,
-      "def": 99
-    }
-  },
-  "Monkey": {
-    "male": 4,
-    "female": 8,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 93,
-      "def": 100
-    }
-  },
-  "TropicalOstrich": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 65,
-      "atk": 21,
-      "def": 96
-    }
-  },
-  "KendoFrog": {
-    "male": 8,
-    "female": 19,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 96,
-      "def": 100
-    }
-  },
-  "WindChimes": {
-    "male": 5,
-    "female": 12,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 94,
-      "def": 96
-    }
-  },
-  "LeafMomonga": {
-    "male": 8,
-    "female": 8,
-    "best_ivs": {
-      "hp": 72,
-      "atk": 95,
-      "def": 100
-    }
-  },
   "Manticore_Dark": {
     "male": 2,
     "female": 2,
@@ -629,336 +179,12 @@
       "def": 100
     }
   },
-  "FlowerDinosaur_Electric": {
-    "male": 2,
-    "female": 2,
-    "best_ivs": {
-      "hp": 90,
-      "atk": 82,
-      "def": 92
-    }
-  },
-  "Female_People03": {
-    "male": 0,
-    "female": 0,
-    "best_ivs": {
-      "hp": 97,
-      "atk": 61,
-      "def": 90
-    }
-  },
-  "Hunter_Handgun": {
-    "male": 0,
-    "female": 0,
-    "best_ivs": {
-      "hp": 21,
-      "atk": 30,
-      "def": 88
-    }
-  },
-  "ElecPanda": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 70,
-      "atk": 89,
-      "def": 58
-    }
-  },
-  "ColorfulBird": {
-    "male": 4,
-    "female": 7,
-    "best_ivs": {
-      "hp": 93,
-      "atk": 82,
-      "def": 99
-    }
-  },
-  "JellyfishGhost": {
-    "male": 4,
-    "female": 3,
-    "best_ivs": {
-      "hp": 94,
-      "atk": 86,
-      "def": 93
-    }
-  },
-  "StuffedShark": {
-    "male": 2,
-    "female": 2,
-    "best_ivs": {
-      "hp": 78,
-      "atk": 91,
-      "def": 45
-    }
-  },
-  "QueenBee": {
-    "male": 1,
-    "female": 3,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 95,
-      "def": 61
-    }
-  },
-  "Bastet": {
-    "male": 5,
+  "SakuraSaurus": {
+    "male": 3,
     "female": 4,
     "best_ivs": {
-      "hp": 96,
-      "atk": 83,
-      "def": 98
-    }
-  },
-  "FengyunDeeper": {
-    "male": 0,
-    "female": 2,
-    "best_ivs": {
-      "hp": 84,
-      "atk": 96,
-      "def": 90
-    }
-  },
-  "BirdDragon": {
-    "male": 5,
-    "female": 10,
-    "best_ivs": {
       "hp": 95,
-      "atk": 91,
-      "def": 92
-    }
-  },
-  "WeaselDragon": {
-    "male": 7,
-    "female": 6,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 96,
-      "def": 99
-    }
-  },
-  "KingAlpaca": {
-    "male": 4,
-    "female": 1,
-    "best_ivs": {
-      "hp": 82,
-      "atk": 96,
-      "def": 97
-    }
-  },
-  "BerryGoat_Dark": {
-    "male": 3,
-    "female": 1,
-    "best_ivs": {
-      "hp": 88,
-      "atk": 75,
-      "def": 81
-    }
-  },
-  "MummyPal": {
-    "male": 3,
-    "female": 2,
-    "best_ivs": {
-      "hp": 66,
-      "atk": 95,
-      "def": 87
-    }
-  },
-  "LazyDragon_Electric": {
-    "male": 0,
-    "female": 2,
-    "best_ivs": {
-      "hp": 77,
-      "atk": 76,
-      "def": 99
-    }
-  },
-  "MopBaby": {
-    "male": 14,
-    "female": 8,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 99,
-      "def": 91
-    }
-  },
-  "Deer_Ground": {
-    "male": 2,
-    "female": 2,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 88,
-      "def": 92
-    }
-  },
-  "PlantSlime": {
-    "male": 14,
-    "female": 13,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 95,
-      "def": 99
-    }
-  },
-  "CactusDoll_Dark": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 70,
-      "atk": 61,
-      "def": 56
-    }
-  },
-  "NightFox": {
-    "male": 4,
-    "female": 6,
-    "best_ivs": {
-      "hp": 79,
-      "atk": 76,
-      "def": 85
-    }
-  },
-  "StuffedShark_Fire": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 63,
-      "atk": 50,
-      "def": 72
-    }
-  },
-  "RaijinDaughter": {
-    "male": 2,
-    "female": 8,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 99,
-      "def": 91
-    }
-  },
-  "NegativeKoala": {
-    "male": 7,
-    "female": 8,
-    "best_ivs": {
-      "hp": 86,
-      "atk": 93,
-      "def": 93
-    }
-  },
-  "Garm": {
-    "male": 11,
-    "female": 13,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 100,
-      "def": 99
-    }
-  },
-  "LittleBriarRose": {
-    "male": 14,
-    "female": 9,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 96,
-      "def": 95
-    }
-  },
-  "SwordCutlassfish": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 67,
-      "atk": 88,
-      "def": 53
-    }
-  },
-  "JellyfishFairy": {
-    "male": 1,
-    "female": 3,
-    "best_ivs": {
-      "hp": 80,
-      "atk": 90,
-      "def": 94
-    }
-  },
-  "GrassMammoth_Ice": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 13,
-      "atk": 28,
-      "def": 71
-    }
-  },
-  "PinkRabbit": {
-    "male": 8,
-    "female": 9,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 91,
-      "def": 94
-    }
-  },
-  "YakushimaMonster001_Blue": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 43,
-      "atk": 59,
-      "def": 28
-    }
-  },
-  "KingBahamut": {
-    "male": 2,
-    "female": 3,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 61,
-      "def": 75
-    }
-  },
-  "Kirin": {
-    "male": 6,
-    "female": 7,
-    "best_ivs": {
-      "hp": 99,
       "atk": 98,
-      "def": 82
-    }
-  },
-  "FlowerDinosaur": {
-    "male": 3,
-    "female": 1,
-    "best_ivs": {
-      "hp": 87,
-      "atk": 65,
-      "def": 86
-    }
-  },
-  "DarkAlien": {
-    "male": 4,
-    "female": 5,
-    "best_ivs": {
-      "hp": 97,
-      "atk": 98,
-      "def": 96
-    }
-  },
-  "GrassPanda_Electric": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 68,
-      "atk": 68,
-      "def": 79
-    }
-  },
-  "Sekhmet": {
-    "male": 0,
-    "female": 4,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 84,
       "def": 98
     }
   },
@@ -971,112 +197,58 @@
       "def": 92
     }
   },
-  "Bastet_Ice": {
-    "male": 1,
+  "KingAlpaca": {
+    "male": 4,
     "female": 1,
     "best_ivs": {
-      "hp": 91,
-      "atk": 57,
+      "hp": 82,
+      "atk": 96,
       "def": 97
     }
   },
-  "Kelpie_Fire": {
-    "male": 7,
-    "female": 7,
-    "best_ivs": {
-      "hp": 92,
-      "atk": 95,
-      "def": 91
-    }
-  },
-  "Carbunclo": {
-    "male": 5,
-    "female": 15,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 98,
-      "def": 98
-    }
-  },
-  "PinkCat": {
-    "male": 16,
-    "female": 11,
+  "TentacleTurtle": {
+    "male": 13,
+    "female": 6,
     "best_ivs": {
       "hp": 99,
-      "atk": 100,
+      "atk": 99,
       "def": 99
     }
   },
-  "CatMage": {
-    "male": 6,
-    "female": 6,
+  "DarkScorpion": {
+    "male": 1,
+    "female": 7,
     "best_ivs": {
       "hp": 92,
-      "atk": 94,
-      "def": 80
+      "atk": 81,
+      "def": 58
     }
   },
-  "IceDeer": {
-    "male": 2,
+  "NightFox": {
+    "male": 4,
+    "female": 5,
+    "best_ivs": {
+      "hp": 79,
+      "atk": 76,
+      "def": 85
+    }
+  },
+  "PinkRabbit_Grass": {
+    "male": 6,
     "female": 3,
     "best_ivs": {
-      "hp": 73,
-      "atk": 99,
-      "def": 89
-    }
-  },
-  "CloverFairy": {
-    "male": 9,
-    "female": 10,
-    "best_ivs": {
-      "hp": 99,
-      "atk": 99,
-      "def": 93
-    }
-  },
-  "YakushimaBoss001_Small": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 88,
-      "atk": 52,
-      "def": 66
-    }
-  },
-  "Suzaku": {
-    "male": 2,
-    "female": 0,
-    "best_ivs": {
-      "hp": 83,
-      "atk": 89,
-      "def": 56
-    }
-  },
-  "CaptainPenguin_Black": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 64,
-      "atk": 79,
+      "hp": 75,
+      "atk": 97,
       "def": 87
     }
   },
-  "Kitsunebi": {
-    "male": 18,
-    "female": 9,
+  "Plesiosaur": {
+    "male": 1,
+    "female": 1,
     "best_ivs": {
-      "hp": 100,
-      "atk": 100,
-      "def": 100
-    }
-  },
-  "VolcanicMonster": {
-    "male": 2,
-    "female": 3,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 100,
-      "def": 91
+      "hp": 55,
+      "atk": 64,
+      "def": 71
     }
   },
   "MimicDog": {
@@ -1088,58 +260,157 @@
       "def": 78
     }
   },
-  "PurpleSpider": {
+  "FireKirin": {
     "male": 5,
-    "female": 4,
+    "female": 2,
+    "best_ivs": {
+      "hp": 86,
+      "atk": 94,
+      "def": 86
+    }
+  },
+  "BirdDragon": {
+    "male": 5,
+    "female": 10,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 91,
+      "def": 92
+    }
+  },
+  "Gorilla_Ground": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 23,
+      "atk": 9,
+      "def": 88
+    }
+  },
+  "CuteMole": {
+    "male": 13,
+    "female": 9,
     "best_ivs": {
       "hp": 100,
       "atk": 94,
-      "def": 81
-    }
-  },
-  "Monkey_Fire": {
-    "male": 6,
-    "female": 7,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 99,
-      "def": 91
-    }
-  },
-  "SharkKid": {
-    "male": 9,
-    "female": 4,
-    "best_ivs": {
-      "hp": 89,
-      "atk": 100,
-      "def": 96
-    }
-  },
-  "NaughtyCat": {
-    "male": 4,
-    "female": 9,
-    "best_ivs": {
-      "hp": 93,
-      "atk": 96,
       "def": 98
     }
   },
-  "Gorilla": {
-    "male": 8,
-    "female": 6,
+  "NegativeKoala": {
+    "male": 7,
+    "female": 8,
     "best_ivs": {
-      "hp": 98,
-      "atk": 97,
-      "def": 100
+      "hp": 86,
+      "atk": 93,
+      "def": 93
     }
   },
-  "YakushimaMonster001_Red": {
+  "FlameBuffalo": {
+    "male": 6,
+    "female": 14,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 98,
+      "def": 97
+    }
+  },
+  "FlowerDoll": {
+    "male": 8,
+    "female": 5,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 90,
+      "def": 98
+    }
+  },
+  "KingBahamut": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 61,
+      "def": 75
+    }
+  },
+  "Carbunclo": {
+    "male": 5,
+    "female": 15,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 98,
+      "def": 98
+    }
+  },
+  "VolcanoDragon": {
+    "male": 3,
+    "female": 3,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 84,
+      "def": 94
+    }
+  },
+  "Hunter_Rifle": {
+    "male": 0,
+    "female": 0,
+    "best_ivs": {
+      "hp": 71,
+      "atk": 70,
+      "def": 68
+    }
+  },
+  "SmallYeti": {
+    "male": 3,
+    "female": 3,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 89,
+      "def": 82
+    }
+  },
+  "YakushimaBoss001_Small": {
     "male": 1,
     "female": 0,
     "best_ivs": {
-      "hp": 32,
-      "atk": 17,
-      "def": 20
+      "hp": 88,
+      "atk": 52,
+      "def": 66
+    }
+  },
+  "CactusDoll_Dark": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 70,
+      "atk": 61,
+      "def": 56
+    }
+  },
+  "Umihebi": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 69,
+      "atk": 54,
+      "def": 89
+    }
+  },
+  "PinkCat": {
+    "male": 16,
+    "female": 11,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 100,
+      "def": 99
+    }
+  },
+  "Suzaku": {
+    "male": 2,
+    "female": 0,
+    "best_ivs": {
+      "hp": 83,
+      "atk": 89,
+      "def": 56
     }
   },
   "BerryGoat": {
@@ -1160,31 +431,229 @@
       "def": 80
     }
   },
-  "Mutant": {
-    "male": 4,
-    "female": 4,
+  "MushroomDragon_Dark": {
+    "male": 1,
+    "female": 0,
     "best_ivs": {
-      "hp": 77,
+      "hp": 14,
+      "atk": 13,
+      "def": 23
+    }
+  },
+  "GhostBeast": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 36,
+      "atk": 83,
+      "def": 92
+    }
+  },
+  "NegativeOctopus": {
+    "male": 9,
+    "female": 10,
+    "best_ivs": {
+      "hp": 82,
       "atk": 100,
       "def": 98
     }
   },
-  "IceWitch": {
-    "male": 0,
+  "FairyDragon": {
+    "male": 9,
+    "female": 5,
+    "best_ivs": {
+      "hp": 92,
+      "atk": 100,
+      "def": 100
+    }
+  },
+  "HerculesBeetle": {
+    "male": 4,
+    "female": 2,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 90,
+      "def": 88
+    }
+  },
+  "WizardOwl": {
+    "male": 4,
+    "female": 6,
+    "best_ivs": {
+      "hp": 89,
+      "atk": 99,
+      "def": 99
+    }
+  },
+  "ElecPomeranian": {
+    "male": 3,
+    "female": 3,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 78,
+      "def": 76
+    }
+  },
+  "QueenBee": {
+    "male": 1,
+    "female": 3,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 95,
+      "def": 61
+    }
+  },
+  "SharkKid": {
+    "male": 9,
+    "female": 4,
+    "best_ivs": {
+      "hp": 89,
+      "atk": 100,
+      "def": 96
+    }
+  },
+  "DarkAlien": {
+    "male": 4,
+    "female": 5,
+    "best_ivs": {
+      "hp": 97,
+      "atk": 98,
+      "def": 96
+    }
+  },
+  "FlyingManta_Thunder": {
+    "male": 2,
     "female": 1,
     "best_ivs": {
-      "hp": 36,
-      "atk": 75,
+      "hp": 76,
+      "atk": 90,
+      "def": 99
+    }
+  },
+  "Penguin": {
+    "male": 10,
+    "female": 11,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 98,
+      "def": 92
+    }
+  },
+  "VolcanicMonster": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 100,
       "def": 91
     }
   },
-  "MopKing": {
-    "male": 1,
-    "female": 5,
+  "VolcanicMonster_Ice": {
+    "male": 0,
+    "female": 1,
     "best_ivs": {
-      "hp": 88,
-      "atk": 88,
+      "hp": 19,
+      "atk": 99,
+      "def": 70
+    }
+  },
+  "RobinHood": {
+    "male": 1,
+    "female": 1,
+    "best_ivs": {
+      "hp": 83,
+      "atk": 95,
+      "def": 98
+    }
+  },
+  "GrassMammoth_Ice": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 13,
+      "atk": 28,
+      "def": 71
+    }
+  },
+  "FlameBambi": {
+    "male": 8,
+    "female": 8,
+    "best_ivs": {
+      "hp": 89,
+      "atk": 93,
+      "def": 70
+    }
+  },
+  "LazyCatfish_Gold": {
+    "male": 5,
+    "female": 1,
+    "best_ivs": {
+      "hp": 94,
+      "atk": 90,
+      "def": 90
+    }
+  },
+  "LazyCatfish": {
+    "male": 6,
+    "female": 11,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 100,
+      "def": 96
+    }
+  },
+  "ChickenPal": {
+    "male": 7,
+    "female": 10,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 100,
+      "def": 95
+    }
+  },
+  "Monkey_Fire": {
+    "male": 6,
+    "female": 7,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 99,
+      "def": 91
+    }
+  },
+  "ColorfulBird": {
+    "male": 4,
+    "female": 7,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 82,
       "def": 99
+    }
+  },
+  "StuffedShark": {
+    "male": 2,
+    "female": 2,
+    "best_ivs": {
+      "hp": 78,
+      "atk": 91,
+      "def": 45
+    }
+  },
+  "CloverFairy": {
+    "male": 7,
+    "female": 7,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 88,
+      "def": 93
+    }
+  },
+  "FireKirin_Dark": {
+    "male": 4,
+    "female": 4,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 93,
+      "def": 97
     }
   },
   "GhostAnglerfish": {
@@ -1196,84 +665,75 @@
       "def": 44
     }
   },
-  "ClioneTwins": {
-    "male": 10,
-    "female": 9,
-    "best_ivs": {
-      "hp": 95,
-      "atk": 88,
-      "def": 93
-    }
-  },
-  "Hedgehog_Ice": {
+  "GrassMammoth": {
     "male": 5,
-    "female": 5,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 96,
-      "def": 96
-    }
-  },
-  "Ganesha": {
-    "male": 8,
     "female": 8,
     "best_ivs": {
-      "hp": 99,
-      "atk": 99,
-      "def": 94
+      "hp": 98,
+      "atk": 80,
+      "def": 100
     }
   },
-  "CubeTurtle": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 14,
-      "atk": 26,
-      "def": 0
-    }
-  },
-  "SoldierBee": {
-    "male": 0,
-    "female": 14,
-    "best_ivs": {
-      "hp": 89,
-      "atk": 82,
-      "def": 74
-    }
-  },
-  "YakushimaBoss001": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 55,
-      "atk": 98,
-      "def": 87
-    }
-  },
-  "CatMage_Fire": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 79,
-      "atk": 73,
-      "def": 17
-    }
-  },
-  "HawkBird": {
+  "LizardMan": {
     "male": 9,
-    "female": 7,
+    "female": 8,
     "best_ivs": {
       "hp": 100,
-      "atk": 98,
+      "atk": 93,
+      "def": 99
+    }
+  },
+  "GrassPanda": {
+    "male": 1,
+    "female": 5,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 76,
+      "def": 98
+    }
+  },
+  "CatBat": {
+    "male": 6,
+    "female": 6,
+    "best_ivs": {
+      "hp": 92,
+      "atk": 99,
       "def": 95
     }
   },
-  "LazyDragon": {
-    "male": 4,
+  "Boar": {
+    "male": 8,
+    "female": 11,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 100,
+      "def": 99
+    }
+  },
+  "WeaselDragon": {
+    "male": 6,
     "female": 6,
     "best_ivs": {
       "hp": 100,
-      "atk": 99,
+      "atk": 96,
+      "def": 99
+    }
+  },
+  "MummyPal": {
+    "male": 3,
+    "female": 2,
+    "best_ivs": {
+      "hp": 66,
+      "atk": 95,
+      "def": 87
+    }
+  },
+  "Monkey": {
+    "male": 4,
+    "female": 8,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 93,
       "def": 100
     }
   },
@@ -1286,193 +746,31 @@
       "def": 97
     }
   },
-  "FlameBuffalo": {
-    "male": 6,
-    "female": 14,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 98,
-      "def": 97
-    }
-  },
-  "FairyDragon_Water": {
-    "male": 5,
-    "female": 1,
-    "best_ivs": {
-      "hp": 73,
-      "atk": 68,
-      "def": 80
-    }
-  },
-  "Hunter_Rifle": {
-    "male": 0,
-    "female": 0,
-    "best_ivs": {
-      "hp": 71,
-      "atk": 70,
-      "def": 68
-    }
-  },
-  "GrassMammoth": {
-    "male": 5,
-    "female": 8,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 80,
-      "def": 100
-    }
-  },
-  "SheepBall": {
-    "male": 13,
-    "female": 9,
-    "best_ivs": {
-      "hp": 100,
-      "atk": 100,
-      "def": 97
-    }
-  },
-  "Serpent_Ground": {
-    "male": 4,
+  "Deer_Ground": {
+    "male": 2,
     "female": 2,
     "best_ivs": {
-      "hp": 97,
-      "atk": 87,
-      "def": 98
-    }
-  },
-  "SkyDragon": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 4,
-      "atk": 38,
-      "def": 96
-    }
-  },
-  "Yeti_Grass": {
-    "male": 0,
-    "female": 1,
-    "best_ivs": {
-      "hp": 79,
+      "hp": 98,
       "atk": 88,
-      "def": 72
-    }
-  },
-  "CowPal": {
-    "male": 5,
-    "female": 11,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 93,
-      "def": 83
-    }
-  },
-  "Penguin": {
-    "male": 12,
-    "female": 14,
-    "best_ivs": {
-      "hp": 98,
-      "atk": 99,
       "def": 92
     }
   },
-  "PinkRabbit_Grass": {
-    "male": 6,
-    "female": 3,
-    "best_ivs": {
-      "hp": 75,
-      "atk": 97,
-      "def": 87
-    }
-  },
-  "LazyCatfish_Gold": {
-    "male": 5,
-    "female": 1,
-    "best_ivs": {
-      "hp": 94,
-      "atk": 90,
-      "def": 90
-    }
-  },
-  "YakushimaMonster001": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 69,
-      "atk": 7,
-      "def": 92
-    }
-  },
-  "FoxMage": {
+  "CactusDoll": {
     "male": 2,
-    "female": 8,
-    "best_ivs": {
-      "hp": 96,
-      "atk": 99,
-      "def": 97
-    }
-  },
-  "RedArmorBird": {
-    "male": 2,
-    "female": 1,
-    "best_ivs": {
-      "hp": 90,
-      "atk": 82,
-      "def": 64
-    }
-  },
-  "YakushimaMonster001_Rainbow": {
-    "male": 1,
-    "female": 0,
-    "best_ivs": {
-      "hp": 78,
-      "atk": 88,
-      "def": 59
-    }
-  },
-  "DarkScorpion": {
-    "male": 1,
-    "female": 7,
-    "best_ivs": {
-      "hp": 92,
-      "atk": 81,
-      "def": 58
-    }
-  },
-  "SweetsSheep": {
-    "male": 8,
-    "female": 12,
-    "best_ivs": {
-      "hp": 94,
-      "atk": 98,
-      "def": 96
-    }
-  },
-  "FlowerRabbit": {
-    "male": 6,
     "female": 4,
     "best_ivs": {
-      "hp": 80,
-      "atk": 82,
-      "def": 81
+      "hp": 95,
+      "atk": 61,
+      "def": 76
     }
   },
-  "MushroomDragon_Dark": {
-    "male": 1,
-    "female": 0,
+  "Deer": {
+    "male": 11,
+    "female": 12,
     "best_ivs": {
-      "hp": 14,
-      "atk": 13,
-      "def": 23
-    }
-  },
-  "DreamDemon": {
-    "male": 9,
-    "female": 6,
-    "best_ivs": {
-      "hp": 91,
-      "atk": 96,
-      "def": 97
+      "hp": 99,
+      "atk": 97,
+      "def": 98
     }
   },
   "LavaGirl": {
@@ -1484,40 +782,67 @@
       "def": 90
     }
   },
-  "Plesiosaur": {
-    "male": 1,
-    "female": 1,
-    "best_ivs": {
-      "hp": 55,
-      "atk": 64,
-      "def": 71
-    }
-  },
-  "Gorilla_Ground": {
+  "CaptainPenguin_Black": {
     "male": 0,
     "female": 1,
     "best_ivs": {
-      "hp": 23,
-      "atk": 9,
-      "def": 88
+      "hp": 64,
+      "atk": 79,
+      "def": 87
     }
   },
-  "TentacleTurtle": {
-    "male": 13,
-    "female": 6,
+  "Male_People03": {
+    "male": 0,
+    "female": 0,
     "best_ivs": {
-      "hp": 99,
-      "atk": 99,
-      "def": 99
+      "hp": 50,
+      "atk": 69,
+      "def": 65
     }
   },
-  "DrillGame": {
-    "male": 4,
+  "FoxMage": {
+    "male": 2,
+    "female": 8,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 99,
+      "def": 97
+    }
+  },
+  "IceFox": {
+    "male": 5,
+    "female": 8,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 91,
+      "def": 97
+    }
+  },
+  "FlowerRabbit": {
+    "male": 6,
+    "female": 4,
+    "best_ivs": {
+      "hp": 80,
+      "atk": 82,
+      "def": 81
+    }
+  },
+  "TentacleTurtle_Ground": {
+    "male": 0,
     "female": 3,
     "best_ivs": {
-      "hp": 99,
-      "atk": 90,
-      "def": 91
+      "hp": 96,
+      "atk": 86,
+      "def": 78
+    }
+  },
+  "YakushimaMonster001_Rainbow": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 78,
+      "atk": 88,
+      "def": 59
     }
   },
   "NightBlueHorse": {
@@ -1529,12 +854,498 @@
       "def": 74
     }
   },
-  "GrassRabbitMan": {
+  "BluePlatypus": {
+    "male": 14,
+    "female": 12,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 98,
+      "def": 95
+    }
+  },
+  "BerryGoat_Dark": {
+    "male": 3,
+    "female": 1,
+    "best_ivs": {
+      "hp": 88,
+      "atk": 75,
+      "def": 81
+    }
+  },
+  "Kelpie_Fire": {
+    "male": 7,
+    "female": 7,
+    "best_ivs": {
+      "hp": 92,
+      "atk": 95,
+      "def": 91
+    }
+  },
+  "MopKing": {
+    "male": 1,
+    "female": 5,
+    "best_ivs": {
+      "hp": 88,
+      "atk": 88,
+      "def": 99
+    }
+  },
+  "Gorilla": {
+    "male": 8,
+    "female": 6,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 97,
+      "def": 100
+    }
+  },
+  "YakushimaMonster001_Blue": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 43,
+      "atk": 59,
+      "def": 28
+    }
+  },
+  "SharkKid_Fire": {
+    "male": 0,
+    "female": 3,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 86,
+      "def": 99
+    }
+  },
+  "Hedgehog_Ice": {
+    "male": 4,
+    "female": 5,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 96,
+      "def": 96
+    }
+  },
+  "Serpent": {
+    "male": 4,
+    "female": 10,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 97,
+      "def": 94
+    }
+  },
+  "SoldierBee": {
+    "male": 0,
+    "female": 14,
+    "best_ivs": {
+      "hp": 89,
+      "atk": 82,
+      "def": 74
+    }
+  },
+  "YakushimaMonster001_Purple": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 20,
+      "def": 84
+    }
+  },
+  "LizardMan_Fire": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 67,
+      "atk": 30,
+      "def": 11
+    }
+  },
+  "RockBeast": {
+    "male": 3,
+    "female": 3,
+    "best_ivs": {
+      "hp": 94,
+      "atk": 91,
+      "def": 98
+    }
+  },
+  "CubeTurtle": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 14,
+      "atk": 26,
+      "def": 0
+    }
+  },
+  "CaptainPenguin": {
+    "male": 9,
+    "female": 5,
+    "best_ivs": {
+      "hp": 97,
+      "atk": 98,
+      "def": 100
+    }
+  },
+  "DarkCrow": {
+    "male": 10,
+    "female": 9,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 88,
+      "def": 84
+    }
+  },
+  "CuteButterfly": {
+    "male": 8,
+    "female": 10,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 100,
+      "def": 95
+    }
+  },
+  "BluePlatypus_Fire": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 48,
+      "atk": 31,
+      "def": 84
+    }
+  },
+  "SwordCutlassfish_Fire": {
     "male": 2,
     "female": 3,
     "best_ivs": {
+      "hp": 98,
+      "atk": 65,
+      "def": 92
+    }
+  },
+  "GrassGolem": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 44,
+      "atk": 59,
+      "def": 96
+    }
+  },
+  "LeafMomonga": {
+    "male": 8,
+    "female": 8,
+    "best_ivs": {
+      "hp": 72,
+      "atk": 95,
+      "def": 100
+    }
+  },
+  "NaughtyCat": {
+    "male": 4,
+    "female": 9,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 96,
+      "def": 98
+    }
+  },
+  "ThunderDog": {
+    "male": 1,
+    "female": 1,
+    "best_ivs": {
+      "hp": 35,
+      "atk": 58,
+      "def": 34
+    }
+  },
+  "ThunderBird": {
+    "male": 5,
+    "female": 6,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 99,
+      "def": 100
+    }
+  },
+  "Female_People03": {
+    "male": 0,
+    "female": 0,
+    "best_ivs": {
+      "hp": 97,
+      "atk": 61,
+      "def": 90
+    }
+  },
+  "JellyfishFairy": {
+    "male": 1,
+    "female": 3,
+    "best_ivs": {
+      "hp": 80,
+      "atk": 90,
+      "def": 94
+    }
+  },
+  "GrassMinotaur": {
+    "male": 5,
+    "female": 1,
+    "best_ivs": {
+      "hp": 78,
+      "atk": 86,
+      "def": 96
+    }
+  },
+  "IceWitch": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 36,
+      "atk": 75,
+      "def": 91
+    }
+  },
+  "CatMage": {
+    "male": 6,
+    "female": 6,
+    "best_ivs": {
+      "hp": 92,
+      "atk": 94,
+      "def": 80
+    }
+  },
+  "Bastet_Ice": {
+    "male": 1,
+    "female": 1,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 57,
+      "def": 97
+    }
+  },
+  "FluffyBird": {
+    "male": 13,
+    "female": 7,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 100,
+      "def": 99
+    }
+  },
+  "CatMage_Fire": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 79,
+      "atk": 73,
+      "def": 17
+    }
+  },
+  "FengyunDeeper": {
+    "male": 0,
+    "female": 2,
+    "best_ivs": {
+      "hp": 84,
+      "atk": 96,
+      "def": 90
+    }
+  },
+  "SalesPerson": {
+    "male": 0,
+    "female": 0,
+    "best_ivs": {
       "hp": 73,
-      "atk": 97,
+      "atk": 51,
+      "def": 19
+    }
+  },
+  "FairyDragon_Water": {
+    "male": 5,
+    "female": 1,
+    "best_ivs": {
+      "hp": 73,
+      "atk": 68,
+      "def": 80
+    }
+  },
+  "TropicalOstrich": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 65,
+      "atk": 21,
+      "def": 96
+    }
+  },
+  "LittleBriarRose": {
+    "male": 14,
+    "female": 9,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 96,
+      "def": 95
+    }
+  },
+  "Yeti_Grass": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 79,
+      "atk": 88,
+      "def": 72
+    }
+  },
+  "YakushimaMonster001": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 69,
+      "atk": 7,
+      "def": 92
+    }
+  },
+  "Kelpie": {
+    "male": 11,
+    "female": 23,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 96,
+      "def": 100
+    }
+  },
+  "WhiteMoth": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 94,
+      "atk": 100,
+      "def": 97
+    }
+  },
+  "Kitsunebi": {
+    "male": 15,
+    "female": 6,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100
+    }
+  },
+  "YakushimaBoss001": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 55,
+      "atk": 98,
+      "def": 87
+    }
+  },
+  "ClioneTwins": {
+    "male": 10,
+    "female": 9,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 88,
+      "def": 93
+    }
+  },
+  "Bastet": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 96,
+      "atk": 83,
+      "def": 98
+    }
+  },
+  "GhostBlackCat": {
+    "male": 13,
+    "female": 4,
+    "best_ivs": {
+      "hp": 93,
+      "atk": 95,
+      "def": 90
+    }
+  },
+  "KendoFrog": {
+    "male": 8,
+    "female": 19,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 96,
+      "def": 100
+    }
+  },
+  "PinkRabbit": {
+    "male": 8,
+    "female": 9,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 91,
+      "def": 94
+    }
+  },
+  "JellyfishGhost": {
+    "male": 4,
+    "female": 3,
+    "best_ivs": {
+      "hp": 94,
+      "atk": 86,
+      "def": 93
+    }
+  },
+  "BlueDragon": {
+    "male": 3,
+    "female": 2,
+    "best_ivs": {
+      "hp": 87,
+      "atk": 96,
+      "def": 95
+    }
+  },
+  "HawkBird": {
+    "male": 9,
+    "female": 7,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 98,
+      "def": 95
+    }
+  },
+  "Ganesha": {
+    "male": 8,
+    "female": 8,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 99,
+      "def": 94
+    }
+  },
+  "SweetsSheep": {
+    "male": 8,
+    "female": 12,
+    "best_ivs": {
+      "hp": 94,
+      "atk": 98,
+      "def": 96
+    }
+  },
+  "IceCrocodile": {
+    "male": 6,
+    "female": 5,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100
+    }
+  },
+  "SamuraiDog": {
+    "male": 4,
+    "female": 9,
+    "best_ivs": {
+      "hp": 87,
+      "atk": 90,
       "def": 92
     }
   },
@@ -1547,31 +1358,220 @@
       "def": 70
     }
   },
-  "FireKirin": {
-    "male": 5,
+  "FlowerDinosaur_Electric": {
+    "male": 2,
     "female": 2,
     "best_ivs": {
-      "hp": 86,
-      "atk": 94,
-      "def": 86
+      "hp": 90,
+      "atk": 82,
+      "def": 92
     }
   },
-  "GhostBlackCat": {
-    "male": 13,
-    "female": 4,
+  "Alpaca": {
+    "male": 9,
+    "female": 6,
     "best_ivs": {
-      "hp": 93,
-      "atk": 95,
+      "hp": 99,
+      "atk": 98,
+      "def": 82
+    }
+  },
+  "Serpent_Ground": {
+    "male": 4,
+    "female": 2,
+    "best_ivs": {
+      "hp": 97,
+      "atk": 87,
+      "def": 98
+    }
+  },
+  "GrassRabbitMan": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 73,
+      "atk": 97,
+      "def": 92
+    }
+  },
+  "FeatherOstrich": {
+    "male": 4,
+    "female": 1,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 92,
+      "def": 83
+    }
+  },
+  "Baphomet": {
+    "male": 4,
+    "female": 6,
+    "best_ivs": {
+      "hp": 89,
+      "atk": 88,
       "def": 90
     }
   },
-  "ChickenPal": {
-    "male": 8,
-    "female": 16,
+  "LazyDragon": {
+    "male": 4,
+    "female": 6,
     "best_ivs": {
       "hp": 100,
+      "atk": 99,
+      "def": 100
+    }
+  },
+  "YakushimaMonster001_Red": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 32,
+      "atk": 17,
+      "def": 20
+    }
+  },
+  "Mutant": {
+    "male": 4,
+    "female": 4,
+    "best_ivs": {
+      "hp": 77,
       "atk": 100,
-      "def": 95
+      "def": 98
+    }
+  },
+  "IceDeer": {
+    "male": 2,
+    "female": 3,
+    "best_ivs": {
+      "hp": 73,
+      "atk": 99,
+      "def": 89
+    }
+  },
+  "PurpleSpider": {
+    "male": 5,
+    "female": 4,
+    "best_ivs": {
+      "hp": 100,
+      "atk": 94,
+      "def": 81
+    }
+  },
+  "ElecPanda": {
+    "male": 1,
+    "female": 0,
+    "best_ivs": {
+      "hp": 70,
+      "atk": 89,
+      "def": 58
+    }
+  },
+  "FlyingManta": {
+    "male": 11,
+    "female": 13,
+    "best_ivs": {
+      "hp": 97,
+      "atk": 94,
+      "def": 98
+    }
+  },
+  "DrillGame": {
+    "male": 4,
+    "female": 3,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 90,
+      "def": 91
+    }
+  },
+  "BirdDragon_Ice": {
+    "male": 3,
+    "female": 5,
+    "best_ivs": {
+      "hp": 95,
+      "atk": 87,
+      "def": 80
+    }
+  },
+  "PinkLizard": {
+    "male": 1,
+    "female": 1,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 53,
+      "def": 40
+    }
+  },
+  "FlowerDinosaur": {
+    "male": 3,
+    "female": 1,
+    "best_ivs": {
+      "hp": 87,
+      "atk": 65,
+      "def": 86
+    }
+  },
+  "VioletFairy": {
+    "male": 3,
+    "female": 5,
+    "best_ivs": {
+      "hp": 82,
+      "atk": 99,
+      "def": 83
+    }
+  },
+  "Garm": {
+    "male": 11,
+    "female": 13,
+    "best_ivs": {
+      "hp": 98,
+      "atk": 100,
+      "def": 99
+    }
+  },
+  "Sekhmet": {
+    "male": 0,
+    "female": 4,
+    "best_ivs": {
+      "hp": 91,
+      "atk": 84,
+      "def": 98
+    }
+  },
+  "StuffedShark_Fire": {
+    "male": 0,
+    "female": 1,
+    "best_ivs": {
+      "hp": 63,
+      "atk": 50,
+      "def": 72
+    }
+  },
+  "Hunter_Handgun": {
+    "male": 0,
+    "female": 0,
+    "best_ivs": {
+      "hp": 21,
+      "atk": 30,
+      "def": 88
+    }
+  },
+  "ElecCat": {
+    "male": 10,
+    "female": 5,
+    "best_ivs": {
+      "hp": 99,
+      "atk": 99,
+      "def": 91
+    }
+  },
+  "LazyDragon_Electric": {
+    "male": 0,
+    "female": 2,
+    "best_ivs": {
+      "hp": 77,
+      "atk": 76,
+      "def": 99
     }
   }
 }

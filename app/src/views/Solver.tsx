@@ -1,24 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import { invoke } from "../lib/tauri";
-import type {
-  BreedingPlan,
-  NamedEntry,
-  PlanNode,
-  SolveRequest,
-  SolveResponse,
-} from "../lib/types";
+import type { PlanNode, SolveRequest } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
 import { PassivePicker } from "../components/passive-picker";
 import { useAppState, useBreedingSetup } from "../state";
+import { useSolve } from "../lib/use-solve";
 import {
   BreedingSetupPanel,
   describeSetup,
   isNeutralSetup,
 } from "../components/breeding-setup";
 import { PlanGraph } from "../components/plan-graph";
-import { PlanNodePanel, type PlanNodeSelection } from "../components/plan-node-panel";
+import { PlanNodePanel } from "../components/plan-node-panel";
 
 /** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
 type CatchingMode = NonNullable<SolveRequest["catching"]>;
@@ -197,23 +191,22 @@ export default function Solver() {
   const [maxSteps, setMaxSteps] = useState<number>(5);
   const [includeWild, setIncludeWild] = useState(false);
   const [catching, setCatching] = useState<CatchingMode>("breeding_only");
-
-  const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
-
-  const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
-  const [fallbackUsed, setFallbackUsed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [solving, setSolving] = useState(false);
   const [viewMode, setViewMode] = useState<"graph" | "list">("graph");
-  const [activePlan, setActivePlan] = useState(0);
-  const [selection, setSelection] = useState<{
-    nodeId: string;
-    data: PlanNodeSelection;
-  } | null>(null);
 
-  useEffect(() => {
-    invoke<NamedEntry[]>("list_species").then(setSpeciesList).catch(() => {});
-  }, []);
+  const {
+    speciesList,
+    nameToId,
+    plans,
+    fallbackUsed,
+    error,
+    solving,
+    activePlan,
+    setActivePlan,
+    selection,
+    setSelection,
+    fastestIdx,
+    solve,
+  } = useSolve();
 
   // Pre-fill the target when the Pal-dex jumps here via "Solve for this pal".
   useEffect(() => {
@@ -223,28 +216,6 @@ export default function Solver() {
     }
   }, [solveTarget, clearSolveTarget]);
 
-  // A fresh solve resets to the first plan; switching plans (or a new result)
-  // clears any node selection, since node ids are per-plan-render path ids.
-  useEffect(() => {
-    setActivePlan(0);
-  }, [plans]);
-  useEffect(() => {
-    setSelection(null);
-  }, [activePlan, plans]);
-
-  // Escape clears the current node selection (closes the inspector panel).
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setSelection(null);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const nameToId = useMemo(
-    () => new Map(speciesList.map((s) => [s.name, s.id])),
-    [speciesList],
-  );
   const targetId = nameToId.get(species) ?? null;
 
   // Required-catches summary for the ACTIVE plan (client-derived, contract #4).
@@ -257,37 +228,19 @@ export default function Solver() {
     setPassives((p) => p.filter((x) => x !== name));
   }
 
-  async function runSolve() {
-    setSolving(true);
-    setError(null);
-    setPlans(null);
-    setFallbackUsed(false);
-    try {
-      // `catching` only matters with include_wild; harmless when owned-only.
-      // `setup`/`cake` ride the shared BREEDING SETUP store (contract #3).
-      const spec: SolveRequest = {
-        target_species: species,
-        required_passives: passives,
-        max_steps: maxSteps,
-        include_wild: includeWild,
-        catching,
-        setup,
-        cake,
-      };
-      const resp = await invoke<SolveResponse>("solve", { saveDir, spec });
-      setPlans(resp.plans);
-      setFallbackUsed(resp.fallback_used);
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setSolving(false);
-    }
+  // Solver sends only its own field set ({ include_wild, catching }); the hook
+  // injects the shared setup/cake. `catching` only matters with include_wild.
+  function runSolve() {
+    return solve({
+      target_species: species,
+      required_passives: passives,
+      max_steps: maxSteps,
+      include_wild: includeWild,
+      catching,
+    });
   }
 
   const canSolve = saveDir.trim() !== "" && species.trim() !== "" && !solving;
-  const fastestIdx = plans && plans.length > 1
-    ? plans.reduce((best, p, idx, arr) => (p.total_time_secs < arr[best].total_time_secs ? idx : best), 0)
-    : -1;
 
   // Required-catches callout state for the active plan (contract #2).
   const activePlanObj = plans && plans.length > 0 ? plans[activePlan] : null;
@@ -358,7 +311,9 @@ export default function Solver() {
               min={1}
               className="w-16 rounded-md border border-line bg-abyss px-2 py-1 text-center font-mono text-[13px] text-ink focus:border-amber/60"
               value={maxSteps}
-              onChange={(e) => setMaxSteps(Number(e.currentTarget.value))}
+              onChange={(e) =>
+                setMaxSteps(Math.max(1, Math.round(Number(e.currentTarget.value) || 1)))
+              }
             />
           </label>
 

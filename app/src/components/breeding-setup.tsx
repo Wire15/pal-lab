@@ -10,7 +10,7 @@
 // manual hatch-hours entry) persisted to localStorage, and derives the composed
 // `BreedingSetup` from it + the loaded roster, syncing that into the store.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
 import type {
   BreedingBoostEntry,
@@ -87,7 +87,7 @@ interface BoosterEffect {
   value: number;
 }
 
-/** One booster row: a partner skill or a passive, its non-cosmetic effects, and
+/** One booster row: a partner skill or a passive, its effort-affecting effects,
  * whether the loaded roster owns it (and at what condensation rank). */
 interface Booster {
   source: string;
@@ -187,13 +187,15 @@ export function BreedingSetupPanel() {
   const hatchReady = worldHatch !== undefined;
 
   // Booster view-models, grouped by source (a source's effects toggle together;
-  // Babysitter carries both farm + incubation). Cosmetic alpha-egg is dropped.
+  // Babysitter carries both farm + incubation). Alpha-egg boosts are handled
+  // separately as info rows (they change no breeding effort), see alphaBoosters.
   const boosters = useMemo<Booster[]>(() => {
     const bySource = new Map<
       string,
       { kind: string; displayName: string; entries: { effect: BreedingEffect; values: number[] }[] }
     >();
     for (const b of boosts) {
+      // Excluded from effort toggles; surfaced as info rows below instead.
       if (b.effect === "alpha_egg_chance") continue;
       const g =
         bySource.get(b.source) ??
@@ -223,6 +225,56 @@ export function BreedingSetupPanel() {
       return { source, displayName: g.displayName, isPassive, owned, bestRank, maxRank, effects };
     });
   }, [boosts, pals]);
+
+  // Alpha-egg boosters: they raise the odds a hatched Pal is an Alpha (+20% HP,
+  // larger size) but change NO breeding effort, so they render as read-only info
+  // rows, never effort toggles. Owned state is still shown. One entry per source
+  // (Broncherry, Broncherry Aqua); the range spans the per-condensation values.
+  const alphaBoosters = useMemo(() => {
+    return boosts
+      .filter((b) => b.effect === "alpha_egg_chance")
+      .map((b) => {
+        const vals = b.values_per_rank.length ? b.values_per_rank : [0];
+        const owned =
+          b.source_kind === "passive"
+            ? pals.some((p) => p.passives.includes(b.source))
+            : pals.some((p) => p.character_id.toLowerCase() === b.source.toLowerCase());
+        return {
+          source: b.source,
+          displayName: b.display_name,
+          isPassive: b.source_kind === "passive",
+          owned,
+          minPct: Math.round(Math.min(...vals) * 100),
+          maxPct: Math.round(Math.max(...vals) * 100),
+        };
+      });
+  }, [boosts, pals]);
+
+  // Save-switch revalidation (AppReview P2). `selected` is a global localStorage
+  // list, but a booster's applied value depends on the loaded roster: owned uses
+  // the real best condensation rank, unowned a max-rank what-if. So when the
+  // roster changes and a selected booster's owned-state flips, its contribution
+  // would silently change value. Drop those selections, forcing a deliberate
+  // re-toggle; unchanged and never-seen sources are kept (what-ifs the user set
+  // deliberately survive). Runs whenever `boosters` recomputes (i.e. on roster
+  // change), so it also covers switching between two loaded saves.
+  const prevOwnedRef = useRef<Map<string, boolean>>(new Map());
+  useEffect(() => {
+    if (!boostsLoaded) return;
+    const prev = prevOwnedRef.current;
+    const next = new Map(boosters.map((b) => [b.source, b.owned]));
+    setSelected((sel) =>
+      sel.filter((s) => {
+        const before = prev.get(s);
+        const now = next.get(s);
+        // Keep unknown sources (catalogue mismatch) and first-seen ones; drop
+        // only when a known booster's owned-state actually flipped.
+        if (now === undefined || before === undefined) return true;
+        return before === now;
+      }),
+    );
+    prevOwnedRef.current = next;
+  }, [boosters, boostsLoaded]);
 
   // Compose the selected boosters' effects additively into the setup fractions.
   const composed = useMemo<BreedingSetup>(() => {
@@ -388,6 +440,52 @@ export function BreedingSetupPanel() {
             );
           })}
         </div>
+        {alphaBoosters.length > 0 && (
+          <div className="flex flex-col gap-1">
+            {alphaBoosters.map((b) => (
+              <div
+                key={b.source}
+                className={`flex items-center gap-2.5 rounded-md border border-line bg-panel/60 px-2 py-1.5 ${
+                  b.owned ? "" : "opacity-55"
+                }`}
+              >
+                {b.isPassive ? (
+                  <span
+                    className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border border-amber/40 bg-amber/10 text-[13px] leading-none text-amber"
+                    aria-hidden
+                  >
+                    &#9670;
+                  </span>
+                ) : (
+                  <PalIcon id={b.source} name={b.displayName} size={26} />
+                )}
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="flex items-center gap-1.5">
+                    <span className="truncate text-[13px] font-medium text-ink">
+                      {b.displayName}
+                    </span>
+                    {!b.owned && (
+                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-ink-faint">
+                        not owned
+                      </span>
+                    )}
+                  </span>
+                  <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+                    +{b.minPct === b.maxPct ? b.minPct : `${b.minPct}\u2013${b.maxPct}`}% Alpha-egg chance
+                  </span>
+                </span>
+                <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">
+                  info
+                </span>
+              </div>
+            ))}
+            <p className="text-[11px] leading-relaxed text-ink-faint">
+              Raises the chance the hatched Pal is an Alpha (+20% HP, larger
+              size). Doesn&rsquo;t affect breeding steps or passives, so it
+              isn&rsquo;t a toggle.
+            </p>
+          </div>
+        )}
         {applied.length > 0 && (
           <div className="rounded-md border border-amber/25 bg-amber/[0.06] px-2.5 py-1.5">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber/80">

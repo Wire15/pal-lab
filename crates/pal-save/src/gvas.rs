@@ -282,6 +282,15 @@ fn read_struct_value(r: &mut Reader, struct_type: &str) -> Result<Value, SaveErr
     })
 }
 
+/// Cap a decoded element `count` to what the remaining buffer could possibly
+/// hold, where `min_elem_bytes` is the smallest serialized size of one element.
+/// A corrupt/oversized count then pre-allocates a bounded `Vec` and the element
+/// loop hits a clean `unexpected eof` [`SaveError`] instead of aborting the
+/// process on a multi-gigabyte allocation.
+fn capped_capacity(count: usize, remaining: usize, min_elem_bytes: usize) -> usize {
+    count.min(remaining / min_elem_bytes.max(1))
+}
+
 /// Decode an `ArrayProperty` value region (`count` prefix + elements).
 fn read_array(r: &mut Reader, array_type: &str, size: usize) -> Result<Value, SaveError> {
     let count = r.u32()? as usize;
@@ -295,21 +304,22 @@ fn read_array(r: &mut Reader, array_type: &str, size: usize) -> Result<Value, Sa
             Ok(Value::Bytes(r.bytes(n)?.to_vec()))
         }
         "NameProperty" | "EnumProperty" | "StrProperty" => {
-            let mut out = Vec::with_capacity(count);
+            // Each element is an FString: at minimum a 4-byte i32 length prefix.
+            let mut out = Vec::with_capacity(capped_capacity(count, r.remaining(), 4));
             for _ in 0..count {
                 out.push(Value::Name(r.fstring()?));
             }
             Ok(Value::Array(out))
         }
         "Guid" => {
-            let mut out = Vec::with_capacity(count);
+            let mut out = Vec::with_capacity(capped_capacity(count, r.remaining(), 16));
             for _ in 0..count {
                 out.push(Value::Guid(r.guid()?));
             }
             Ok(Value::Array(out))
         }
         "IntProperty" => {
-            let mut out = Vec::with_capacity(count);
+            let mut out = Vec::with_capacity(capped_capacity(count, r.remaining(), 4));
             for _ in 0..count {
                 out.push(Value::Int(r.i32()?));
             }
@@ -323,7 +333,8 @@ fn read_array(r: &mut Reader, array_type: &str, size: usize) -> Result<Value, Sa
             let elem_type = r.fstring()?;
             r.skip(16)?; // struct id
             r.skip(1)?; // optional-guid flag (always 0 here)
-            let mut out = Vec::with_capacity(count);
+            // Bare struct value: smallest body consumes >= 4 bytes.
+            let mut out = Vec::with_capacity(capped_capacity(count, r.remaining(), 4));
             for _ in 0..count {
                 out.push(read_struct_value(r, &elem_type)?);
             }
@@ -378,4 +389,67 @@ pub fn skip_property(r: &mut Reader, type_name: &str, size: usize) -> Result<(),
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::archive::Reader;
+
+    /// Encode a UE `FString` (positive i32 length + ASCII + trailing NUL).
+    fn fstring(s: &str) -> Vec<u8> {
+        let mut out = Vec::new();
+        let len = (s.len() + 1) as i32;
+        out.extend_from_slice(&len.to_le_bytes());
+        out.extend_from_slice(s.as_bytes());
+        out.push(0);
+        out
+    }
+
+    /// A corrupt array count (`0xFFFF_FFFF`) must produce a clean `unexpected
+    /// eof` [`SaveError`] rather than attempting a multi-gigabyte allocation.
+    /// Regression for the un-capped `Vec::with_capacity(count)` in [`read_array`].
+    #[test]
+    fn corrupt_array_count_is_clean_eof_not_alloc_abort() {
+        // `ArrayProperty` value region: element-type FString, optional-guid
+        // flag byte, then the (forged) u32 element count with no payload after.
+        let mut blob = fstring("IntProperty");
+        blob.push(0); // optional-guid flag = absent
+        blob.extend_from_slice(&0xFFFF_FFFFu32.to_le_bytes());
+
+        let mut r = Reader::new(&blob);
+        let err = read_property(&mut r, "ArrayProperty", blob.len())
+            .expect_err("corrupt count must error");
+        match err {
+            SaveError::Gvas(msg) => assert!(
+                msg.contains("unexpected eof"),
+                "expected unexpected-eof gvas error, got: {msg}"
+            ),
+            other => panic!("expected SaveError::Gvas, got {other:?}"),
+        }
+    }
+
+    /// Same guard for the struct-array arm, whose header parses before the
+    /// forged element count is reached.
+    #[test]
+    fn corrupt_struct_array_count_is_clean_eof() {
+        let mut blob = fstring("StructProperty");
+        blob.push(0); // optional-guid flag
+        blob.extend_from_slice(&0xFFFF_FFFFu32.to_le_bytes()); // forged count
+        // Struct-array header: prop name, prop type, u64 size, elem type, id, flag.
+        blob.extend_from_slice(&fstring("Values"));
+        blob.extend_from_slice(&fstring("StructProperty"));
+        blob.extend_from_slice(&0u64.to_le_bytes());
+        blob.extend_from_slice(&fstring("Guid"));
+        blob.extend_from_slice(&[0u8; 16]); // struct id
+        blob.push(0); // optional-guid flag
+
+        let mut r = Reader::new(&blob);
+        let err = read_property(&mut r, "ArrayProperty", blob.len())
+            .expect_err("corrupt struct-array count must error");
+        assert!(
+            matches!(&err, SaveError::Gvas(m) if m.contains("unexpected eof")),
+            "expected unexpected-eof gvas error, got {err:?}"
+        );
+    }
 }

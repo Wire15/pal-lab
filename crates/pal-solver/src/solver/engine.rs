@@ -7,8 +7,8 @@
 //! threads (palcalc fights the C# GC; Rust does not need to).
 //!
 //! This is the ONLY module that calls [`crate::probabilities`]; those bodies are
-//! `todo!()` until the sibling slice lands, so [`solve`] must not be run under
-//! unit tests (the CLI and `#[ignore]`d tests exercise it once probabilities are real).
+//! fully implemented and oracle-pinned, so [`solve`] runs under the normal test
+//! suite (the golden + mode tests exercise it end to end).
 
 use std::collections::{HashMap, HashSet};
 
@@ -20,7 +20,7 @@ use crate::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
     prob_inherited_target_passives_forced,
 };
-use crate::solver::config::{BreedingSetup, IvModel, SolverConfig};
+use crate::solver::config::{IvModel, SolverConfig};
 use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
@@ -334,7 +334,7 @@ fn combinations(items: &[PassiveId], k: usize) -> Vec<Vec<PassiveId>> {
 }
 
 /// Breed a single parent pair, producing all relevant children (calls the
-/// probability model — do not invoke under tests while it is `todo!()`).
+/// probability model).
 fn breed_pair(
     gd: &GameData,
     spec: &TargetSpec,
@@ -409,7 +409,11 @@ fn breed_pair(
                 for _ in num_desired..num_final {
                     effective.push(EffPassive::Random);
                 }
-                let mut bred = BredPalRef::new(
+                // Effective egg multiplier: cake BreedCount * (1 + extra-egg boost).
+                // Folded into construction (with the setup) so the hot loop never
+                // clones a freshly built ref just to reset these fields.
+                let egg_mult = cfg.cake.egg_multiplier() * (1.0 + cfg.setup.extra_egg_chance);
+                let bred = BredPalRef::new(
                     gd,
                     child,
                     r1.clone(),
@@ -418,15 +422,9 @@ fn breed_pair(
                     prob_accum,
                     child_ivs,
                     ivs_prob,
+                    &cfg.setup,
+                    egg_mult,
                 );
-                if cfg.setup != BreedingSetup::default() {
-                    bred = bred.with_setup(gd, &cfg.setup);
-                }
-                // Effective egg multiplier: cake BreedCount * (1 + extra-egg boost).
-                let egg_mult = cfg.cake.egg_multiplier() * (1.0 + cfg.setup.extra_egg_chance);
-                if egg_mult != 1.0 {
-                    bred = bred.with_egg_multiplier(gd, egg_mult);
-                }
                 let bred = PalRef::Bred(Box::new(bred));
                 if bred.total_effort() <= cfg.max_effort_secs
                     && (spec.is_satisfied_by(&bred) || ws.is_optimal(&bred))

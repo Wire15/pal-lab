@@ -210,6 +210,10 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
         .and_then(Value::as_i32)
         .unwrap_or(0)
         .max(0) as u32;
+    // Lucky/bred-alpha instance flag; omitted (default false) for normal pals.
+    let is_lucky = find(param, "IsRarePal")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
 
     let ivs = IvSet {
         hp: talent(param, "Talent_HP"),
@@ -274,6 +278,7 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
         instance_id,
         character_id,
         is_boss,
+        is_lucky,
         is_human,
         gender,
         level,

@@ -7,6 +7,7 @@ use pal_solver::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, SolverIv, SolverIvSet,
 };
 use pal_solver::solver::working_set::{dominates, key_of, WorkingSet};
+use pal_solver::solver::config::BreedingSetup;
 
 fn owned_instance() -> OwnedInstance {
     OwnedInstance {
@@ -39,6 +40,8 @@ fn bred(gd: &GameData, species: u16, prob: f64) -> PalRef {
         vec![],
         prob,
         SolverIvSet::RANDOM,
+        1.0,
+        &BreedingSetup::default(),
         1.0,
     )))
 }

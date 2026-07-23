@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
-import type { NamedEntry, OwnedPal, SpeciesEntry } from "../lib/types";
+import { isAlpha, type NamedEntry, type OwnedPal, type SpeciesEntry } from "../lib/types";
 import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
@@ -128,7 +128,7 @@ function RosterTable({
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
                       <span className="truncate font-medium text-ink">{nameOf(pal)}</span>
-                      {pal.is_boss && <Tag tone="boss">Alpha</Tag>}
+                      {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
                       {pal.rank > 0 && (
                         <span
                           className="font-mono text-[11px] text-amber"

@@ -5,7 +5,7 @@
 // direct trigger child of <PalHoverCard>.
 
 import type { Ref, PointerEventHandler } from "react";
-import type { OwnedPal } from "../../lib/types";
+import { isAlpha, type OwnedPal } from "../../lib/types";
 import { genderView } from "../../lib/ui";
 import { alphaIconUrl, palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
 import { isHuman } from "./selectors";
@@ -71,7 +71,7 @@ export function Slot({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       aria-pressed={selected}
-      aria-label={`${human ? "Human" : name}, level ${pal.level}${pal.is_boss ? ", alpha" : ""}`}
+      aria-label={`${human ? "Human" : name}, level ${pal.level}${isAlpha(pal) ? ", alpha" : ""}`}
       className="group relative shrink-0 rounded-full outline-none"
       style={{ width: size, height: size }}
     >
@@ -106,7 +106,7 @@ export function Slot({
 
       {/* Alpha marker — top-left. Real in-game horned-alpha badge (GameAssets),
           transparent PNG dropped onto the slot corner. */}
-      {pal.is_boss && (
+      {isAlpha(pal) && (
         <img
           src={alphaIconUrl}
           alt=""

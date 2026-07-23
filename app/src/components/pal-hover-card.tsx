@@ -27,7 +27,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { invoke } from "../lib/tauri";
-import type { IvSet, OwnedPal, SpeciesEntry } from "../lib/types";
+import { isAlpha, type IvSet, type OwnedPal, type SpeciesEntry } from "../lib/types";
 import { PalIcon } from "./primitives";
 import { PassiveStrip } from "./passive-strip";
 import { nonzeroWork, WorkGlyph } from "./work-suit";
@@ -318,7 +318,7 @@ function HoverCardBody({
                 {g.label}
               </span>
             )}
-            {pal.is_boss && (
+            {isAlpha(pal) && (
               <span className="flex items-center gap-1 font-semibold text-amber-bright">
                 <img
                   src={alphaIconUrl}
