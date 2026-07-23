@@ -55,17 +55,19 @@ function loadDev(): Promise<DevFixtures> {
       import("../dev-fixtures/roster-counts.json"),
       import("../dev-fixtures/save-summary.json"),
       import("../dev-fixtures/solve-result.json"),
+      import("../dev-fixtures/solve-queue.json"),
       import("../dev-fixtures/list-passives.json"),
       import("../dev-fixtures/paldex-species-detail.json"),
       import("../dev-fixtures/breeding-parents.json"),
       import("../dev-fixtures/breeding-child.json"),
       import("../dev-fixtures/breeding-boosts.json"),
-    ]).then(([species, roster, save, solve, passives, detail, parents, child, boosts]) => {
+    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, child, boosts]) => {
       const speciesData = species.default as unknown as SpeciesEntry[];
       return {
         simple: {
           load_save: save.default,
           solve: solve.default,
+          solve_queue: solveQueue.default,
           list_species: speciesData.map((s) => ({ id: s.id, name: s.name })),
           list_passives: passives.default,
           list_breeding_boosts: boosts.default,

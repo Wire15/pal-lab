@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-use pal_data::types::{Gender, PassiveId};
+use pal_data::types::{Gender, Guid, PassiveId};
 use serde::{Deserialize, Serialize};
 
 use crate::solver::refs::{EffPassive, PalRef, RefGender};
@@ -30,6 +30,13 @@ pub struct TargetSpec {
     /// Max irrelevant passives tolerated on bred children (palcalc
     /// `MaxBredIrrelevantPassives`). Default 1.
     pub max_irrelevant: u8,
+    /// Owned instance ids that MUST appear as leaves in every returned plan
+    /// tree (Wave A pinning). Empty = no constraint. Pinned instances are
+    /// exempt from the initial working-set reduction (see
+    /// `engine::build_initial_content`) so they stay individually addressable,
+    /// and results are post-filtered to trees containing every pin.
+    #[serde(default)]
+    pub pinned_parents: Vec<Guid>,
 }
 
 impl TargetSpec {
@@ -43,6 +50,7 @@ impl TargetSpec {
             iv_defense: 0,
             required_gender: None,
             max_irrelevant: 1,
+            pinned_parents: Vec::new(),
         }
     }
 

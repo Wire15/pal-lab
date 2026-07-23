@@ -570,7 +570,8 @@ mod tests {
         // owned-reachable target (the Icelyn chain is appended purely to exercise
         // the wild-node rendering + the "N wild" stat). The UI's fallback / catch-only
         // callouts key off fallback_used=true or a lone 0-step wild-root plan.
-        let response = crate::solver::SolveResponse { plans, fallback_used: false };
+        let response =
+            crate::solver::SolveResponse { plans, fallback_used: false, pins_satisfied: true };
         let solve_json = serde_json::to_string_pretty(&response).unwrap();
         assert!(
             solve_json.contains("\"Wild\""),

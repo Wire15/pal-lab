@@ -15,7 +15,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { invoke } from "./lib/tauri";
@@ -36,6 +38,52 @@ function readLastSaveDir(): string {
     return localStorage.getItem(SAVE_DIR_KEY) ?? "";
   } catch {
     return "";
+  }
+}
+
+/** localStorage key for the recent-saves profile list (contract #Profiles). */
+const RECENT_SAVES_KEY = "pal-calc.recentSaves";
+/** Max recent-save rows kept, most-recent first. */
+const MAX_RECENTS = 8;
+
+/** A previously-loaded save, surfaced as a rich row in the load modal. */
+export interface RecentSave {
+  /** The folder path as the user entered/picked it (shown as mono subtext). */
+  dir: string;
+  /** World name from the summary at last load. */
+  worldName: string;
+  /** Player count at last load. */
+  players: number;
+  /** Pal count at last load. */
+  pals: number;
+  /** Epoch ms of the last successful load (rendered as relative time). */
+  lastLoaded: number;
+}
+
+/** Canonical dedup key for a save dir: forward-slash, no trailing slash,
+ * lowercased — so `C:\Foo\` and `c:/foo` collapse to one recent (contract #4). */
+function canonDir(dir: string): string {
+  return dir.replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase();
+}
+
+function readRecentSaves(): RecentSave[] {
+  try {
+    const raw = localStorage.getItem(RECENT_SAVES_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .filter((r) => r && typeof r.dir === "string")
+      .map((r) => ({
+        dir: String(r.dir),
+        worldName: String(r.worldName ?? "Unknown World"),
+        players: Number(r.players) || 0,
+        pals: Number(r.pals) || 0,
+        lastLoaded: Number(r.lastLoaded) || 0,
+      }))
+      .slice(0, MAX_RECENTS);
+  } catch {
+    return [];
   }
 }
 
@@ -103,6 +151,14 @@ export interface AppState {
   loadSave: (dir: string) => Promise<void>;
   /** Unload the current save; views fall back to their empty states. */
   clearSave: () => void;
+  /** Recently-loaded saves (newest first, max 8) for the load-modal profiles. */
+  recentSaves: RecentSave[];
+  /** Silently re-read the current save in place (watcher-driven). Preserves
+   * `saveDir`, so solver plans/selection survive. No-op with no save loaded. */
+  reloadSave: () => Promise<void>;
+  /** Transient status pill message (e.g. "Save reloaded"), or null. The `nonce`
+   * re-triggers the auto-dismiss on identical repeat messages. */
+  toast: { text: string; nonce: number } | null;
   /** Active nav view. */
   view: View;
   setView: (view: View) => void;
@@ -153,6 +209,14 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [dexInstance, setDexInstance] = useState<string | null>(null);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
   const [cake, setCakeState] = useState<CakeToken>(readCake);
+  const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
+  const [toast, setToast] = useState<{ text: string; nonce: number } | null>(
+    null,
+  );
+  // Latest saveDir for the save-changed listener, which subscribes once and
+  // must not re-bind on every load (a stale closure would reload the wrong dir).
+  const saveDirRef = useRef(saveDir);
+  saveDirRef.current = saveDir;
 
   const setSetup = useCallback((next: BreedingSetup) => {
     setSetupState(next);
@@ -172,6 +236,37 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Record a successful load in the recents list: newest first, deduped by
+  // canonical dir, capped at MAX_RECENTS. Persisted so profiles survive reloads.
+  const pushRecent = useCallback((dir: string, summary: SaveSummary) => {
+    setRecentSaves((prev) => {
+      const key = canonDir(dir);
+      const entry: RecentSave = {
+        dir,
+        worldName: summary.world_name,
+        players: summary.players.length,
+        pals: summary.pals.length,
+        lastLoaded: Date.now(),
+      };
+      const next = [
+        entry,
+        ...prev.filter((r) => canonDir(r.dir) !== key),
+      ].slice(0, MAX_RECENTS);
+      try {
+        localStorage.setItem(RECENT_SAVES_KEY, JSON.stringify(next));
+      } catch {
+        // Ignore storage failures (private mode, quota) — non-fatal.
+      }
+      return next;
+    });
+  }, []);
+
+  const showToast = useCallback((text: string) => {
+    // `nonce` makes an identical repeat message ("Save reloaded" twice) a new
+    // value, so the auto-dismiss effect re-arms each time.
+    setToast({ text, nonce: Date.now() });
+  }, []);
+
   const loadSave = useCallback(async (dir: string) => {
     const trimmed = dir.trim();
     if (!trimmed) return;
@@ -184,11 +279,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setSaveSummary(summary);
       setSaveDir(trimmed);
       setLastSaveDir(trimmed);
+      pushRecent(trimmed, summary);
       try {
         localStorage.setItem(SAVE_DIR_KEY, trimmed);
       } catch {
         // Ignore storage failures (private mode, quota) — non-fatal.
       }
+      // Auto-arm the live watcher so external saves trigger a silent reload.
+      // No-op in plain-browser dev (no such command) — swallow the error.
+      invoke("watch_save", { saveDir: trimmed }).catch(() => {});
     } catch (e) {
       setSaveError(String(e));
       setSaveSummary(null);
@@ -196,13 +295,67 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setSaveLoading(false);
     }
-  }, []);
+  }, [pushRecent]);
+
+  // Silent re-read of the *current* save (fired by the `save-changed` watcher
+  // event). It never touches `saveDir` or `saveLoading`, so solver plans and
+  // node selection — keyed off `saveDir` in useSolve — survive the reload.
+  const reloadSave = useCallback(async () => {
+    const dir = saveDirRef.current;
+    if (!dir) return;
+    try {
+      const summary = await invoke<SaveSummary>("load_save", { saveDir: dir });
+      setSaveSummary(summary);
+      pushRecent(dir, summary);
+      showToast("Save reloaded");
+    } catch {
+      // A transient read (mid-write) failure keeps the last-good summary.
+    }
+  }, [pushRecent, showToast]);
 
   const clearSave = useCallback(() => {
     setSaveSummary(null);
     setSaveDir("");
     setSaveError(null);
+    invoke("unwatch_save").catch(() => {});
   }, []);
+
+  // Auto-dismiss the transient toast after 3s (re-arms per `nonce`).
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  // Subscribe once to the backend `save-changed` event -> silent reload. In the
+  // Tauri webview this is the real IPC event bus; in plain-browser dev we listen
+  // for a window event of the same name, so a reload can be simulated with
+  //   window.dispatchEvent(new Event("save-changed"))
+  useEffect(() => {
+    const isTauri =
+      typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+    if (isTauri) {
+      let unlisten: (() => void) | undefined;
+      let cancelled = false;
+      import("@tauri-apps/api/event").then(({ listen }) => {
+        listen("save-changed", () => {
+          reloadSave();
+        }).then((un) => {
+          if (cancelled) un();
+          else unlisten = un;
+        });
+      });
+      return () => {
+        cancelled = true;
+        unlisten?.();
+      };
+    }
+    const handler = () => {
+      reloadSave();
+    };
+    window.addEventListener("save-changed", handler);
+    return () => window.removeEventListener("save-changed", handler);
+  }, [reloadSave]);
 
   // Owned tally per species, mirroring the backend `roster_counts` command but
   // computed from the single cached summary so the dex never fetches again.
@@ -250,6 +403,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       lastSaveDir,
       loadSave,
       clearSave,
+      recentSaves,
+      reloadSave,
+      toast,
       view,
       setView,
       solveTarget,
@@ -273,6 +429,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       lastSaveDir,
       loadSave,
       clearSave,
+      recentSaves,
+      reloadSave,
+      toast,
       view,
       solveTarget,
       requestSolve,

@@ -254,7 +254,7 @@ fn breeding_only_owned_reachable_stays_pure() {
     let spec = TargetSpec::new(TargetPal::Species(t));
     let cfg = with_wild();
 
-    let ModeResult { plans, fallback_used } =
+    let ModeResult { plans, fallback_used, .. } =
         solve_with_catching(gd, &spec, &roster, &cfg, Catching::BreedingOnly);
     assert!(!plans.is_empty(), "owned-breedable target must yield a plan");
     assert!(!fallback_used, "owned path exists — no catch fallback");
@@ -284,7 +284,7 @@ fn breeding_only_unreachable_falls_back_to_catch() {
     // owned-only truly cannot reach it (guards the fallback trigger).
     assert!(solve(gd, &spec, &roster, &owned_only()).is_empty());
 
-    let ModeResult { plans, fallback_used } =
+    let ModeResult { plans, fallback_used, .. } =
         solve_with_catching(gd, &spec, &roster, &cfg, Catching::BreedingOnly);
     assert!(!plans.is_empty(), "include_wild fallback must reach Jetragon");
     assert!(fallback_used, "no pure-breeding path — fallback_used must be true");
@@ -304,7 +304,7 @@ fn allowed_drops_trivial_catch_when_breeding_exists() {
     let spec = TargetSpec::new(TargetPal::Species(t));
     let cfg = with_wild();
 
-    let ModeResult { plans, fallback_used } =
+    let ModeResult { plans, fallback_used, .. } =
         solve_with_catching(gd, &spec, &roster, &cfg, Catching::Allowed);
     assert!(!fallback_used, "allowed mode never sets fallback_used");
     assert!(!plans.is_empty(), "expected surviving plans");
@@ -331,7 +331,7 @@ fn catch_only_target_keeps_single_wild_plan() {
     // direct catch remains.
     let cfg = SolverConfig { include_wild: true, max_wild_pals: 1, ..SolverConfig::default() };
 
-    let ModeResult { plans, fallback_used } =
+    let ModeResult { plans, fallback_used, .. } =
         solve_with_catching(gd, &spec, &[], &cfg, Catching::Allowed);
     assert!(!fallback_used, "allowed mode never sets fallback_used");
     assert_eq!(plans.len(), 1, "exactly one plan (the single catch) survives");

@@ -6,9 +6,14 @@
 //! JSON shape matches `crates/pal-data/src/types.rs` exactly.
 
 use std::path::Path;
+use std::sync::mpsc::{channel, RecvTimeoutError};
+use parking_lot::Mutex;
+use std::time::Duration;
 
+use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use pal_data::types::{Guid, OwnedPal};
 use serde::Serialize;
+use tauri::{AppHandle, Emitter, State};
 
 /// A player entry, keyed by a display-formatted GUID string.
 #[derive(Debug, Clone, Serialize)]
@@ -83,6 +88,126 @@ pub fn load_save(save_dir: String) -> Result<SaveSummary, String> {
     Ok(to_summary(save))
 }
 
+/// Debounce window: coalesce a burst of save writes into one reload. Palworld
+/// rewrites `Level.sav` and per-player sub-saves in quick succession, so we wait
+/// for the writes to settle before telling the UI to re-read.
+const DEBOUNCE: Duration = Duration::from_millis(2000);
+
+/// Managed handle to the live filesystem watcher, or `None` when not watching.
+///
+/// Dropping the [`RecommendedWatcher`] stops watching AND drops the event
+/// sender it owns, so the debounce thread's channel disconnects and the thread
+/// exits. Replacing the value on a repeat `watch_save` therefore leaks neither
+/// a watcher nor a thread.
+#[derive(Default)]
+pub struct WatcherState(pub Mutex<Option<RecommendedWatcher>>);
+
+/// Payload for the `save-changed` event emitted after a debounced write burst.
+#[derive(Clone, Serialize)]
+struct SaveChanged {
+    save_dir: String,
+}
+
+/// Build a watcher over a save dir's `Level.sav` (+ `Players/`) that calls
+/// `on_change` once per settled write burst (debounced by `debounce`).
+///
+/// Factored out of [`watch_save`] so tests can drive it with a plain callback
+/// instead of a live `AppHandle`. The returned watcher owns the whole pipeline;
+/// dropping it stops the watch and ends the debounce thread.
+fn spawn_watcher<F>(
+    base: &Path,
+    debounce: Duration,
+    on_change: F,
+) -> notify::Result<RecommendedWatcher>
+where
+    F: Fn() + Send + 'static,
+{
+    let (tx, rx) = channel::<()>();
+    let mut watcher = notify::recommended_watcher(move |res: notify::Result<notify::Event>| {
+        if let Ok(ev) = res {
+            if matches!(
+                ev.kind,
+                EventKind::Modify(_) | EventKind::Create(_) | EventKind::Remove(_)
+            ) {
+                // A closed receiver just means the watcher is being torn down.
+                let _ = tx.send(());
+            }
+        }
+    })?;
+
+    let level = base.join("Level.sav");
+    let players = base.join("Players");
+    let mut watched_any = false;
+    if level.exists() {
+        watcher.watch(&level, RecursiveMode::NonRecursive)?;
+        watched_any = true;
+    }
+    if players.is_dir() {
+        watcher.watch(&players, RecursiveMode::Recursive)?;
+        watched_any = true;
+    }
+    // Neither exists yet (fresh dir / mid-write): fall back to the dir itself so
+    // the first `Level.sav` create still fires.
+    if !watched_any {
+        watcher.watch(base, RecursiveMode::NonRecursive)?;
+    }
+
+    // Debounce thread: after the first event, keep resetting a `debounce` window
+    // until writes stop, then fire once. Exits when the channel disconnects
+    // (watcher dropped).
+    std::thread::spawn(move || {
+        while rx.recv().is_ok() {
+            loop {
+                match rx.recv_timeout(debounce) {
+                    Ok(()) => continue,
+                    Err(RecvTimeoutError::Timeout) => break,
+                    Err(RecvTimeoutError::Disconnected) => return,
+                }
+            }
+            on_change();
+        }
+    });
+
+    Ok(watcher)
+}
+
+/// Start (or replace) a debounced filesystem watch on `save_dir`. On each
+/// settled write burst it emits the `save-changed` event with `{ save_dir }` so
+/// the frontend can silently reload. Repeat calls replace the previous watcher
+/// cleanly (no leak).
+#[tauri::command]
+pub fn watch_save(
+    save_dir: String,
+    app: AppHandle,
+    state: State<'_, WatcherState>,
+) -> Result<(), String> {
+    let dir = save_dir.trim();
+    if dir.is_empty() {
+        return Err("No save folder to watch.".into());
+    }
+    let emit_dir = dir.to_string();
+    let watcher = spawn_watcher(Path::new(dir), DEBOUNCE, move || {
+        let _ = app.emit(
+            "save-changed",
+            SaveChanged {
+                save_dir: emit_dir.clone(),
+            },
+        );
+    })
+    .map_err(|e| e.to_string())?;
+
+    // Assigning drops the old watcher first (stops it, ends its thread).
+    *state.0.lock() = Some(watcher);
+    Ok(())
+}
+
+/// Stop watching the current save, if any. Idempotent.
+#[tauri::command]
+pub fn unwatch_save(state: State<'_, WatcherState>) -> Result<(), String> {
+    *state.0.lock() = None;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -128,5 +253,101 @@ mod tests {
             })
             .count();
         assert!(dimensional > 0, "no dimensional-storage pals in summary");
+    }
+
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::sync::Arc;
+
+    /// Unique scratch dir under the OS temp root (no `tempfile` dep needed).
+    fn scratch_dir(tag: &str) -> std::path::PathBuf {
+        static N: AtomicUsize = AtomicUsize::new(0);
+        let n = N.fetch_add(1, Ordering::Relaxed);
+        let dir = std::env::temp_dir().join(format!(
+            "pal-calc-watch-{}-{}-{}",
+            tag,
+            std::process::id(),
+            n
+        ));
+        std::fs::create_dir_all(&dir).expect("create scratch dir");
+        dir
+    }
+
+    fn touch(path: &Path, contents: &str) {
+        std::fs::write(path, contents).expect("write file");
+    }
+
+    /// A rapid burst of writes coalesces into exactly one `on_change`, and a
+    /// later write fires a second — proving the 2s (here shortened) debounce.
+    #[test]
+    fn debounce_coalesces_burst() {
+        let dir = scratch_dir("debounce");
+        let level = dir.join("Level.sav");
+        touch(&level, "0");
+
+        let hits = Arc::new(AtomicUsize::new(0));
+        let h = hits.clone();
+        let debounce = Duration::from_millis(400);
+        let _watcher = spawn_watcher(&dir, debounce, move || {
+            h.fetch_add(1, Ordering::SeqCst);
+        })
+        .expect("spawn watcher");
+        std::thread::sleep(Duration::from_millis(250)); // let the watch arm.
+
+        // Burst: five writes well inside one debounce window.
+        for i in 0..5 {
+            touch(&level, &format!("burst-{i}"));
+            std::thread::sleep(Duration::from_millis(30));
+        }
+        std::thread::sleep(Duration::from_millis(900)); // window elapses + fire.
+        assert_eq!(hits.load(Ordering::SeqCst), 1, "burst should coalesce to one");
+
+        // A separate write later fires again.
+        touch(&level, "second");
+        std::thread::sleep(Duration::from_millis(900));
+        assert_eq!(hits.load(Ordering::SeqCst), 2, "later write should re-fire");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// Dropping a watcher (as a repeat `watch_save`/`unwatch_save` does) stops
+    /// it: no further callbacks fire, and a fresh watcher over the same dir
+    /// works — i.e. replacing leaks neither watcher nor thread.
+    #[test]
+    fn dropping_watcher_stops_it() {
+        let dir = scratch_dir("replace");
+        let level = dir.join("Level.sav");
+        touch(&level, "0");
+        let debounce = Duration::from_millis(300);
+
+        // Watcher A, then dropped (simulating replacement).
+        let a_hits = Arc::new(AtomicUsize::new(0));
+        {
+            let h = a_hits.clone();
+            let _a = spawn_watcher(&dir, debounce, move || {
+                h.fetch_add(1, Ordering::SeqCst);
+            })
+            .expect("spawn A");
+            std::thread::sleep(Duration::from_millis(250));
+        } // `_a` dropped here.
+        std::thread::sleep(Duration::from_millis(100));
+
+        // Writes after the drop must not reach A.
+        touch(&level, "after-drop");
+        std::thread::sleep(Duration::from_millis(700));
+        assert_eq!(a_hits.load(Ordering::SeqCst), 0, "dropped watcher still firing");
+
+        // Watcher B over the same dir still works.
+        let b_hits = Arc::new(AtomicUsize::new(0));
+        let h = b_hits.clone();
+        let _b = spawn_watcher(&dir, debounce, move || {
+            h.fetch_add(1, Ordering::SeqCst);
+        })
+        .expect("spawn B");
+        std::thread::sleep(Duration::from_millis(250));
+        touch(&level, "for-b");
+        std::thread::sleep(Duration::from_millis(700));
+        assert!(b_hits.load(Ordering::SeqCst) >= 1, "replacement watcher never fired");
+
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

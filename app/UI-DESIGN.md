@@ -1063,3 +1063,189 @@ No save → the Solver's "Load a save…" hint (CTA disabled). Thresholds all 0 
 the inline set-a-floor hint (solve still allowed). No plan → "No line found"
 with loosen-threshold / raise-steps / try-a-cake guidance. Pre-solve → an
 "Engineer an IV line" invitation. All follow §8's guide-the-next-action voice.
+
+## Wave A — Pal-dex deeper filters (`views/paldex/dex-filters.tsx`)
+
+The dex index toolbar gains four deeper filters behind a single **FILTERS**
+button + popover, so search / sort / element / owned stay on the first rows and
+the toolbar never wraps into chaos at 1280. All new data was already served by
+`paldex_species` (`work_suitability`, `stats.rarity`, `guaranteed_passives`,
+`nocturnal`) — no backend or fixture change. Every value is a `--color-*` token.
+
+- **FILTERS trigger.** A mono-microcap button (`\u25a4` glyph) matching the sort
+  segment voice; **active-count badge** (amber pill, `text-abyss`) sums the
+  selected deeper filters. Amber-tinted (`bg-amber/15`) while open or when any
+  deeper filter is set. Popover: `absolute right-0` panel (`w-[344px]`, `panel`
+  fill, `line` border, `z-50`), closed by outside-`mousedown` or **Escape** —
+  same dismissal contract as the §-11 passive picker.
+- **WORK.** A 6-col grid of the 12 work-suitability glyphs (`WorkGlyph`, greyed
+  until picked, amber border when active). Each selected kind spawns a **min-level
+  stepper** row (glyph + label + `\u2212 / Lv N / +`, clamped **1-5**). Semantics:
+  **AND across kinds** — a species must clear every chosen kind's level (an
+  `all required` hint appears past one kind). Filters on `work_suitability[i]` in
+  `WORK_META` canonical order.
+- **RARITY.** Four tier chips (Common / Rare / Epic / Legendary), each tinted
+  with its own `--color-rarity-<key>` token when active (border + `color-mix`
+  fill + text). **OR within the group.** Buckets via `lib/ui.ts::rarityTier(
+  stats.rarity)` — the same helper the hover card and detail badge use.
+- **GUARANTEED PASSIVE.** A compact, **data-derived** list (not the full solver
+  picker): only the guaranteed passives actually present across the dataset,
+  each rendered as a §-12 `PassiveStrip size="sm"` in its own tier band, in a
+  scrolling `max-h-44` well, strongest rank first. Selecting rings the strip in
+  `amber/60`. **OR within the group** — a species matches if any of its
+  `guaranteed_passives` names is picked.
+- **TIME.** A single **Nocturnal only** toggle (`\u263e` moon glyph, amber-active),
+  matching the alpha-toggle chassis.
+- **Composition.** Groups are **ANDed** with each other and with the existing
+  search / element / owned / hide-variants filters (within-group semantics as
+  above). The pure predicate is `matchesDexFilters(species, filters)`.
+- **Clear.** A toolbar **CLEAR FILTERS** button appears whenever any filter
+  (element, work, rarity, passive, night, owned, variants) is active and resets
+  them all in one click; it also fronts the **empty state** ("No pals match the
+  active filters. Loosen a level, tier, or passive." → CLEAR FILTERS), which
+  generalizes the prior owned-only / no-match copy per §8.
+
+## Wave A — Saved plans, compare & export (`components/plans-drawer.tsx`, `components/plan-export.ts`)
+
+Plans become durable, comparable, and shareable. The solve results header
+(§7) gains a right cluster next to the `Graph | List` toggle: **Save plan**,
+**PNG**, **Copy code** (all the §6 secondary button — `raised`/`line`/`ink-dim`)
+and **Plans** (amber-tinted `bg-amber/10 border-amber/40 text-amber`, the drawer
+trigger). A transient `good` confirmation ("Plan saved", "PNG exported", "Plan
+code copied") shows inline in the cluster for ~2.2s. All persistence is
+client-side localStorage; nothing touches the backend.
+
+- **Save plan.** Opens an inline **naming bar** below the plan tabs (mono
+  `NAME THIS PLAN` label + a `bg-abyss` amber-focus input pre-filled with the
+  default `"<Target> - <steps> steps - <time>"`, then amber **Save** / secondary
+  **Cancel**; Enter commits, Escape cancels). Stores to `pal-calc.savedPlans`
+  (frozen contract: `{id, name, created, saveDir, request, response, activePlan}`,
+  cap 50). Eviction is **oldest default-named first, else oldest** — "unnamed" is
+  inferred by re-deriving the default name, since the frozen shape has no flag.
+- **PLANS drawer.** A right-slide panel (`fixed right-0`, `w-[400px]`, `panel`
+  fill, `border-l`, `translate-x` in/out `duration-200 ease-out`) over an
+  `abyss/60` backdrop; Escape or backdrop-click closes. Header = the standard
+  mono `PLANS` eyebrow + `Saved plans` display title. Top: an **import-code**
+  field (below). Then the saved list: each row is a compact card — compare
+  **checkbox**, target `PalIcon 34`, name (inline-rename input on the pencil), a
+  mono chip line (`amber` time · steps · `el-leaf` wild · relative time), a
+  `warn` triangle glyph when `saveDir` differs from the live save, and a
+  **Load** (amber) / rename / delete action row. Empty state follows §8's
+  guide-the-next-action voice.
+- **Load.** Rehydrates the saved `plans`/`activePlan` into the view exactly as a
+  live solve (via `useSolve.rehydrate`, which carries the saved tab across the
+  reset-to-0 effect on a ref), and raises an **amber staleness banner** at the
+  top of results: `SAVED <date>` eyebrow + "Loaded from "<name>" — your roster
+  may have changed since. Re-solve for a fresh plan." It clears on the next live
+  solve (honesty rule: saved trees may be stale against the current roster).
+- **Compare.** Selecting **exactly two** checkboxes opens a **stat comparison**
+  panel in the drawer (dual-graph rendering intentionally NOT shipped — kept to a
+  scannable table): a `[label | A | B]` grid of **Time / Steps / Wild / Overall
+  odds** (overall = product of breed-step probabilities), the **better value per
+  row tinted `good`** (lower time/steps/wild, higher odds), plus each plan's
+  **per-step odds chain** as §5 `probBand` pills. **No winner is declared** — a
+  footnote states the tinting rule and that a faster plan may carry worse odds;
+  the user judges.
+- **Export — PNG.** A **hand-rolled canvas serializer** (`renderPlanPng`), not a
+  DOM/SVG scrape and **no dependency**: it re-renders the plan onto a fresh 2x
+  canvas from the *same* `plan-graph-layout` geometry the live graph uses, so the
+  bracket is identical but taint-free (external pal PNGs `drawImage`'d after
+  preload, `document.fonts.ready` awaited for the self-hosted faces). The frame
+  bakes the `abyss` background, a `font-display` amber **target header** + mono
+  stat subline, and a `PAL-CALC` watermark. Edges use the `line`/`amber-70`
+  tokens, junction chips the §5 odds colors, nodes the source-tinted rings and
+  status chips — one consistent read with the on-screen graph. Saved via a
+  download anchor (`pal-calc-<slug>.png`), which the Tauri webview's download
+  handler also honors.
+- **Export — plan code.** **Copy code** writes a base64url `{request, planIdx}`
+  to the clipboard; the drawer's **Import** field decodes it and **re-solves via
+  the normal solve path** (not a frozen-tree paste), so a shared plan reflects
+  the importer's *own* current save — honest over stale. A malformed code shows a
+  friendly `bad`-toned inline error.
+
+## Wave A — Pinned parents & the breeding queue (`components/pin-picker.tsx`, `components/queue-panel.tsx`, `views/Solver.tsx`)
+
+Two Solver-only briefing extensions that ride the frozen `SolveRequest`. Both
+are client-state + localStorage; the pins field flows to the backend verbatim,
+the queue drives the `solve_queue` command.
+
+### Pin parents (below REQUIRED PASSIVES)
+
+Rendered **only when a save is loaded and a target is set** (meaningless
+otherwise). A mono-microcap `PIN PARENTS` label over a compact `+ Pin a parent…`
+affordance (§6 input well — `bg-abyss`/`line`, amber-focus).
+
+- **Popover.** An **anchored** panel (`absolute` under the affordance, `panel`
+  fill, `line` border, `max-h-72`) — deliberately not a modal (§AI-slop: "modals
+  for everything"). A `bg-abyss` search input filters the owned roster live by
+  **name / nickname / species**. Each row: `PalIcon 26`, display name (**nickname
+  italic** when present, else species), the §5 gender glyph, then a mono meta line
+  — `Lv N`, the three IVs **tinted by `ivBand`** (`QUALITY_TEXT`), and a passive
+  count (`Np`). Clicking a row pins that exact instance; the row then renders
+  **disabled** (already pinned). Closes on outside-click or Escape.
+- **Chips.** Pinned instances render below as amber pills (`amber/10`,
+  `border-amber/40`): `PalIcon 16` + name (nickname italic) + mono `Lv N` + an
+  `×` remove (aria-label **Remove**). Distinct from the neutral passive tags.
+- **Cap: 4.** Solver pairs are binary trees, so more pins is nonsense. At cap the
+  affordance disables and reads `Max 4 pins`, with an `ink-faint` hint ("Pin cap
+  reached — remove one to pin a different parent.").
+- **Wire-through.** The pins are the verbatim `OwnedPal.instance_id` arrays
+  (`Guid[]`); the Solver passes them as `SolveRequest.pinned_parents` inside its
+  built spec — no reshaping. Saved-plan and imported requests carry pins through
+  the drawer for free (it stores the whole request).
+- **Pins-unsatisfied banner.** When a response has `pins_satisfied === false`
+  (pins eliminated every plan; `plans` is empty), a `warn`-toned banner
+  (`border-warn/30 bg-warn/[0.08]`, mono `PINS UNSATISFIED` eyebrow) renders
+  **above the empty state**: "No plan uses all pinned parents — unpin or raise
+  Max steps." Shared verbatim by the single-solve empty state and any
+  no-plan queue item.
+
+### Breeding queue (form tail)
+
+A **collapsible** section under the solve button, headed by the mono-microcap
+`BREEDING QUEUE` (§4 chevron rotates on open) + a count badge.
+
+- **Add current target to queue** (§6 secondary) snapshots the **current full
+  spec** — target / passives / max-steps / source pool / catching / pins — by
+  reusing the same `buildSpec` a single solve sends. The shared setup/cake are
+  **not** frozen in; they inject at queue-solve time, so a re-solve always uses
+  the live BREEDING SETUP.
+- **Queue rows.** An ordered list; each row: index, `PalIcon 22` + target name,
+  a mono chip line (`Np` passives, an amber `N pins` chip when pinned, `N steps`),
+  a stacked ▲/▼ **reorder** pair (disabled at the list edge), and an `×` remove.
+- **Solve queue (N)** — the amber CTA (§6 primary) → `solve_queue` with
+  `stop_on_failure=false`. Busy state reads "Solving queue…".
+- **Persistence.** The queue writes to `pal-calc.solverQueue` and survives
+  restarts. Entries store the **request only** (never a frozen result), so
+  solving is always an honest re-solve against the live save.
+
+### Queue results view (replaces single-solve results)
+
+When a queue is solved, `queueResult` flips the results pane from the single
+plan to the queue view (single-solve state is left untouched underneath).
+
+- **Combined header.** A `panel` bar: mono `QUEUE` eyebrow · `combined ~<time>`
+  (amber total from `combined_effort_secs`, honestly an estimate) · `N targets`,
+  with an `ml-auto` **← Back to single solve** (§6 secondary) that clears the
+  queue result.
+- **Seeding note.** A quiet `ink-faint` line under the header — "Each target's
+  plan assumes the previous targets were bred first." — the honesty caption for
+  the left-to-right pool seeding.
+- **Per-item accordion.** One `panel`/`line` card per target. The `raised` header
+  row: chevron, index, `PalIcon 26` + target name, then a right-aligned **status
+  chip** — `plans[0]` time (amber) · `NO PLAN` (faint) · `NEEDS CATCHING`
+  (`el-leaf`, on `fallback_used`) · `PINS UNSATISFIED` (`bad`), in precedence
+  order pins → no-plan → catching → time. Expanding a solved item mounts the
+  **shared `PlanResults`** (extracted from the single-solve view) at a fixed
+  height — its own plan tabs, `Graph | List` toggle, catch callout, setup banner,
+  and `PlanGraph` + node inspector, identical to single results. A no-plan item
+  expands to the pins-unsatisfied banner or a plain "no chain" note.
+
+### Dev fixture (`dev-fixtures/solve-queue.json`)
+
+Browser dev mode (no backend) routes `solve_queue` through the static fixture in
+`lib/tauri.ts` (a code-split JSON in the `simple` command map, mirroring `solve`).
+Two items over existing fixture species: **Anubis** carries the full
+`solve-result.json` plans (demoing an expandable multi-tab item); **Mycora** has
+empty `plans` + `pins_satisfied:false` (demoing the `PINS UNSATISFIED` status
+chip and the shared banner). `combined_effort_secs` sums the best-plan effort.

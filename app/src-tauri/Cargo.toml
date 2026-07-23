@@ -27,4 +27,8 @@ serde_json = "1"
 pal-data = { path = "../../crates/pal-data" }
 pal-save = { path = "../../crates/pal-save" }
 pal-solver = { path = "../../crates/pal-solver" }
+# Filesystem watcher for live save auto-reload (watch_save/unwatch_save).
+notify = "6"
+# Non-poisoning Mutex for the watcher handle (rs-parking-lot rule).
+parking_lot = "0.12"
 

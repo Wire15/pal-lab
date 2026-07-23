@@ -12,7 +12,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use pal_data::types::{Gender, PassiveId};
+use pal_data::types::{Gender, Guid, PassiveId};
 use pal_data::{GameData, InheritanceWeights, OwnedPal};
 use rayon::prelude::*;
 
@@ -25,9 +25,9 @@ use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
 };
-use crate::solver::results::{filter_trivial_wild, BreedingPlan};
+use crate::solver::results::BreedingPlan;
 use crate::solver::spec::{TargetPal, TargetSpec};
-use crate::solver::working_set::WorkingSet;
+use crate::solver::working_set::{key_of, RefKey, WorkingSet};
 
 const MAX_TOTAL_PASSIVES: usize = 4;
 
@@ -84,11 +84,49 @@ pub fn build_initial_content(
         TargetPal::Any => true,
     };
 
+    // Pinned owned instances (Wave A): always retained as individually-
+    // addressable single refs, EXEMPT from the irrelevant-passive filter and
+    // the group/composite reduction below. They are emitted FIRST and any
+    // non-pinned owned ref that would share their working-set key is dropped,
+    // so the specific pinned instance id occupies (and holds) that slot — a
+    // reduction can no longer collapse a pin into a sibling or a composite.
+    let pinned: HashSet<Guid> = spec.pinned_parents.iter().copied().collect();
+    let mut pinned_refs: Vec<PalRef> = Vec::new();
+    for p in owned {
+        if !pinned.contains(&p.instance_id) {
+            continue;
+        }
+        let Some(gender) = p.gender else { continue };
+        let Some(species) = gd.species_index(&p.character_id) else { continue };
+        if !within_steps(species) {
+            continue;
+        }
+        let ivs = owned_iv_set(spec, p);
+        pinned_refs.push(PalRef::Owned(OwnedPalRef {
+            species,
+            gender: gender.into(),
+            effective_passives: OwnedPalRef::effective_of(&p.passives, &desired),
+            ivs,
+            primary: OwnedInstance {
+                instance_id: p.instance_id,
+                gender,
+                container: p.container_kind,
+                real_passives: p.passives.clone(),
+                ivs,
+            },
+            alt: None,
+        }));
+    }
+    let pinned_keys: HashSet<RefKey> = pinned_refs.iter().map(key_of).collect();
+
     // Map + filter owned pals into candidates.
     let mut candidates: Vec<OwnedCandidate> = Vec::new();
     for p in owned {
         let Some(gender) = p.gender else { continue };
         let Some(species) = gd.species_index(&p.character_id) else { continue };
+        if pinned.contains(&p.instance_id) {
+            continue; // emitted above as an individually-addressable pinned ref
+        }
         if !within_steps(species) {
             continue;
         }
@@ -144,18 +182,23 @@ pub fn build_initial_content(
             .push(c);
     }
 
-    let mut content: Vec<PalRef> = Vec::new();
+    let mut content: Vec<PalRef> = pinned_refs;
     for (_, members) in by_no_gender {
-        // Individual owned refs.
+        // Individual owned refs (skipping any that would collide with a pinned
+        // ref's working-set key, so the pin keeps its slot).
         for c in &members {
-            content.push(PalRef::Owned(OwnedPalRef {
+            let r = PalRef::Owned(OwnedPalRef {
                 species: c.species,
                 gender: c.gender.into(),
                 effective_passives: c.effective_passives.clone(),
                 ivs: c.ivs,
                 primary: c.instance.clone(),
                 alt: None,
-            }));
+            });
+            if pinned_keys.contains(&key_of(&r)) {
+                continue;
+            }
+            content.push(r);
         }
         // Composite (wildcard) ref for a male+female pair.
         if members.len() == 2 {
@@ -437,13 +480,74 @@ fn breed_pair(
     out
 }
 
+/// Every owned instance id reachable as a leaf of a reference tree (owned
+/// composites contribute both members).
+fn collect_owned_ids(r: &PalRef, out: &mut HashSet<Guid>) {
+    match r {
+        PalRef::Owned(o) => {
+            out.insert(o.primary.instance_id);
+            if let Some(alt) = &o.alt {
+                out.insert(alt.instance_id);
+            }
+        }
+        PalRef::Wild(_) => {}
+        PalRef::Bred(b) => {
+            collect_owned_ids(&b.parent1, out);
+            collect_owned_ids(&b.parent2, out);
+        }
+    }
+}
+
+/// True when `r`'s tree contains every pinned owned instance id as a leaf.
+fn ref_contains_all_pins(r: &PalRef, pins: &[Guid]) -> bool {
+    if pins.is_empty() {
+        return true;
+    }
+    let mut ids = HashSet::new();
+    collect_owned_ids(r, &mut ids);
+    pins.iter().all(|p| ids.contains(p))
+}
+
+/// Map best-first references to serializable plans, tagged with `cake`.
+#[inline]
+fn plans_of(gd: &GameData, refs: &[PalRef], cake: crate::solver::config::CakeKind) -> Vec<BreedingPlan> {
+    refs.iter().map(|r| BreedingPlan::from_ref(gd, r, cake)).collect()
+}
+
 /// Run the solver, returning up to `cfg.result_limit` breeding plans, best-first.
+/// When [`TargetSpec::pinned_parents`] is non-empty, only plans whose tree
+/// contains every pinned owned instance survive (see [`solve_reporting`]).
 pub fn solve(
     gd: &GameData,
     spec: &TargetSpec,
     owned: &[OwnedPal],
     cfg: &SolverConfig,
 ) -> Vec<BreedingPlan> {
+    solve_reporting(gd, spec, owned, cfg).0
+}
+
+/// [`solve`] plus a `pins_satisfied` flag (see [`solve_core`]).
+pub fn solve_reporting(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+) -> (Vec<BreedingPlan>, bool) {
+    let (refs, pins_satisfied) = solve_core(gd, spec, owned, cfg);
+    (plans_of(gd, &refs, cfg.cake), pins_satisfied)
+}
+
+/// Core search: pruned, pin-filtered best-first references plus a
+/// `pins_satisfied` flag. The flag is `false` only when a pin constraint
+/// eliminated an otherwise-non-empty result set (refs then empty); `true` when
+/// there are no pins, a pinned ref survives, or the target was unreachable
+/// regardless of pins. Callers map the refs to [`BreedingPlan`]s with the cake.
+fn solve_core(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+) -> (Vec<PalRef>, bool) {
     let mut spec = spec.clone();
     spec.normalize();
     // Mushroom/DeluxeVegetable cakes raise the egg's IV floor; model it by
@@ -515,8 +619,17 @@ pub fn solve(
         }
     }
 
+    // Pin post-filter (Wave A): keep only plans whose tree contains every
+    // pinned owned instance. `pins_satisfied` distinguishes "pinning killed a
+    // real result" (false) from "target unreachable anyway" (true).
+    let had_results = !results.is_empty();
+    if !spec.pinned_parents.is_empty() {
+        results.retain(|r| ref_contains_all_pins(r, &spec.pinned_parents));
+    }
+    let pins_satisfied = spec.pinned_parents.is_empty() || !(had_results && results.is_empty());
+
     let pruned = crate::solver::pruning::prune_results(results, cfg.result_limit);
-    pruned.iter().map(|r| BreedingPlan::from_ref(gd, r, cfg.cake)).collect()
+    (pruned, pins_satisfied)
 }
 
 /// Catch policy for a wild-enabled solve (only consulted when
@@ -534,17 +647,68 @@ pub enum Catching {
     Allowed,
 }
 
-/// Outcome of [`solve_with_catching`]: the plans plus whether a `BreedingOnly`
-/// request had to fall back to catch-assisted plans (no pure-breeding path).
+/// Outcome of [`solve_with_catching`]: the plans, whether a `BreedingOnly`
+/// request had to fall back to catch-assisted plans (no pure-breeding path),
+/// and whether the pin constraint was satisfiable (see [`solve_reporting`]).
 #[derive(Debug, Clone)]
 pub struct ModeResult {
     pub plans: Vec<BreedingPlan>,
     pub fallback_used: bool,
+    pub pins_satisfied: bool,
+}
+
+/// True for a bare wild ref — a "just catch the target" plan (ref-level mirror
+/// of [`crate::solver::results::is_trivial_wild_plan`]).
+fn is_trivial_wild_ref(r: &PalRef) -> bool {
+    matches!(r, PalRef::Wild(_))
+}
+
+/// Drop trivial catch-the-target refs whenever any non-trivial ref survives;
+/// otherwise return unchanged (ref-level mirror of [`filter_trivial_wild`]).
+fn filter_trivial_wild_refs(refs: Vec<PalRef>) -> Vec<PalRef> {
+    if refs.iter().any(|r| !is_trivial_wild_ref(r)) {
+        refs.into_iter().filter(|r| !is_trivial_wild_ref(r)).collect()
+    } else {
+        refs
+    }
+}
+
+/// Catching-mode-aware search returning best-first references — the shared core
+/// of [`solve_with_catching`] and [`solve_queue`]. Returns
+/// `(refs, fallback_used, pins_satisfied)`; see [`solve_with_catching`] for the
+/// mode semantics.
+pub fn solve_modes(
+    gd: &GameData,
+    spec: &TargetSpec,
+    owned: &[OwnedPal],
+    cfg: &SolverConfig,
+    catching: Catching,
+) -> (Vec<PalRef>, bool, bool) {
+    if !cfg.include_wild {
+        let (refs, pins) = solve_core(gd, spec, owned, cfg);
+        return (refs, false, pins);
+    }
+    match catching {
+        Catching::Allowed => {
+            let (refs, pins) = solve_core(gd, spec, owned, cfg);
+            (filter_trivial_wild_refs(refs), false, pins)
+        }
+        Catching::BreedingOnly => {
+            let owned_cfg = SolverConfig { include_wild: false, ..cfg.clone() };
+            let (owned_refs, owned_pins) = solve_core(gd, spec, owned, &owned_cfg);
+            if !owned_refs.is_empty() {
+                (owned_refs, false, owned_pins)
+            } else {
+                let (wild_refs, wild_pins) = solve_core(gd, spec, owned, cfg);
+                (filter_trivial_wild_refs(wild_refs), true, wild_pins)
+            }
+        }
+    }
 }
 
 /// Catching-mode-aware solve orchestration (the engine [`solve`] stays
-/// single-mode). Trivial "catch the target" plans are dropped by
-/// [`filter_trivial_wild`] whenever a real plan survives.
+/// single-mode). Trivial "catch the target" plans are dropped whenever a real
+/// plan survives.
 ///
 /// - Owned-only (`!cfg.include_wild`): `catching` is ignored; a single owned
 ///   run, `fallback_used = false`.
@@ -552,6 +716,8 @@ pub struct ModeResult {
 /// - `BreedingOnly` + wild: an owned-only run first; if it yields any plan those
 ///   are returned (`fallback_used = false`). Otherwise a wild-enabled run is
 ///   filtered and returned with `fallback_used = true`.
+///
+/// `pins_satisfied` reflects the run whose plans are returned.
 pub fn solve_with_catching(
     gd: &GameData,
     spec: &TargetSpec,
@@ -559,25 +725,6 @@ pub fn solve_with_catching(
     cfg: &SolverConfig,
     catching: Catching,
 ) -> ModeResult {
-    if !cfg.include_wild {
-        return ModeResult { plans: solve(gd, spec, owned, cfg), fallback_used: false };
-    }
-    match catching {
-        Catching::Allowed => ModeResult {
-            plans: filter_trivial_wild(solve(gd, spec, owned, cfg)),
-            fallback_used: false,
-        },
-        Catching::BreedingOnly => {
-            let owned_cfg = SolverConfig { include_wild: false, ..cfg.clone() };
-            let owned_plans = solve(gd, spec, owned, &owned_cfg);
-            if !owned_plans.is_empty() {
-                ModeResult { plans: owned_plans, fallback_used: false }
-            } else {
-                ModeResult {
-                    plans: filter_trivial_wild(solve(gd, spec, owned, cfg)),
-                    fallback_used: true,
-                }
-            }
-        }
-    }
+    let (refs, fallback_used, pins_satisfied) = solve_modes(gd, spec, owned, cfg, catching);
+    ModeResult { plans: plans_of(gd, &refs, cfg.cake), fallback_used, pins_satisfied }
 }

@@ -125,7 +125,7 @@ fn run(args: &[String]) -> Result<(), String> {
         cake
     );
 
-    let ModeResult { plans, fallback_used } = solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
+    let ModeResult { plans, fallback_used, .. } = solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
     if plans.is_empty() {
         println!("No breeding path found.");
         return Ok(());

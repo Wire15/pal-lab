@@ -118,6 +118,10 @@ export interface SolveRequest {
   iv_model?: IvModel;
   /** Breeding-farm setup multipliers. Absent => neutral vanilla setup. */
   setup?: BreedingSetup;
+  /** Owned instance ids (same serde shape as `OwnedPal.instance_id`, a 16-byte
+   * array) that MUST appear as leaves in every returned plan tree. Absent/empty
+   * => no pin constraint. */
+  pinned_parents?: Guid[];
 }
 
 /** IV floor thresholds for `SolveRequest.ivs`. Each is a 0-100 minimum; `0`
@@ -286,6 +290,34 @@ export interface BreedingPlan {
 export interface SolveResponse {
   plans: BreedingPlan[];
   fallback_used: boolean;
+  /** Whether the `pinned_parents` constraint was satisfiable. `false` (with
+   * empty `plans`) only when pinning eliminated an otherwise-valid result;
+   * `true` when there are no pins or a pinned plan survived. Serde-defaults to
+   * `true` for responses predating the field. */
+  pins_satisfied?: boolean;
+}
+
+/** One request in a `solve_queue` batch — a `SolveRequest` solved in order,
+ * with earlier items' bred output seeding later items' owned pool. */
+export type QueueItem = SolveRequest;
+
+/** One solved item in a `QueueResponse`. `target_species` echoes the request's
+ * target id; `plans`/`fallback_used`/`pins_satisfied` mirror `SolveResponse`. */
+export interface QueueItemResult {
+  target_species: string;
+  plans: BreedingPlan[];
+  fallback_used: boolean;
+  pins_satisfied: boolean;
+}
+
+/** Response from the `solve_queue` command: one entry per solved item (in
+ * order; truncated at the first failure when `stop_on_failure`) plus the summed
+ * best-plan effort. `combined_effort_secs` is an ESTIMATE — reused bred pals
+ * cost nothing the second time, and queue effort numbers are planning
+ * approximations, never an exact schedule. */
+export interface QueueResponse {
+  items: QueueItemResult[];
+  combined_effort_secs: number;
 }
 
 // --- Pal-dex (mirrors app/src-tauri/src/paldex.rs) ---

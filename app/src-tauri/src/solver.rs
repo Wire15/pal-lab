@@ -10,10 +10,12 @@ use std::collections::HashMap;
 use std::path::Path;
 
 use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
+use pal_data::types::Guid;
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve_with_catching, BreedingPlan, BreedingSetup, CakeKind,
-    Catching, IvModel, ModeResult, SolverConfig, TargetPal, TargetSpec,
+    resolve_passive, resolve_species, solve_queue as engine_solve_queue, solve_with_catching,
+    BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel, ModeResult, QueueItem, SolverConfig,
+    TargetPal, TargetSpec,
 };
 use serde::{Deserialize, Serialize};
 
@@ -49,6 +51,11 @@ pub struct SolveRequest {
     /// world egg-hatch hours). Absent => neutral vanilla setup.
     #[serde(default)]
     pub setup: Option<BreedingSetup>,
+    /// Owned instance ids (same serde shape as `OwnedPal.instance_id`, a
+    /// 16-byte array) that MUST appear as leaves in every returned plan tree.
+    /// Absent/empty => no pin constraint. See `TargetSpec::pinned_parents`.
+    #[serde(default)]
+    pub pinned_parents: Vec<Guid>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -69,6 +76,10 @@ pub struct IvThresholds {
 pub struct SolveResponse {
     pub plans: Vec<BreedingPlan>,
     pub fallback_used: bool,
+    /// Whether the `pinned_parents` constraint was satisfiable. `false` (with
+    /// empty `plans`) only when pinning eliminated an otherwise-valid result;
+    /// `true` when there are no pins or a pinned plan survived.
+    pub pins_satisfied: bool,
 }
 
 /// An `{id, name}` pair (internal id + English display name) for autocomplete.
@@ -78,13 +89,12 @@ pub struct NamedEntry {
     pub name: String,
 }
 
-/// The command body, factored out so tests can drive it synchronously.
-fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
-    if save_dir.trim().is_empty() {
-        return Err("No save folder selected.".into());
-    }
-    let gd = GameData::get();
-
+/// Resolve a [`SolveRequest`] into the solver's `(spec, cfg, catching)` triple,
+/// shared by [`solve`] and [`solve_queue`].
+fn build_request(
+    gd: &GameData,
+    req: &SolveRequest,
+) -> Result<(TargetSpec, SolverConfig, Catching), String> {
     let target_species = resolve_species(gd, &req.target_species)
         .ok_or_else(|| format!("unknown pal: {}", req.target_species))?;
     let required_passives = req
@@ -121,13 +131,24 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
         spec.iv_attack = ivs.attack;
         spec.iv_defense = ivs.defense;
     }
+    spec.pinned_parents = req.pinned_parents.clone();
+    Ok((spec, cfg, req.catching))
+}
+
+/// The command body, factored out so tests can drive it synchronously.
+fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
+    if save_dir.trim().is_empty() {
+        return Err("No save folder selected.".into());
+    }
+    let gd = GameData::get();
+    let (spec, cfg, catching) = build_request(gd, &req)?;
 
     let save =
         pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
 
-    let ModeResult { plans, fallback_used } =
-        solve_with_catching(gd, &spec, &save.pals, &cfg, req.catching);
-    Ok(SolveResponse { plans, fallback_used })
+    let ModeResult { plans, fallback_used, pins_satisfied } =
+        solve_with_catching(gd, &spec, &save.pals, &cfg, catching);
+    Ok(SolveResponse { plans, fallback_used, pins_satisfied })
 }
 
 /// Solve for breeding plans toward `spec.target_species` with the required
@@ -135,6 +156,80 @@ fn run(save_dir: &str, req: SolveRequest) -> Result<SolveResponse, String> {
 #[tauri::command]
 pub async fn solve(save_dir: String, spec: SolveRequest) -> Result<SolveResponse, String> {
     tauri::async_runtime::spawn_blocking(move || run(&save_dir, spec))
+        .await
+        .map_err(|e| format!("solver task panicked: {e}"))?
+}
+
+/// One resolved queue item in a [`QueueResponse`]. `target_species` echoes the
+/// request's target id.
+#[derive(Debug, Clone, Serialize)]
+pub struct QueueItemResponse {
+    pub target_species: String,
+    pub plans: Vec<BreedingPlan>,
+    pub fallback_used: bool,
+    pub pins_satisfied: bool,
+}
+
+/// Response for the [`solve_queue`] command: one entry per solved item (in
+/// order; truncated at the first failure when `stop_on_failure`) plus the
+/// summed best-plan effort. `combined_effort_secs` is an estimate — reused bred
+/// pals cost nothing the second time (see `pal_solver::solver::queue`).
+#[derive(Debug, Clone, Serialize)]
+pub struct QueueResponse {
+    pub items: Vec<QueueItemResponse>,
+    pub combined_effort_secs: f64,
+}
+
+/// Body of [`solve_queue`], factored out for synchronous tests.
+fn run_queue(
+    save_dir: &str,
+    requests: Vec<SolveRequest>,
+    stop_on_failure: bool,
+) -> Result<QueueResponse, String> {
+    if save_dir.trim().is_empty() {
+        return Err("No save folder selected.".into());
+    }
+    let gd = GameData::get();
+
+    // Resolve every request up front (echoing target ids for the response) so a
+    // bad request fails the whole queue before any solving.
+    let target_ids: Vec<String> = requests.iter().map(|r| r.target_species.clone()).collect();
+    let items: Vec<QueueItem> = requests
+        .iter()
+        .map(|req| {
+            let (spec, cfg, catching) = build_request(gd, req)?;
+            Ok(QueueItem { spec, cfg, catching })
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+
+    let save =
+        pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
+
+    let result = engine_solve_queue(gd, &save.pals, &items, stop_on_failure);
+    let items = result
+        .items
+        .into_iter()
+        .zip(target_ids)
+        .map(|(item, target_species)| QueueItemResponse {
+            target_species,
+            plans: item.plans,
+            fallback_used: item.fallback_used,
+            pins_satisfied: item.pins_satisfied,
+        })
+        .collect();
+    Ok(QueueResponse { items, combined_effort_secs: result.combined_effort_secs })
+}
+
+/// Solve a queue of targets sequentially, seeding each item's owned pool with
+/// the previous items' bred output (see `pal_solver::solver::queue`). CPU-bound,
+/// so it runs on the blocking pool.
+#[tauri::command]
+pub async fn solve_queue(
+    save_dir: String,
+    items: Vec<SolveRequest>,
+    stop_on_failure: bool,
+) -> Result<QueueResponse, String> {
+    tauri::async_runtime::spawn_blocking(move || run_queue(&save_dir, items, stop_on_failure))
         .await
         .map_err(|e| format!("solver task panicked: {e}"))?
 }
@@ -308,6 +403,7 @@ mod tests {
             cake: None,
             iv_model: None,
             setup: None,
+            pinned_parents: vec![],
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -345,6 +441,7 @@ mod tests {
             cake: None,
             iv_model: None,
             setup: None,
+            pinned_parents: vec![],
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -379,6 +476,7 @@ mod tests {
                 extra_egg_chance: 0.0,
                 egg_hatch_hours: 24.0,
             }),
+            pinned_parents: vec![],
         };
         let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
         assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
@@ -406,6 +504,41 @@ mod tests {
         // A save dir with no WorldOption.sav => null (never an error).
         let none = get_world_options(testdata_dir()).expect("missing file is not an error");
         assert!(none.egg_hatch_hours.is_none());
+    }
+
+    /// The queue command echoes each target id, reports `pins_satisfied`, and
+    /// sums each item's best-plan effort into `combined_effort_secs`.
+    #[test]
+    fn queue_command_solves_and_sums() {
+        let dir = testdata_dir();
+        if !std::path::Path::new(&dir).is_dir() {
+            eprintln!("queue_command_solves_and_sums: testdata absent, skipping");
+            return;
+        }
+        let mk = |species: &str| SolveRequest {
+            target_species: species.into(),
+            required_passives: vec!["Runner".into()],
+            max_steps: Some(5),
+            include_wild: None,
+            max_irrelevant: None,
+            catching: Catching::default(),
+            ivs: None,
+            cake: None,
+            iv_model: None,
+            setup: None,
+            pinned_parents: vec![],
+        };
+        let resp = run_queue(&dir, vec![mk("Anubis"), mk("Anubis")], false)
+            .expect("queue solve should succeed");
+        assert_eq!(resp.items.len(), 2, "both items returned");
+        assert_eq!(resp.items[0].target_species, "Anubis");
+        assert!(resp.items.iter().all(|i| i.pins_satisfied), "no pins -> all satisfied");
+        let expected: f64 =
+            resp.items.iter().map(|i| i.plans.first().map_or(0.0, |p| p.total_time_secs)).sum();
+        assert!(
+            (resp.combined_effort_secs - expected).abs() < 1e-6,
+            "combined must sum each item's best-plan effort"
+        );
     }
 
     /// `list_breeding_boosts` mirrors the pack and resolves display names:

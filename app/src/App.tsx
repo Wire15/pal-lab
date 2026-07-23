@@ -99,13 +99,30 @@ function FolderIcon() {
   );
 }
 
+/** Compact relative age for a recent-save row ("just now", "2h ago", "3d ago"). */
+function relativeTime(epoch: number): string {
+  if (!epoch) return "";
+  const s = Math.max(0, Math.floor((Date.now() - epoch) / 1000));
+  if (s < 45) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  const mo = Math.floor(d / 30);
+  if (mo < 12) return `${mo}mo ago`;
+  return `${Math.floor(mo / 12)}y ago`;
+}
+
 /**
  * Startup / switch-save dialog. Prefilled from the last-used folder, loads the
  * save through the shared app state (which caches it), and closes once the save
  * lands. "Skip for now" dismisses it — the app is fully usable without a save.
  */
 function SaveModal({ onClose }: { onClose: () => void }) {
-  const { lastSaveDir, loadSave, saveLoading, saveError } = useAppState();
+  const { lastSaveDir, loadSave, saveLoading, saveError, recentSaves } =
+    useAppState();
   const [path, setPath] = useState(lastSaveDir);
 
   useEffect(() => {
@@ -151,6 +168,46 @@ function SaveModal({ onClose }: { onClose: () => void }) {
             Load your Palworld save
           </h2>
         </div>
+
+        {recentSaves.length > 0 && (
+          <div className="border-b border-line px-5 py-4">
+            <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+              Recent saves
+            </div>
+            <ul className="flex flex-col gap-1.5">
+              {recentSaves.map((r) => (
+                <li key={r.dir}>
+                  <button
+                    onClick={() => loadSave(r.dir)}
+                    disabled={saveLoading}
+                    className="group flex w-full flex-col gap-0.5 rounded-md border border-line bg-raised/50 px-3 py-2 text-left transition-colors hover:border-amber/40 hover:bg-hover disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="truncate text-[13px] font-medium text-ink group-hover:text-ink">
+                        {r.worldName}
+                      </span>
+                      <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                        {relativeTime(r.lastLoaded)}
+                      </span>
+                    </div>
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                      <span className="text-ink-dim">{r.players}</span>{" "}
+                      {r.players === 1 ? "player" : "players"}
+                      <span className="mx-1 text-line">&middot;</span>
+                      <span className="text-amber">{r.pals}</span> pals
+                    </div>
+                    <div
+                      className="truncate font-mono text-[10px] text-ink-faint/80"
+                      title={r.dir}
+                    >
+                      {r.dir}
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="px-5 py-4">
           <label className="flex flex-col gap-1.5">
@@ -212,7 +269,7 @@ function SaveModal({ onClose }: { onClose: () => void }) {
 }
 
 function Shell() {
-  const { view, setView, saveSummary } = useAppState();
+  const { view, setView, saveSummary, toast } = useAppState();
   const [modalOpen, setModalOpen] = useState(() => saveSummary === null);
 
   // Close the startup modal automatically once a save has loaded.
@@ -330,6 +387,16 @@ function Shell() {
         {view === "paldex" && <Paldex />}
       </main>
       {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-md border border-amber/40 bg-raised px-3.5 py-2 text-[12px] font-medium text-ink"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-amber" />
+          {toast.text}
+        </div>
+      )}
     </div>
   );
 }

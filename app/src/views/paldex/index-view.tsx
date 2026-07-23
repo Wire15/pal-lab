@@ -5,6 +5,14 @@ import { PalHoverCard } from "../../components/pal-hover-card";
 import { CardWorkBadges } from "../../components/work-suit";
 import { ElementBadges, ElementIcon } from "../../components/element";
 import { DexTabs, type DexTab } from "../../components/dex-tabs";
+import {
+  DexFilterButton,
+  EMPTY_DEX_FILTERS,
+  dexFilterCount,
+  matchesDexFilters,
+  type DexFilterState,
+  type PassiveOption,
+} from "./dex-filters";
 
 type SortKey = "paldex" | "name" | "rank";
 type SortDir = "asc" | "desc";
@@ -47,6 +55,7 @@ export default function PaldexIndex({
   const [ownedOnly, setOwnedOnly] = useState(false);
   const [hideVariants, setHideVariants] = useState(false);
   const [elements, setElements] = useState<Set<string>>(() => new Set());
+  const [filters, setFilters] = useState<DexFilterState>(EMPTY_DEX_FILTERS);
 
   function toggleElement(kind: string) {
     setElements((prev) => {
@@ -71,12 +80,34 @@ export default function PaldexIndex({
     [roster],
   );
 
+  // Filter options for the guaranteed-passive picker: every guaranteed passive
+  // present across the dataset (unique by name), strongest rank first.
+  const passiveOptions = useMemo<PassiveOption[]>(() => {
+    const seen = new Map<string, PassiveOption>();
+    for (const s of species)
+      for (const p of s.guaranteed_passives)
+        if (!seen.has(p.name)) seen.set(p.name, { id: p.id, name: p.name, rank: p.rank });
+    return [...seen.values()].sort((a, b) => b.rank - a.rank || a.name.localeCompare(b.name));
+  }, [species]);
+
+  const deepCount = dexFilterCount(filters);
+  const anyOtherFilter = deepCount > 0 || elements.size > 0 || hideVariants;
+  const anyFilterActive = anyOtherFilter || ownedOnly;
+
+  function clearAllFilters() {
+    setElements(new Set());
+    setOwnedOnly(false);
+    setHideVariants(false);
+    setFilters(EMPTY_DEX_FILTERS);
+  }
+
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = species.filter((s) => {
       if (hideVariants && s.is_variant) return false;
       if (ownedOnly && !(roster?.[s.id] && roster[s.id].male + roster[s.id].female > 0)) return false;
       if (elements.size > 0 && !s.elements.some((e) => elements.has(e))) return false;
+      if (deepCount > 0 && !matchesDexFilters(s, filters)) return false;
       if (!q) return true;
       return (
         s.name.toLowerCase().includes(q) ||
@@ -94,7 +125,7 @@ export default function PaldexIndex({
     });
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [species, roster, query, sortKey, sortDir, ownedOnly, hideVariants, elements]);
+  }, [species, roster, query, sortKey, sortDir, ownedOnly, hideVariants, elements, filters, deepCount]);
 
   return (
     <div className="flex h-full flex-col">
@@ -175,6 +206,19 @@ export default function PaldexIndex({
             />
             Hide variants
           </label>
+          <DexFilterButton
+            filters={filters}
+            onChange={setFilters}
+            passiveOptions={passiveOptions}
+          />
+          {anyFilterActive && (
+            <button
+              onClick={clearAllFilters}
+              className="select-none rounded-md border border-line-soft bg-panel px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-faint transition-colors hover:bg-hover hover:text-ink-dim"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
 
         {/* Element filter — multi-select, OR semantics, ANDed with the rest */}
@@ -225,13 +269,23 @@ export default function PaldexIndex({
       {rows.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
           <div className="font-display text-lg text-ink-dim">
-            {ownedOnly && !query ? "No owned pals" : "No pals match"}
+            {ownedOnly && !query && !anyOtherFilter ? "No owned pals" : "No pals match"}
           </div>
           <p className="max-w-xs text-sm text-ink-faint">
-            {ownedOnly && !query
+            {ownedOnly && !query && !anyOtherFilter
               ? "Load a save with owned pals, or turn off the owned-only filter."
-              : `Nothing matches \u201c${query}\u201d. Try a different name or dex number.`}
+              : query
+                ? `Nothing matches \u201c${query}\u201d. Try a different name or dex number.`
+                : "No pals match the active filters. Loosen a level, tier, or passive."}
           </p>
+          {anyFilterActive && (
+            <button
+              onClick={clearAllFilters}
+              className="mt-1 rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="flex-1 overflow-auto px-6 py-5">

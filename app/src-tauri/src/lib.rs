@@ -7,9 +7,13 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
+        .manage(save::WatcherState::default())
         .invoke_handler(tauri::generate_handler![
             save::load_save,
+            save::watch_save,
+            save::unwatch_save,
             solver::solve,
+            solver::solve_queue,
             solver::list_species,
             solver::list_passives,
             solver::list_active_skills,
