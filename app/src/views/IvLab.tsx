@@ -179,7 +179,7 @@ function DonorRow({
 }
 
 export default function IvLab() {
-  const { saveDir, saveSummary, requestDex } = useAppState();
+  const { saveDir, saveSummary, requestDex, playerScope } = useAppState();
   const { setup, cake, setCake } = useBreedingSetup();
 
   const [species, setSpecies] = useState("");
@@ -242,11 +242,16 @@ export default function IvLab() {
       })(plan.root);
     }
     const pool = saveSummary.pals.filter(
-      (p) => !p.is_human && kin.has(p.character_id),
+      (p) =>
+        !p.is_human &&
+        kin.has(p.character_id) &&
+        (playerScope === "all" ||
+          (p.owner_player_uid != null &&
+            hexGuid(p.owner_player_uid) === playerScope)),
     );
     if (pool.length === 0) return [];
     return rankDonors(pool);
-  }, [saveSummary, targetId, plans, nameToId]);
+  }, [saveSummary, targetId, plans, nameToId, playerScope]);
 
   const showDonors = donorGroups !== null;
 

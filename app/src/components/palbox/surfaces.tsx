@@ -194,6 +194,7 @@ export function BoxGrid({
   selectedKey,
   onSelect,
   emptyHint,
+  onClear,
   size,
 }: {
   pages: GridCell[][];
@@ -204,12 +205,22 @@ export function BoxGrid({
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
   emptyHint: string;
+  /** When set, the empty state offers a one-click filter reset. */
+  onClear?: () => void;
   size: number;
 }) {
   if (pages.length === 0) {
     return (
-      <div className="flex min-h-[20rem] items-center justify-center rounded-lg border border-line-soft bg-panel/40 text-sm text-ink-faint">
-        {emptyHint}
+      <div className="flex min-h-[20rem] flex-col items-center justify-center gap-3 rounded-lg border border-line-soft bg-panel/40 text-sm text-ink-faint">
+        <span>{emptyHint}</span>
+        {onClear && (
+          <button
+            onClick={onClear}
+            className="rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
     );
   }

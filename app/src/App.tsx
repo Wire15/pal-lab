@@ -5,6 +5,7 @@ import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
 import IvLab from "./views/IvLab";
 import { AppStateProvider, useAppState } from "./state";
+import { hexGuid } from "./components/palbox/selectors";
 import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
@@ -268,9 +269,136 @@ function SaveModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+/**
+ * Player-scope dialog. Asks "who plays this world?" — one row per player (name,
+ * short uid hex, owned-pal count) plus an "All players" option. Picking sets the
+ * scope (persisted per save dir) and closes. Auto-opened once for a fresh
+ * multi-player world; also reachable from the sidebar scope pill.
+ */
+function ScopeModal({ onClose }: { onClose: () => void }) {
+  const { saveSummary, playerScope, setPlayerScope } = useAppState();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  // Owned-pal count per player uid (null-owner / guild-stock pals excluded, as
+  // the scope filter itself excludes them).
+  const ownedByUid = new Map<string, number>();
+  for (const pal of saveSummary?.pals ?? []) {
+    if (!pal.owner_player_uid) continue;
+    const hex = hexGuid(pal.owner_player_uid);
+    ownedByUid.set(hex, (ownedByUid.get(hex) ?? 0) + 1);
+  }
+
+  function pick(scope: string) {
+    setPlayerScope(scope);
+    onClose();
+  }
+
+  const players = saveSummary?.players ?? [];
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
+      onMouseDown={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="scope-modal-title"
+        className="w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="border-b border-line px-5 py-4">
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+            Player scope
+          </div>
+          <h2
+            id="scope-modal-title"
+            className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
+          >
+            Who plays this world?
+          </h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
+            Scopes the solver, donors and Pal-dex counts to one player's pals.
+            Change it any time from the scope pill.
+          </p>
+        </div>
+
+        <ul className="flex flex-col gap-1.5 px-5 py-4">
+          {players.map((p) => {
+            const active = playerScope === p.uid;
+            return (
+              <li key={p.uid}>
+                <button
+                  onClick={() => pick(p.uid)}
+                  className={`group flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
+                    active
+                      ? "border-amber/50 bg-amber/10"
+                      : "border-line bg-raised/50 hover:border-amber/40 hover:bg-hover"
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <div className="truncate text-[13px] font-medium text-ink">
+                      {p.name || "Unnamed player"}
+                    </div>
+                    <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                      {p.uid.slice(0, 8)}
+                    </div>
+                  </div>
+                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-ink-faint">
+                    <span className="text-amber">{ownedByUid.get(p.uid) ?? 0}</span>{" "}
+                    pals
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+          <li>
+            <button
+              onClick={() => pick("all")}
+              className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
+                playerScope === "all"
+                  ? "border-amber/50 bg-amber/10"
+                  : "border-line bg-raised/50 hover:border-amber/40 hover:bg-hover"
+              }`}
+            >
+              <span className="text-[13px] font-medium text-ink">All players</span>
+              <span className="shrink-0 font-mono text-[11px] tabular-nums text-ink-faint">
+                <span className="text-amber">{saveSummary?.pals.length ?? 0}</span>{" "}
+                pals
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function Shell() {
-  const { view, setView, saveSummary, toast } = useAppState();
+  const {
+    view,
+    setView,
+    saveSummary,
+    toast,
+    playerScope,
+    scopePromptOpen,
+    setScopePromptOpen,
+  } = useAppState();
   const [modalOpen, setModalOpen] = useState(() => saveSummary === null);
+  // Human-readable label for the active scope pill: the player's name, or "All".
+  const scopeLabel =
+    playerScope === "all"
+      ? "All"
+      : saveSummary?.players.find((p) => p.uid === playerScope)?.name ||
+        playerScope.slice(0, 8);
 
   // Close the startup modal automatically once a save has loaded.
   useEffect(() => {
@@ -363,6 +491,16 @@ function Shell() {
                   <SwapIcon />
                 </button>
               </div>
+              {saveSummary.players.length > 1 && (
+                <button
+                  onClick={() => setScopePromptOpen(true)}
+                  title="Change player scope"
+                  className="mt-2 flex w-full items-center gap-1.5 rounded-md border border-line bg-abyss/60 px-2.5 py-1.5 font-mono text-[10px] tracking-wider text-ink-faint transition-colors hover:border-amber/40 hover:text-ink"
+                >
+                  <span className="uppercase text-ink-faint">Scope:</span>
+                  <span className="truncate text-amber">{scopeLabel}</span>
+                </button>
+              )}
             </div>
           ) : (
             <button
@@ -387,6 +525,9 @@ function Shell() {
         {view === "paldex" && <Paldex />}
       </main>
       {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
+      {scopePromptOpen && (
+        <ScopeModal onClose={() => setScopePromptOpen(false)} />
+      )}
       {toast && (
         <div
           role="status"

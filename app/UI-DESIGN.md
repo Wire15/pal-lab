@@ -1375,3 +1375,219 @@ Each **BEST DONORS** row is wrapped in the owned-instance `PalHoverCard`
 parent surfaces its full per-instance card — level, gender, alpha, quality-colored
 **IV bars**, and passive strips — above the species sections. Donors already hold
 the `OwnedPal`, so the object is passed directly; no instance lookup is needed.
+
+## Palbox polish round (`views/SaveInspector.tsx`, `components/palbox/*`)
+
+A review-driven polish pass over the Palbox surface (dev fixture mode, screenshot
+loop at 1280 and 1600). Every change is visual/interaction-level — no data-flow,
+selector, or payload edits.
+
+### Audit findings
+
+| # | Issue | Severity | Disposition |
+|---|-------|----------|-------------|
+| 1 | Slots carried `outline-none`, which overrode the global `:focus-visible` amber ring — Tab-focusing a box/party/base slot showed **no** focus indicator (keyboard focus invisible). | High (a11y) | **Fixed** |
+| 2 | Physical palbox always opened on **Box 1**; when a player's pals sit only in later boxes (sparse `slot_index`), the view loaded onto a field of empty dashed slots and looked broken. | Medium | **Fixed** |
+| 3 | No-match empty states (grid + list) were dead-ends — bare "No pals match your filters." with no one-click escape, unlike the Pal-dex which offers **Clear filters**. | Medium | **Fixed** |
+| 4 | Slot `PalHoverCard` never passes the optional `location` line, so the card doesn't label a slot as Party/Palbox/Base. | Low | **Left** — additive nice-to-have; `pal-hover-card.tsx` is owned by the hover-unification work, out of this slice's file scope. |
+| 5 | Fluid slots balloon to the 160px clamp on wide screens (1600), so a lightly-filled box reads as a large sparse field. | Low (taste) | **Left** — the fluid "fill the viewport / grow on wider screens" sizing is a deliberate prior decision; reducing the clamp contradicts documented intent. |
+| 6 | Players with no party show five large empty dashed circles in the party rail. | Low | **Left** — the rail intentionally always renders `PARTY_SIZE` fixed slots (mirrors the in-game screen); a conditional hint would break that 1:1 mapping. |
+| 7 | Header mode toggle "Palbox / List" and the surface toggle "Palbox / Dimensional" both say "Palbox". | Low (copy) | **Left** — "Palbox" is the established name for the grid view; renaming risks churn against the PALBOX-PLAN vocabulary. |
+| 8 | Wheel over the grid should not scroll the page. | — | **Not an issue** — the document is non-scrollable (`h-full` shell); only the inner `overflow-auto` scrolls, so there is nothing to leak into. |
+| 9 | Hover card near the right viewport edge. | — | **Not an issue** — `PalHoverCard` already portals to `<body>`, measures, and flips left; verified on a right-edge boxed slot. |
+
+### What was fixed
+
+1. **Focus-visible on slots** (`components/palbox/slot.tsx`). Dropped `outline-none`
+   from the slot `<button>` so the app-wide `:focus-visible` rule (2px amber
+   outline, 2px offset, follows the circular `rounded-full`) applies. Keyboard Tab
+   now paints a circular amber ring; mouse focus stays ring-free via the base
+   `:focus:not(:focus-visible)` rule. The inset amber **selection** ring
+   (`ring-2 ring-amber`, driven by the arrow-key cursor) and the outset amber
+   **focus** outline are visually distinct and coexist.
+2. **Land on the first populated box** (`views/SaveInspector.tsx`). The paging
+   reset now seeks the first box that actually holds a pal
+   (`pages.findIndex(pg => pg.some(c => c.pal))`) instead of hard-resetting to 0.
+   Compact/dimensional pages are gap-free so this is box 0 there; physical layout
+   skips leading empty boxes (e.g. opens on "Box 13 / 20" for a player whose pals
+   live in later boxes). No-op when box 1 is already populated.
+3. **Clear-filters escape** (`components/palbox/surfaces.tsx` `BoxGrid`,
+   `views/SaveInspector.tsx` list branch). Both no-match empty states now render a
+   **Clear filters** button (same styling as the Pal-dex empty state) when a query
+   is active; it resets search + element/gender/alpha/passive filters via
+   `patchQuery` while keeping the sort. `BoxGrid` gained an optional `onClear` prop
+   (undefined ⇒ button hidden, e.g. the genuinely-empty "no boxed pals" case).
+
+## Wave — Pal-dex MOVES reference (`views/paldex/moves-view.tsx`, `lib/learnset-index.ts`)
+
+A third Pal-dex browser beside the species grid and passive grid: the paldb-style
+**active-skills reference**, cross-linked both ways with the dex. Composes
+existing primitives end to end — the `ActiveSkillRow` strip (§13), the element
+filter (§9 index), the sort control (§6) — and adds one small reverse-index
+helper. No new Rust: everything reads commands the dex already serves.
+
+### Section switcher (extends §12 `components/dex-tabs.tsx`)
+
+`DexTabs` grows a third tab so the control reads `[Pals | Passives | Moves]`,
+same segmented treatment (active = amber on `raised`). `views/Paldex.tsx` routes
+`tab === "moves"` to `MovesIndex`; PALS stays the default and is untouched. The
+existing one-shot `dexTarget` consume still snaps back to PALS (a species target
+is never a move), so the MOVES tab is only ever reached by the switcher or a
+detail cross-link (below).
+
+### Moves index
+
+- **Data source:** `list_active_skills` (the same `id → {name, element, power,
+  cool_time, description}` map the detail view resolves equipped/learnable skills
+  against, loaded once via the module-cached `loadActiveSkills`). All 332 skills
+  list; each row is an `ActiveSkillRow` **verbatim** (§13), so the element-tinted
+  left rail, right-pinned element/power segment, `CT Ns` chip, and collapsible
+  description read identically to the detail's ACTIVE SKILLS rows. Rows stack
+  single-column in a `max-w-3xl` centered column (expansion makes a multi-column
+  grid awkward).
+- **Filters:** the §9 element chip row (9 canonical types, `ElementIcon`,
+  grayscale→color on select, OR semantics) + a name/effect text search (matches
+  name, id, or description) + a `Power | Cooldown | Name` sort control (§6). Power
+  defaults strongest-first, name/cooldown ascending; re-click toggles direction.
+  Nullable stats (non-damage / no-cooldown skills) always sort **last** regardless
+  of direction, so meaningful values lead. Count reads `N moves` or `N of 332`
+  when filtered; both no-match and no-data empty states offer a **Clear filters**
+  escape (matching the dex index).
+
+### Learned-by list + reverse index (`lib/learnset-index.ts`)
+
+Learnsets live **only** in the per-species detail payload
+(`paldex_species_detail → SpeciesDetail.learnset: {id, level}[]`), never in the
+lightweight grid rows, and there is no bulk command (Rust out of scope). So
+`loadLearnerIndex(species)` fans the detail fetch across every species **once**,
+concurrently, and caches the built `Map<wazaId, {species, level}[]>` module-wide:
+the MOVES tab pays a single up-front cost the first time it opens (instant in
+fixture mode — every detail is bundled), then every row reads the map for free.
+One learner per species per move at its **lowest** level; each move's learners
+sort by level then name.
+
+Per move (when it has learners) an expandable **`LEARNED BY N`** disclosure (mono
+microcap toggle with the §13 caret) reveals an `auto-fill minmax(158px)` grid of
+learner chips — `PalIcon` + truncated name + a mono **`Lv N`** chip (the §13 chip
+treatment). Clicking a chip navigates to that species' dex detail (the same
+in-dex `navigate` the parent/child cells use; back returns to MOVES).
+
+### Cross-link back (extends §13 `ActiveSkillRow`)
+
+`ActiveSkillRow` gains one **optional, backward-compatible** prop `onOpenMove`;
+the detail's LEARNABLE MOVES rows pass it so each move **name becomes a link**
+(hover amber + underline) that jumps to the MOVES tab focused on that skill. In
+that mode the row is a plain div and the description caret is its own sibling
+button (never nested); every existing call site omits the prop and renders
+exactly as before. On arrival `MovesIndex` clears filters so the target is
+guaranteed visible, auto-expands its learners, scrolls it to center, and flashes
+a brief **amber ring** (`ring-1 ring-amber`, ~2s). The scroll is deferred past
+layout (keyed on the async move-list load) so a link armed before the list
+resolves still lands.
+
+## Wave — App-wide player scoping (`state.tsx`, `App.tsx`, `lib/use-solve.ts`, `solver.rs`)
+
+A shared save can hold several players' pals (the real save: 1669 pals across 4
+players + 76 null-owner base/guild-stock pals). **Player scope** narrows the
+whole app to one player's pals so the solver, IV-Lab donors, and Pal-dex owned
+counts speak for a single person instead of the whole world.
+
+### State + persistence
+
+`AppState` gains `playerScope: string` — a lowercase 32-char player-uid hex, or
+`"all"`. It is persisted **per save dir** under the localStorage map
+`pal-calc.playerScope` (`canonDir -> scope`, the same canon as the recent-saves
+list), so each world remembers who you play it as. Default `"all"` — behavior
+identical to no scoping. Switching or clearing a save resets the live scope; a
+silent watcher reload keeps it.
+
+### The prompt (extends the §modal patterns)
+
+On the first load of a **multi-player** world with no persisted choice, a
+`ScopeModal` auto-opens: an amber **`PLAYER SCOPE`** eyebrow over **"Who plays
+this world?"**, then one row per player — name, short uid hex (`uid.slice(0,8)`,
+mono microcap), and that player's **owned-pal count** — plus an **All players**
+row carrying the full pal count. The active scope's row is amber-tinted
+(`border-amber/50 bg-amber/10`). Picking a row persists + closes. Single-player
+worlds (and any world with a stored scope) never prompt.
+
+### The scope pill (sidebar save chip)
+
+Under the save-name chip, a mono pill **`SCOPE: <name>`** / **`SCOPE: All`**
+(only shown when the world has >1 player) reopens the `ScopeModal` on click. The
+`SCOPE:` prefix is uppercased; the player name renders normal-case so
+`ThatOneChad` stays legible.
+
+### Filter semantics (frontend + backend agree)
+
+- **Backend** (`solver.rs`): `SolveRequest` gains `player_uid?: Guid`
+  (`#[serde(default)]`). `scope_owned(&save.pals, uid)` restricts the owned pool
+  to `owner_player_uid == Some(uid)` before solving (both `run` and the queue,
+  which scopes once for the whole run). **Null-owner pals are excluded under a
+  scope** — they are base-camp worker / guild-stock records that belong to no
+  individual player (the 76 Base-container pals in the real save). `None` uid =
+  every player (borrowed, zero-copy). The Solver pin-picker + queue seeding
+  inherit this automatically.
+- **Frontend**: `use-solve` injects `player_uid` (hex → 16-byte array via
+  `hexToGuid`) into every outgoing solve/queue request at the single assembly
+  point when scope ≠ `"all"`. The scoped `roster` memo (`state.tsx`) drops
+  non-matching + null-owner pals, shrinking every Pal-dex owned count. IV-Lab
+  donors filter the same way before `rankDonors`. Under `"all"` no `player_uid`
+  rides and nothing is filtered — byte-for-byte the pre-scope behavior.
+
+## Wave — Breed-step hover card (`components/breed-hover.tsx`, `components/plan-graph.tsx`)
+
+The plan-graph egg-junction chip (odds pill + step time between two parents and
+their bred child) gains a rich hover briefing — the "what does this one breed
+step actually take" card — via the new `BreedHoverCard`. It reuses
+`pal-hover-card`'s positioning machinery verbatim: a `position: fixed`, measured,
+viewport-edge-flipping card **portaled to `document.body`** so it escapes the
+plan-graph `translate+scale` containing block (a fixed element resolves against
+the nearest transformed ancestor, not the viewport — an inline card would offset
+by the canvas transform). 250 ms open delay, `pointer-events: none`, closes on
+scroll/resize, `z-index` 60.
+
+### The junction chip is now a trigger
+
+The chip becomes focusable (`role="button"`, `tabIndex=0`, a descriptive
+`aria-label`, `cursor-help`, amber `focus-visible:ring-2`). `BreedHoverCard`
+clones it and wires **both** hover (`onPointerEnter`/`Leave`) **and** keyboard
+(`onFocus`/`onBlur`) to the same delayed open/close, so tabbing to a step opens
+the card exactly like hovering it. The chip keeps its `onPointerDown`
+stop-propagation so a click never starts a background pan.
+
+### Anatomy (top → bottom)
+
+- **Header** — amber egg glyph + `BREED STEP` microcap, then
+  `parentA × parentB → child` (parents from the bred node's two `children`).
+- **Odds per egg** — the per-egg success split `passives N% · IVs M% · = Z%`
+  from `prob_passives` / `prob_ivs` / `probability` (`probability` is exactly
+  `prob_passives * prob_ivs`; the combined `= Z%` is `probBand`-tinted like the
+  chip). Legacy plans without the factors show only `= Z%`.
+- **Step** — `~N eggs · time/egg · total` where eggs = `expected_eggs` (the
+  engine's authoritative per-node breeding count, not `ceil(1/prob)`) and
+  time/egg = `est_time_secs / expected_eggs` (`est_time_secs` is this node's own
+  self-effort, not cumulative). When `expected_eggs` is absent, only the honest
+  `<total> total` step time is shown (no fabricated egg count).
+- **IV gate** — shown only when any `iv_targets` stat is nonzero: one row per
+  constrained stat `HP ≥ 40` with an `ivBand`-tinted `QUALITY_FILL` bar (the
+  instance-card IV-bar idiom). The "minimum IVs you must carry before continuing
+  the chain" ask.
+- **Passive pool** — the parents' combined, de-duped passive pool as
+  `PassiveStrip` rows. **Owned** parents resolve their *real* passives from the
+  live save via `usePalByInstance` (the `instance_id` now in the plan payload);
+  **bred** parents (and synthetic/legacy/unresolved ones) fall back to the
+  node's own passives. The child's must-inherit passives (its non-`(random)`
+  passives) get an amber ring, and — when `prob_passives` is present and at
+  least one is highlighted — an `these must all pass: N% per egg` line sits
+  under the pool.
+
+### Degradation matrix
+
+Every field beyond `probability`/`est_time_secs` is an optional StepData
+addition (`prob_passives`, `prob_ivs`, `expected_eggs`, `iv_targets`), absent on
+owned/wild nodes and on legacy `localStorage` plans. The card shows only what
+exists: a legacy-shaped plan degrades to header + `= Z%` + `<total> total` +
+pool (from node passives, highlights preserved), dropping the split, the egg
+breakdown, the IV gate, and the inheritance line. Queue synthetic seeds and the
+no-save case take the same node-passives fallback.

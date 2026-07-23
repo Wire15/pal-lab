@@ -516,9 +516,15 @@ fn ref_contains_all_pins(r: &PalRef, pins: &[Guid]) -> bool {
 }
 
 /// Map best-first references to serializable plans, tagged with `cake`.
+/// `iv_thresholds` are the cake-effective spec IV floors for bred `iv_targets`.
 #[inline]
-fn plans_of(gd: &GameData, refs: &[PalRef], cake: crate::solver::config::CakeKind) -> Vec<BreedingPlan> {
-    refs.iter().map(|r| BreedingPlan::from_ref(gd, r, cake)).collect()
+fn plans_of(
+    gd: &GameData,
+    refs: &[PalRef],
+    cake: crate::solver::config::CakeKind,
+    iv_thresholds: [u8; 3],
+) -> Vec<BreedingPlan> {
+    refs.iter().map(|r| BreedingPlan::from_ref(gd, r, cake, iv_thresholds)).collect()
 }
 
 /// Run the solver, returning up to `cfg.result_limit` breeding plans, best-first.
@@ -542,7 +548,7 @@ pub fn solve_reporting(
 ) -> (Vec<BreedingPlan>, bool) {
     let (refs, pins_satisfied) =
         solve_core(gd, spec, owned, cfg, SolveMonitor::noop()).expect("noop monitor never cancels");
-    (plans_of(gd, &refs, cfg.cake), pins_satisfied)
+    (plans_of(gd, &refs, cfg.cake, cfg.cake.effective_iv_thresholds(spec)), pins_satisfied)
 }
 
 /// Core search: pruned, pin-filtered best-first references plus a
@@ -841,5 +847,6 @@ pub fn solve_with_catching_monitored(
 ) -> Result<ModeResult, SolveCancelled> {
     let (refs, fallback_used, pins_satisfied) =
         solve_modes_monitored(gd, spec, owned, cfg, catching, monitor)?;
-    Ok(ModeResult { plans: plans_of(gd, &refs, cfg.cake), fallback_used, pins_satisfied })
+    let plans = plans_of(gd, &refs, cfg.cake, cfg.cake.effective_iv_thresholds(spec));
+    Ok(ModeResult { plans, fallback_used, pins_satisfied })
 }

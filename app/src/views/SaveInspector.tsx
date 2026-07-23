@@ -329,8 +329,14 @@ export default function SaveInspector() {
       .filter((b) => b.pals.length > 0);
   }, [scopedBases, active, query, namesById, species]);
 
-  // Reset paging when the player, surface, or query-activeness changes.
-  useEffect(() => setPage(0), [activeUid, surface, active, query.sortKey]);
+  // Reset paging when the underlying page set changes (player / surface / query).
+  // Land on the first box that actually holds a pal so a player whose pals sit
+  // in later physical boxes never opens onto a field of empty slots (compact and
+  // dimensional pages are gap-free, so this is box 0 there).
+  useEffect(() => {
+    const first = pages.findIndex((pg) => pg.some((c) => c.pal));
+    setPage(first < 0 ? 0 : first);
+  }, [pages]);
 
   // Clamp the page if the underlying page count shrank.
   const safePage = Math.min(page, Math.max(0, pages.length - 1));
@@ -340,6 +346,20 @@ export default function SaveInspector() {
   const openPal = useCallback(
     (pal: OwnedPal) => requestDex(pal.character_id, hexGuid(pal.instance_id)),
     [requestDex],
+  );
+
+  // Reset the search + structured filters (keeps the sort) — the one-click
+  // escape from an over-narrowed query, mirroring the Pal-dex empty state.
+  const clearFilters = useCallback(
+    () =>
+      patchQuery({
+        search: "",
+        elements: [],
+        gender: "any",
+        alphaOnly: false,
+        passive: "",
+      }),
+    [patchQuery],
   );
 
   // The flat, visual-order list arrow keys walk in grid mode: party, then the
@@ -542,6 +562,7 @@ export default function SaveInspector() {
                       selectedKey={selectedKey}
                       onSelect={openPal}
                       size={slotSize}
+                      onClear={active ? clearFilters : undefined}
                       emptyHint={
                         active
                           ? "No pals match your filters."
@@ -564,8 +585,16 @@ export default function SaveInspector() {
               </div>
             </div>
           ) : rows.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
-              No pals match your filters.
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 text-sm text-ink-faint">
+              <span>No pals match your filters.</span>
+              {active && (
+                <button
+                  onClick={clearFilters}
+                  className="rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex-1 overflow-auto">

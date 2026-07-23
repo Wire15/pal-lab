@@ -7,6 +7,7 @@ import type { DexTab } from "../components/dex-tabs";
 import PaldexIndex from "./paldex/index-view";
 import PaldexDetail from "./paldex/detail-view";
 import PassivesIndex from "./paldex/passives-view";
+import MovesIndex from "./paldex/moves-view";
 
 /**
  * Pal-dex reference layer. Owns the full species list and which species detail
@@ -26,6 +27,9 @@ export default function Paldex() {
   const [instanceHex, setInstanceHex] = useState<string | null>(null);
   const [fromSave, setFromSave] = useState(false);
   const [tab, setTab] = useState<DexTab>("pals");
+  // A move id to reveal + highlight when the MOVES tab opens, set by a detail's
+  // LEARNABLE MOVES cross-link; MovesIndex clears it once consumed.
+  const [focusMoveId, setFocusMoveId] = useState<string | null>(null);
 
   useEffect(() => {
     invoke<SpeciesEntry[]>("paldex_species").then(setSpecies).catch(() => {});
@@ -71,6 +75,16 @@ export default function Paldex() {
     setInstanceHex(null);
   }
 
+  // Detail's LEARNABLE MOVES cross-link: leave the detail, switch to the MOVES
+  // tab, and hand it the move to focus.
+  function openMove(wazaId: string) {
+    setSelectedId(null);
+    setInstanceHex(null);
+    setFromSave(false);
+    setTab("moves");
+    setFocusMoveId(wazaId);
+  }
+
   if (selectedId) {
     return (
       <PaldexDetail
@@ -80,12 +94,26 @@ export default function Paldex() {
         players={saveSummary?.players ?? []}
         onBack={back}
         onNavigate={navigate}
+        onOpenMove={openMove}
       />
     );
   }
 
   if (tab === "passives") {
     return <PassivesIndex tab={tab} onTab={setTab} />;
+  }
+
+  if (tab === "moves") {
+    return (
+      <MovesIndex
+        species={species}
+        tab={tab}
+        onTab={setTab}
+        onSelectPal={navigate}
+        focusMoveId={focusMoveId}
+        onFocusConsumed={() => setFocusMoveId(null)}
+      />
+    );
   }
 
   return (

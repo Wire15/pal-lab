@@ -127,6 +127,10 @@ export interface SolveRequest {
    * cancellable. For `solve_queue`, the first item's token governs the whole
    * queue run. */
   progress_token?: number;
+  /** Restrict the owned pool to a single player (scope the solve to that
+   * player's pals). Same serde shape as `OwnedPal.owner_player_uid` — a 16-byte
+   * array. Absent => all players (no scope). */
+  player_uid?: Guid;
 }
 
 /** Payload of the throttled `solve-progress` Tauri event (snake_case, emitted
@@ -292,9 +296,26 @@ export interface PlanNode {
   gender: Gender | null;
   passives: string[];
   source: PlanSource;
+  /** Per-node success probability. Bred: `prob_passives * prob_ivs` exactly
+   * (gender resolution is not folded in). Owned/wild: 1.0. */
   probability: number;
   est_time_secs: number;
   children: PlanNode[];
+  /** Bred nodes only: P(inherit all desired passives) for this step. Absent on
+   * owned/wild nodes and on legacy localStorage plans — degrade gracefully. */
+  prob_passives?: number;
+  /** Bred nodes only: P(inherit all required IVs) for this step. Absent on
+   * owned/wild nodes and on legacy plans. */
+  prob_ivs?: number;
+  /** Bred nodes only: expected eggs for THIS step (per-node, not cumulative;
+   * includes the gender-resolution penalty, so it is generally larger than
+   * `ceil(1 / (prob_passives * prob_ivs))`). Absent on owned/wild + legacy. */
+  expected_eggs?: number;
+  /** Bred nodes only: minimum inherited-IV floor `[hp,atk,def]` this node must
+   * carry for the chain to stay viable — the (cake-effective) spec threshold on
+   * stats still relevant here, `0` on unconstrained stats. Absent on owned/wild
+   * nodes and on legacy plans. */
+  iv_targets?: [number, number, number];
 }
 
 /** serde unit enum -> plain string. */

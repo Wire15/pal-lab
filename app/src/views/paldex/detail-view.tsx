@@ -425,6 +425,7 @@ export default function PaldexDetail({
   players,
   onBack,
   onNavigate,
+  onOpenMove,
 }: {
   id: string;
   roster: RosterCounts | null;
@@ -434,6 +435,8 @@ export default function PaldexDetail({
   players: PlayerRef[];
   onBack: () => void;
   onNavigate: (id: string) => void;
+  /** Jump to the MOVES tab focused on a waza id — a LEARNABLE MOVES name link. */
+  onOpenMove: (wazaId: string) => void;
 }) {
   const { requestSolve, setView } = useAppState();
   const [detail, setDetail] = useState<SpeciesDetail | null>(null);
@@ -722,6 +725,7 @@ export default function PaldexDetail({
                     id={m.id}
                     skill={activeMap[m.id] ?? null}
                     level={m.level}
+                    onOpenMove={onOpenMove}
                   />
                 ))}
               </div>

@@ -87,6 +87,16 @@ impl CakeKind {
         spec.iv_attack = spec.iv_attack.saturating_sub(b);
         spec.iv_defense = spec.iv_defense.saturating_sub(b);
     }
+
+    /// The cake-effective spec IV thresholds `[hp,atk,def]` after this cake's
+    /// floor bump ([`CakeKind::apply_iv_floor`]). This is the basis for each
+    /// bred plan node's `iv_targets`, kept in sync with the thresholds the
+    /// search itself used to decide IV relevance.
+    pub fn effective_iv_thresholds(self, spec: &TargetSpec) -> [u8; 3] {
+        let mut s = spec.clone();
+        self.apply_iv_floor(&mut s);
+        [s.iv_hp, s.iv_attack, s.iv_defense]
+    }
 }
 
 impl std::str::FromStr for CakeKind {

@@ -196,7 +196,7 @@ fn normal_cake_is_inert() {
     // A Normal-cake plan reports zero cakes; a bred ref built the vanilla way
     // has an egg multiplier of 1.0.
     let r = PalRef::Bred(Box::new(bred(gd, 0.25)));
-    let plan = BreedingPlan::from_ref(gd, &r, CakeKind::Normal);
+    let plan = BreedingPlan::from_ref(gd, &r, CakeKind::Normal, [0, 0, 0]);
     assert_eq!(plan.cake, CakeKind::Normal);
     assert_eq!(plan.cake_count, 0);
 }
@@ -215,12 +215,12 @@ fn cake_count_sums_breeding_attempts() {
 
     // A one-step plan needs `attempts` cakes when a cake is used.
     let r = PalRef::Bred(Box::new(child));
-    assert_eq!(BreedingPlan::from_ref(gd, &r, CakeKind::Special).cake_count, 4);
-    assert_eq!(BreedingPlan::from_ref(gd, &r, CakeKind::Normal).cake_count, 0);
+    assert_eq!(BreedingPlan::from_ref(gd, &r, CakeKind::Special, [0, 0, 0]).cake_count, 4);
+    assert_eq!(BreedingPlan::from_ref(gd, &r, CakeKind::Normal, [0, 0, 0]).cake_count, 0);
 
     // Infeasible ref (prob 0) contributes no finite attempts.
     let dead = PalRef::Bred(Box::new(bred(gd, 0.0)));
-    assert_eq!(BreedingPlan::from_ref(gd, &dead, CakeKind::Special).cake_count, 0);
+    assert_eq!(BreedingPlan::from_ref(gd, &dead, CakeKind::Special, [0, 0, 0]).cake_count, 0);
 }
 
 // ---- 6. CLI cake-kind parsing -----------------------------------------------

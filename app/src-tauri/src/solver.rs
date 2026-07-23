@@ -6,6 +6,7 @@
 //! runtime, and returns `pal_solver`'s `BreedingPlan` tree serialized to JSON.
 //! `list_species` / `list_passives` feed the view's autocomplete inputs.
 
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -13,7 +14,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
-use pal_data::types::Guid;
+use pal_data::types::{Guid, OwnedPal};
 use pal_data::{ActiveSkill, GameData};
 use pal_solver::solver::{
     resolve_passive, resolve_species, solve_queue_monitored, solve_with_catching_monitored,
@@ -65,6 +66,12 @@ pub struct SolveRequest {
     /// request. Absent => no events emitted and the solve is not cancellable.
     #[serde(default)]
     pub progress_token: Option<u64>,
+    /// Player scope: when set, the owned pool is restricted to pals whose
+    /// `owner_player_uid` equals this uid before solving (see [`scope_owned`]).
+    /// Same serde shape as `PlayerRef.uid`/`OwnedPal.owner_player_uid`: a
+    /// 16-byte array. Absent => all players' pals (today's behavior).
+    #[serde(default)]
+    pub player_uid: Option<Guid>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -265,6 +272,22 @@ fn build_request(
     Ok((spec, cfg, req.catching))
 }
 
+/// Restrict the owned pool to a single player's pals when `uid` is set.
+///
+/// Pals with a `None` `owner_player_uid` (base-camp worker pals / guild stock —
+/// e.g. 76 of the real save's 1669 pals, exactly its Base-container count) are
+/// EXCLUDED under a scope: they belong to no individual player. `None` uid
+/// returns the pool unchanged (all players), so the borrowed path allocates
+/// nothing for the default (unscoped) request.
+fn scope_owned(pals: &[OwnedPal], uid: Option<Guid>) -> Cow<'_, [OwnedPal]> {
+    match uid {
+        None => Cow::Borrowed(pals),
+        Some(uid) => {
+            Cow::Owned(pals.iter().filter(|p| p.owner_player_uid == Some(uid)).cloned().collect())
+        }
+    }
+}
+
 /// The command body, factored out so tests can drive it synchronously (no
 /// AppHandle => no progress events, no cancellation).
 #[cfg(test)]
@@ -303,7 +326,8 @@ fn run_with_progress(
         emitter.as_ref().map(|_| &cb as &(dyn Fn(SolveProgress) + Sync));
     let monitor = SolveMonitor::new(progress, cancel.as_deref());
 
-    match solve_with_catching_monitored(gd, &spec, &save.pals, &cfg, catching, monitor) {
+    let pool = scope_owned(&save.pals, req.player_uid);
+    match solve_with_catching_monitored(gd, &spec, &pool, &cfg, catching, monitor) {
         Ok(ModeResult { plans, fallback_used, pins_satisfied }) => {
             Ok(SolveResponse { plans, fallback_used, pins_satisfied })
         }
@@ -384,6 +408,10 @@ fn run_queue_with_progress(
     // bad request fails the whole queue before any solving.
     let target_ids: Vec<String> = requests.iter().map(|r| r.target_species.clone()).collect();
     let token = requests.iter().find_map(|r| r.progress_token);
+    // One player scope governs the whole queue run (the frontend injects the
+    // same `player_uid` into every item); take the first present, mirroring the
+    // one-token-per-queue rule above.
+    let scope_uid = requests.iter().find_map(|r| r.player_uid);
     let queue_len = requests.len() as u32;
     let items: Vec<QueueItem> = requests
         .iter()
@@ -408,8 +436,9 @@ fn run_queue_with_progress(
     let progress: Option<&(dyn Fn(usize, SolveProgress) + Sync)> =
         emitter.as_ref().map(|_| &cb as &(dyn Fn(usize, SolveProgress) + Sync));
 
+    let pool = scope_owned(&save.pals, scope_uid);
     let result =
-        match solve_queue_monitored(gd, &save.pals, &items, stop_on_failure, cancel.as_deref(), progress) {
+        match solve_queue_monitored(gd, &pool, &items, stop_on_failure, cancel.as_deref(), progress) {
             Ok(r) => r,
             Err(_) => return Err("cancelled".into()),
         };
@@ -631,6 +660,7 @@ mod tests {
             setup: None,
             pinned_parents: vec![],
             progress_token: None,
+            player_uid: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -670,6 +700,7 @@ mod tests {
             setup: None,
             pinned_parents: vec![],
             progress_token: None,
+            player_uid: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -706,6 +737,7 @@ mod tests {
             }),
             pinned_parents: vec![],
             progress_token: None,
+            player_uid: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
         assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
@@ -757,6 +789,7 @@ mod tests {
             setup: None,
             pinned_parents: vec![],
             progress_token: None,
+            player_uid: None,
         };
         let resp = run_queue(&dir, vec![mk("Anubis"), mk("Anubis")], false)
             .expect("queue solve should succeed");
@@ -794,5 +827,48 @@ mod tests {
         // Passives resolve to the pack's clean names, prefix already stripped.
         assert_eq!(find("MutationPal_Babysitter").display_name, "Babysitter");
         assert_eq!(find("Test_PalEgg_HatchingSpeed_Up").display_name, "Philanthropist");
+    }
+
+    /// `scope_owned` restricts the pool to one player's pals, dropping the other
+    /// players' pals AND the null-owner (guild-stock/base) pals; `None` returns
+    /// the whole pool by borrow (no allocation).
+    #[test]
+    fn scope_owned_filters_by_player() {
+        use pal_data::types::{ContainerKind, Gender, IvSet};
+        let uid_a: Guid = [1u8; 16];
+        let uid_b: Guid = [2u8; 16];
+        let mk = |owner: Option<Guid>| OwnedPal {
+            instance_id: [0u8; 16],
+            character_id: "PinkCat".into(),
+            is_boss: false,
+            is_lucky: false,
+            is_human: false,
+            gender: Some(Gender::Male),
+            level: 1,
+            rank: 0,
+            passives: vec![],
+            active_skills: vec![],
+            ivs: IvSet::default(),
+            nickname: None,
+            owner_player_uid: owner,
+            container_id: None,
+            slot_index: None,
+            container_kind: ContainerKind::Palbox,
+        };
+        let pals = vec![mk(Some(uid_a)), mk(Some(uid_a)), mk(Some(uid_b)), mk(None)];
+
+        // Unscoped: whole pool, borrowed (no clone).
+        let all = scope_owned(&pals, None);
+        assert_eq!(all.len(), 4);
+        assert!(matches!(all, Cow::Borrowed(_)), "None uid must borrow the pool");
+
+        // Scoped to A: only A's two pals; B and the null-owner pal are excluded.
+        let scoped = scope_owned(&pals, Some(uid_a));
+        assert_eq!(scoped.len(), 2);
+        assert!(scoped.iter().all(|p| p.owner_player_uid == Some(uid_a)));
+        assert!(matches!(scoped, Cow::Owned(_)), "Some uid must own a filtered vec");
+
+        // A uid nobody owns => empty pool.
+        assert!(scope_owned(&pals, Some([9u8; 16])).is_empty());
     }
 }

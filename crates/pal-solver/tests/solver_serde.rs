@@ -43,7 +43,7 @@ fn plan_serializes_and_roundtrips() {
         1.0,
     )));
 
-    let plan = BreedingPlan::from_ref(gd, &bred, CakeKind::Normal);
+    let plan = BreedingPlan::from_ref(gd, &bred, CakeKind::Normal, [0, 0, 0]);
     assert_eq!(plan.root.children.len(), 2);
     assert!(matches!(plan.root.source, PlanSource::Bred));
     assert_eq!(plan.total_steps, 1);

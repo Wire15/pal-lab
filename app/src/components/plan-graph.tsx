@@ -33,6 +33,7 @@ import {
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { palIconUrl, UNKNOWN_ICON } from "../lib/assets";
 import { PalHoverCard } from "./pal-hover-card";
+import { BreedHoverCard } from "./breed-hover";
 import { usePalByInstance } from "../lib/owned-lookup";
 import { Tag } from "./primitives";
 
@@ -212,15 +213,25 @@ function PalCircle({
 
 /** The compact breeding-step chip on the junction where two parents converge
  *  into a bred child: egg glyph + color-coded odds pill + mono step time. All
- *  step math lives here, never on the pal nodes. */
-function JunctionChip({ child }: { child: LaidNode }) {
+ *  step math lives here, never on the pal nodes. The chip is focusable and,
+ *  on hover or keyboard focus, opens the BreedHoverCard step briefing (odds
+ *  split, eggs, IV gate, parents' passive pool). */
+function JunctionChip({
+  child,
+  resolvePal,
+}: {
+  child: LaidNode;
+  resolvePal: (id?: Guid | null) => OwnedPal | undefined;
+}) {
   const prob = probBand(child.node.probability);
-  return (
+  const trigger = (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Breed step into ${child.node.species_name}: ${(child.node.probability * 100).toFixed(0)}% per egg, ${formatDuration(child.node.est_time_secs)}. Hover or focus for details.`}
       onPointerDown={(e) => e.stopPropagation()}
-      className="absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-md border border-line bg-panel px-2 py-1"
+      className="absolute flex -translate-x-1/2 -translate-y-1/2 cursor-help items-center gap-1.5 rounded-md border border-line bg-panel px-2 py-1 outline-none ring-amber transition-shadow focus-visible:ring-2 hover:border-amber/40"
       style={{ left: child.x - COL_W / 2, top: child.y }}
-      title={`Breed step: ${(child.node.probability * 100).toFixed(0)}% odds, ${formatDuration(child.node.est_time_secs)}`}
     >
       <svg
         width="11"
@@ -234,7 +245,6 @@ function JunctionChip({ child }: { child: LaidNode }) {
       </svg>
       <span
         className={`rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${prob.text} ${prob.ring}`}
-        title={`${prob.label} odds`}
       >
         {(child.node.probability * 100).toFixed(0)}%
       </span>
@@ -242,6 +252,11 @@ function JunctionChip({ child }: { child: LaidNode }) {
         {formatDuration(child.node.est_time_secs)}
       </span>
     </div>
+  );
+  return (
+    <BreedHoverCard child={child.node} resolvePal={resolvePal}>
+      {trigger}
+    </BreedHoverCard>
   );
 }
 
@@ -402,7 +417,7 @@ export function PlanGraph({
         </svg>
 
         {layout.junctions.map((j) => (
-          <JunctionChip key={j.id} child={j.child} />
+          <JunctionChip key={j.id} child={j.child} resolvePal={palByInstance} />
         ))}
 
         {layout.nodes.map((laid) => {

@@ -104,8 +104,11 @@ pub fn solve_queue_monitored(
 
         let (refs, fallback_used, pins_satisfied) =
             solve_modes_monitored(gd, &item.spec, &pool, &item.cfg, item.catching, monitor)?;
-        let plans: Vec<BreedingPlan> =
-            refs.iter().map(|r| BreedingPlan::from_ref(gd, r, item.cfg.cake)).collect();
+        let iv_thresholds = item.cfg.cake.effective_iv_thresholds(&item.spec);
+        let plans: Vec<BreedingPlan> = refs
+            .iter()
+            .map(|r| BreedingPlan::from_ref(gd, r, item.cfg.cake, iv_thresholds))
+            .collect();
 
         let failed = plans.is_empty();
         if let (Some(best_ref), Some(best_plan)) = (refs.first(), plans.first()) {

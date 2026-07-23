@@ -72,7 +72,7 @@ export function Slot({
       onPointerLeave={onPointerLeave}
       aria-pressed={selected}
       aria-label={`${human ? "Human" : name}, level ${pal.level}${isAlpha(pal) ? ", alpha" : ""}`}
-      className="group relative shrink-0 rounded-full outline-none"
+      className="group relative shrink-0 rounded-full"
       style={{ width: size, height: size }}
     >
       {/* Portrait, clipped to a circle. Captured humans render as a muted neutral

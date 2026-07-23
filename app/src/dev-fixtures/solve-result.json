@@ -11,240 +11,8 @@
           "(random)"
         ],
         "source": "Bred",
-        "probability": 0.19000000000000003,
-        "est_time_secs": 262800.0,
-        "children": [
-          {
-            "species": 236,
-            "species_name": "Mycora",
-            "gender": "Male",
-            "passives": [
-              "MoveSpeed_up_2",
-              "PAL_Sanity_Up_1"
-            ],
-            "source": "Bred",
-            "probability": 0.24000000000000002,
-            "est_time_secs": 139800.0,
-            "children": [
-              {
-                "species": 205,
-                "species_name": "Splatterina",
-                "gender": "Female",
-                "passives": [
-                  "MoveSpeed_up_2"
-                ],
-                "source": "Bred",
-                "probability": 0.08000000000000002,
-                "est_time_secs": 34200.0,
-                "children": [
-                  {
-                    "species": 148,
-                    "species_name": "Helzephyr",
-                    "gender": "Male",
-                    "passives": [
-                      "MoveSpeed_up_2"
-                    ],
-                    "source": {
-                      "Owned": {
-                        "location": "Palbox",
-                        "instance_id": [
-                          202,
-                          17,
-                          231,
-                          88,
-                          154,
-                          70,
-                          227,
-                          107,
-                          142,
-                          213,
-                          76,
-                          190,
-                          11,
-                          28,
-                          172,
-                          93
-                        ]
-                      }
-                    },
-                    "probability": 1.0,
-                    "est_time_secs": 0.0,
-                    "children": []
-                  },
-                  {
-                    "species": 85,
-                    "species_name": "Blazamut",
-                    "gender": "Female",
-                    "passives": [
-                      "(random)"
-                    ],
-                    "source": {
-                      "Owned": {
-                        "location": "Base",
-                        "instance_id": [
-                          67,
-                          228,
-                          81,
-                          91,
-                          172,
-                          76,
-                          191,
-                          60,
-                          171,
-                          196,
-                          159,
-                          129,
-                          200,
-                          80,
-                          133,
-                          80
-                        ]
-                      }
-                    },
-                    "probability": 1.0,
-                    "est_time_secs": 0.0,
-                    "children": []
-                  }
-                ]
-              },
-              {
-                "species": 188,
-                "species_name": "Moldron",
-                "gender": "Male",
-                "passives": [
-                  "PAL_Sanity_Up_1"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox",
-                    "instance_id": [
-                      163,
-                      216,
-                      222,
-                      62,
-                      83,
-                      71,
-                      118,
-                      99,
-                      163,
-                      152,
-                      77,
-                      189,
-                      145,
-                      157,
-                      164,
-                      236
-                    ]
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              }
-            ]
-          },
-          {
-            "species": 37,
-            "species_name": "Jormuntide Ignis",
-            "gender": "Female",
-            "passives": [
-              "(random)"
-            ],
-            "source": "Bred",
-            "probability": 0.16000000000000003,
-            "est_time_secs": 267600.0,
-            "children": [
-              {
-                "species": 125,
-                "species_name": "Blazehowl",
-                "gender": "Female",
-                "passives": [
-                  "(random)"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox",
-                    "instance_id": [
-                      214,
-                      155,
-                      179,
-                      153,
-                      178,
-                      67,
-                      194,
-                      124,
-                      230,
-                      13,
-                      72,
-                      179,
-                      176,
-                      113,
-                      26,
-                      202
-                    ]
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              },
-              {
-                "species": 36,
-                "species_name": "Jormuntide",
-                "gender": "Male",
-                "passives": [
-                  "(random)"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox",
-                    "instance_id": [
-                      251,
-                      207,
-                      125,
-                      145,
-                      62,
-                      64,
-                      219,
-                      169,
-                      62,
-                      95,
-                      13,
-                      153,
-                      80,
-                      179,
-                      174,
-                      23
-                    ]
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              }
-            ]
-          }
-        ]
-      },
-      "total_time_secs": 530400.0,
-      "total_steps": 4,
-      "total_wild_pals": 0,
-      "cake": "Normal",
-      "cake_count": 0
-    },
-    {
-      "root": {
-        "species": 6,
-        "species_name": "Anubis",
-        "gender": null,
-        "passives": [
-          "MoveSpeed_up_2",
-          "PAL_Sanity_Up_1",
-          "(random)"
-        ],
-        "source": "Bred",
-        "probability": 0.19000000000000003,
-        "est_time_secs": 262800.0,
+        "probability": 0.11083333333333334,
+        "est_time_secs": 265200.0,
         "children": [
           {
             "species": 205,
@@ -255,8 +23,8 @@
               "PAL_Sanity_Up_1"
             ],
             "source": "Bred",
-            "probability": 0.04,
-            "est_time_secs": 61200.0,
+            "probability": 0.02333333333333333,
+            "est_time_secs": 90000.0,
             "children": [
               {
                 "species": 188,
@@ -301,44 +69,9 @@
                   "(random)"
                 ],
                 "source": "Bred",
-                "probability": 0.13,
-                "est_time_secs": 30000.0,
+                "probability": 0.03791666666666666,
+                "est_time_secs": 48600.0,
                 "children": [
-                  {
-                    "species": 85,
-                    "species_name": "Blazamut",
-                    "gender": "Male",
-                    "passives": [
-                      "(random)",
-                      "(random)"
-                    ],
-                    "source": {
-                      "Owned": {
-                        "location": "Base",
-                        "instance_id": [
-                          69,
-                          52,
-                          164,
-                          51,
-                          251,
-                          64,
-                          239,
-                          230,
-                          111,
-                          127,
-                          134,
-                          151,
-                          26,
-                          238,
-                          236,
-                          65
-                        ]
-                      }
-                    },
-                    "probability": 1.0,
-                    "est_time_secs": 0.0,
-                    "children": []
-                  },
                   {
                     "species": 146,
                     "species_name": "Quivern",
@@ -373,9 +106,60 @@
                     "probability": 1.0,
                     "est_time_secs": 0.0,
                     "children": []
+                  },
+                  {
+                    "species": 85,
+                    "species_name": "Blazamut",
+                    "gender": "Male",
+                    "passives": [
+                      "(random)",
+                      "(random)"
+                    ],
+                    "source": {
+                      "Owned": {
+                        "location": "Base",
+                        "instance_id": [
+                          69,
+                          52,
+                          164,
+                          51,
+                          251,
+                          64,
+                          239,
+                          230,
+                          111,
+                          127,
+                          134,
+                          151,
+                          26,
+                          238,
+                          236,
+                          65
+                        ]
+                      }
+                    },
+                    "probability": 1.0,
+                    "est_time_secs": 0.0,
+                    "children": []
                   }
+                ],
+                "prob_passives": 0.13,
+                "prob_ivs": 0.29166666666666663,
+                "expected_eggs": 45,
+                "iv_targets": [
+                  40,
+                  0,
+                  0
                 ]
               }
+            ],
+            "prob_passives": 0.04,
+            "prob_ivs": 0.5833333333333333,
+            "expected_eggs": 114,
+            "iv_targets": [
+              40,
+              0,
+              0
             ]
           },
           {
@@ -386,43 +170,9 @@
               "(random)"
             ],
             "source": "Bred",
-            "probability": 0.16000000000000003,
-            "est_time_secs": 267600.0,
+            "probability": 0.09333333333333334,
+            "est_time_secs": 272400.0,
             "children": [
-              {
-                "species": 125,
-                "species_name": "Blazehowl",
-                "gender": "Female",
-                "passives": [
-                  "(random)"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox",
-                    "instance_id": [
-                      214,
-                      155,
-                      179,
-                      153,
-                      178,
-                      67,
-                      194,
-                      124,
-                      230,
-                      13,
-                      72,
-                      179,
-                      176,
-                      113,
-                      26,
-                      202
-                    ]
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              },
               {
                 "species": 36,
                 "species_name": "Jormuntide",
@@ -456,12 +206,62 @@
                 "probability": 1.0,
                 "est_time_secs": 0.0,
                 "children": []
+              },
+              {
+                "species": 125,
+                "species_name": "Blazehowl",
+                "gender": "Female",
+                "passives": [
+                  "(random)"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      214,
+                      155,
+                      179,
+                      153,
+                      178,
+                      67,
+                      194,
+                      124,
+                      230,
+                      13,
+                      72,
+                      179,
+                      176,
+                      113,
+                      26,
+                      202
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
               }
+            ],
+            "prob_passives": 0.16000000000000003,
+            "prob_ivs": 0.5833333333333333,
+            "expected_eggs": 22,
+            "iv_targets": [
+              40,
+              0,
+              0
             ]
           }
+        ],
+        "prob_passives": 0.19000000000000003,
+        "prob_ivs": 0.5833333333333333,
+        "expected_eggs": 10,
+        "iv_targets": [
+          40,
+          0,
+          0
         ]
       },
-      "total_time_secs": 530400.0,
+      "total_time_secs": 537600.0,
       "total_steps": 4,
       "total_wild_pals": 0,
       "cake": "Normal",
@@ -478,48 +278,47 @@
           "(random)"
         ],
         "source": "Bred",
-        "probability": 0.19000000000000003,
-        "est_time_secs": 262800.0,
+        "probability": 0.11083333333333334,
+        "est_time_secs": 265200.0,
         "children": [
           {
-            "species": 137,
-            "species_name": "Beakon Cryst",
+            "species": 37,
+            "species_name": "Jormuntide Ignis",
             "gender": "Male",
             "passives": [
-              "MoveSpeed_up_2",
-              "PAL_Sanity_Up_1"
+              "(random)"
             ],
             "source": "Bred",
-            "probability": 0.24000000000000002,
-            "est_time_secs": 135600.0,
+            "probability": 0.09333333333333334,
+            "est_time_secs": 272400.0,
             "children": [
               {
-                "species": 136,
-                "species_name": "Beakon",
-                "gender": "Female",
+                "species": 36,
+                "species_name": "Jormuntide",
+                "gender": "Male",
                 "passives": [
-                  "MoveSpeed_up_2"
+                  "(random)"
                 ],
                 "source": {
                   "Owned": {
                     "location": "Palbox",
                     "instance_id": [
-                      98,
-                      38,
-                      79,
-                      212,
-                      158,
-                      68,
-                      152,
-                      190,
-                      190,
-                      213,
-                      139,
-                      140,
-                      0,
+                      251,
+                      207,
+                      125,
+                      145,
+                      62,
                       64,
-                      20,
-                      213
+                      219,
+                      169,
+                      62,
+                      95,
+                      13,
+                      153,
+                      80,
+                      179,
+                      174,
+                      23
                     ]
                   }
                 },
@@ -528,122 +327,134 @@
                 "children": []
               },
               {
-                "species": 251,
-                "species_name": "Frostplume",
-                "gender": "Male",
+                "species": 125,
+                "species_name": "Blazehowl",
+                "gender": "Female",
                 "passives": [
-                  "PAL_Sanity_Up_1"
+                  "(random)"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      214,
+                      155,
+                      179,
+                      153,
+                      178,
+                      67,
+                      194,
+                      124,
+                      230,
+                      13,
+                      72,
+                      179,
+                      176,
+                      113,
+                      26,
+                      202
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
+              }
+            ],
+            "prob_passives": 0.16000000000000003,
+            "prob_ivs": 0.5833333333333333,
+            "expected_eggs": 22,
+            "iv_targets": [
+              40,
+              0,
+              0
+            ]
+          },
+          {
+            "species": 236,
+            "species_name": "Mycora",
+            "gender": "Female",
+            "passives": [
+              "MoveSpeed_up_2",
+              "PAL_Sanity_Up_1"
+            ],
+            "source": "Bred",
+            "probability": 0.02333333333333333,
+            "est_time_secs": 166800.0,
+            "children": [
+              {
+                "species": 205,
+                "species_name": "Splatterina",
+                "gender": "Female",
+                "passives": [
+                  "MoveSpeed_up_2",
+                  "(random)"
                 ],
                 "source": "Bred",
-                "probability": 0.08000000000000002,
-                "est_time_secs": 37200.0,
+                "probability": 0.11083333333333334,
+                "est_time_secs": 31800.0,
                 "children": [
                   {
-                    "species": 287,
-                    "species_name": "Lapure",
+                    "species": 85,
+                    "species_name": "Blazamut",
                     "gender": "Female",
-                    "passives": [
-                      "PAL_Sanity_Up_1"
-                    ],
-                    "source": "Bred",
-                    "probability": 0.4,
-                    "est_time_secs": 24600.0,
-                    "children": [
-                      {
-                        "species": 203,
-                        "species_name": "Sekhmet",
-                        "gender": "Female",
-                        "passives": [],
-                        "source": {
-                          "Owned": {
-                            "location": "Palbox",
-                            "instance_id": [
-                              96,
-                              29,
-                              85,
-                              20,
-                              211,
-                              71,
-                              118,
-                              134,
-                              50,
-                              195,
-                              85,
-                              181,
-                              91,
-                              91,
-                              120,
-                              192
-                            ]
-                          }
-                        },
-                        "probability": 1.0,
-                        "est_time_secs": 0.0,
-                        "children": []
-                      },
-                      {
-                        "species": 188,
-                        "species_name": "Moldron",
-                        "gender": "Male",
-                        "passives": [
-                          "PAL_Sanity_Up_1"
-                        ],
-                        "source": {
-                          "Owned": {
-                            "location": "Palbox",
-                            "instance_id": [
-                              163,
-                              216,
-                              222,
-                              62,
-                              83,
-                              71,
-                              118,
-                              99,
-                              163,
-                              152,
-                              77,
-                              189,
-                              145,
-                              157,
-                              164,
-                              236
-                            ]
-                          }
-                        },
-                        "probability": 1.0,
-                        "est_time_secs": 0.0,
-                        "children": []
-                      }
-                    ]
-                  },
-                  {
-                    "species": 226,
-                    "species_name": "Ghangler",
-                    "gender": "Male",
                     "passives": [
                       "(random)"
                     ],
                     "source": {
                       "Owned": {
+                        "location": "Base",
+                        "instance_id": [
+                          67,
+                          228,
+                          81,
+                          91,
+                          172,
+                          76,
+                          191,
+                          60,
+                          171,
+                          196,
+                          159,
+                          129,
+                          200,
+                          80,
+                          133,
+                          80
+                        ]
+                      }
+                    },
+                    "probability": 1.0,
+                    "est_time_secs": 0.0,
+                    "children": []
+                  },
+                  {
+                    "species": 148,
+                    "species_name": "Helzephyr",
+                    "gender": "Male",
+                    "passives": [
+                      "MoveSpeed_up_2"
+                    ],
+                    "source": {
+                      "Owned": {
                         "location": "Palbox",
                         "instance_id": [
-                          189,
-                          53,
-                          46,
-                          108,
-                          210,
+                          202,
+                          17,
+                          231,
+                          88,
+                          154,
                           70,
-                          89,
-                          179,
-                          28,
+                          227,
+                          107,
+                          142,
+                          213,
+                          76,
                           190,
-                          38,
-                          167,
-                          186,
-                          102,
-                          159,
-                          247
+                          11,
+                          28,
+                          172,
+                          93
                         ]
                       }
                     },
@@ -651,14 +462,94 @@
                     "est_time_secs": 0.0,
                     "children": []
                   }
+                ],
+                "prob_passives": 0.38000000000000006,
+                "prob_ivs": 0.29166666666666663,
+                "expected_eggs": 17,
+                "iv_targets": [
+                  40,
+                  0,
+                  0
                 ]
+              },
+              {
+                "species": 188,
+                "species_name": "Moldron",
+                "gender": "Male",
+                "passives": [
+                  "PAL_Sanity_Up_1"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      163,
+                      216,
+                      222,
+                      62,
+                      83,
+                      71,
+                      118,
+                      99,
+                      163,
+                      152,
+                      77,
+                      189,
+                      145,
+                      157,
+                      164,
+                      236
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
               }
+            ],
+            "prob_passives": 0.04,
+            "prob_ivs": 0.5833333333333333,
+            "expected_eggs": 62,
+            "iv_targets": [
+              40,
+              0,
+              0
             ]
-          },
+          }
+        ],
+        "prob_passives": 0.19000000000000003,
+        "prob_ivs": 0.5833333333333333,
+        "expected_eggs": 10,
+        "iv_targets": [
+          40,
+          0,
+          0
+        ]
+      },
+      "total_time_secs": 537600.0,
+      "total_steps": 4,
+      "total_wild_pals": 0,
+      "cake": "Normal",
+      "cake_count": 0
+    },
+    {
+      "root": {
+        "species": 6,
+        "species_name": "Anubis",
+        "gender": null,
+        "passives": [
+          "MoveSpeed_up_2",
+          "PAL_Sanity_Up_1",
+          "(random)"
+        ],
+        "source": "Bred",
+        "probability": 0.05541666666666667,
+        "est_time_secs": 270600.0,
+        "children": [
           {
             "species": 189,
             "species_name": "Moldron Cryst",
-            "gender": "Female",
+            "gender": "Male",
             "passives": [
               "(random)"
             ],
@@ -678,22 +569,22 @@
                   "Owned": {
                     "location": "Palbox",
                     "instance_id": [
+                      111,
+                      58,
+                      206,
+                      88,
+                      65,
+                      74,
+                      188,
+                      21,
                       220,
-                      133,
-                      100,
-                      29,
-                      37,
-                      79,
-                      174,
-                      108,
-                      177,
-                      73,
-                      105,
-                      152,
-                      193,
-                      110,
-                      222,
-                      76
+                      166,
+                      25,
+                      171,
+                      65,
+                      24,
+                      113,
+                      89
                     ]
                   }
                 },
@@ -737,11 +628,225 @@
                 "est_time_secs": 0.0,
                 "children": []
               }
+            ],
+            "prob_passives": 0.16000000000000003,
+            "prob_ivs": 1.0,
+            "expected_eggs": 14,
+            "iv_targets": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "species": 137,
+            "species_name": "Beakon Cryst",
+            "gender": "Female",
+            "passives": [
+              "MoveSpeed_up_2",
+              "PAL_Sanity_Up_1"
+            ],
+            "source": "Bred",
+            "probability": 0.06999999999999999,
+            "est_time_secs": 147600.0,
+            "children": [
+              {
+                "species": 251,
+                "species_name": "Frostplume",
+                "gender": "Male",
+                "passives": [
+                  "PAL_Sanity_Up_1"
+                ],
+                "source": "Bred",
+                "probability": 0.04666666666666667,
+                "est_time_secs": 48000.0,
+                "children": [
+                  {
+                    "species": 226,
+                    "species_name": "Ghangler",
+                    "gender": "Male",
+                    "passives": [
+                      "(random)"
+                    ],
+                    "source": {
+                      "Owned": {
+                        "location": "Palbox",
+                        "instance_id": [
+                          140,
+                          16,
+                          178,
+                          151,
+                          208,
+                          73,
+                          72,
+                          182,
+                          100,
+                          38,
+                          155,
+                          167,
+                          117,
+                          32,
+                          91,
+                          156
+                        ]
+                      }
+                    },
+                    "probability": 1.0,
+                    "est_time_secs": 0.0,
+                    "children": []
+                  },
+                  {
+                    "species": 287,
+                    "species_name": "Lapure",
+                    "gender": "Female",
+                    "passives": [
+                      "PAL_Sanity_Up_1"
+                    ],
+                    "source": "Bred",
+                    "probability": 0.2333333333333333,
+                    "est_time_secs": 27000.0,
+                    "children": [
+                      {
+                        "species": 188,
+                        "species_name": "Moldron",
+                        "gender": "Male",
+                        "passives": [
+                          "PAL_Sanity_Up_1"
+                        ],
+                        "source": {
+                          "Owned": {
+                            "location": "Palbox",
+                            "instance_id": [
+                              163,
+                              216,
+                              222,
+                              62,
+                              83,
+                              71,
+                              118,
+                              99,
+                              163,
+                              152,
+                              77,
+                              189,
+                              145,
+                              157,
+                              164,
+                              236
+                            ]
+                          }
+                        },
+                        "probability": 1.0,
+                        "est_time_secs": 0.0,
+                        "children": []
+                      },
+                      {
+                        "species": 203,
+                        "species_name": "Sekhmet",
+                        "gender": "Female",
+                        "passives": [],
+                        "source": {
+                          "Owned": {
+                            "location": "Base",
+                            "instance_id": [
+                              38,
+                              223,
+                              247,
+                              58,
+                              171,
+                              67,
+                              27,
+                              98,
+                              208,
+                              67,
+                              34,
+                              172,
+                              149,
+                              31,
+                              21,
+                              58
+                            ]
+                          }
+                        },
+                        "probability": 1.0,
+                        "est_time_secs": 0.0,
+                        "children": []
+                      }
+                    ],
+                    "prob_passives": 0.4,
+                    "prob_ivs": 0.5833333333333333,
+                    "expected_eggs": 9,
+                    "iv_targets": [
+                      40,
+                      0,
+                      0
+                    ]
+                  }
+                ],
+                "prob_passives": 0.08000000000000002,
+                "prob_ivs": 0.5833333333333333,
+                "expected_eggs": 44,
+                "iv_targets": [
+                  40,
+                  0,
+                  0
+                ]
+              },
+              {
+                "species": 136,
+                "species_name": "Beakon",
+                "gender": "Female",
+                "passives": [
+                  "MoveSpeed_up_2"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      98,
+                      38,
+                      79,
+                      212,
+                      158,
+                      68,
+                      152,
+                      190,
+                      190,
+                      213,
+                      139,
+                      140,
+                      0,
+                      64,
+                      20,
+                      213
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
+              }
+            ],
+            "prob_passives": 0.24000000000000002,
+            "prob_ivs": 0.29166666666666663,
+            "expected_eggs": 30,
+            "iv_targets": [
+              40,
+              0,
+              0
             ]
           }
+        ],
+        "prob_passives": 0.19000000000000003,
+        "prob_ivs": 0.29166666666666663,
+        "expected_eggs": 19,
+        "iv_targets": [
+          40,
+          0,
+          0
         ]
       },
-      "total_time_secs": 530400.0,
+      "total_time_secs": 538200.0,
       "total_steps": 5,
       "total_wild_pals": 0,
       "cake": "Normal",
@@ -760,6 +865,21 @@
         "est_time_secs": 23400.0,
         "children": [
           {
+            "species": 236,
+            "species_name": "Mycora",
+            "gender": "Female",
+            "passives": [],
+            "source": {
+              "Wild": {
+                "captures": 1,
+                "min_wild_level": 75
+              }
+            },
+            "probability": 1.0,
+            "est_time_secs": 1800.0,
+            "children": []
+          },
+          {
             "species": 196,
             "species_name": "Smokie",
             "gender": "Male",
@@ -775,22 +895,15 @@
             "probability": 1.0,
             "est_time_secs": 1200.0,
             "children": []
-          },
-          {
-            "species": 236,
-            "species_name": "Mycora",
-            "gender": "Female",
-            "passives": [],
-            "source": {
-              "Wild": {
-                "captures": 1,
-                "min_wild_level": 75
-              }
-            },
-            "probability": 1.0,
-            "est_time_secs": 1800.0,
-            "children": []
           }
+        ],
+        "prob_passives": 0.4,
+        "prob_ivs": 1.0,
+        "expected_eggs": 3,
+        "iv_targets": [
+          0,
+          0,
+          0
         ]
       },
       "total_time_secs": 26400.0,

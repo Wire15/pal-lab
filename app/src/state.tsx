@@ -27,6 +27,7 @@ import type {
   RosterCounts,
   SaveSummary,
 } from "./lib/types";
+import { hexGuid } from "./components/palbox/selectors";
 
 export type View = "save" | "solver" | "paldex" | "ivlab";
 
@@ -84,6 +85,40 @@ function readRecentSaves(): RecentSave[] {
       .slice(0, MAX_RECENTS);
   } catch {
     return [];
+  }
+}
+
+/** localStorage key for the per-save player scope map. A JSON object of
+ * `canonDir -> scope` (a lowercase 32-char player uid hex, or `"all"`), so each
+ * world remembers who you play it as. Keyed by the same {@link canonDir} canon
+ * as the recent-saves list. */
+const PLAYER_SCOPE_KEY = "pal-calc.playerScope";
+
+/** The persisted `canonDir -> scope` map (empty on any parse failure). */
+function readPlayerScopes(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem(PLAYER_SCOPE_KEY);
+    if (!raw) return {};
+    const obj = JSON.parse(raw);
+    if (!obj || typeof obj !== "object") return {};
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      if (typeof v === "string") out[k] = v;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+/** Persist `scope` for `dir` under its canonical key (merged into the map). */
+function writeScopeForDir(dir: string, scope: string): void {
+  try {
+    const map = readPlayerScopes();
+    map[canonDir(dir)] = scope;
+    localStorage.setItem(PLAYER_SCOPE_KEY, JSON.stringify(map));
+  } catch {
+    // Ignore storage failures (private mode, quota) — non-fatal.
   }
 }
 
@@ -145,6 +180,21 @@ export interface AppState {
   saveError: string | null;
   /** Per-species owned tally derived from `saveSummary` (null when no save). */
   roster: RosterCounts | null;
+  /**
+   * Active player scope: a lowercase 32-char player uid hex, or `"all"` for
+   * every player. Filters the owned pool app-wide — the solve request (via
+   * use-solve), the IV Lab donors, and the Pal-dex owned counts (via the scoped
+   * `roster` above). Persisted per save dir under {@link canonDir}; defaults to
+   * `"all"` (behavior identical to no scoping).
+   */
+  playerScope: string;
+  /** Set the active player scope and persist it for the current save dir. */
+  setPlayerScope: (scope: string) => void;
+  /** Whether the "who plays this world?" scope prompt is open. Auto-opens once
+   * after loading a multi-player save with no persisted scope; the sidebar
+   * scope pill reopens it on demand. */
+  scopePromptOpen: boolean;
+  setScopePromptOpen: (open: boolean) => void;
   /** Last-used folder for prefilling the load modal (may not be loaded). */
   lastSaveDir: string;
   /** Load a save folder once and cache it. No-op on an empty path. */
@@ -207,6 +257,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [solveTarget, setSolveTarget] = useState<string | null>(null);
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
+  const [playerScope, setPlayerScopeState] = useState<string>("all");
+  const [scopePromptOpen, setScopePromptOpen] = useState(false);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
   const [cake, setCakeState] = useState<CakeToken>(readCake);
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
@@ -234,6 +286,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Ignore storage failures (private mode, quota) — non-fatal.
     }
+  }, []);
+
+  // Set the active scope and persist it for the current save dir. The current
+  // dir rides `saveDirRef` (not `saveDir`) so this callback stays stable and
+  // the scope pill/modal never capture a stale dir.
+  const setPlayerScope = useCallback((scope: string) => {
+    setPlayerScopeState(scope);
+    const dir = saveDirRef.current;
+    if (dir) writeScopeForDir(dir, scope);
   }, []);
 
   // Record a successful load in the recents list: newest first, deduped by
@@ -280,6 +341,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setSaveDir(trimmed);
       setLastSaveDir(trimmed);
       pushRecent(trimmed, summary);
+      // Resolve the persisted scope for this world. First load of a
+      // multi-player world with no stored choice auto-opens the prompt; single-
+      // player worlds (and any world with a stored scope) never prompt and just
+      // apply the remembered value (default "all").
+      const persisted = readPlayerScopes()[canonDir(trimmed)] ?? null;
+      setPlayerScopeState(persisted ?? "all");
+      setScopePromptOpen(persisted === null && summary.players.length > 1);
       try {
         localStorage.setItem(SAVE_DIR_KEY, trimmed);
       } catch {
@@ -317,6 +385,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveSummary(null);
     setSaveDir("");
     setSaveError(null);
+    setPlayerScopeState("all");
+    setScopePromptOpen(false);
     invoke("unwatch_save").catch(() => {});
   }, []);
 
@@ -359,10 +429,17 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
   // Owned tally per species, mirroring the backend `roster_counts` command but
   // computed from the single cached summary so the dex never fetches again.
+  // Player-scoped: under a scope only that player's pals count (null-owner /
+  // guild-stock pals are excluded, matching the backend `scope_owned` filter),
+  // so the Pal-dex owned counts shrink with the active scope.
   const roster = useMemo<RosterCounts | null>(() => {
     if (!saveSummary) return null;
     const out: RosterCounts = {};
     for (const pal of saveSummary.pals) {
+      if (playerScope !== "all") {
+        const owner = pal.owner_player_uid ? hexGuid(pal.owner_player_uid) : null;
+        if (owner !== playerScope) continue;
+      }
       const e = (out[pal.character_id] ??= {
         male: 0,
         female: 0,
@@ -375,7 +452,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       e.best_ivs.def = Math.max(e.best_ivs.def, pal.ivs.defense);
     }
     return out;
-  }, [saveSummary]);
+  }, [saveSummary, playerScope]);
 
   const requestSolve = useCallback((speciesName: string) => {
     setSolveTarget(speciesName);
@@ -400,6 +477,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       saveLoading,
       saveError,
       roster,
+      playerScope,
+      setPlayerScope,
+      scopePromptOpen,
+      setScopePromptOpen,
       lastSaveDir,
       loadSave,
       clearSave,
@@ -426,6 +507,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       saveLoading,
       saveError,
       roster,
+      playerScope,
+      setPlayerScope,
+      scopePromptOpen,
+      setScopePromptOpen,
       lastSaveDir,
       loadSave,
       clearSave,

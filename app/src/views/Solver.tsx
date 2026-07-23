@@ -671,8 +671,14 @@ function QueueResults({
 }
 
 export default function Solver() {
-  const { saveDir, saveSummary, solveTarget, clearSolveTarget, requestDex } =
-    useAppState();
+  const {
+    saveDir,
+    saveSummary,
+    solveTarget,
+    clearSolveTarget,
+    requestDex,
+    playerScope,
+  } = useAppState();
   const [species, setSpecies] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
@@ -868,7 +874,15 @@ export default function Solver() {
 
         {saveSummary && species.trim() !== "" && (
           <PinPicker
-            pals={saveSummary.pals}
+            pals={
+              playerScope === "all"
+                ? saveSummary.pals
+                : saveSummary.pals.filter(
+                    (p) =>
+                      p.owner_player_uid &&
+                      hexGuid(p.owner_player_uid) === playerScope,
+                  )
+            }
             idToName={idToName}
             pins={pins}
             onAdd={addPin}

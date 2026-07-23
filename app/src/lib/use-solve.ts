@@ -41,6 +41,15 @@ export interface NodeSelection {
   data: PlanNodeSelection;
 }
 
+/** Inverse of `hexGuid` (components/palbox/selectors): a lowercase 32-char
+ * player-uid hex -> the 16-byte array serde shape the backend expects for
+ * `SolveRequest.player_uid`. */
+function hexToGuid(hex: string): number[] {
+  const out = new Array<number>(16);
+  for (let i = 0; i < 16; i++) out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  return out;
+}
+
 /** Saved-plan metadata surfaced after a rehydrate, driving the "roster may have
  *  changed" staleness banner. Null while the result came from a live solve. */
 export interface RestoredInfo {
@@ -122,7 +131,7 @@ export interface UseSolve {
 }
 
 export function useSolve(): UseSolve {
-  const { saveDir } = useAppState();
+  const { saveDir, playerScope } = useAppState();
   const { setup, cake } = useBreedingSetup();
 
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
@@ -272,11 +281,18 @@ export function useSolve(): UseSolve {
     let unlisten: (() => void) | null = null;
     try {
       unlisten = await subscribeProgress(token, setProgress);
-      // `setup`/`cake` ride the shared BREEDING SETUP store (contract #3); the
-      // caller owns everything else, so per-view field sets stay intact. The
-      // ephemeral `progress_token` rides the wire request only — never
-      // `lastRequest`, which save/export/plan-code encode.
-      const full: SolveRequest = { ...spec, setup, cake };
+      // `setup`/`cake` ride the shared BREEDING SETUP store (contract #3);
+      // `player_uid` rides the app-wide player scope (contract: single injection
+      // point) so the backend filters the owned pool before solving. The caller
+      // owns everything else, so per-view field sets stay intact. The ephemeral
+      // `progress_token` rides the wire request only — never `lastRequest`,
+      // which save/export/plan-code encode.
+      const full: SolveRequest = {
+        ...spec,
+        setup,
+        cake,
+        ...(playerScope !== "all" ? { player_uid: hexToGuid(playerScope) } : {}),
+      };
       setLastRequest(full);
       const resp = await invoke<SolveResponse>("solve", {
         saveDir,
@@ -316,7 +332,12 @@ export function useSolve(): UseSolve {
       unlisten = await subscribeProgress(token, setProgress);
       // Every item shares the one generation token; the backend tags each
       // event with its `queue_index`/`queue_len` so the panel can name targets.
-      const full: SolveRequest[] = items.map((it) => ({ ...it, setup, cake }));
+      const full: SolveRequest[] = items.map((it) => ({
+        ...it,
+        setup,
+        cake,
+        ...(playerScope !== "all" ? { player_uid: hexToGuid(playerScope) } : {}),
+      }));
       const resp = await invoke<QueueResponse>("solve_queue", {
         saveDir,
         items: full.map((f) => ({ ...f, progress_token: token })),
