@@ -46,7 +46,25 @@
                     ],
                     "source": {
                       "Owned": {
-                        "location": "Palbox"
+                        "location": "Palbox",
+                        "instance_id": [
+                          202,
+                          17,
+                          231,
+                          88,
+                          154,
+                          70,
+                          227,
+                          107,
+                          142,
+                          213,
+                          76,
+                          190,
+                          11,
+                          28,
+                          172,
+                          93
+                        ]
                       }
                     },
                     "probability": 1.0,
@@ -62,7 +80,25 @@
                     ],
                     "source": {
                       "Owned": {
-                        "location": "Base"
+                        "location": "Base",
+                        "instance_id": [
+                          67,
+                          228,
+                          81,
+                          91,
+                          172,
+                          76,
+                          191,
+                          60,
+                          171,
+                          196,
+                          159,
+                          129,
+                          200,
+                          80,
+                          133,
+                          80
+                        ]
                       }
                     },
                     "probability": 1.0,
@@ -80,7 +116,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      163,
+                      216,
+                      222,
+                      62,
+                      83,
+                      71,
+                      118,
+                      99,
+                      163,
+                      152,
+                      77,
+                      189,
+                      145,
+                      157,
+                      164,
+                      236
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -109,7 +163,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      214,
+                      155,
+                      179,
+                      153,
+                      178,
+                      67,
+                      194,
+                      124,
+                      230,
+                      13,
+                      72,
+                      179,
+                      176,
+                      113,
+                      26,
+                      202
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -125,7 +197,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      251,
+                      207,
+                      125,
+                      145,
+                      62,
+                      64,
+                      219,
+                      169,
+                      62,
+                      95,
+                      13,
+                      153,
+                      80,
+                      179,
+                      174,
+                      23
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -157,61 +247,16 @@
         "est_time_secs": 262800.0,
         "children": [
           {
-            "species": 37,
-            "species_name": "Jormuntide Ignis",
-            "gender": "Male",
-            "passives": [
-              "(random)"
-            ],
-            "source": "Bred",
-            "probability": 0.16000000000000003,
-            "est_time_secs": 267600.0,
-            "children": [
-              {
-                "species": 125,
-                "species_name": "Blazehowl",
-                "gender": "Female",
-                "passives": [
-                  "(random)"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox"
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              },
-              {
-                "species": 36,
-                "species_name": "Jormuntide",
-                "gender": "Male",
-                "passives": [
-                  "(random)"
-                ],
-                "source": {
-                  "Owned": {
-                    "location": "Palbox"
-                  }
-                },
-                "probability": 1.0,
-                "est_time_secs": 0.0,
-                "children": []
-              }
-            ]
-          },
-          {
             "species": 205,
             "species_name": "Splatterina",
-            "gender": "Female",
+            "gender": "Male",
             "passives": [
               "MoveSpeed_up_2",
               "PAL_Sanity_Up_1"
             ],
             "source": "Bred",
             "probability": 0.04,
-            "est_time_secs": 46200.0,
+            "est_time_secs": 61200.0,
             "children": [
               {
                 "species": 188,
@@ -222,7 +267,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      163,
+                      216,
+                      222,
+                      62,
+                      83,
+                      71,
+                      118,
+                      99,
+                      163,
+                      152,
+                      77,
+                      189,
+                      145,
+                      157,
+                      164,
+                      236
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -242,23 +305,6 @@
                 "est_time_secs": 30000.0,
                 "children": [
                   {
-                    "species": 146,
-                    "species_name": "Quivern",
-                    "gender": "Female",
-                    "passives": [
-                      "MoveSpeed_up_2",
-                      "(random)"
-                    ],
-                    "source": {
-                      "Owned": {
-                        "location": "Party"
-                      }
-                    },
-                    "probability": 1.0,
-                    "est_time_secs": 0.0,
-                    "children": []
-                  },
-                  {
                     "species": 85,
                     "species_name": "Blazamut",
                     "gender": "Male",
@@ -268,7 +314,60 @@
                     ],
                     "source": {
                       "Owned": {
-                        "location": "Base"
+                        "location": "Base",
+                        "instance_id": [
+                          69,
+                          52,
+                          164,
+                          51,
+                          251,
+                          64,
+                          239,
+                          230,
+                          111,
+                          127,
+                          134,
+                          151,
+                          26,
+                          238,
+                          236,
+                          65
+                        ]
+                      }
+                    },
+                    "probability": 1.0,
+                    "est_time_secs": 0.0,
+                    "children": []
+                  },
+                  {
+                    "species": 146,
+                    "species_name": "Quivern",
+                    "gender": "Female",
+                    "passives": [
+                      "MoveSpeed_up_2",
+                      "(random)"
+                    ],
+                    "source": {
+                      "Owned": {
+                        "location": "Party",
+                        "instance_id": [
+                          241,
+                          204,
+                          123,
+                          5,
+                          33,
+                          69,
+                          0,
+                          28,
+                          215,
+                          227,
+                          160,
+                          190,
+                          84,
+                          121,
+                          159,
+                          193
+                        ]
                       }
                     },
                     "probability": 1.0,
@@ -276,6 +375,87 @@
                     "children": []
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "species": 37,
+            "species_name": "Jormuntide Ignis",
+            "gender": "Female",
+            "passives": [
+              "(random)"
+            ],
+            "source": "Bred",
+            "probability": 0.16000000000000003,
+            "est_time_secs": 267600.0,
+            "children": [
+              {
+                "species": 125,
+                "species_name": "Blazehowl",
+                "gender": "Female",
+                "passives": [
+                  "(random)"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      214,
+                      155,
+                      179,
+                      153,
+                      178,
+                      67,
+                      194,
+                      124,
+                      230,
+                      13,
+                      72,
+                      179,
+                      176,
+                      113,
+                      26,
+                      202
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
+              },
+              {
+                "species": 36,
+                "species_name": "Jormuntide",
+                "gender": "Male",
+                "passives": [
+                  "(random)"
+                ],
+                "source": {
+                  "Owned": {
+                    "location": "Palbox",
+                    "instance_id": [
+                      251,
+                      207,
+                      125,
+                      145,
+                      62,
+                      64,
+                      219,
+                      169,
+                      62,
+                      95,
+                      13,
+                      153,
+                      80,
+                      179,
+                      174,
+                      23
+                    ]
+                  }
+                },
+                "probability": 1.0,
+                "est_time_secs": 0.0,
+                "children": []
               }
             ]
           }
@@ -310,8 +490,8 @@
               "PAL_Sanity_Up_1"
             ],
             "source": "Bred",
-            "probability": 0.04,
-            "est_time_secs": 159600.0,
+            "probability": 0.24000000000000002,
+            "est_time_secs": 135600.0,
             "children": [
               {
                 "species": 136,
@@ -322,7 +502,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      98,
+                      38,
+                      79,
+                      212,
+                      158,
+                      68,
+                      152,
+                      190,
+                      190,
+                      213,
+                      139,
+                      140,
+                      0,
+                      64,
+                      20,
+                      213
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -334,29 +532,12 @@
                 "species_name": "Frostplume",
                 "gender": "Male",
                 "passives": [
-                  "PAL_Sanity_Up_1",
-                  "(random)"
+                  "PAL_Sanity_Up_1"
                 ],
                 "source": "Bred",
-                "probability": 0.38000000000000006,
-                "est_time_secs": 25200.0,
+                "probability": 0.08000000000000002,
+                "est_time_secs": 37200.0,
                 "children": [
-                  {
-                    "species": 226,
-                    "species_name": "Ghangler",
-                    "gender": "Male",
-                    "passives": [
-                      "(random)"
-                    ],
-                    "source": {
-                      "Owned": {
-                        "location": "Palbox"
-                      }
-                    },
-                    "probability": 1.0,
-                    "est_time_secs": 0.0,
-                    "children": []
-                  },
                   {
                     "species": 287,
                     "species_name": "Lapure",
@@ -369,6 +550,38 @@
                     "est_time_secs": 24600.0,
                     "children": [
                       {
+                        "species": 203,
+                        "species_name": "Sekhmet",
+                        "gender": "Female",
+                        "passives": [],
+                        "source": {
+                          "Owned": {
+                            "location": "Palbox",
+                            "instance_id": [
+                              96,
+                              29,
+                              85,
+                              20,
+                              211,
+                              71,
+                              118,
+                              134,
+                              50,
+                              195,
+                              85,
+                              181,
+                              91,
+                              91,
+                              120,
+                              192
+                            ]
+                          }
+                        },
+                        "probability": 1.0,
+                        "est_time_secs": 0.0,
+                        "children": []
+                      },
+                      {
                         "species": 188,
                         "species_name": "Moldron",
                         "gender": "Male",
@@ -377,21 +590,25 @@
                         ],
                         "source": {
                           "Owned": {
-                            "location": "Palbox"
-                          }
-                        },
-                        "probability": 1.0,
-                        "est_time_secs": 0.0,
-                        "children": []
-                      },
-                      {
-                        "species": 203,
-                        "species_name": "Sekhmet",
-                        "gender": "Female",
-                        "passives": [],
-                        "source": {
-                          "Owned": {
-                            "location": "Palbox"
+                            "location": "Palbox",
+                            "instance_id": [
+                              163,
+                              216,
+                              222,
+                              62,
+                              83,
+                              71,
+                              118,
+                              99,
+                              163,
+                              152,
+                              77,
+                              189,
+                              145,
+                              157,
+                              164,
+                              236
+                            ]
                           }
                         },
                         "probability": 1.0,
@@ -399,6 +616,40 @@
                         "children": []
                       }
                     ]
+                  },
+                  {
+                    "species": 226,
+                    "species_name": "Ghangler",
+                    "gender": "Male",
+                    "passives": [
+                      "(random)"
+                    ],
+                    "source": {
+                      "Owned": {
+                        "location": "Palbox",
+                        "instance_id": [
+                          189,
+                          53,
+                          46,
+                          108,
+                          210,
+                          70,
+                          89,
+                          179,
+                          28,
+                          190,
+                          38,
+                          167,
+                          186,
+                          102,
+                          159,
+                          247
+                        ]
+                      }
+                    },
+                    "probability": 1.0,
+                    "est_time_secs": 0.0,
+                    "children": []
                   }
                 ]
               }
@@ -425,7 +676,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      220,
+                      133,
+                      100,
+                      29,
+                      37,
+                      79,
+                      174,
+                      108,
+                      177,
+                      73,
+                      105,
+                      152,
+                      193,
+                      110,
+                      222,
+                      76
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -443,7 +712,25 @@
                 ],
                 "source": {
                   "Owned": {
-                    "location": "Palbox"
+                    "location": "Palbox",
+                    "instance_id": [
+                      157,
+                      157,
+                      82,
+                      151,
+                      111,
+                      79,
+                      164,
+                      19,
+                      103,
+                      58,
+                      227,
+                      140,
+                      60,
+                      50,
+                      188,
+                      58
+                    ]
                   }
                 },
                 "probability": 1.0,
@@ -513,5 +800,6 @@
       "cake_count": 0
     }
   ],
-  "fallback_used": false
+  "fallback_used": false,
+  "pins_satisfied": true
 }

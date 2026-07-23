@@ -12,6 +12,7 @@ import type {
   IvModel,
   OwnedPal,
   PlanNode,
+  SolveRequest,
 } from "../lib/types";
 import { formatDuration, genderView, ivBand, QUALITY_TEXT } from "../lib/ui";
 import { PalIcon } from "../components/primitives";
@@ -22,6 +23,9 @@ import { hexGuid } from "../components/palbox/selectors";
 import { useAppState, useBreedingSetup } from "../state";
 import { ivSum, rankDonors, type StatKey } from "./ivlab/donors";
 import { useSolve } from "../lib/use-solve";
+import { SolveProgress } from "../components/solve-progress";
+import { usePlanActions } from "../components/plan-actions";
+import { PalHoverCard } from "../components/pal-hover-card";
 
 const STAT_KEYS: readonly StatKey[] = ["hp", "attack", "defense"];
 const STAT_LABEL: Record<StatKey, string> = {
@@ -125,50 +129,52 @@ function DonorRow({
 }) {
   const g = genderView(pal.gender);
   return (
-    <button
-      type="button"
-      onClick={onOpen}
-      className="flex w-full items-center gap-2 rounded-md border border-line bg-panel px-2 py-1.5 text-left transition-colors hover:border-amber/40 hover:bg-hover"
-    >
-      <PalIcon id={pal.character_id} name={name} size={26} />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5">
-          <span className="truncate text-[12.5px] text-ink">{name}</span>
-          <span className={`text-[11px] ${g.className}`} title={g.label}>
-            {g.glyph}
-          </span>
+    <PalHoverCard speciesId={pal.character_id} pal={pal}>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex w-full items-center gap-2 rounded-md border border-line bg-panel px-2 py-1.5 text-left transition-colors hover:border-amber/40 hover:bg-hover"
+      >
+        <PalIcon id={pal.character_id} name={name} size={26} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-[12.5px] text-ink">{name}</span>
+            <span className={`text-[11px] ${g.className}`} title={g.label}>
+              {g.glyph}
+            </span>
+          </div>
+          <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+            Lv {pal.level}
+          </div>
         </div>
-        <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          Lv {pal.level}
-        </div>
-      </div>
-      <div className="flex shrink-0 items-center gap-1.5 font-mono tabular-nums">
-        {STAT_KEYS.map((k) => {
-          const on = lead === k;
-          return (
-            <span
-              key={k}
-              className={`flex w-6 flex-col items-center leading-none ${
-                on ? `${QUALITY_TEXT[ivBand(pal.ivs[k])]} font-semibold` : "text-ink-faint"
-              }`}
-            >
-              <span className="text-[8px] uppercase tracking-wide text-ink-faint">
-                {STAT_LABEL[k]}
+        <div className="flex shrink-0 items-center gap-1.5 font-mono tabular-nums">
+          {STAT_KEYS.map((k) => {
+            const on = lead === k;
+            return (
+              <span
+                key={k}
+                className={`flex w-6 flex-col items-center leading-none ${
+                  on ? `${QUALITY_TEXT[ivBand(pal.ivs[k])]} font-semibold` : "text-ink-faint"
+                }`}
+              >
+                <span className="text-[8px] uppercase tracking-wide text-ink-faint">
+                  {STAT_LABEL[k]}
+                </span>
+                <span className="text-[11px]">{pal.ivs[k]}</span>
               </span>
-              <span className="text-[11px]">{pal.ivs[k]}</span>
+            );
+          })}
+          {showSum && (
+            <span className="flex w-8 flex-col items-center leading-none text-amber">
+              <span className="text-[8px] uppercase tracking-wide text-ink-faint">
+                sum
+              </span>
+              <span className="text-[11px] font-semibold">{ivSum(pal)}</span>
             </span>
-          );
-        })}
-        {showSum && (
-          <span className="flex w-8 flex-col items-center leading-none text-amber">
-            <span className="text-[8px] uppercase tracking-wide text-ink-faint">
-              sum
-            </span>
-            <span className="text-[11px] font-semibold">{ivSum(pal)}</span>
-          </span>
-        )}
-      </div>
-    </button>
+          )}
+        </div>
+      </button>
+    </PalHoverCard>
   );
 }
 
@@ -187,14 +193,22 @@ export default function IvLab() {
     speciesList,
     nameToId,
     plans,
+    fallbackUsed,
     error,
     solving,
+    progress,
+    cancelled,
+    cancel,
     activePlan,
     setActivePlan,
     selection,
     setSelection,
     fastestIdx,
+    lastRequest,
+    restoredFrom,
+    rehydrate,
     solve,
+    reset,
   } = useSolve();
 
   const idToName = useMemo(
@@ -248,6 +262,42 @@ export default function IvLab() {
     });
   }
 
+  // RESET the query: clear the target, IV thresholds, passives and max-steps,
+  // plus the results (via `reset()`). KEEPS the shared farm state — breeding
+  // setup + cake — and the IV model, which describe the farm, not this one
+  // query (frozen reset-scope contract).
+  function resetForm() {
+    setSpecies("");
+    setIvs({ hp: 0, attack: 0, defense: 0 });
+    setPassives([]);
+    setMaxSteps(5);
+    closeNaming();
+    reset();
+  }
+
+  // Sync the briefing form to a saved/imported request (target + IV briefing).
+  // The shared setup/cake stay live and are never restored, mirroring the Solver.
+  function applyRequestToForm(r: SolveRequest) {
+    setSpecies(r.target_species);
+    setPassives(r.required_passives ?? []);
+    setMaxSteps(r.max_steps ?? 5);
+    setIvs(r.ivs ?? { hp: 0, attack: 0, defense: 0 });
+    setIvModel(r.iv_model ?? "empirical");
+  }
+
+  const { headerButtons, banners, drawer, closeNaming } = usePlanActions({
+    plans,
+    fallbackUsed,
+    activePlan,
+    lastRequest,
+    nameToId,
+    saveDir,
+    restoredFrom,
+    rehydrate,
+    solve,
+    applyRequestToForm,
+  });
+
   const canSolve = saveDir.trim() !== "" && species.trim() !== "" && !solving;
   const active = plans && plans.length > 0 ? plans[activePlan] : null;
 
@@ -255,13 +305,23 @@ export default function IvLab() {
     <div className="flex h-full">
       {/* Briefing */}
       <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-auto border-r border-line bg-panel px-5 pb-6 pt-5">
-        <div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            IV Lab
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+              IV Lab
+            </div>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
+              Stat breeding
+            </h1>
           </div>
-          <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-            Stat breeding
-          </h1>
+          <button
+            type="button"
+            onClick={resetForm}
+            title="Clear target, IV floors and passives (keeps breeding setup & cake)"
+            className="mt-0.5 shrink-0 rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
+          >
+            Reset
+          </button>
         </div>
 
         <label className="flex flex-col gap-1.5">
@@ -511,6 +571,15 @@ export default function IvLab() {
 
       {/* Results */}
       <section className="flex flex-1 flex-col overflow-hidden">
+        {solving ? (
+          <SolveProgress progress={progress} onCancel={cancel} />
+        ) : (
+          <>
+            {cancelled && !plans && (
+              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">
+                Solve cancelled.
+              </div>
+            )}
         {error && (
           <div className="m-6 rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
             {error}
@@ -529,39 +598,43 @@ export default function IvLab() {
 
         {plans && plans.length > 0 && (
           <>
-            <div
-              className="flex flex-wrap items-center gap-1 border-b border-line bg-panel px-4 py-2"
-              role="tablist"
-              aria-label="Breeding lines"
-            >
-              {plans.map((_plan, i) => {
-                const on = i === activePlan;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    role="tab"
-                    aria-selected={on}
-                    onClick={() => setActivePlan(i)}
-                    className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-colors ${
-                      on
-                        ? "border-amber/50 bg-amber/10 text-amber"
-                        : "border-line bg-panel text-ink-dim hover:bg-hover hover:text-ink"
-                    }`}
-                  >
-                    Line {i + 1}
-                    {i === fastestIdx && (
-                      <span
-                        className={`rounded-sm px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wider ${
-                          on ? "bg-amber/20 text-amber" : "bg-raised text-amber/80"
-                        }`}
-                      >
-                        Fastest
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+            {banners}
+            <div className="flex items-center gap-3 border-b border-line bg-panel px-4 py-2">
+              <div
+                className="flex flex-wrap items-center gap-1"
+                role="tablist"
+                aria-label="Breeding lines"
+              >
+                {plans.map((_plan, i) => {
+                  const on = i === activePlan;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      role="tab"
+                      aria-selected={on}
+                      onClick={() => setActivePlan(i)}
+                      className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-colors ${
+                        on
+                          ? "border-amber/50 bg-amber/10 text-amber"
+                          : "border-line bg-panel text-ink-dim hover:bg-hover hover:text-ink"
+                      }`}
+                    >
+                      Line {i + 1}
+                      {i === fastestIdx && (
+                        <span
+                          className={`rounded-sm px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wider ${
+                            on ? "bg-amber/20 text-amber" : "bg-raised text-amber/80"
+                          }`}
+                        >
+                          Fastest
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="ml-auto flex items-center gap-2">{headerButtons}</div>
             </div>
 
             {active && (
@@ -629,6 +702,9 @@ export default function IvLab() {
             </p>
           </div>
         )}
+          </>
+        )}
+        {drawer}
       </section>
     </div>
   );

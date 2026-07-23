@@ -1323,3 +1323,55 @@ query: the whole BREEDING SETUP (boosters / cake / hatch time) and the saved
 BREEDING QUEUE item list. The results half of the reset lives in
 `useSolve().reset()` (shared with the save-switch invalidation); the form half
 lives in the view.
+
+## Wave B — IV Lab ⇄ Solver parity (`views/IvLab.tsx`, `components/plan-actions.tsx`)
+
+The IV Lab is the stat-breeding companion to the passive Solver; both fire the
+same `solve` backend through `useSolve()` and render the same `PlanGraph`. This
+wave brought the IV Lab to full result-side parity with the Solver so a plan is
+equally actionable from either view — same in-flight panel, same RESET, same
+save/export/plans cluster, same owned-instance hover — without duplicating the
+logic across the two views.
+
+### Shared plan-actions cluster (`usePlanActions`)
+
+The single-solve results-header cluster — **Save plan** (with its inline naming
+bar), **PNG** export, **Copy code**, the **PLANS** drawer, and the "loaded from a
+saved plan" **staleness banner** — was extracted verbatim from the Solver into
+`components/plan-actions.tsx` as the `usePlanActions` hook, so the two views can't
+drift. It drives the view-agnostic saved-plan store (`plans-drawer`) and
+plan-export codec; only the briefing form a loaded/imported request is applied
+back into differs, supplied by each view as an `applyRequestToForm` callback.
+The hook returns three placement slots because the pieces live in three spots of
+a results pane: `headerButtons` (the plan-tabs row's right slot), `banners`
+(staleness + naming bar, above the plan results), and `drawer` (mounted once at
+the section end). A `closeNaming()` handle lets a view RESET dismiss the naming
+bar so the next solve starts clean. The Solver's DOM/classes are unchanged by the
+extraction — the same markup, now sourced from the hook.
+
+### In-flight panel & cancel
+
+While solving, the IV Lab replaces its results area with the same
+`SolveProgress` panel and quiet `Solve cancelled.` note as the Solver (§ In-flight
+panel / Cancel semantics above) — `useSolve` already mints the token and listens,
+so this is a render branch, not new wiring. The IV Lab has no breeding queue, so
+it passes no `queueTargets` (single-solve mode only).
+
+### Reset scope (IV-shaped)
+
+The header **RESET** matches the Solver's affordance (subtle ghost button,
+top-right of the IV LAB eyebrow, `hover`/`focus` tint to `bad`, confirm-free) but
+its query differs: it clears the **target species**, the three **IV floor
+thresholds → 0/0/0**, **required passives**, **`max steps → 5`**, and the
+plans/restored/naming state (`useSolve().reset()`). It deliberately **keeps**
+everything that describes the *farm* rather than this one query — the shared
+BREEDING SETUP and **cake** (both live in `useBreedingSetup`, shared with the
+Solver) and the **IV model** — so a reset never disturbs the Solver's farm state.
+
+### Donor instance hover
+
+Each **BEST DONORS** row is wrapped in the owned-instance `PalHoverCard`
+(`<PalHoverCard speciesId={pal.character_id} pal={pal}>`), so hovering a candidate
+parent surfaces its full per-instance card — level, gender, alpha, quality-colored
+**IV bars**, and passive strips — above the species sections. Donors already hold
+the `OwnedPal`, so the object is passed directly; no instance lookup is needed.

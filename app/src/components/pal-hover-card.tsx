@@ -96,11 +96,16 @@ function place(anchor: DOMRect, w: number, h: number): Point {
 export function PalHoverCard({
   speciesId,
   pal,
+  location,
   children,
 }: {
   speciesId: string;
   /** When present, the card also renders this owned instance's data. */
   pal?: OwnedPal;
+  /** Owned-instance container/location line (e.g. "Party", "Palbox", a base
+   *  name). Rendered as a subtle mono footer in instance mode so the card reads
+   *  unmistakably as one of YOUR pals. Ignored for species-only cards. */
+  location?: string;
   children: ReactElement;
 }) {
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -219,7 +224,7 @@ export function PalHoverCard({
               prized ? "border-transparent" : "border-line ring-1 ring-abyss/70"
             }`}
           >
-            <HoverCardBody entry={entry} pal={pal} tier={tier} />
+            <HoverCardBody entry={entry} pal={pal} location={location} tier={tier} />
           </div>,
           document.body,
         )}
@@ -245,10 +250,12 @@ function FoodDots({ amount }: { amount: number }) {
 function HoverCardBody({
   entry,
   pal,
+  location,
   tier,
 }: {
   entry: SpeciesEntry | null;
   pal?: OwnedPal;
+  location?: string;
   tier: RarityTier | null;
 }) {
   const work = entry ? nonzeroWork(entry.work_suitability) : [];
@@ -431,6 +438,15 @@ function HoverCardBody({
               </span>
             )}
           </span>
+        </div>
+      )}
+
+      {/* Owned-instance location — where this pal of YOURS lives. Instance mode
+          only; sits below the species footer as the card's final line. */}
+      {pal && location && (
+        <div className="flex items-center gap-1.5 border-t border-line-soft bg-abyss/40 px-3 py-2 font-mono text-[10px] leading-none text-ink-faint">
+          <span className="uppercase tracking-wider">Location</span>
+          <span className="truncate text-ink-dim">{location}</span>
         </div>
       )}
     </>

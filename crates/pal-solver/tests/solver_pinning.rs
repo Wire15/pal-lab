@@ -60,6 +60,16 @@ fn owned_species_in_plan(node: &pal_solver::solver::results::PlanNode, species: 
     node.children.iter().any(|c| owned_species_in_plan(c, species))
 }
 
+/// Every owned-source instance id appearing as a leaf in a plan tree.
+fn owned_instance_ids(node: &pal_solver::solver::results::PlanNode, out: &mut Vec<Guid>) {
+    if let PlanSource::Owned { instance_id, .. } = &node.source {
+        out.push(*instance_id);
+    }
+    for c in &node.children {
+        owned_instance_ids(c, out);
+    }
+}
+
 /// A target with a discoverable canonical one-step parent pair, and that pair.
 /// Returns `(target, parent_a, parent_b)`.
 fn discover_pair(gd: &GameData) -> (u16, u16, u16) {
@@ -185,5 +195,46 @@ fn pinned_instance_exempt_from_reduction() {
     assert!(
         owned_species_in_plan(&pinned[0].root, a),
         "the retained pinned parent must appear in the plan"
+    );
+}
+
+/// (d) Owned plan leaves carry the real instance id of an input owned pal, and a
+/// pinned solve surfaces the pinned instance's id in the plan tree.
+#[test]
+fn owned_source_carries_input_instance_id() {
+    let gd = GameData::get();
+    let (target, a, b) = discover_pair(gd);
+    let cfg = owned_only();
+
+    let a_id = id(1);
+    let b_id = id(2);
+    let roster =
+        vec![owned(gd, a, Gender::Male, a_id, vec![]), owned(gd, b, Gender::Female, b_id, vec![])];
+    let input_ids = [a_id, b_id];
+
+    let spec = TargetSpec::new(TargetPal::Species(target));
+    let (plans, _) = solve_reporting(gd, &spec, &roster, &cfg);
+    assert!(!plans.is_empty(), "owned parents must yield a plan");
+
+    let mut ids = Vec::new();
+    owned_instance_ids(&plans[0].root, &mut ids);
+    assert!(!ids.is_empty(), "the owned-only plan must have owned leaves");
+    for got in &ids {
+        assert!(
+            input_ids.contains(got),
+            "every owned-source instance id must match an input OwnedPal id"
+        );
+    }
+
+    // Pinned solve: the pinned instance's id must surface in the plan tree.
+    let mut pinned_spec = spec.clone();
+    pinned_spec.pinned_parents = vec![a_id];
+    let (pinned, pins_satisfied) = solve_reporting(gd, &pinned_spec, &roster, &cfg);
+    assert!(pins_satisfied && !pinned.is_empty(), "pin is satisfiable");
+    let mut pinned_ids = Vec::new();
+    owned_instance_ids(&pinned[0].root, &mut pinned_ids);
+    assert!(
+        pinned_ids.contains(&a_id),
+        "the pinned instance id must appear in the plan's owned sources"
     );
 }

@@ -472,16 +472,87 @@ mod tests {
             serde_json::to_string_pretty(&active_skills).unwrap(),
         );
 
+        // solve-result.json — Anubis + Runner + PAL_Sanity_Up_1, up to 3 plans.
+        // Computed BEFORE the save-summary trim so the trim (pass 0 below) can
+        // guarantee the owned pals these plans reference survive into
+        // save-summary.json — the frontend hover-by-instance lookup resolves a
+        // plan node's `Owned.instance_id` against the save-summary roster, so at
+        // least one owned node's id MUST exist there for the demo to resolve.
+        use pal_solver::solver::{
+            resolve_passive, resolve_species, solve as run_solver, SolverConfig, TargetPal,
+            TargetSpec,
+        };
+        let gd = GameData::get();
+        let target = resolve_species(gd, "Anubis").expect("Anubis");
+        let passives = ["Runner", "PAL_Sanity_Up_1"]
+            .iter()
+            .map(|n| resolve_passive(gd, n).expect("passive"))
+            .collect();
+        let mut cfg = SolverConfig::default();
+        cfg.max_breeding_steps = 5;
+        cfg.max_solver_iterations = 5;
+        let mut spec = TargetSpec::new(TargetPal::Species(target));
+        spec.required_passives = passives;
+        let save = pal_save::read_save_dir(std::path::Path::new(&testdata_dir())).expect("save");
+        let mut plans: Vec<_> = run_solver(gd, &spec, &save.pals, &cfg)
+            .into_iter()
+            .take(3)
+            .collect();
+        assert!(!plans.is_empty(), "expected solver plans for fixture");
+        // Append a wild catch->breed chain example (include_wild): a non-catchable
+        // target bred from two wild-catchable parents. Surfaces the "wild" node kind
+        // that SolverUI renders. Icelyn is a clean same-cost chain on the stable pack.
+        if let Some(icelyn) = resolve_species(gd, "Icelyn") {
+            let mut wcfg = SolverConfig::default();
+            wcfg.include_wild = true;
+            wcfg.max_breeding_steps = 4;
+            wcfg.max_solver_iterations = 4;
+            let wspec = TargetSpec::new(TargetPal::Species(icelyn));
+            if let Some(p) = run_solver(gd, &wspec, &[], &wcfg).into_iter().next() {
+                plans.push(p);
+            }
+        }
+        // Owned instance ids referenced by these plans (walk each plan tree).
+        fn collect_owned_ids(
+            node: &pal_solver::solver::results::PlanNode,
+            out: &mut Vec<pal_data::types::Guid>,
+        ) {
+            if let pal_solver::solver::results::PlanSource::Owned { instance_id, .. } = &node.source {
+                out.push(*instance_id);
+            }
+            for c in &node.children {
+                collect_owned_ids(c, out);
+            }
+        }
+        let mut plan_owned_ids: Vec<pal_data::types::Guid> = Vec::new();
+        for p in &plans {
+            collect_owned_ids(&p.root, &mut plan_owned_ids);
+        }
+
         // save-summary.json — real summary, pals trimmed to a representative
         // ~60 covering every container kind present.
         let mut summary = crate::save::load_save(testdata_dir()).expect("load save");
         let mut per_kind: Map<String, u32> = Map::new();
         let mut kinds_seen: Map<String, ()> = Map::new();
-        let mut trimmed = Vec::new();
+        let mut trimmed: Vec<pal_data::types::OwnedPal> = Vec::new();
+        // pass 0: guarantee every owned pal the solve-result plans reference
+        // survives the trim, so a plan node's `Owned.instance_id` resolves
+        // against the save-summary roster in dev-mode hover.
+        for pal in &summary.pals {
+            if plan_owned_ids.contains(&pal.instance_id)
+                && !trimmed.iter().any(|p| p.instance_id == pal.instance_id)
+            {
+                let k = format!("{:?}", pal.container_kind);
+                trimmed.push(pal.clone());
+                *per_kind.entry(k).or_default() += 1;
+            }
+        }
         // pass 1: one representative per kind.
         for pal in &summary.pals {
             let k = format!("{:?}", pal.container_kind);
-            if kinds_seen.insert(k.clone(), ()).is_none() {
+            if kinds_seen.insert(k.clone(), ()).is_none()
+                && !trimmed.iter().any(|p| p.instance_id == pal.instance_id)
+            {
                 trimmed.push(pal.clone());
                 *per_kind.entry(k).or_default() += 1;
             }
@@ -525,46 +596,17 @@ mod tests {
             }
         }
         summary.pals = trimmed;
+        // Sanity: at least one plan-referenced owned pal made it into the roster,
+        // otherwise dev-mode hover-by-instance can't be demoed.
+        assert!(
+            plan_owned_ids.iter().any(|id| summary.pals.iter().any(|p| &p.instance_id == id)),
+            "save-summary must retain >=1 owned pal referenced by solve-result plans",
+        );
         write(
             "save-summary.json",
             serde_json::to_string_pretty(&summary).unwrap(),
         );
 
-        // solve-result.json — Anubis + Runner + PAL_Sanity_Up_1, up to 3 plans.
-        use pal_solver::solver::{
-            resolve_passive, resolve_species, solve as run_solver, SolverConfig, TargetPal,
-            TargetSpec,
-        };
-        let gd = GameData::get();
-        let target = resolve_species(gd, "Anubis").expect("Anubis");
-        let passives = ["Runner", "PAL_Sanity_Up_1"]
-            .iter()
-            .map(|n| resolve_passive(gd, n).expect("passive"))
-            .collect();
-        let mut cfg = SolverConfig::default();
-        cfg.max_breeding_steps = 5;
-        cfg.max_solver_iterations = 5;
-        let mut spec = TargetSpec::new(TargetPal::Species(target));
-        spec.required_passives = passives;
-        let save = pal_save::read_save_dir(std::path::Path::new(&testdata_dir())).expect("save");
-        let mut plans: Vec<_> = run_solver(gd, &spec, &save.pals, &cfg)
-            .into_iter()
-            .take(3)
-            .collect();
-        assert!(!plans.is_empty(), "expected solver plans for fixture");
-        // Append a wild catch->breed chain example (include_wild): a non-catchable
-        // target bred from two wild-catchable parents. Surfaces the "wild" node kind
-        // that SolverUI renders. Icelyn is a clean same-cost chain on the stable pack.
-        if let Some(icelyn) = resolve_species(gd, "Icelyn") {
-            let mut wcfg = SolverConfig::default();
-            wcfg.include_wild = true;
-            wcfg.max_breeding_steps = 4;
-            wcfg.max_solver_iterations = 4;
-            let wspec = TargetSpec::new(TargetPal::Species(icelyn));
-            if let Some(p) = run_solver(gd, &wspec, &[], &wcfg).into_iter().next() {
-                plans.push(p);
-            }
-        }
         // Wrap into the `solve` command's SolveResponse shape {plans, fallback_used}.
         // fallback_used=false: this is the realistic breeding-first response for an
         // owned-reachable target (the Icelyn chain is appended purely to exercise

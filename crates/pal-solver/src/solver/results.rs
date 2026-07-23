@@ -1,7 +1,7 @@
 //! Serializable breeding-plan tree returned to callers (a Tauri command wraps
 //! this next phase, so every node is `Serialize`/`Deserialize`).
 
-use pal_data::types::Gender;
+use pal_data::types::{Gender, Guid};
 use pal_data::GameData;
 use serde::{Deserialize, Serialize};
 
@@ -11,8 +11,10 @@ use crate::solver::refs::{EffPassive, PalRef, RefGender};
 /// How a plan node is obtained.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PlanSource {
-    /// An owned pal, at a storage location.
-    Owned { location: String },
+    /// An owned pal, at a storage location. `instance_id` identifies the
+    /// representative owned instance (queue synthetic seeds carry a
+    /// `QUEUED`-prefixed id that won't resolve to a real save pal).
+    Owned { location: String, instance_id: Guid },
     /// A wild pal to catch. `captures` = estimated catches for the needed
     /// gender; `min_wild_level` = the species' minimum wild spawn level (0 when
     /// the pack has no wild-spawn record).
@@ -76,7 +78,10 @@ fn node_of(gd: &GameData, r: &PalRef) -> PlanNode {
     let passives = passive_labels(r.effective_passives());
     let (source, probability, children) = match r {
         PalRef::Owned(o) => (
-            PlanSource::Owned { location: format!("{:?}", o.primary.container) },
+            PlanSource::Owned {
+                location: format!("{:?}", o.primary.container),
+                instance_id: o.primary.instance_id,
+            },
             1.0,
             Vec::new(),
         ),

@@ -375,7 +375,7 @@ function Shell() {
           )}
           <div className="mt-2.5 flex items-center gap-2 px-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
             <span className="h-1.5 w-1.5 rounded-full bg-good" />
-            Offline &middot; v0.1
+            Offline &middot; v0.2
           </div>
         </div>
       </nav>

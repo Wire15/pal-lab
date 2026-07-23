@@ -20,7 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { BreedingPlan } from "../lib/types";
+import type { BreedingPlan, Guid, OwnedPal } from "../lib/types";
 import type { PlanNodeSelection } from "./plan-node-panel";
 import {
   COL_W,
@@ -33,6 +33,7 @@ import {
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { palIconUrl, UNKNOWN_ICON } from "../lib/assets";
 import { PalHoverCard } from "./pal-hover-card";
+import { usePalByInstance } from "../lib/owned-lookup";
 import { Tag } from "./primitives";
 
 const MIN_ZOOM = 0.4;
@@ -51,19 +52,26 @@ interface ViewTransform {
 
 /** A circular pal node in the slot visual idiom (portrait clipped to a circle,
  *  element/source-tinted ring, gender dot). The plan payload carries no level /
- *  rank / alpha / instance, so — unlike the palbox Slot primitive it mirrors —
- *  it renders no level pill (nothing to fabricate); the side panel owns detail.
- *  Wrapped in the species-only PalHoverCard when a species id resolves. */
+ *  rank / alpha, so — unlike the palbox Slot primitive it mirrors — the circle
+ *  itself renders no level pill (nothing to fabricate); the side panel owns
+ *  detail. Hover cards, though, DO enrich: an owned leaf whose instance_id
+ *  resolves against the loaded save gets the full instance-mode PalHoverCard
+ *  (level, gender, alpha, condensation, IV bars, passive strips, plus a
+ *  location footer); everything else — bred/wild nodes, and owned leaves that
+ *  don't resolve (legacy plans without an id, synthetic queue seeds, a save
+ *  switched out) — falls back to the species-only card. */
 function PalCircle({
   laid,
   iconId,
   selected,
   onSelect,
+  resolvePal,
 }: {
   laid: LaidNode;
   iconId: string | null;
   selected: boolean;
   onSelect: () => void;
+  resolvePal: (id?: Guid | null) => OwnedPal | undefined;
 }) {
   const { node } = laid;
   const g = genderView(node.gender);
@@ -79,6 +87,18 @@ function PalCircle({
       ? node.source.Owned
       : null;
   const isBred = node.source === "Bred";
+
+  // Owned leaves carry an instance_id (frozen contract: PlanSource::Owned gains
+  // `instance_id: Guid`, optional on the TS side for legacy saved plans). Read
+  // it defensively via `in` narrowing so this compiles both before and after
+  // that field lands in types.ts, then resolve it against the loaded save. A
+  // hit => full instance-mode hover; a miss (legacy plan, synthetic queue seed,
+  // no/other save) => species-only.
+  const instanceId =
+    owned && "instance_id" in owned && Array.isArray(owned.instance_id)
+      ? owned.instance_id
+      : null;
+  const ownedInstance = resolvePal(instanceId);
 
   const d = NODE_R * 2;
   const gBadge = Math.max(15, Math.round(d * 0.3));
@@ -142,7 +162,17 @@ function PalCircle({
       style={{ left: laid.x - NODE_W / 2, top: laid.y - NODE_R, width: NODE_W }}
     >
       {iconId ? (
-        <PalHoverCard speciesId={iconId}>{trigger}</PalHoverCard>
+        ownedInstance && owned ? (
+          <PalHoverCard
+            speciesId={iconId}
+            pal={ownedInstance}
+            location={owned.location}
+          >
+            {trigger}
+          </PalHoverCard>
+        ) : (
+          <PalHoverCard speciesId={iconId}>{trigger}</PalHoverCard>
+        )
       ) : (
         trigger
       )}
@@ -229,6 +259,9 @@ export function PlanGraph({
   onSelect: (sel: PlanNodeSelection, nodeId: string) => void;
 }) {
   const layout = useMemo<PlanLayout>(() => layoutPlan(plan.root), [plan.root]);
+  // One shared instance resolver for every owned leaf's hover card (memoized
+  // Map over the loaded save's roster; rebuilt only when the save reloads).
+  const palByInstance = usePalByInstance();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<ViewTransform>({ k: 1, tx: 0, ty: 0 });
@@ -395,6 +428,7 @@ export function PlanGraph({
                   laid.id,
                 )
               }
+              resolvePal={palByInstance}
             />
           );
         })}

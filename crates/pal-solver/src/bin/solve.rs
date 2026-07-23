@@ -199,7 +199,7 @@ fn print_node(node: &PlanNode, depth: usize) {
         None => "",
     };
     let source = match &node.source {
-        PlanSource::Owned { location } => format!("owned @ {location}"),
+        PlanSource::Owned { location, .. } => format!("owned @ {location}"),
         PlanSource::Wild { captures, min_wild_level } => {
             format!("wild (~{captures} catches, Lv{min_wild_level}+)")
         }

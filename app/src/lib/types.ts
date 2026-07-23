@@ -272,10 +272,16 @@ export type ActiveSkills = Record<string, ActiveSkill>;
 
 /**
  * How a plan node is obtained. serde emits an externally-tagged enum:
- * `{ Owned: { location } }` | `{ Wild: { captures, min_wild_level } }` | `"Bred"`.
+ * `{ Owned: { location, instance_id } }` | `{ Wild: { captures, min_wild_level } }` | `"Bred"`.
+ *
+ * `instance_id` identifies the representative owned instance (same serde shape
+ * as `OwnedPal.instance_id`). OPTIONAL: legacy plans persisted in localStorage
+ * predate the field, so every consumer must fall back to species-only behavior
+ * when it is absent. Queue synthetic seeds carry a `QUEUED`-prefixed id that
+ * won't resolve to a real save pal (species-only fallback, by design).
  */
 export type PlanSource =
-  | { Owned: { location: string } }
+  | { Owned: { location: string; instance_id?: Guid } }
   | { Wild: { captures: number; min_wild_level: number } }
   | "Bred";
 
