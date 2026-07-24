@@ -424,6 +424,12 @@ export interface SpeciesStats {
   /** P(male) as a percent (0-100). NOTE: SpeciesEntry.male_probability is the
    * 0-1 fraction the gender bar reads; this percent copy exists per contract. */
   male_probability: number;
+  /** Support stat (partner-skill support value; 100 for every species). */
+  support: number;
+  /** CaptureRateCorrect — per-species capture-rate multiplier. */
+  capture_rate_correct: number;
+  /** ExpRatio — per-species XP-gain multiplier. */
+  exp_ratio: number;
 }
 
 /** Lightweight species reference for parent/child links. */
@@ -500,11 +506,29 @@ export interface LearnMoveEntry {
   level: number;
 }
 
-/** Full detail (`paldex_species_detail`): the grid row plus breeding notes and
- * the level-up learnset (sorted by level ascending; empty when none). */
+/** One per-pal item drop (`DT_PalDropItem`), as shown in palpedia's drop rows.
+ * `rate` is a PERCENT in 0..100 (100 = always drops). */
+export interface ItemDrop {
+  /** Raw item id (e.g. "Wool", "ElectricOrgan"). */
+  item_id: string;
+  /** Localized English display name (falls back to `item_id`). */
+  item_name: string;
+  /** Minimum quantity dropped. */
+  min: number;
+  /** Maximum quantity dropped (always >= min). */
+  max: number;
+  /** Drop probability as a percent (0..100). */
+  rate: number;
+}
+
+/** Full detail (`paldex_species_detail`): the grid row plus breeding notes,
+ * the level-up learnset (sorted by level ascending; empty when none), and the
+ * per-pal item drops (`drops`; empty [] for the few variants with no drop
+ * table — render nothing in that case). */
 export interface SpeciesDetail extends SpeciesEntry {
   breeding: BreedingNotes;
   learnset: LearnMoveEntry[];
+  drops: ItemDrop[];
 }
 
 /** A canonical parent pair that breeds into a target child. */
@@ -518,6 +542,19 @@ export interface ParentsResult {
   /** Total distinct parent pairs before any cap. */
   total: number;
   pairs: ParentPair[];
+}
+
+/** One parent pair that breeds into a target child (`reverse_breeding`). Parents
+ *  are internal species ids (the cross-layer key); `kind` is `"unique"` for a
+ *  gender-pinned combo (CatMage x FoxMage) and `"rank"` for the gender-
+ *  independent combi-rank majority; the gender fields are non-null only on a
+ *  `"unique"` pair. */
+export interface ReversePair {
+  parent1: string;
+  parent2: string;
+  kind: "unique" | "rank";
+  parent1_gender: Gender | null;
+  parent2_gender: Gender | null;
 }
 
 /** Forward breeding result (`breeding_child`). */

@@ -646,3 +646,144 @@ fn lab_research_incubation_lines_decode() {
         "all lab_research lines are positive-monotonic incubation lines",
     );
 }
+
+#[test]
+fn reverse_breeding_forward_consistent() {
+    let gd = GameData::get();
+    // A common mid-rank species, a self-pair species, and the two gender-pinned
+    // unique combos. For every emitted pair, breeding it forward via `child_of`
+    // must resolve back to the target (rank pairs are gender-independent, so an
+    // `Any` pin is exercised with `Male`; unique pairs use their stored pins).
+    for target in ["Anubis", "Alpaca", "CatMage_Fire", "FoxMage_Dark"] {
+        let idx = gd.species_index(target).expect("target exists");
+        let pairs = gd.reverse_breeding(idx);
+        assert!(!pairs.is_empty(), "expected >=1 parent pair for {target}");
+        for p in &pairs {
+            let ga = p.parent1_gender.unwrap_or(Gender::Male);
+            let gb = p.parent2_gender.unwrap_or(Gender::Male);
+            assert_eq!(
+                gd.child_of(p.parent1, ga, p.parent2, gb),
+                Some(idx),
+                "forward({} x {}) should breed {target}",
+                gd.species_at(p.parent1).unwrap().internal_name,
+                gd.species_at(p.parent2).unwrap().internal_name,
+            );
+        }
+    }
+}
+
+#[test]
+fn reverse_breeding_unique_and_self_pair() {
+    let gd = GameData::get();
+    let cat_fire = gd.species_index("CatMage_Fire").expect("CatMage_Fire");
+    // CatMage_Fire is bred BOTH by the gender-pinned CatMage x FoxMage unique
+    // combo AND by a rank self-pair — pinning the unique flag, the gender
+    // fields, and the self-pair/rank path in one species.
+    let pairs = gd.reverse_breeding(cat_fire);
+    assert_eq!(pairs.len(), 2, "CatMage_Fire has exactly two parent pairs");
+
+    let name = |i: u16| gd.species_at(i).unwrap().internal_name.as_str();
+    let unique = pairs.iter().find(|p| p.unique).expect("a unique pair");
+    assert!(
+        unique.parent1_gender.is_some() && unique.parent2_gender.is_some(),
+        "unique combo carries both gender pins",
+    );
+    let un = [name(unique.parent1), name(unique.parent2)];
+    assert!(
+        un.contains(&"CatMage") && un.contains(&"FoxMage"),
+        "unique combo is CatMage x FoxMage, got {un:?}",
+    );
+
+    let rank = pairs.iter().find(|p| !p.unique).expect("a rank pair");
+    assert!(
+        rank.parent1_gender.is_none() && rank.parent2_gender.is_none(),
+        "rank pair has null genders",
+    );
+    assert_eq!(
+        (name(rank.parent1), name(rank.parent2)),
+        ("CatMage_Fire", "CatMage_Fire"),
+        "rank pair is the self-pair",
+    );
+}
+
+#[test]
+fn reverse_breeding_is_deterministic_and_deduped() {
+    let gd = GameData::get();
+    let idx = gd.species_index("Anubis").expect("Anubis");
+    let pairs = gd.reverse_breeding(idx);
+    // Stable across calls.
+    assert_eq!(pairs, gd.reverse_breeding(idx), "output is deterministic");
+    // No duplicate canonical pairs.
+    let mut seen = std::collections::HashSet::new();
+    for p in &pairs {
+        let key = (p.parent1.min(p.parent2), p.parent1.max(p.parent2));
+        assert!(seen.insert(key), "duplicate pair {key:?}");
+    }
+    // Sorted by (parent1 dex, parent1 idx, parent2 dex, parent2 idx). Variants
+    // share a paldex_no with their base form, so the index is the stable
+    // tiebreak that makes the ordering total.
+    let dex = |i: u16| gd.species_at(i).unwrap().paldex_no;
+    assert!(
+        pairs.windows(2).all(|w| {
+            (dex(w[0].parent1), w[0].parent1, dex(w[0].parent2), w[0].parent2)
+                <= (dex(w[1].parent1), w[1].parent1, dex(w[1].parent2), w[1].parent2)
+        }),
+        "pairs are dex-ordered with an index tiebreak",
+    );
+}
+
+#[test]
+fn drops_decode_with_ground_truth_and_new_stats() {
+    let gd = GameData::get();
+
+    // Lamball (SheepBall) ground truth from DT_PalDropItem: Wool 1-3 @100%,
+    // Lamball Mutton (Meat_SheepBall) 1-1 @100%.
+    let sheep = gd.species_by_id("SheepBall").expect("SheepBall present");
+    let wool = sheep
+        .drops
+        .iter()
+        .find(|d| d.item_id == "Wool")
+        .expect("Lamball drops Wool");
+    assert_eq!(wool.item_name, "Wool", "item name localized");
+    assert_eq!((wool.min, wool.max), (1, 3), "Wool quantity range");
+    assert_eq!(wool.rate, 100.0, "Wool rate is a percent (100)");
+    assert!(
+        sheep.drops.iter().any(|d| d.item_id == "Meat_SheepBall" && d.item_name == "Lamball Mutton"),
+        "Lamball drops localized Lamball Mutton"
+    );
+
+    // A sub-100% drop is preserved as a real percent: Anubis -> Innovative
+    // Technical Manual (TechnologyBook_G2) @5%.
+    let anubis = gd.species_by_id("Anubis").expect("Anubis present");
+    let manual = anubis
+        .drops
+        .iter()
+        .find(|d| d.item_id == "TechnologyBook_G2")
+        .expect("Anubis drops TechnologyBook_G2");
+    assert_eq!(manual.rate, 5.0, "sub-100 rate kept as percent");
+
+    // New extended stats decode (Support/CaptureRateCorrect/ExpRatio).
+    assert_eq!(sheep.support, 100);
+    assert_eq!(sheep.capture_rate_correct, 1.5);
+    assert_eq!(sheep.exp_ratio, 1.0);
+
+    // Every drop row across the pack is monotonic (min<=max) with a valid
+    // percent rate in (0, 100]; coverage is broad (most species drop something).
+    let mut with_drops = 0usize;
+    for sp in gd.species() {
+        if !sp.drops.is_empty() {
+            with_drops += 1;
+        }
+        for d in &sp.drops {
+            assert!(d.min <= d.max, "{}: {} min<=max", sp.internal_name, d.item_id);
+            assert!(
+                d.rate > 0.0 && d.rate <= 100.0,
+                "{}: {} rate {} in (0,100]",
+                sp.internal_name,
+                d.item_id,
+                d.rate
+            );
+        }
+    }
+    assert!(with_drops >= 250, "drops coverage {with_drops} unexpectedly low");
+}

@@ -22,7 +22,10 @@
       "stamina": 100,
       "max_full_stomach": 560,
       "size": "M",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -85,7 +88,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -149,7 +155,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -212,7 +221,10 @@
       "stamina": 200,
       "max_full_stomach": 550,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -230,8 +242,8 @@
       0
     ],
     "partner_skill": "Sandstorm's Blessing",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ground and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ground and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ground and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ground and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -275,7 +287,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -338,7 +353,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -409,7 +427,10 @@
       "stamina": 100,
       "max_full_stomach": 540,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -478,7 +499,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -542,7 +566,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -605,7 +632,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -660,7 +690,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -715,7 +748,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -778,7 +814,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 0.9,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -833,7 +872,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 70,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -888,7 +930,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -951,7 +996,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1006,7 +1054,10 @@
       "stamina": 100,
       "max_full_stomach": 350,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -1075,7 +1126,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1130,7 +1184,10 @@
       "stamina": 180,
       "max_full_stomach": 410,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1185,7 +1242,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.3,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1248,7 +1308,10 @@
       "stamina": 70,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1303,7 +1366,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -1372,7 +1438,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -1441,7 +1510,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.2,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1496,7 +1568,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1551,7 +1626,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 0.9,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1614,7 +1692,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 0.9,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1632,8 +1713,8 @@
       0
     ],
     "partner_skill": "Frigid Deity",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ice and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ice and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -1677,7 +1758,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1732,7 +1816,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1795,7 +1882,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1858,7 +1948,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1914,7 +2007,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 0.9,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -1970,7 +2066,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 20.0
+      "male_probability": 20.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2025,7 +2124,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2095,7 +2197,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2165,7 +2270,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.5,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2220,7 +2328,10 @@
       "stamina": 150,
       "max_full_stomach": 550,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -2290,7 +2401,10 @@
       "stamina": 150,
       "max_full_stomach": 550,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2354,7 +2468,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2424,7 +2541,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2479,7 +2599,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2534,7 +2657,10 @@
       "stamina": 350,
       "max_full_stomach": 460,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2552,8 +2678,8 @@
       0
     ],
     "partner_skill": "Wings of Flame",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by (5~25)% for each other Fire Pal in your party.\n(Excluding Suzaku)",
-    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by {0}% for each other Fire Pal in your party.\n(Excluding Suzaku)",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Fire Pal in your party.\n(Excluding Suzaku)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Fire Pal in your party.\n(Excluding Suzaku)",
     "partner_skill_values": [
       [
         "5",
@@ -2597,7 +2723,10 @@
       "stamina": 350,
       "max_full_stomach": 460,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2615,8 +2744,8 @@
       0
     ],
     "partner_skill": "Wings of Water",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by (5~25)% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
-    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal’s Movement Speed increases by {0}% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Water Pal in your party.\n(Excluding Suzaku Aqua)",
     "partner_skill_values": [
       [
         "5",
@@ -2660,7 +2789,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2678,8 +2810,8 @@
       0
     ],
     "partner_skill": "Red Hare",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -2723,7 +2855,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2741,8 +2876,8 @@
       0
     ],
     "partner_skill": "Black Hare",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type toDark and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type toDark and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type toDark and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type toDark and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -2787,7 +2922,10 @@
       "stamina": 130,
       "max_full_stomach": 200,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2850,7 +2988,10 @@
       "stamina": 130,
       "max_full_stomach": 200,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2914,7 +3055,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -2977,7 +3121,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3040,7 +3187,10 @@
       "stamina": 100,
       "max_full_stomach": 480,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3103,7 +3253,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3158,7 +3311,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3213,7 +3369,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3276,7 +3435,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3331,7 +3493,10 @@
       "stamina": 160,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3395,7 +3560,10 @@
       "stamina": 160,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3413,8 +3581,8 @@
       0
     ],
     "partner_skill": "Icewing Dance",
-    "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player’s attack type to Ice and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ice and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden to travel on water.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Ice and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -3459,7 +3627,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.5,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -3528,7 +3699,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3591,7 +3765,10 @@
       "stamina": 140,
       "max_full_stomach": 340,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3646,7 +3823,10 @@
       "stamina": 220,
       "max_full_stomach": 490,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -3716,7 +3896,10 @@
       "stamina": 220,
       "max_full_stomach": 490,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -3786,7 +3969,10 @@
       "stamina": 130,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3849,7 +4035,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3912,7 +4101,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -3976,7 +4168,10 @@
       "stamina": 200,
       "max_full_stomach": 480,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -4038,7 +4233,10 @@
       "stamina": 200,
       "max_full_stomach": 480,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4094,7 +4292,10 @@
       "stamina": 140,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 110,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4157,7 +4358,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4220,7 +4424,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4283,7 +4490,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4338,7 +4548,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4394,7 +4607,10 @@
       "stamina": 150,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4458,7 +4674,10 @@
       "stamina": 150,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4522,7 +4741,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 70,
+      "capture_rate_correct": 1.5,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4577,7 +4799,10 @@
       "stamina": 130,
       "max_full_stomach": 270,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 150,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4641,7 +4866,10 @@
       "stamina": 130,
       "max_full_stomach": 270,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 150,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4705,7 +4933,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 80,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -4768,7 +4999,10 @@
       "stamina": 300,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 70,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -4849,7 +5083,10 @@
       "stamina": 300,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 70,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -4930,7 +5167,10 @@
       "stamina": 180,
       "max_full_stomach": 400,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 30,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5007,7 +5247,10 @@
       "stamina": 180,
       "max_full_stomach": 400,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 30,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5084,7 +5327,10 @@
       "stamina": 100,
       "max_full_stomach": 490,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 110,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5147,7 +5393,10 @@
       "stamina": 150,
       "max_full_stomach": 410,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5216,7 +5465,10 @@
       "stamina": 150,
       "max_full_stomach": 410,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5286,7 +5538,10 @@
       "stamina": 230,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 90,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5349,7 +5604,10 @@
       "stamina": 190,
       "max_full_stomach": 600,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 50,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5418,7 +5676,10 @@
       "stamina": 190,
       "max_full_stomach": 600,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 50,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -5488,7 +5749,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5506,8 +5770,8 @@
       1
     ],
     "partner_skill": "Berry Picker",
-    "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
-    "partner_skill_template": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_desc": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal\u00e2\u20ac\u2122s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Red Berries from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal\u00e2\u20ac\u2122s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
     "partner_skill_values": [
       [
         "100",
@@ -5551,7 +5815,10 @@
       "stamina": 140,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5606,7 +5873,10 @@
       "stamina": 250,
       "max_full_stomach": 530,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 90,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5669,7 +5939,10 @@
       "stamina": 100,
       "max_full_stomach": 350,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 90,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5732,7 +6005,10 @@
       "stamina": 100,
       "max_full_stomach": 350,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 90,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5795,7 +6071,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 140,
+      "capture_rate_correct": 1.3,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5850,7 +6129,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5913,7 +6195,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -5977,7 +6262,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "L",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 140,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -6046,7 +6334,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6109,7 +6400,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6172,7 +6466,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6235,7 +6532,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6291,7 +6591,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6347,7 +6650,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 20.0
+      "male_probability": 20.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6402,7 +6708,10 @@
       "stamina": 240,
       "max_full_stomach": 460,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -6463,7 +6772,10 @@
       "stamina": 240,
       "max_full_stomach": 460,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -6532,7 +6844,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6595,7 +6910,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6650,7 +6968,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6705,7 +7026,10 @@
       "stamina": 100,
       "max_full_stomach": 540,
       "size": "L",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -6774,7 +7098,10 @@
       "stamina": 100,
       "max_full_stomach": 540,
       "size": "L",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6837,7 +7164,10 @@
       "stamina": 100,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 10.0
+      "male_probability": 10.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6900,7 +7230,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 10.0
+      "male_probability": 10.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -6955,7 +7288,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7010,7 +7346,10 @@
       "stamina": 130,
       "max_full_stomach": 280,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7065,7 +7404,10 @@
       "stamina": 130,
       "max_full_stomach": 280,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7120,7 +7462,10 @@
       "stamina": 120,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7175,7 +7520,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7193,8 +7541,8 @@
       0
     ],
     "partner_skill": "Lightning Shepherd",
-    "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal’s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Rayhound)",
-    "partner_skill_template": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal’s Movement Speed increases by {0}% for each other Electric Pal in your party. (Excluding Rayhound)",
+    "partner_skill_desc": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Rayhound)",
+    "partner_skill_template": "Can be ridden.\nCan perform a double jump while mounted.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Electric Pal in your party. (Excluding Rayhound)",
     "partner_skill_values": [
       [
         "5",
@@ -7238,7 +7586,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7301,7 +7652,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7371,7 +7725,10 @@
       "stamina": 300,
       "max_full_stomach": 470,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -7448,7 +7805,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7503,7 +7863,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7566,7 +7929,10 @@
       "stamina": 110,
       "max_full_stomach": 600,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -7632,7 +7998,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7687,7 +8056,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7742,7 +8114,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7797,7 +8172,10 @@
       "stamina": 150,
       "max_full_stomach": 410,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7860,7 +8238,10 @@
       "stamina": 150,
       "max_full_stomach": 410,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -7924,7 +8305,10 @@
       "stamina": 170,
       "max_full_stomach": 280,
       "size": "XL",
-      "male_probability": 90.0
+      "male_probability": 90.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -7993,7 +8377,10 @@
       "stamina": 170,
       "max_full_stomach": 280,
       "size": "XL",
-      "male_probability": 90.0
+      "male_probability": 90.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -8062,7 +8449,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.3,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8133,7 +8523,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.3,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8204,7 +8597,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8259,7 +8655,10 @@
       "stamina": 120,
       "max_full_stomach": 300,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8322,7 +8721,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8392,7 +8794,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8448,7 +8853,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8511,7 +8919,10 @@
       "stamina": 160,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8529,8 +8940,8 @@
       0
     ],
     "partner_skill": "Thunderous",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by (5~20)%.\nThis Pal’s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Beakon)",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by {0}%.\nThis Pal’s Movement Speed increases by {1}% for each other Electric Pal in your party. (Excluding Beakon)",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by (5~20)%.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Electric Pal in your party. (Excluding Beakon)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Electric and increases Attack by {0}%.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {1}% for each other Electric Pal in your party. (Excluding Beakon)",
     "partner_skill_values": [
       [
         "5",
@@ -8581,7 +8992,10 @@
       "stamina": 160,
       "max_full_stomach": 340,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8599,8 +9013,8 @@
       0
     ],
     "partner_skill": "Coldsnap",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by (5~20)%.\nThis Pal’s Movement Speed increases by (5~25)% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by {0}%.\nThis Pal’s Movement Speed increases by {1}% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by (5~20)%.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player's attack type to Ice and increases Attack by {0}%.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {1}% for each other Ice Pal in your party.\n(Excluding Beakon Cryst)",
     "partner_skill_values": [
       [
         "5",
@@ -8651,7 +9065,10 @@
       "stamina": 100,
       "max_full_stomach": 400,
       "size": "L",
-      "male_probability": 85.0
+      "male_probability": 85.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -8721,7 +9138,10 @@
       "stamina": 100,
       "max_full_stomach": 400,
       "size": "L",
-      "male_probability": 85.0
+      "male_probability": 85.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -8790,7 +9210,10 @@
       "stamina": 400,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -8856,7 +9279,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 140,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8911,7 +9337,10 @@
       "stamina": 100,
       "max_full_stomach": 270,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -8975,7 +9404,10 @@
       "stamina": 100,
       "max_full_stomach": 270,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9039,7 +9471,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9057,8 +9492,8 @@
       0
     ],
     "partner_skill": "Wriggling Weasel",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Dragon and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Dragon and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Dragon and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Dragon and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9103,7 +9538,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9121,8 +9559,8 @@
       0
     ],
     "partner_skill": "Sparkling Weasel",
-    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9167,7 +9605,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9230,7 +9671,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9248,8 +9692,8 @@
       0
     ],
     "partner_skill": "Grass Dragon Affection",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Grass and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Grass and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Grass and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Grass and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9294,7 +9738,10 @@
       "stamina": 170,
       "max_full_stomach": 460,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9312,8 +9759,8 @@
       0
     ],
     "partner_skill": "Wings of Death",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Dark and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Dark and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Dark and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Dark and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9357,7 +9804,10 @@
       "stamina": 170,
       "max_full_stomach": 460,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9375,8 +9825,8 @@
       0
     ],
     "partner_skill": "Wings of Thunder",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Electric and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Electric and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Electric and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Electric and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9421,7 +9871,10 @@
       "stamina": 150,
       "max_full_stomach": 480,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9439,8 +9892,8 @@
       0
     ],
     "partner_skill": "Flame Wing",
-    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by (5~20)%.",
-    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player’s attack type to Fire and increases Attack by {0}%.",
+    "partner_skill_desc": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by (5~20)%.",
+    "partner_skill_template": "Can be ridden as a flying mount.\nWhile mounted,\nchanges the player\u00e2\u20ac\u2122s attack type to Fire and increases Attack by {0}%.",
     "partner_skill_values": [
       [
         "5",
@@ -9484,7 +9937,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9547,7 +10003,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9618,7 +10077,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9673,7 +10135,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9729,7 +10194,10 @@
       "stamina": 350,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -9795,7 +10263,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9858,7 +10329,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9929,7 +10403,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -9992,7 +10469,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10047,7 +10527,10 @@
       "stamina": 100,
       "max_full_stomach": 410,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10118,7 +10601,10 @@
       "stamina": 100,
       "max_full_stomach": 410,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10188,7 +10674,10 @@
       "stamina": 100,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -10258,7 +10747,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.3,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10321,7 +10813,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10385,7 +10880,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10449,7 +10947,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10512,7 +11013,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10575,7 +11079,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 10.0
+      "male_probability": 10.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10638,7 +11145,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 10.0
+      "male_probability": 10.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -10707,7 +11217,10 @@
       "stamina": 300,
       "max_full_stomach": 680,
       "size": "L",
-      "male_probability": 20.0
+      "male_probability": 20.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10771,7 +11284,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10834,7 +11350,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10898,7 +11417,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -10961,7 +11483,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "S",
-      "male_probability": 55.0
+      "male_probability": 55.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11016,7 +11541,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11080,7 +11608,10 @@
       "stamina": 100,
       "max_full_stomach": 340,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11143,7 +11674,10 @@
       "stamina": 100,
       "max_full_stomach": 480,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11207,7 +11741,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11271,7 +11808,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11335,7 +11875,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 70.0
+      "male_probability": 70.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -11411,7 +11954,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 70.0
+      "male_probability": 70.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -11487,7 +12033,10 @@
       "stamina": 140,
       "max_full_stomach": 270,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 110,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11550,7 +12099,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11605,7 +12157,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11668,7 +12223,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "XS",
-      "male_probability": 80.0
+      "male_probability": 80.0,
+      "support": 100,
+      "capture_rate_correct": 0.8,
+      "exp_ratio": 10.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11723,7 +12281,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -11792,7 +12353,10 @@
       "stamina": 250,
       "max_full_stomach": 470,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -11861,7 +12425,10 @@
       "stamina": 270,
       "max_full_stomach": 530,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11925,7 +12492,10 @@
       "stamina": 270,
       "max_full_stomach": 530,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -11989,7 +12559,10 @@
       "stamina": 300,
       "max_full_stomach": 570,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -12064,7 +12637,10 @@
       "stamina": 100,
       "max_full_stomach": 510,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12127,7 +12703,10 @@
       "stamina": 100,
       "max_full_stomach": 510,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12190,7 +12769,10 @@
       "stamina": 230,
       "max_full_stomach": 440,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12253,7 +12835,10 @@
       "stamina": 230,
       "max_full_stomach": 440,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12271,8 +12856,8 @@
       0
     ],
     "partner_skill": "Light Dancer",
-    "partner_skill_desc": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal’s Movement Speed increases by (5~25)% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
-    "partner_skill_template": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal’s Movement Speed increases by {0}% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
+    "partner_skill_desc": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
+    "partner_skill_template": "Can be ridden.\nBoosts Jump Power while mounted.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Neutral Pal in your party. (Excluding Starryon Primo)",
     "partner_skill_values": [
       [
         "5",
@@ -12316,7 +12901,10 @@
       "stamina": 280,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -12392,7 +12980,10 @@
       "stamina": 100,
       "max_full_stomach": 170,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12455,7 +13046,10 @@
       "stamina": 100,
       "max_full_stomach": 170,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12511,7 +13105,10 @@
       "stamina": 260,
       "max_full_stomach": 550,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12581,7 +13178,10 @@
       "stamina": 260,
       "max_full_stomach": 550,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12644,7 +13244,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12699,7 +13302,10 @@
       "stamina": 100,
       "max_full_stomach": 400,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12762,7 +13368,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12825,7 +13434,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12895,7 +13507,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -12958,7 +13573,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 38.0
+      "male_probability": 38.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -13027,7 +13645,10 @@
       "stamina": 100,
       "max_full_stomach": 320,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13044,7 +13665,7 @@
       2,
       0
     ],
-    "partner_skill": "Tarantriss’ Web",
+    "partner_skill": "Tarantriss\u00e2\u20ac\u2122 Web",
     "partner_skill_desc": "Can be ridden.\nCan double jump while mounted.\nAdditionally, can shoot spider web to grapple and move at high speed.",
     "partner_skill_template": null,
     "partner_skill_values": [],
@@ -13082,7 +13703,10 @@
       "stamina": 220,
       "max_full_stomach": 550,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13137,7 +13761,10 @@
       "stamina": 100,
       "max_full_stomach": 580,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -13206,7 +13833,10 @@
       "stamina": 100,
       "max_full_stomach": 580,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -13275,7 +13905,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13339,7 +13972,10 @@
       "stamina": 100,
       "max_full_stomach": 280,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13403,7 +14039,10 @@
       "stamina": 200,
       "max_full_stomach": 560,
       "size": "XL",
-      "male_probability": 58.0
+      "male_probability": 58.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13474,7 +14113,10 @@
       "stamina": 200,
       "max_full_stomach": 560,
       "size": "XL",
-      "male_probability": 42.0
+      "male_probability": 42.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13545,7 +14187,10 @@
       "stamina": 100,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13615,7 +14260,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.1,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13670,7 +14318,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 120,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13688,8 +14339,8 @@
       1
     ],
     "partner_skill": "Venom Picker",
-    "partner_skill_desc": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
-    "partner_skill_template": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal’s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_desc": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores (100~200) Pal\u00e2\u20ac\u2122s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
+    "partner_skill_template": "Sometimes drops Venom Gland from its back when assigned to Ranch.\nWhile in party,\nrestores {0} Pal\u00e2\u20ac\u2122s Hunger to the Pal with the lowest Hunger every 5 minutes. (Does not stack)",
     "partner_skill_values": [
       [
         "100",
@@ -13733,7 +14384,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13803,7 +14457,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13873,7 +14530,10 @@
       "stamina": 140,
       "max_full_stomach": 380,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 110,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13936,7 +14596,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 20.0
+      "male_probability": 20.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -13992,7 +14655,10 @@
       "stamina": 100,
       "max_full_stomach": 480,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14055,7 +14721,10 @@
       "stamina": 140,
       "max_full_stomach": 340,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14118,7 +14787,10 @@
       "stamina": 230,
       "max_full_stomach": 600,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 90,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14181,7 +14853,10 @@
       "stamina": 270,
       "max_full_stomach": 730,
       "size": "M",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14236,7 +14911,10 @@
       "stamina": 100,
       "max_full_stomach": 340,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14299,7 +14977,10 @@
       "stamina": 320,
       "max_full_stomach": 480,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14317,8 +14998,8 @@
       0
     ],
     "partner_skill": "Master of Darkness",
-    "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by (5~25)% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
-    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by {0}% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
+    "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
+    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Dark or Water Pal in your party.\n(Excluding Ghangler)",
     "partner_skill_values": [
       [
         "5",
@@ -14363,7 +15044,10 @@
       "stamina": 320,
       "max_full_stomach": 480,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14381,8 +15065,8 @@
       0
     ],
     "partner_skill": "Abyssal Celebrity Chef",
-    "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by (5~25)% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
-    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal’s Movement Speed increases by {0}% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
+    "partner_skill_desc": "Can be ridden to travel on water.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by (5~25)% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
+    "partner_skill_template": "Can be ridden to travel on water.\nThis Pal\u00e2\u20ac\u2122s Movement Speed increases by {0}% for each other Fire or Water Pal in your party.\n(Excluding Ghangler Ignis)",
     "partner_skill_values": [
       [
         "5",
@@ -14427,7 +15111,10 @@
       "stamina": 100,
       "max_full_stomach": 270,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14490,7 +15177,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14560,7 +15250,10 @@
       "stamina": 400,
       "max_full_stomach": 710,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -14621,7 +15314,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14685,7 +15381,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14740,7 +15439,10 @@
       "stamina": 100,
       "max_full_stomach": 310,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14811,7 +15513,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14874,7 +15579,10 @@
       "stamina": 100,
       "max_full_stomach": 150,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14938,7 +15646,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -14993,7 +15704,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15056,7 +15770,10 @@
       "stamina": 100,
       "max_full_stomach": 140,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15127,7 +15844,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15190,7 +15910,10 @@
       "stamina": 120,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15254,7 +15977,10 @@
       "stamina": 120,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15318,7 +16044,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15374,7 +16103,10 @@
       "stamina": 100,
       "max_full_stomach": 170,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15429,7 +16161,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15484,7 +16219,10 @@
       "stamina": 200,
       "max_full_stomach": 560,
       "size": "M",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15547,7 +16285,10 @@
       "stamina": 100,
       "max_full_stomach": 290,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15610,7 +16351,10 @@
       "stamina": 270,
       "max_full_stomach": 460,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -15680,7 +16424,10 @@
       "stamina": 180,
       "max_full_stomach": 410,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15743,7 +16490,10 @@
       "stamina": 210,
       "max_full_stomach": 550,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -15805,7 +16555,10 @@
       "stamina": 210,
       "max_full_stomach": 550,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -15867,7 +16620,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15930,7 +16686,10 @@
       "stamina": 200,
       "max_full_stomach": 580,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -15985,7 +16744,10 @@
       "stamina": 200,
       "max_full_stomach": 550,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16048,7 +16810,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16103,7 +16868,10 @@
       "stamina": 100,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16174,7 +16942,10 @@
       "stamina": 140,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16237,7 +17008,10 @@
       "stamina": 100,
       "max_full_stomach": 380,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16300,7 +17074,10 @@
       "stamina": 100,
       "max_full_stomach": 100,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16363,7 +17140,10 @@
       "stamina": 410,
       "max_full_stomach": 620,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {
@@ -16429,7 +17209,10 @@
       "stamina": 100,
       "max_full_stomach": 340,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16492,7 +17275,10 @@
       "stamina": 100,
       "max_full_stomach": 340,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16556,7 +17342,10 @@
       "stamina": 100,
       "max_full_stomach": 180,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16611,7 +17400,10 @@
       "stamina": 100,
       "max_full_stomach": 210,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16666,7 +17458,10 @@
       "stamina": 100,
       "max_full_stomach": 240,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16721,7 +17516,10 @@
       "stamina": 100,
       "max_full_stomach": 270,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16776,7 +17574,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16831,7 +17632,10 @@
       "stamina": 100,
       "max_full_stomach": 330,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16886,7 +17690,10 @@
       "stamina": 100,
       "max_full_stomach": 180,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -16949,7 +17756,10 @@
       "stamina": 100,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17004,7 +17814,10 @@
       "stamina": 100,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17059,7 +17872,10 @@
       "stamina": 100,
       "max_full_stomach": 240,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17114,7 +17930,10 @@
       "stamina": 100,
       "max_full_stomach": 220,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17177,7 +17996,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17233,7 +18055,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17288,7 +18113,10 @@
       "stamina": 220,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17352,7 +18180,10 @@
       "stamina": 100,
       "max_full_stomach": 680,
       "size": "M",
-      "male_probability": 30.0
+      "male_probability": 30.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17416,7 +18247,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17479,7 +18313,10 @@
       "stamina": 100,
       "max_full_stomach": 300,
       "size": "S",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17543,7 +18380,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17607,7 +18447,10 @@
       "stamina": 110,
       "max_full_stomach": 420,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17670,7 +18513,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "M",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17733,7 +18579,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "XS",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17788,7 +18637,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17843,7 +18695,10 @@
       "stamina": 100,
       "max_full_stomach": 230,
       "size": "XS",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17898,7 +18753,10 @@
       "stamina": 100,
       "max_full_stomach": 600,
       "size": "M",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -17962,7 +18820,10 @@
       "stamina": 100,
       "max_full_stomach": 450,
       "size": "M",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18025,7 +18886,10 @@
       "stamina": 100,
       "max_full_stomach": 400,
       "size": "M",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18088,7 +18952,10 @@
       "stamina": 100,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18152,7 +19019,10 @@
       "stamina": 100,
       "max_full_stomach": 620,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18216,7 +19086,10 @@
       "stamina": 100,
       "max_full_stomach": 530,
       "size": "S",
-      "male_probability": 40.0
+      "male_probability": 40.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18279,7 +19152,10 @@
       "stamina": 100,
       "max_full_stomach": 560,
       "size": "L",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18342,7 +19218,10 @@
       "stamina": 100,
       "max_full_stomach": 560,
       "size": "L",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18397,7 +19276,10 @@
       "stamina": 100,
       "max_full_stomach": 630,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18460,7 +19342,10 @@
       "stamina": 130,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18524,7 +19409,10 @@
       "stamina": 130,
       "max_full_stomach": 620,
       "size": "L",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18588,7 +19476,10 @@
       "stamina": 100,
       "max_full_stomach": 630,
       "size": "M",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18652,7 +19543,10 @@
       "stamina": 100,
       "max_full_stomach": 560,
       "size": "L",
-      "male_probability": 60.0
+      "male_probability": 60.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [],
     "work_suitability": [
@@ -18715,7 +19609,10 @@
       "stamina": 300,
       "max_full_stomach": 600,
       "size": "XL",
-      "male_probability": 50.0
+      "male_probability": 50.0,
+      "support": 100,
+      "capture_rate_correct": 1.0,
+      "exp_ratio": 1.0
     },
     "guaranteed_passives": [
       {

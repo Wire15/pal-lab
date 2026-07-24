@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { invoke } from "../../lib/tauri";
 import type {
   ChildResult,
+  ItemDrop,
   NamedEntry,
   OwnedPal,
-  ParentsResult,
   PlayerRef,
   RosterCounts,
   SpeciesDetail,
@@ -28,11 +28,9 @@ import { PartnerIcon } from "../../components/partner";
 import { PartnerSkillDescription, partnerLevels } from "../../components/partner-value";
 import { hexGuid } from "../../components/palbox/selectors";
 import { ActiveSkillRow } from "../../components/active-skill";
+import ReverseBreeding from "../../components/reverse-breeding";
 import { loadActiveSkills, type ActiveSkills } from "../../lib/active-skills";
 import { useAppState } from "../../state";
-
-/** Parent pairs shown before collapsing into an "and N more" note. */
-const PAIR_PREVIEW = 12;
 
 /** Slots in the game-style food demand meter (matches paldb's 10-pip bar). */
 const FOOD_PIPS = 10;
@@ -179,6 +177,43 @@ function FoodMeter({ amount }: { amount: number }) {
   );
 }
 
+/** One work suitability as a prominent chip: glyph, label, a level pip meter,
+ * and the level as the loud amber numeral (palpedia rec #1 — levels prominent). */
+function WorkSuitChip({
+  kind,
+  label,
+  level,
+}: {
+  kind: string;
+  label: string;
+  level: number;
+}) {
+  // Pip meter denominator: the highest work-suitability level observed in the
+  // pack (Bastigor's Lv8). Keeps a common Lv1-4 worker's bar readable while
+  // never truncating the rare high-tier pals; the numeral is the source of truth.
+  const WORK_MAX = 8;
+  return (
+    <div className="flex items-center gap-2.5 rounded-md border border-line-soft bg-abyss/40 px-2.5 py-2">
+      <WorkGlyph kind={kind} size={26} />
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <span className="truncate text-[12px] leading-none text-ink-dim">{label}</span>
+        <div className="flex gap-0.5">
+          {Array.from({ length: WORK_MAX }, (_, i) => (
+            <span
+              key={i}
+              className={`h-1.5 flex-1 rounded-[1px] ${i < level ? "bg-amber" : "bg-line/60"}`}
+            />
+          ))}
+        </div>
+      </div>
+      <span className="flex items-baseline gap-0.5 font-mono tabular-nums">
+        <span className="text-[9px] uppercase tracking-wider text-ink-faint">Lv</span>
+        <span className="text-[17px] font-bold leading-none text-amber">{level}</span>
+      </span>
+    </div>
+  );
+}
+
 /** One movement metric: mono label, right-aligned value, thin cool bar. A
  * negative value means the pal can't do it (not rideable / can't haul) → an em
  * dash and no bar, never a fake `0`. */
@@ -208,6 +243,62 @@ function MoveRow({
           <div className="h-full rounded-full bg-ink-dim/70" style={{ width: `${pct}%` }} />
         )}
       </div>
+    </div>
+  );
+}
+
+/** A scalar stat with no comparative bar: mono label left, value right. Used
+ * for the non-combat base stats (Support / Stamina / Craft speed) that don't
+ * read meaningfully against a pack-wide max. */
+function StatValue({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-3">
+      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+        {label}
+      </span>
+      <span className="font-mono text-[14px] font-semibold tabular-nums text-ink">
+        {children}
+      </span>
+    </div>
+  );
+}
+
+/** Trim a float to at most `decimals` places, dropping trailing zeros
+ * (1.0 -> "1", 12.50 -> "12.5", 100 -> "100"). */
+function fmtNum(n: number, decimals = 2): string {
+  return Number(n.toFixed(decimals)).toString();
+}
+
+/** The item-drop table: item name, min-max quantity, and drop rate (a percent
+ * 0..100 straight from the pack). Rendered only when the species has drops. */
+function DropsTable({ drops }: { drops: ItemDrop[] }) {
+  return (
+    <div className="flex flex-col">
+      <div className="grid grid-cols-[1fr_auto_auto] gap-x-6 border-b border-line pb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+        <span>Item</span>
+        <span className="text-right">Qty</span>
+        <span className="text-right">Rate</span>
+      </div>
+      {drops.map((d, i) => (
+        <div
+          key={`${d.item_id}-${i}`}
+          className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-6 border-b border-line-soft py-1.5 last:border-b-0"
+        >
+          <span className="min-w-0 truncate text-[13px] text-ink">{d.item_name}</span>
+          <span className="text-right font-mono text-[13px] tabular-nums text-ink-dim">
+            {d.min === d.max ? d.min : `${d.min}\u2013${d.max}`}
+          </span>
+          <span className="text-right font-mono text-[13px] tabular-nums text-amber">
+            {fmtNum(d.rate)}%
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -440,7 +531,6 @@ export default function PaldexDetail({
 }) {
   const { requestSolve, setView } = useAppState();
   const [detail, setDetail] = useState<SpeciesDetail | null>(null);
-  const [parents, setParents] = useState<ParentsResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [names, setNames] = useState<NamedEntry[]>([]);
   const [secondName, setSecondName] = useState("");
@@ -458,16 +548,12 @@ export default function PaldexDetail({
 
   useEffect(() => {
     setDetail(null);
-    setParents(null);
     setError(null);
     setSecondName("");
     setChild(null);
     invoke<SpeciesDetail>("paldex_species_detail", { id })
       .then(setDetail)
       .catch((e) => setError(String(e)));
-    invoke<ParentsResult>("breeding_parents", { child: id })
-      .then(setParents)
-      .catch(() => setParents({ total: 0, pairs: [] }));
   }, [id]);
 
   const nameToId = useMemo(() => new Map(names.map((n) => [n.name, n.id])), [names]);
@@ -509,7 +595,6 @@ export default function PaldexDetail({
   const femalePct = 100 - malePct;
   const owned = roster?.[id];
   const ownedTotal = owned ? owned.male + owned.female : 0;
-  const uniqueCombos = detail.breeding.unique_combos;
   const work = nonzeroWork(detail.work_suitability);
   const [wildMin, wildMax] = detail.wild_levels;
   const wildCatchable = wildMin > 0 || wildMax > 0;
@@ -620,6 +705,11 @@ export default function PaldexDetail({
                 <StatRow label="Health" value={s.hp} max={STAT_MAX.hp} />
                 <StatRow label="Attack" value={s.attack} max={STAT_MAX.attack} />
                 <StatRow label="Defense" value={s.defense} max={STAT_MAX.defense} />
+                <div className="mt-0.5 flex flex-col gap-2 border-t border-line-soft pt-3">
+                  <StatValue label="Support">{s.support}</StatValue>
+                  <StatValue label="Stamina">{s.stamina}</StatValue>
+                  <StatValue label="Craft speed">{s.craft_speed}</StatValue>
+                </div>
               </div>
             </Section>
 
@@ -642,14 +732,13 @@ export default function PaldexDetail({
                   <FoodMeter amount={detail.food_amount} />
                 </FactCell>
               </div>
-              <FactCell label="Stamina">
-                <span className="font-mono font-semibold tabular-nums">{s.stamina}</span>
+              <FactCell label="Rarity">
+                <span className="font-mono font-semibold uppercase tracking-wider">
+                  {rarityTier(s.rarity).name}
+                </span>
               </FactCell>
-              <FactCell label="Breeding power">
-                <span className="font-mono font-semibold tabular-nums">{detail.combi_rank}</span>
-              </FactCell>
-              <FactCell label="Craft speed">
-                <span className="font-mono font-semibold tabular-nums">{s.craft_speed}</span>
+              <FactCell label="Size">
+                <span className="font-mono font-semibold tabular-nums">{s.size}</span>
               </FactCell>
               <FactCell label="Price">
                 <span className="font-mono font-semibold tabular-nums text-amber">
@@ -658,6 +747,19 @@ export default function PaldexDetail({
                 <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
                   gold
                 </span>
+              </FactCell>
+              <FactCell label="Capture rate">
+                <span className="font-mono font-semibold tabular-nums">
+                  {fmtNum(s.capture_rate_correct)}&times;
+                </span>
+              </FactCell>
+              <FactCell label="EXP ratio">
+                <span className="font-mono font-semibold tabular-nums">
+                  {fmtNum(s.exp_ratio)}&times;
+                </span>
+              </FactCell>
+              <FactCell label="Breeding power">
+                <span className="font-mono font-semibold tabular-nums">{detail.combi_rank}</span>
               </FactCell>
               {wildCatchable && (
                 <FactCell label="Wild level">
@@ -686,17 +788,9 @@ export default function PaldexDetail({
             }
           >
             {work.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {work.map((w) => (
-                  <div key={w.kind} className="flex items-center gap-2">
-                    <WorkGlyph kind={w.kind} size={22} />
-                    <span className="min-w-0 flex-1 truncate text-[13px] text-ink-dim">
-                      {w.label}
-                    </span>
-                    <span className="font-mono text-[12px] font-semibold tabular-nums text-ink">
-                      Lv{w.level}
-                    </span>
-                  </div>
+                  <WorkSuitChip key={w.kind} kind={w.kind} label={w.label} level={w.level} />
                 ))}
               </div>
             ) : (
@@ -705,6 +799,20 @@ export default function PaldexDetail({
               </p>
             )}
           </Section>
+
+          {/* Drops — item drop table, hidden when the species has no drop set. */}
+          {detail.drops.length > 0 && (
+            <Section
+              eyebrow="Drops"
+              right={
+                <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+                  {detail.drops.length} {detail.drops.length === 1 ? "item" : "items"}
+                </span>
+              }
+            >
+              <DropsTable drops={detail.drops} />
+            </Section>
+          )}
 
           {/* Learnable moves — level-up actives, omitted when the species has
               none (no empty shell). Rows reuse the equipped-actives strip with a
@@ -731,6 +839,9 @@ export default function PaldexDetail({
               </div>
             </Section>
           )}
+
+          {/* Bred from — reverse breeding pairs (ReverseBreed owns the component). */}
+          <ReverseBreeding species={detail.id} onNavigate={onNavigate} />
 
           {/* Guaranteed passives + your roster */}
           <div className="grid gap-5 lg:grid-cols-[1fr_1.35fr]">
@@ -798,47 +909,8 @@ export default function PaldexDetail({
             </Section>
           </div>
 
-          {/* Breeding */}
-          <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
-            <Section
-              eyebrow="How to breed this pal"
-              right={
-                parents && parents.total > 0 ? (
-                  <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                    <span className="text-amber">{parents.total}</span> parent pairs
-                  </span>
-                ) : undefined
-              }
-            >
-              {parents === null ? (
-                <p className="text-[13px] text-ink-faint">Loading pairs&#8230;</p>
-              ) : parents.total === 0 ? (
-                <p className="text-[13px] text-ink-faint">
-                  No breeding pairs produce {detail.name} &mdash; it is only found in the wild.
-                </p>
-              ) : (
-                <div className="flex flex-col gap-1">
-                  <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
-                    {parents.pairs.slice(0, PAIR_PREVIEW).map((pair, i) => (
-                      <div
-                        key={`${pair.parent_a.id}-${pair.parent_b.id}-${i}`}
-                        className="flex items-center rounded-md border border-line-soft"
-                      >
-                        <SpeciesCell sp={pair.parent_a} onNavigate={onNavigate} />
-                        <span className="px-1 font-mono text-[11px] text-ink-faint">&times;</span>
-                        <SpeciesCell sp={pair.parent_b} onNavigate={onNavigate} />
-                      </div>
-                    ))}
-                  </div>
-                  {parents.total > PAIR_PREVIEW && (
-                    <p className="mt-2 font-mono text-[11px] text-ink-faint">
-                      and {parents.total - PAIR_PREVIEW} more pairs&#8230;
-                    </p>
-                  )}
-                </div>
-              )}
-            </Section>
-
+          {/* Forward breeding — pick a partner, preview the child. */}
+          <div className="grid gap-5 lg:grid-cols-2">
             <Section eyebrow="Breed with&#8230;">
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2 py-1 focus-within:border-amber/60">
@@ -884,33 +956,6 @@ export default function PaldexDetail({
               </div>
             </Section>
           </div>
-
-          {/* Gender-locked combos, when the pack pins them */}
-          {uniqueCombos.length > 0 && (
-            <Section
-              eyebrow="Gender-locked combos"
-              right={
-                <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                  {uniqueCombos.length}
-                </span>
-              }
-            >
-              <div className="flex flex-col gap-1">
-                {uniqueCombos.map((combo, i) => (
-                  <div
-                    key={`${combo.parent_a.id}-${combo.parent_b.id}-${i}`}
-                    className="flex flex-wrap items-center rounded-md border border-line-soft"
-                  >
-                    <SpeciesCell sp={combo.parent_a} onNavigate={onNavigate} />
-                    <span className="px-1 font-mono text-[11px] text-ink-faint">&times;</span>
-                    <SpeciesCell sp={combo.parent_b} onNavigate={onNavigate} />
-                    <span className="px-2 font-mono text-sm text-amber">&rarr;</span>
-                    <SpeciesCell sp={combo.child} onNavigate={onNavigate} />
-                  </div>
-                ))}
-              </div>
-            </Section>
-          )}
         </div>
       </div>
     </div>

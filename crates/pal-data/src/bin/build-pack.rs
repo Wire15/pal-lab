@@ -19,8 +19,8 @@ use serde::Deserialize;
 
 use pal_data::gamedata::{
     ActiveSkill, BreedingBoost, BreedingBoostSource, BreedingEffect, BreedingEntry, ElementKind,
-    GameSettings, InheritanceWeights, LabResearch, LearnMove, Pack, PalSpecies, ParentGender,
-    PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
+    GameSettings, InheritanceWeights, ItemDrop, LabResearch, LearnMove, Pack, PalSpecies,
+    ParentGender, PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -186,6 +186,21 @@ struct RawExtractSpecies {
     elements: Vec<String>,
     partner_skill: RawExtractPartner,
     stats: RawExtractStats,
+    /// Per-pal item drops (`DT_PalDropItem`); empty for the few variants with
+    /// no drop row. Maps 1:1 onto the pack [`ItemDrop`] shape.
+    #[serde(default)]
+    drops: Vec<RawItemDrop>,
+}
+
+/// One extraction item-drop line. Field names match the JSON and the pack
+/// [`ItemDrop`] shape 1:1. `rate` is a percent (0..=100).
+#[derive(Deserialize)]
+struct RawItemDrop {
+    item_id: String,
+    item_name: String,
+    min: u32,
+    max: u32,
+    rate: f32,
 }
 
 #[derive(Deserialize)]
@@ -250,6 +265,9 @@ struct RawExtractStats {
     stamina: u32,
     max_full_stomach: u32,
     size: String,
+    support: u32,
+    capture_rate_correct: f32,
+    exp_ratio: f32,
 }
 
 fn parse_gender(s: &str) -> ParentGender {
@@ -437,6 +455,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         })
                     })
                     .collect(),
+                // Palpedia gap fields — own-install extraction ground truth.
+                drops: ex
+                    .drops
+                    .iter()
+                    .map(|d| ItemDrop {
+                        item_id: d.item_id.clone(),
+                        item_name: d.item_name.clone(),
+                        min: d.min,
+                        max: d.max,
+                        rate: d.rate,
+                    })
+                    .collect(),
+                support: st.support.min(u16::MAX as u32) as u16,
+                capture_rate_correct: st.capture_rate_correct,
+                exp_ratio: st.exp_ratio,
             }
         })
         .collect();

@@ -1706,3 +1706,105 @@ Because research folds into `incubation_reduction`, the shared `describeSetup` (
 **APPLIED** line + the Solver's above-plan summary) automatically gains a `-{n}% incubation`
 part the moment a rank changes — e.g. rank 3 → `APPLIED  -20% incubation / 1h hatch`,
 rank 4 → `-30% incubation`. One source of truth; the strip never drifts from the selector.
+
+## Wave — Pal-dex BRED FROM reverse-breeding (`components/reverse-breeding.tsx`)
+
+Adds a **BRED FROM** section to a pal's dex detail (mounted right after LEARNABLE MOVES,
+before the forward "BREED WITH…" resolver). It answers "what parents make this pal?" —
+every unordered parent pair whose bred child resolves to the current species. Supersedes
+and replaces the old `breeding_parents`-driven parent list and the separate "Gender-locked
+combos" section (one reverse surface, one source of truth).
+
+### Data
+
+- Sourced from the pack breeding table via the `reverse_breeding(species) -> ReversePair[]`
+  command — the same rows `child_of` resolves forward, never fabricated. The enumeration,
+  dedup (canonical species pair), deterministic ordering (parent1 dex → id → parent2), and
+  gender pins live in `pal_data::GameData::reverse_breeding`, unit-tested against the forward
+  function. `ReversePair { parent1, parent2, kind: "unique" | "rank", parent1_gender,
+  parent2_gender }`; parents are internal ids resolved to display names via a module-cached
+  `paldex_species` fetch (shared across mounts). Lazily fetched on mount so detail stays snappy.
+- `kind: "unique"` = a gender-pinned 1.0 combo (the two extant: CatMage×FoxMage → Katress
+  Ignis / Foxparks Noct); `"rank"` = the combi-rank majority (null genders). A valid self-pair
+  (`X × X → X`) is included and reads as a rank pair.
+
+### Layout & tokens
+
+- Panel matches the shared detail `Section`: `rounded-lg border border-line bg-panel/40`,
+  `bg-raised` header with a mono `BRED FROM` eyebrow (`tracking-[0.18em] text-ink-dim`) carrying
+  a 16px child glyph, and a right-aligned mono `N pairs` count (`text-ink-faint`, hidden at 0).
+- **Unique combos surface FIRST** under a `text-amber` sub-eyebrow with a `gender-locked` badge
+  (`border-amber/40 bg-amber/10 text-amber`); rank pairs follow under a faint `Standard combos`
+  label. Two-column grid (`sm:grid-cols-2`) of compact pair rows.
+- **Pair row**: `parentA × parentB → child` — each parent a clickable `PalHoverCard` chip
+  (22px `PalIcon` + name), unique pins shown as gender glyphs (♂ `text-el-water` / ♀
+  `text-el-dragon`); a mono `×` separator, an amber `→`, and an 18px dimmed child glyph.
+- **Owned highlight** (save loaded): a pair whose BOTH parents are owned gets an amber glow
+  (`border-amber/40 bg-amber/[0.07]` + faint ring) and sorts to the front of its group (stable
+  otherwise, so dex order holds); an individually-owned parent's name tints `text-amber`. Roster
+  read from `useAppState().roster` (same channel/derivation as the PALS grid).
+- **Search filter** appears once a species has > 30 pairs — a full-width `bg-abyss/50` input
+  (`focus:border-amber/50`) matching either parent's id or display name; a no-match state reads
+  "No parents match …".
+
+### Empty state
+
+A non-breedable pal (0 parent pairs — wild-only) renders a single faint line inside the section:
+"No breeding pair produces {name} — catch it in the wild." No bare shell, no crash; this is the
+load-bearing wild-only message (the old dex-detail fallback was removed).
+
+## Wave — Pal-dex detail STATS / WORK / DROPS / FIELD sections (`views/paldex/detail-view.tsx`)
+
+Upgrades the dex detail into a full palpedia-grade reference page. Sections slot into the
+existing scroll rhythm: BASE STATS + MOVEMENT (2-col) → FIELD DATA → WORK SUITABILITY → DROPS
+→ LEARNABLE MOVES → BRED FROM (see above) → passives/roster → forward BREED WITH. Element
+MATCHUP is deliberately absent — no attacker×defender damage table exists in extractable game
+data (confirmed exhaustive scan; effectiveness is C++ code-side), so nothing is rendered rather
+than fabricating a chart from folklore.
+
+### Base stats (`Section` "Base stats")
+
+- Combat trio HP / Attack / Defense as `StatRow`s: mono label, right-aligned `tabular-nums`
+  value, normalized amber bar (`bg-amber/80`) against soft observed-max caps (`STAT_MAX`
+  hp 180 / atk 150 / def 200) — bars only where comparative reading helps.
+- Below a `border-t border-line-soft` divider, the non-comparative scalars as `StatValue` rows
+  (mono label left, value right, NO bar): Support / Stamina / Craft speed. They don't read
+  against a pack max, so a bar would be noise.
+
+### Movement (`Section` "Movement")
+
+- The 5 extraction-sourced speeds (Walk / Run / Ride sprint / Transport / Slow walk) as
+  `MoveRow`s with a thin cool bar (`bg-ink-dim/70`) vs `MOVE_MAX` p95 caps. A `-1` sentinel
+  (not rideable / can't haul) renders an em dash and NO bar — never a fake `0`.
+
+### Field data (`Section` "Field data")
+
+- Spec-sheet grid (`grid-cols-2 sm:grid-cols-3`, `FactCell`: mono eyebrow above value): Food
+  (full-width `FoodMeter` — `amount` filled amber pips out of 10), Rarity (tier name), Size,
+  Price (amber + "gold"), Capture rate (`{n}×`), EXP ratio (`{n}×`), Breeding power, Wild level
+  (range, hidden when non-catchable), Activity (☾ Nocturnal / ☀ Diurnal).
+- Capture/EXP floats trimmed to ≤2 dp with trailing zeros dropped (`fmtNum`: `1×`, `1.5×`).
+
+### Work suitability (`Section` "Work suitability")
+
+- Palpedia rec #1 — levels made prominent. Each nonzero kind (zero-kinds hidden) is a
+  `WorkSuitChip`: 26px bundled work glyph + label, a level pip meter, and the level as a loud
+  amber numeral (`Lv N`, `text-[17px] font-bold text-amber`). 2-col grid; right-aligned
+  `N jobs` count in the header.
+- Pip-meter denominator is the observed pack max **Lv8** (Bastigor), NOT the folk "1–5" — real
+  extraction work levels run 1–8. A common Lv1–4 worker's bar stays readable; the numeral is
+  the source of truth (level > cap fills all pips, never truncates the numeral).
+
+### Drops (`Section` "Drops", presence-gated)
+
+- Renders ONLY when `detail.drops.length > 0` — hidden cleanly for a species with no drop table.
+  `DropsTable`: `grid-cols-[1fr_auto_auto]` with a mono eyebrow header (ITEM / QTY / RATE) over
+  `border-line-soft` rows — item name (localized, falls back to id), min–max qty (`3–5`, bare
+  when equal), and drop rate as an amber `{n}%` (percent 0..100 straight from the pack, so a
+  sub-100% row like Anubis's 5% technical manual reads honestly).
+
+### Degradation
+
+- Every optional section is presence-gated (`drops.length`, `learnset.length`, work zero-kinds),
+  so absent data hides the entire section — verified on Dumud Gild (no learnable moves + drops
+  blanked): the page flows Field data → Work → BRED FROM with no empty shells or gaps.

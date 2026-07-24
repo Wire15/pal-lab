@@ -9,7 +9,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use pal_data::gamedata::{ParentGender, PalSpecies};
+use pal_data::gamedata::{ItemDrop, ParentGender, PalSpecies};
 use pal_data::types::Gender;
 use pal_data::GameData;
 use serde::Serialize;
@@ -58,6 +58,12 @@ pub struct SpeciesStats {
     /// the 0-1 fraction the gender bar reads; this percent copy exists per the
     /// frozen `SpeciesStats` contract.
     pub male_probability: f32,
+    /// `Support` stat (partner-skill support value; 100 for every species).
+    pub support: u16,
+    /// `CaptureRateCorrect` — per-species capture-rate multiplier.
+    pub capture_rate_correct: f32,
+    /// `ExpRatio` — per-species XP-gain multiplier.
+    pub exp_ratio: f32,
 }
 
 /// A lightweight species reference (`{id, name, paldex_no}`) for parent/child
@@ -138,6 +144,9 @@ fn species_entry(gd: &GameData, sp: &PalSpecies) -> SpeciesEntry {
             max_full_stomach: sp.max_full_stomach,
             size: sp.size.clone(),
             male_probability: (sp.male_probability * 100.0).round(),
+            support: sp.support,
+            capture_rate_correct: sp.capture_rate_correct,
+            exp_ratio: sp.exp_ratio,
         },
         guaranteed_passives: sp
             .guaranteed_passives
@@ -201,6 +210,9 @@ pub struct SpeciesDetail {
     /// Level-up learnable actives, sorted by level ascending; empty when the
     /// species has no level-up rows.
     pub learnset: Vec<LearnMoveEntry>,
+    /// Per-pal item drops (`DT_PalDropItem`), in slot order; empty for the few
+    /// variant species with no drop row. Detail-only (kept off the grid row).
+    pub drops: Vec<ItemDrop>,
 }
 
 /// Detail for one species by its internal id (`CharacterID`).
@@ -251,6 +263,7 @@ pub fn paldex_species_detail(id: String) -> Result<SpeciesDetail, String> {
         species: species_entry(gd, sp),
         breeding: BreedingNotes { parent_pair_count, unique_combos },
         learnset,
+        drops: sp.drops.clone(),
     })
 }
 
@@ -344,6 +357,48 @@ pub fn breeding_parents(child: String) -> Result<ParentsResult, String> {
     Ok(ParentsResult { total: all.len(), pairs })
 }
 
+/// One parent pair that breeds into a target child, per the frozen `ReversePair`
+/// contract. Parents are internal names (the cross-layer species key); `kind` is
+/// `"unique"` for a gender-pinned combo row and `"rank"` for the gender-
+/// independent combi-rank majority; the gender fields are `Some` only on a
+/// pinned `"unique"` pair (`null` otherwise).
+#[derive(Debug, Clone, Serialize)]
+pub struct ReversePair {
+    pub parent1: String,
+    pub parent2: String,
+    pub kind: &'static str,
+    pub parent1_gender: Option<Gender>,
+    pub parent2_gender: Option<Gender>,
+}
+
+/// Reverse breeding: every unordered parent pair whose bred child resolves to
+/// `species`. Thin serde adapter over [`GameData::reverse_breeding`] — the pair
+/// enumeration, dedup, ordering, and gender pins live in `pal-data` (unit-tested
+/// against the forward `child_of`). Parents are mapped to internal names; the
+/// pal-data `unique` flag becomes the `"unique"`/`"rank"` `kind` token.
+#[tauri::command]
+pub fn reverse_breeding(species: String) -> Result<Vec<ReversePair>, String> {
+    let gd = GameData::get();
+    let idx = gd
+        .species_index(&species)
+        .ok_or_else(|| format!("unknown pal: {species}"))?;
+    let pairs = gd
+        .reverse_breeding(idx)
+        .into_iter()
+        .filter_map(|p| {
+            let (p1, p2) = (gd.species_at(p.parent1)?, gd.species_at(p.parent2)?);
+            Some(ReversePair {
+                parent1: p1.internal_name.clone(),
+                parent2: p2.internal_name.clone(),
+                kind: if p.unique { "unique" } else { "rank" },
+                parent1_gender: p.parent1_gender,
+                parent2_gender: p.parent2_gender,
+            })
+        })
+        .collect();
+    Ok(pairs)
+}
+
 /// Owned-roster tally for one species.
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct RosterCount {
@@ -411,6 +466,66 @@ mod tests {
         assert!(parents.total > 0, "expected >=1 parent pair for Anubis");
         assert!(!parents.pairs.is_empty(), "expected non-empty pairs");
         assert!(parents.pairs.len() <= MAX_PAIRS, "pairs capped at {MAX_PAIRS}");
+    }
+
+    /// Forward-consistency property: every emitted parent pair, when bred
+    /// forward via [`GameData::child_of`], resolves to the target species.
+    /// Covers a common mid-rank species, a self-pair species, and the two
+    /// gender-pinned unique combos. Rank pairs are gender-independent (an `Any`
+    /// pin matches `Male`); unique pairs are checked with their pins.
+    #[test]
+    fn reverse_breeding_forward_consistent() {
+        let gd = GameData::get();
+        for target in ["Anubis", "Alpaca", "CatMage_Fire", "FoxMage_Dark"] {
+            let idx = gd.species_index(target).expect("target exists");
+            let pairs = reverse_breeding(target.to_string()).expect("reverse");
+            assert!(!pairs.is_empty(), "expected >=1 parent pair for {target}");
+            for p in &pairs {
+                let a = gd.species_index(&p.parent1).expect("parent1 exists");
+                let b = gd.species_index(&p.parent2).expect("parent2 exists");
+                let ga = p.parent1_gender.unwrap_or(Gender::Male);
+                let gb = p.parent2_gender.unwrap_or(Gender::Male);
+                assert_eq!(
+                    gd.child_of(a, ga, b, gb),
+                    Some(idx),
+                    "forward({} x {}) should breed {target}",
+                    p.parent1,
+                    p.parent2
+                );
+            }
+        }
+    }
+
+    /// CatMage_Fire is bred BOTH by the gender-pinned CatMage x FoxMage unique
+    /// combo AND by a rank self-pair (CatMage_Fire x CatMage_Fire) — so it pins
+    /// down the unique badge, the gender fields, and the self-pair/rank path in
+    /// one species.
+    #[test]
+    fn reverse_breeding_unique_and_self_pair() {
+        let pairs = reverse_breeding("CatMage_Fire".to_string()).expect("reverse");
+        assert_eq!(pairs.len(), 2, "CatMage_Fire has exactly two parent pairs");
+
+        let unique = pairs.iter().find(|p| p.kind == "unique").expect("a unique pair");
+        assert!(
+            unique.parent1_gender.is_some() && unique.parent2_gender.is_some(),
+            "unique combo carries both gender pins"
+        );
+        let unique_names = [unique.parent1.as_str(), unique.parent2.as_str()];
+        assert!(
+            unique_names.contains(&"CatMage") && unique_names.contains(&"FoxMage"),
+            "unique combo is CatMage x FoxMage, got {unique_names:?}"
+        );
+
+        let rank = pairs.iter().find(|p| p.kind == "rank").expect("a rank pair");
+        assert!(
+            rank.parent1_gender.is_none() && rank.parent2_gender.is_none(),
+            "rank pair has null genders"
+        );
+        assert_eq!(
+            (rank.parent1.as_str(), rank.parent2.as_str()),
+            ("CatMage_Fire", "CatMage_Fire"),
+            "rank pair is the self-pair"
+        );
     }
 
     #[test]
@@ -658,6 +773,21 @@ mod tests {
             parents_map.insert(id.clone(), res);
         }
         write("breeding-parents.json", serde_json::to_string(&parents_map).unwrap());
+
+        // reverse-breeding.json — `reverse_breeding` output for every species,
+        // keyed by internal id, for the BRED FROM panel. Capped to a display
+        // prefix per species (deterministic dex order, unique combos sort first)
+        // so the fixture stays compact — the panel renders the returned list and
+        // its length. The cap (> the search threshold) keeps the search filter
+        // demoable for high-pair species in `bun run dev`.
+        const FIXTURE_REVERSE_PAIRS: usize = 60;
+        let mut reverse_map: Map<String, Vec<ReversePair>> = Map::new();
+        for id in &all_ids {
+            let mut res = reverse_breeding(id.clone()).expect("reverse");
+            res.truncate(FIXTURE_REVERSE_PAIRS);
+            reverse_map.insert(id.clone(), res);
+        }
+        write("reverse-breeding.json", serde_json::to_string(&reverse_map).unwrap());
 
         // Forward breeding (child of a x b) for every pair with a featured
         // first parent. Covers the "breed with..." widget on the pages screenshot

@@ -53,6 +53,8 @@ static class Program
         if (args.Contains("--discover-learnset")) { DiscoverLearnset(provider); return 0; }
         if (args.Contains("--discover-breeding")) { DiscoverBreeding(provider); return 0; }
         if (args.Contains("--discover-research")) { DiscoverResearch(provider); return 0; }
+        if (args.Contains("--discover-drops")) { DiscoverDrops(provider); return 0; }
+        if (args.Contains("--discover-element")) { DiscoverElement(provider); return 0; }
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -96,6 +98,51 @@ static class Program
         foreach (var kv in palNames)
             if (kv.Key.StartsWith("PAL_NAME_", StringComparison.OrdinalIgnoreCase))
                 displayByInternal[kv.Key.Substring("PAL_NAME_".Length)] = kv.Value;
+
+        // ---- per-species item drops (DT_PalDropItem) ----
+        // Row key = CharacterID + zero-padded Level threshold (e.g. `SheepBall000`, `Anubis080`);
+        // fields: CharacterID, Level, then 10 slots of ItemId<N>/Rate<N>/min<N>/Max<N>. Rate is a
+        // PERCENT (100 => 100%). DT_PalDropItem and DT_PalDropItem_Common are byte-identical in this
+        // build (verified via --discover-drops, 0 differing rows); we use DT_PalDropItem. We pick the
+        // LOWEST-Level row per CharacterID (the base drop table palpedia displays) and emit only the
+        // non-empty slots in order. Item names localize via ITEM_NAME_<ItemId> in DT_ItemNameText_Common
+        // (falls back to the raw ItemId — never fabricated). Keyed by species internal name (CharacterID).
+        var dropTable = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalDropItem");
+        var dropRowByChar = new Dictionary<string, FStructFallback>(StringComparer.OrdinalIgnoreCase);
+        var dropLevelByChar = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var dr in dropTable.RowMap)
+        {
+            var dv = Vals(dr.Value);
+            var cid = S(dv, "CharacterID");
+            if (string.IsNullOrEmpty(cid)) continue;
+            int lvl = I(dv, "Level");
+            if (!dropLevelByChar.TryGetValue(cid, out var have) || lvl < have)
+            { dropLevelByChar[cid] = lvl; dropRowByChar[cid] = dr.Value; }
+        }
+        var dropItemMiss = new SortedSet<string>(StringComparer.Ordinal);
+        List<object> ResolveDrops(string internalName)
+        {
+            if (!dropRowByChar.TryGetValue(internalName, out var row)) return new List<object>();
+            var dv = Vals(row);
+            var list = new List<object>();
+            for (int n = 1; n <= 10; n++)
+            {
+                var itemId = S(dv, "ItemId" + n);
+                if (string.IsNullOrEmpty(itemId) || itemId == "None") continue;
+                if (!itemNames.TryGetValue("ITEM_NAME_" + itemId, out var itemName) || string.IsNullOrWhiteSpace(itemName))
+                { itemName = itemId; dropItemMiss.Add(itemId); }
+                list.Add(new
+                {
+                    item_id = itemId,
+                    item_name = Clean(itemName),
+                    min = I(dv, "min" + n),
+                    max = I(dv, "Max" + n),
+                    rate = F(dv, "Rate" + n),
+                });
+            }
+            return list;
+        }
+        int dropsCovered = 0, dropsEmpty = 0;
 
         foreach (var r in monsters.RowMap)
         {
@@ -172,11 +219,26 @@ static class Program
                 male_probability = I(v, "MaleProbability"),
                 combi_rank = I(v, "CombiRank"),
                 nocturnal = B(v, "Nocturnal"),
+                // Extended stats (BOSS-row schema): Support (partner-skill support value),
+                // CaptureRateCorrect (capture-rate multiplier), ExpRatio (XP-gain multiplier).
+                support = I(v, "Support"),
+                capture_rate_correct = F(v, "CaptureRateCorrect"),
+                exp_ratio = F(v, "ExpRatio"),
             };
 
-            species[name] = new { elements, partner_skill = partner, stats };
+            var drops = ResolveDrops(name);
+            if (drops.Count > 0) dropsCovered++; else dropsEmpty++;
+            species[name] = new { elements, partner_skill = partner, stats, drops };
         }
         Console.WriteLine($"[species] kept={kept} skipped={skipped} partnerCoverage={partnerHit}/{kept}");
+        Console.WriteLine($"[drops] table=DT_PalDropItem speciesWithDrops={dropsCovered}/{kept} speciesNoDrops={dropsEmpty} distinctCharacterIDrows={dropRowByChar.Count} unlocalizedItemIds={dropItemMiss.Count}");
+        if (dropItemMiss.Count > 0) Console.WriteLine($"[drops unlocalized items] {string.Join(", ", dropItemMiss)}");
+        foreach (var probe in new[] { "SheepBall", "ElecPanda", "ThunderDragonMan", "Anubis" })
+        {
+            if (!species.TryGetValue(probe, out var sp)) continue;
+            var ds = (List<object>)GetProp(sp, "drops");
+            Console.WriteLine($"[drops sample] {probe}: {string.Join(", ", ds.Select(d => $"{GetProp(d, "item_name")}({GetProp(d, "item_id")}) {GetProp(d, "min")}-{GetProp(d, "max")}@{FmtNum(Convert.ToDouble(GetProp(d, "rate")))}%"))}");
+        }
         Console.WriteLine($"[elements] distinct=[{string.Join(",", elementKinds)}]");
         if (partnerMisses.Count > 0)
             Console.WriteLine($"[partner misses {partnerMisses.Count}] {string.Join(" | ", partnerMisses)}");
@@ -518,6 +580,35 @@ static class Program
         }
         var sheepLearn = learnsets.TryGetValue(LamballKey, out var slo) ? (List<object>)slo : null;
         Gate(sheepLearn != null && sheepLearn.Count > 0, $"Lamball ({LamballKey}) learnset missing/empty");
+
+        // Drops: coverage + ground-truth spot-check (never fabricated — only real DT_PalDropItem rows).
+        Gate(dropsCovered >= 250, $"drops coverage {dropsCovered} unexpectedly low");
+        object DropOf(object sp, string itemId)
+        {
+            var ds = sp == null ? null : (List<object>)GetProp(sp, "drops");
+            return ds?.FirstOrDefault(d => (string)GetProp(d, "item_id") == itemId);
+        }
+        // Lamball (SheepBall) drops Wool 1-3 @100% (starter ground truth).
+        var sheepDrop = lamball == null ? null : DropOf(lamball, "Wool");
+        Gate(sheepDrop != null, "Lamball (SheepBall) missing Wool drop");
+        if (sheepDrop != null)
+        {
+            Gate((int)GetProp(sheepDrop, "min") == 1 && (int)GetProp(sheepDrop, "max") == 3,
+                $"Lamball Wool range {GetProp(sheepDrop, "min")}-{GetProp(sheepDrop, "max")} != 1-3");
+            Gate(Convert.ToDouble(GetProp(sheepDrop, "rate")) == 100.0,
+                $"Lamball Wool rate {GetProp(sheepDrop, "rate")} != 100");
+        }
+        // Every drop row must be monotonic (min<=max) and carry a positive rate.
+        int badDrop = 0; string badDropSample = null;
+        foreach (var kv in species)
+            foreach (var d in (List<object>)GetProp(kv.Value, "drops"))
+            {
+                int dmin = (int)GetProp(d, "min"), dmax = (int)GetProp(d, "max");
+                double drate = Convert.ToDouble(GetProp(d, "rate"));
+                if (dmin > dmax || dmin < 0 || drate <= 0 || drate > 100)
+                { badDrop++; badDropSample ??= $"{kv.Key}:{GetProp(d, "item_id")} {dmin}-{dmax}@{drate}"; }
+            }
+        Gate(badDrop == 0, $"{badDrop} drop rows fail monotonic/rate sanity (e.g. {badDropSample})");
 
         // passives sanity
         object FindPassive(string dn) => passives.Values.FirstOrDefault(p => (string)GetProp(p, "name") == dn);
@@ -902,6 +993,197 @@ static class Program
                 }
             }
             catch { }
+        }
+    }
+
+    // Reusable discovery pass (`--discover-drops`): locate the per-species item-drop source.
+    // (1) Dump DT_PalMonsterParameter row schema for a few known species, flagging any field
+    //     whose name hints at drops/loot/item. (2) Find every non-L10N .uasset whose file name
+    //     mentions Drop/ItemLottery/PalDropItem/Loot and dump its schema + shallow value preview
+    //     of the first rows and a known-species row (e.g. a starter) so the emit path is written
+    //     against real shape. (3) Report which candidate table is keyed by species internal name.
+    static void DiscoverDrops(IFileProvider provider)
+    {
+        bool IsDropish(string s) => s != null && (
+            s.Contains("Drop", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Loot", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Lottery", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Item", StringComparison.OrdinalIgnoreCase));
+
+        // (1) DT_PalMonsterParameter row schema — flag any drop/item-ish field.
+        var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
+        Console.WriteLine($"[discover-drops] DT_PalMonsterParameter rows={monsters.RowMap.Count}");
+        var monFields = monsters.RowMap.First().Value.Properties.Select(p => p.Name.Text).ToList();
+        Console.WriteLine($"[discover-drops] DT_PalMonsterParameter fields ({monFields.Count}): {string.Join(", ", monFields)}");
+        var dropFields = monFields.Where(IsDropish).ToList();
+        Console.WriteLine($"[discover-drops] drop/item-ish fields on monster rows: [{string.Join(", ", dropFields)}]");
+        foreach (var probe in new[] { "SheepBall", "PinkCat", "ElecPanda", "Anubis" })
+        {
+            if (!monsters.RowMap.TryGetValue(new FName(probe), out var row)) continue;
+            var stat = row.Properties.Where(p => new[] { "Support", "CaptureRateCorrect", "ExpRatio" }.Contains(p.Name.Text))
+                .Select(p => $"{p.Name.Text}={p.Tag?.GenericValue}");
+            Console.WriteLine($"  '{probe}' stat-probe: {string.Join(", ", stat)}");
+            foreach (var df in dropFields)
+                Console.WriteLine($"  '{probe}' {df} = {DumpStruct(row.Properties.First(p => p.Name.Text == df).Tag?.GenericValue)}");
+        }
+
+        // (2) dedicated drop tables by file name.
+        var needles = new[] { "drop", "itemlottery", "paldropitem", "loot", "dropitem" };
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => !f.Contains("/L10N/", StringComparison.OrdinalIgnoreCase))
+            .Where(f => needles.Any(n => Path.GetFileNameWithoutExtension(f).Contains(n, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[discover-drops] candidate drop tables ({cands.Count}):");
+        foreach (var f in cands) Console.WriteLine($"  {f}");
+        foreach (var f in cands)
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            UDataTable dt;
+            try { if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable d) { Console.WriteLine($"[skip non-datatable] {pkgPath}"); continue; } dt = d; }
+            catch (Exception e) { Console.WriteLine($"[load fail] {pkgPath}: {e.Message}"); continue; }
+            Console.WriteLine($"==== {pkgPath} rows={dt.RowMap.Count} ====");
+            Console.WriteLine($"  keys(first 16)=[{string.Join(", ", dt.RowMap.Keys.Take(16).Select(k => k.Text))}]");
+            int shown = 0;
+            foreach (var r in dt.RowMap)
+            {
+                bool speciesRow = new[] { "SheepBall", "PinkCat", "ElecPanda", "Anubis", "Boar", "Deer" }
+                    .Any(sp => r.Key.Text.Contains(sp, StringComparison.OrdinalIgnoreCase));
+                if (shown >= 4 && !speciesRow) continue;
+                shown++;
+                Console.WriteLine($"  {(speciesRow ? "**SP** " : "")}row '{r.Key.Text}': props=[{string.Join(", ", r.Value.Properties.Select(p => p.Name.Text))}]");
+                foreach (var p in r.Value.Properties)
+                {
+                    var gv = p.Tag?.GenericValue;
+                    string preview;
+                    if (gv is UScriptArray arr)
+                        preview = $"array[{arr.Properties.Count}]" + (arr.Properties.Count > 0 ? " first=" + DumpStruct(arr.Properties[0].GenericValue) : "")
+                            + (arr.Properties.Count > 1 ? " second=" + DumpStruct(arr.Properties[1].GenericValue) : "");
+                    else preview = DumpStruct(gv);
+                    if (preview.Length > 500) preview = preview.Substring(0, 500) + "...";
+                    Console.WriteLine($"      {p.Name.Text} = {preview}");
+                }
+            }
+        }
+        // (3) grouping analysis: rows-per-CharacterID, table diff, CharacterID<->monster-key join.
+        var monKeys = new HashSet<string>(monsters.RowMap.Keys.Select(k => k.Text), StringComparer.Ordinal);
+        var primary = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalDropItem");
+        var common = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalDropItem_Common");
+        string CharId(FStructFallback r) => S(Vals(r), "CharacterID");
+        var byChar = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (var r in primary.RowMap)
+            (byChar.TryGetValue(CharId(r.Value) ?? "?", out var l) ? l : (byChar[CharId(r.Value) ?? "?"] = new List<string>())).Add(r.Key.Text);
+        var multi = byChar.Where(kv => kv.Value.Count > 1).ToList();
+        Console.WriteLine($"[discover-drops] DT_PalDropItem distinctCharacterID={byChar.Count} multiRowChars={multi.Count}");
+        foreach (var kv in multi.Take(12)) Console.WriteLine($"    MULTI {kv.Key}: [{string.Join(", ", kv.Value)}]");
+        int charInMon = byChar.Keys.Count(c => monKeys.Contains(c));
+        var charNotInMon = byChar.Keys.Where(c => !monKeys.Contains(c)).ToList();
+        Console.WriteLine($"[discover-drops] CharacterID in DT_PalMonsterParameter: {charInMon}/{byChar.Count}; NOT matched ({charNotInMon.Count}): {string.Join(", ", charNotInMon.Take(30))}");
+        // diff DT_PalDropItem vs _Common per row key
+        int diffRows = 0; var diffSample = new List<string>();
+        foreach (var r in primary.RowMap)
+        {
+            if (!common.RowMap.TryGetValue(r.Key, out var cr)) { diffRows++; if (diffSample.Count < 8) diffSample.Add($"{r.Key.Text}(no-common)"); continue; }
+            var pv = Vals(r.Value); var cv = Vals(cr);
+            bool same = true;
+            for (int n = 1; n <= 10; n++)
+                if (S(pv, "ItemId" + n) != S(cv, "ItemId" + n) || F(pv, "Rate" + n) != F(cv, "Rate" + n)
+                    || I(pv, "min" + n) != I(cv, "min" + n) || I(pv, "Max" + n) != I(cv, "Max" + n)) { same = false; break; }
+            if (!same) { diffRows++; if (diffSample.Count < 8) diffSample.Add(r.Key.Text); }
+        }
+        Console.WriteLine($"[discover-drops] DT_PalDropItem vs _Common differing rows={diffRows} sample=[{string.Join(", ", diffSample)}]");
+        // stat probe on real monster keys (starter + Orserk task example)
+        foreach (var probe in new[] { "SheepBall", "PinkCat", "ElecPanda", "Anubis", "Boar" })
+        {
+            var mrow = monsters.RowMap.FirstOrDefault(x => x.Key.Text == probe).Value;
+            if (mrow == null) { Console.WriteLine($"  '{probe}' NOT in monster table"); continue; }
+            var mv = Vals(mrow);
+            Console.WriteLine($"  '{probe}' Support={F(mv, "Support")} CaptureRateCorrect={F(mv, "CaptureRateCorrect")} ExpRatio={F(mv, "ExpRatio")}");
+            var drow = byChar.TryGetValue(probe, out var keys) ? primary.RowMap.First(x => x.Key.Text == keys[0]).Value : null;
+            if (drow != null)
+            {
+                var dv = Vals(drow);
+                var slots = new List<string>();
+                for (int n = 1; n <= 10; n++) { var it = S(dv, "ItemId" + n); if (!string.IsNullOrEmpty(it) && it != "None") slots.Add($"{it} {I(dv, "min" + n)}-{I(dv, "Max" + n)}@{FmtNum(F(dv, "Rate" + n))}%"); }
+                Console.WriteLine($"      drops: {string.Join(", ", slots)}");
+            }
+        }
+    }
+
+    // Reusable discovery pass (`--discover-element`): locate the elemental damage-rate
+    // (attacker-element vs defender-element multiplier) table. Search non-L10N .uasset file
+    // names for Element/DamageRate/AttributeRate/Compatibility tokens, load each as a UDataTable
+    // OR a UObject CDO, and dump schema + values so a typed matchup chart can be emitted (or the
+    // absence honestly reported when the data is code-side only).
+    static void DiscoverElement(IFileProvider provider)
+    {
+        // Definitive sweep: EVERY DataTable-dir .uasset whose name hints at element/attribute
+        // effectiveness, loaded and checked for an element-keyed multiplier matrix.
+        var dtHints = new[] { "element", "attribute", "typechart", "damagerate", "weak", "resist", "effective", "compat" };
+        var dtCands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => f.Contains("/DataTable/", StringComparison.OrdinalIgnoreCase))
+            .Where(f => dtHints.Any(h => Path.GetFileNameWithoutExtension(f).Contains(h, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(x => x, StringComparer.Ordinal).ToList();
+        Console.WriteLine($"[discover-element] DataTable-dir files hinting element/attribute effectiveness ({dtCands.Count}):");
+        foreach (var f in dtCands)
+        {
+            var pkg = f.Substring(0, f.Length - ".uasset".Length);
+            try
+            {
+                if (provider.TryLoadPackageObject(pkg, out var o) && o is UDataTable dt)
+                    Console.WriteLine($"  TABLE {pkg} rows={dt.RowMap.Count} keys=[{string.Join(", ", dt.RowMap.Keys.Take(12).Select(k => k.Text))}]");
+                else Console.WriteLine($"  (non-table) {pkg}");
+            }
+            catch (Exception e) { Console.WriteLine($"  [fail] {pkg}: {e.Message}"); }
+        }
+        var needles = new[] { "elementdamage", "elementaldamage", "damagerate", "attributerate", "elementcompat", "compatibility", "elementrate", "typechart", "attackrate" };
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => !f.Contains("/L10N/", StringComparison.OrdinalIgnoreCase))
+            .Where(f => needles.Any(n => Path.GetFileNameWithoutExtension(f).Contains(n, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[discover-element] candidate files by name ({cands.Count}):");
+        foreach (var f in cands) Console.WriteLine($"  {f}");
+        // Broaden: any .uasset whose name contains "Element" (report only, no load) so we see the space.
+        var elemNamed = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => !f.Contains("/L10N/", StringComparison.OrdinalIgnoreCase))
+            .Where(f => Path.GetFileNameWithoutExtension(f).Contains("Element", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[discover-element] all non-L10N files mentioning 'Element' ({elemNamed.Count}):");
+        foreach (var f in elemNamed) Console.WriteLine($"  {f}");
+        foreach (var f in cands.Concat(elemNamed).Distinct())
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            try
+            {
+                if (!provider.TryLoadPackageObject(pkgPath, out var o)) { Console.WriteLine($"[no-object] {pkgPath}"); continue; }
+                if (o is UDataTable dt)
+                {
+                    Console.WriteLine($"==== TABLE {pkgPath} rows={dt.RowMap.Count} ====");
+                    Console.WriteLine($"  keys=[{string.Join(", ", dt.RowMap.Keys.Take(20).Select(k => k.Text))}]");
+                    foreach (var r in dt.RowMap.Take(12))
+                        Console.WriteLine($"  row '{r.Key.Text}': [{string.Join(", ", r.Value.Properties.Select(p => $"{p.Name.Text}={p.Tag?.GenericValue}"))}]");
+                }
+                else
+                {
+                    Console.WriteLine($"==== CDO {pkgPath} type={o.GetType().Name} class={o.Class?.Name} ====");
+                    foreach (var p in o.Properties.Take(40))
+                    {
+                        var gv = p.Tag?.GenericValue;
+                        string preview = gv is UScriptArray arr
+                            ? $"array[{arr.Properties.Count}]" + (arr.Properties.Count > 0 ? " first=" + DumpStruct(arr.Properties[0].GenericValue) : "")
+                            : DumpStruct(gv);
+                        if (preview.Length > 500) preview = preview.Substring(0, 500) + "...";
+                        Console.WriteLine($"      {p.Name.Text} = {preview}");
+                    }
+                }
+            }
+            catch (Exception e) { Console.WriteLine($"[load fail] {pkgPath}: {e.Message}"); }
         }
     }
 

@@ -71,6 +71,26 @@ impl ElementKind {
     }
 }
 
+/// One item-drop line for a species, from the own-install extraction
+/// (`DT_PalDropItem`, keyed by `CharacterID` = species internal name). Palpedia
+/// shows per-pal rows of `(item, min, max, rate%)`. Emitted only for the base
+/// (lowest-`Level`) drop table per species; empty slots are dropped. Item names
+/// are localized English (`DT_ItemNameText_Common`), falling back to the raw
+/// `item_id` when unlocalized (never fabricated).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ItemDrop {
+    /// Raw item id (`ItemId<N>`), e.g. `"Wool"`, `"ElectricOrgan"`.
+    pub item_id: String,
+    /// Localized English display name (falls back to `item_id`).
+    pub item_name: String,
+    /// Minimum quantity dropped (`min<N>`).
+    pub min: u32,
+    /// Maximum quantity dropped (`Max<N>`); always `>= min`.
+    pub max: u32,
+    /// Drop probability as a PERCENT in `0.0..=100.0` (`Rate<N>`; 100 => always).
+    pub rate: f32,
+}
+
 /// One pal species. `internal_name` is the save-file `CharacterID` key
 /// (e.g. `"Anubis"`, `"BadCatgirl"`); `name` is the English display name.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -161,6 +181,17 @@ pub struct PalSpecies {
     /// truth from the own-install extraction (`DT_PalMonsterParameter`); every
     /// shipped species carries at least one.
     pub elements: Vec<ElementKind>,
+    // ---- Palpedia gap fields (own-install extraction, build 24181527) ----
+    /// Per-pal item drops from `DT_PalDropItem` (base/lowest-`Level` table).
+    /// Empty for the handful of variant species with no drop row. See [`ItemDrop`].
+    pub drops: Vec<ItemDrop>,
+    /// `Support` stat (partner-skill support value; 100 for every species in
+    /// this build).
+    pub support: u16,
+    /// `CaptureRateCorrect` — per-species capture-rate multiplier.
+    pub capture_rate_correct: f32,
+    /// `ExpRatio` — per-species XP-gain multiplier.
+    pub exp_ratio: f32,
 }
 
 /// Canonical order of the 12 work-suitability kinds, matching `db.json`'s
@@ -277,6 +308,21 @@ pub struct BreedingEntry {
     pub parent2: u16,
     pub parent2_gender: ParentGender,
     pub child: u16,
+}
+
+/// One resolved reverse-breeding parent pair for a target child: the two parent
+/// indices, whether it is a gender-pinned "unique" combo, and each parent's
+/// gender pin (`None` on the gender-independent combi-rank majority). Produced
+/// by [`GameData::reverse_breeding`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReverseParents {
+    pub parent1: u16,
+    pub parent2: u16,
+    /// A 1.0 gender-pinned combo (e.g. CatMage x FoxMage) rather than a
+    /// combi-rank result.
+    pub unique: bool,
+    pub parent1_gender: Option<Gender>,
+    pub parent2_gender: Option<Gender>,
 }
 
 /// Inheritance roll weight arrays — solver INPUTS, not fixed constants.
@@ -683,6 +729,58 @@ impl GameData {
             .get(&child)
             .map(Vec::as_slice)
             .unwrap_or(&[])
+    }
+
+    /// Reverse breeding: every unordered parent pair whose bred child resolves
+    /// to `child`. Reads the same breeding rows [`Self::child_of`] resolves
+    /// forward — no combi-rank formula is reimplemented here. Pairs are deduped
+    /// by canonical species pair, each ordered internally by `(paldex_no,
+    /// index)`, and the list is sorted deterministically by parent1 then
+    /// parent2 `(paldex_no, index)`. Gender-pinned unique combos are flagged and
+    /// carry their pins; a valid self-pair (`X x X -> X`) is included. Empty for
+    /// an out-of-range or unreachable child.
+    pub fn reverse_breeding(&self, child: u16) -> Vec<ReverseParents> {
+        let dex = |i: u16| self.pack.species.get(i as usize).map(|s| s.paldex_no).unwrap_or(u16::MAX);
+        let pin = |g: ParentGender| match g {
+            ParentGender::Any => None,
+            ParentGender::Male => Some(Gender::Male),
+            ParentGender::Female => Some(Gender::Female),
+        };
+        let mut seen: std::collections::HashSet<(u16, u16)> = std::collections::HashSet::new();
+        let mut out: Vec<ReverseParents> = Vec::new();
+        for e in &self.pack.breeding {
+            if e.child != child {
+                continue;
+            }
+            let key = (e.parent1.min(e.parent2), e.parent1.max(e.parent2));
+            if !seen.insert(key) {
+                continue;
+            }
+            let unique =
+                e.parent1_gender != ParentGender::Any || e.parent2_gender != ParentGender::Any;
+            // Order the pair by (paldex_no, index), carrying each parent's gender
+            // pin, so the emitted pair is stable regardless of the stored row
+            // orientation.
+            let a = (e.parent1, pin(e.parent1_gender));
+            let b = (e.parent2, pin(e.parent2_gender));
+            let (first, second) = if (dex(a.0), a.0) <= (dex(b.0), b.0) { (a, b) } else { (b, a) };
+            out.push(ReverseParents {
+                parent1: first.0,
+                parent2: second.0,
+                unique,
+                parent1_gender: first.1,
+                parent2_gender: second.1,
+            });
+        }
+        out.sort_by(|x, y| {
+            (dex(x.parent1), x.parent1, dex(x.parent2), x.parent2).cmp(&(
+                dex(y.parent1),
+                y.parent1,
+                dex(y.parent2),
+                y.parent2,
+            ))
+        });
+        out
     }
 
     /// Solver inheritance weight arrays.

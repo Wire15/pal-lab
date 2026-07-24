@@ -11,6 +11,6 @@ pub mod types;
 
 pub use gamedata::{
     ActiveSkill, BreedingBoost, BreedingBoostSource, BreedingEffect, GameData, InheritanceWeights,
-    LabResearch, LearnMove, PackError,
+    ItemDrop, LabResearch, LearnMove, PackError, ReverseParents,
 };
 pub use types::*;

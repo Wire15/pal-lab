@@ -15,6 +15,7 @@ import type { InvokeArgs } from "@tauri-apps/api/core";
 import type {
   ChildResult,
   ParentsResult,
+  ReversePair,
   SpeciesDetail,
   SpeciesEntry,
 } from "./types";
@@ -29,6 +30,8 @@ interface DevFixtures {
   detail: Record<string, SpeciesDetail>;
   /** Parent pairs keyed by child internal id. */
   parents: Record<string, ParentsResult>;
+  /** Reverse breeding parent pairs keyed by child internal id. */
+  reverse: Record<string, ReversePair[]>;
   /** Child keyed by canonical "min_id|max_id" of the two parents. */
   child: Record<string, { id: string; name: string; paldex_no: number }>;
   /** Full species list, for synthesizing detail of uncovered ids. */
@@ -59,10 +62,11 @@ function loadDev(): Promise<DevFixtures> {
       import("../dev-fixtures/list-passives.json"),
       import("../dev-fixtures/paldex-species-detail.json"),
       import("../dev-fixtures/breeding-parents.json"),
+      import("../dev-fixtures/reverse-breeding.json"),
       import("../dev-fixtures/breeding-child.json"),
       import("../dev-fixtures/breeding-boosts.json"),
       import("../dev-fixtures/lab-research.json"),
-    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, child, boosts, labResearch]) => {
+    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, reverse, child, boosts, labResearch]) => {
       const speciesData = species.default as unknown as SpeciesEntry[];
       return {
         simple: {
@@ -81,6 +85,7 @@ function loadDev(): Promise<DevFixtures> {
         },
         detail: detail.default as unknown as Record<string, SpeciesDetail>,
         parents: parents.default as Record<string, ParentsResult>,
+        reverse: reverse.default as Record<string, ReversePair[]>,
         child: child.default as DevFixtures["child"],
         species: speciesData,
       };
@@ -254,6 +259,11 @@ async function invokeDev<T>(cmd: string, args?: InvokeArgs): Promise<T> {
   if (cmd === "breeding_parents") {
     const child = arg(args, "child");
     return (dev.parents[child] ?? { total: 0, pairs: [] }) as T;
+  }
+
+  if (cmd === "reverse_breeding") {
+    const species = arg(args, "species");
+    return (dev.reverse[species] ?? []) as T;
   }
 
   if (cmd === "breeding_child") {

@@ -26,6 +26,7 @@ pub fn run() {
             paldex::paldex_species_detail,
             paldex::breeding_child,
             paldex::breeding_parents,
+            paldex::reverse_breeding,
             paldex::roster_counts
         ])
         .run(tauri::generate_context!())
