@@ -463,6 +463,14 @@ mod tests {
             serde_json::to_string_pretty(&crate::solver::list_breeding_boosts()).unwrap(),
         );
 
+        // lab-research.json — the Solver BREEDING SETUP panel's LAB RESEARCH group
+        // (incubation-acceleration lines + cumulative per-rank fractions). Mechanical
+        // mirror of the pack; the UI dedupes identical lines.
+        write(
+            "lab-research.json",
+            serde_json::to_string_pretty(&crate::solver::list_lab_research()).unwrap(),
+        );
+
         // active-skills.json — waza id -> ActiveSkill (name/element/power/cool_time/
         // description), sorted by id for determinism.
         let active_skills: std::collections::BTreeMap<String, pal_data::ActiveSkill> =

@@ -19,8 +19,8 @@ use serde::Deserialize;
 
 use pal_data::gamedata::{
     ActiveSkill, BreedingBoost, BreedingBoostSource, BreedingEffect, BreedingEntry, ElementKind,
-    GameSettings, InheritanceWeights, LearnMove, Pack, PalSpecies, ParentGender, PassiveEffect,
-    PassiveSkill, PassiveTier, UNREACHABLE,
+    GameSettings, InheritanceWeights, LabResearch, LearnMove, Pack, PalSpecies, ParentGender,
+    PassiveEffect, PassiveSkill, PassiveTier, UNREACHABLE,
 };
 
 // ---- raw JSON shapes (only the fields we consume) ----
@@ -126,6 +126,10 @@ struct RawExtract {
     /// ordered by the extractor. Enum fields parse straight from the snake_case JSON.
     #[serde(default)]
     breeding_boosts: Vec<RawBreedingBoost>,
+    /// Breeding-relevant lab-research lines (`lab_research`), already grouped into
+    /// per-category chains with cumulative per-rank fractions by the extractor.
+    #[serde(default)]
+    lab_research: Vec<RawLabResearch>,
 }
 
 /// One extraction breeding-boost entry; enums deserialize from the frozen
@@ -134,6 +138,18 @@ struct RawExtract {
 struct RawBreedingBoost {
     source: String,
     source_kind: BreedingBoostSource,
+    effect: BreedingEffect,
+    values_per_rank: Vec<f32>,
+}
+
+/// One extraction lab-research line; the pack [`LabResearch`] shape 1:1 (the
+/// extractor's per-node audit detail is dropped — the pack carries only the
+/// cumulative curve the UI composes into `incubation_reduction`).
+#[derive(Deserialize)]
+struct RawLabResearch {
+    id: String,
+    name: String,
+    category: String,
     effect: BreedingEffect,
     values_per_rank: Vec<f32>,
 }
@@ -658,6 +674,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cosmetic_boosts,
     );
 
+    // Lab research (data only; solver ignores this wave). Extractor order is already
+    // deterministic (by category id); the pack mirrors it 1:1.
+    let lab_research: Vec<LabResearch> = extract
+        .lab_research
+        .iter()
+        .map(|l| LabResearch {
+            id: l.id.clone(),
+            name: l.name.clone(),
+            category: l.category.clone(),
+            effect: l.effect,
+            values_per_rank: l.values_per_rank.clone(),
+        })
+        .collect();
+    println!(
+        "lab research: {} lines ({})",
+        lab_research.len(),
+        lab_research
+            .iter()
+            .map(|l| format!("{}={:?}", l.id, l.values_per_rank))
+            .collect::<Vec<_>>()
+            .join(", "),
+    );
+
     let pack = Pack {
         version: db.version.clone(),
         game_build: extract.meta.game_build.clone(),
@@ -675,6 +714,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         learnsets,
         breeding_boosts,
+        lab_research,
     };
 
     let bytes = bincode::serialize(&pack)?;

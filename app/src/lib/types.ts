@@ -228,6 +228,22 @@ export interface BreedingBoostEntry {
   display_name: string;
 }
 
+/** One breeding-relevant lab-research line from `list_lab_research` (the research
+ * lab's `DT_LabResearchDataTable`). `category` is the work suitability required to
+ * research it (`"EmitFlame"` = Kindling, `"Cool"` = Cooling); `effect` is always
+ * `"incubation_speed"` this build. `values_per_rank` is the CUMULATIVE fraction after
+ * completing each successive rank (ascending/monotonic), so a researched rank `k`
+ * (1-based) contributes `values_per_rank[k - 1]` and rank `0` contributes nothing.
+ * Two shipped branches (Cooling/Kindling) carry the identical "Incubation Acceleration"
+ * line; the UI dedupes by (name, effect, curve). */
+export interface LabResearchEntry {
+  id: string;
+  name: string;
+  category: string;
+  effect: BreedingEffect;
+  values_per_rank: number[];
+}
+
 /** `{id, name}` from `list_species`. */
 export interface NamedEntry {
   id: string;

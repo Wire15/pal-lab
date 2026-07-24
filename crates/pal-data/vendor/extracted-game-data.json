@@ -1,7 +1,7 @@
 {
   "meta": {
     "game_build": "24181527",
-    "extracted_at": "2026-07-22T19:12:38.4311053+00:00",
+    "extracted_at": "2026-07-23T23:52:45.0788721+00:00",
     "usmap": "PalworldModding/UsefulFiles@1.0"
   },
   "game_settings": {
@@ -31302,6 +31302,110 @@
       "effect": "farm_speed",
       "values_per_rank": [
         1.0
+      ]
+    }
+  ],
+  "lab_research": [
+    {
+      "id": "Cool",
+      "name": "Incubation Acceleration",
+      "category": "Cool",
+      "sub_type": "PalEggHatchingSpeed",
+      "effect": "incubation_speed",
+      "values_per_rank": [
+        0.05,
+        0.15,
+        0.2,
+        0.3
+      ],
+      "nodes": [
+        {
+          "id": "Cool2",
+          "name": "Incubation Acceleration Lv1",
+          "rank": 1,
+          "effect_value": 0.05,
+          "cumulative": 0.05,
+          "required_research_id": "Cool1",
+          "required_work_amount": 15000
+        },
+        {
+          "id": "Cool2_2",
+          "name": "Incubation Acceleration Lv2",
+          "rank": 2,
+          "effect_value": 0.1,
+          "cumulative": 0.15,
+          "required_research_id": "Cool2",
+          "required_work_amount": 30000
+        },
+        {
+          "id": "Cool2_3",
+          "name": "Incubation Acceleration Lv3",
+          "rank": 3,
+          "effect_value": 0.05,
+          "cumulative": 0.2,
+          "required_research_id": "Cool2_2",
+          "required_work_amount": 75000
+        },
+        {
+          "id": "Cool2_4",
+          "name": "Incubation Acceleration Lv4",
+          "rank": 4,
+          "effect_value": 0.1,
+          "cumulative": 0.3,
+          "required_research_id": "Cool2_3",
+          "required_work_amount": 150000
+        }
+      ]
+    },
+    {
+      "id": "EmitFlame",
+      "name": "Incubation Acceleration",
+      "category": "EmitFlame",
+      "sub_type": "PalEggHatchingSpeed",
+      "effect": "incubation_speed",
+      "values_per_rank": [
+        0.05,
+        0.15,
+        0.2,
+        0.3
+      ],
+      "nodes": [
+        {
+          "id": "EmitFlame2",
+          "name": "Incubation Acceleration Lv1",
+          "rank": 1,
+          "effect_value": 0.05,
+          "cumulative": 0.05,
+          "required_research_id": "EmitFlame1",
+          "required_work_amount": 200000
+        },
+        {
+          "id": "EmitFlame2_2",
+          "name": "Incubation Acceleration Lv2",
+          "rank": 2,
+          "effect_value": 0.1,
+          "cumulative": 0.15,
+          "required_research_id": "EmitFlame2",
+          "required_work_amount": 500000
+        },
+        {
+          "id": "EmitFlame2_3",
+          "name": "Incubation Acceleration Lv3",
+          "rank": 3,
+          "effect_value": 0.05,
+          "cumulative": 0.2,
+          "required_research_id": "EmitFlame2_2",
+          "required_work_amount": 1500000
+        },
+        {
+          "id": "EmitFlame2_4",
+          "name": "Incubation Acceleration Lv4",
+          "rank": 4,
+          "effect_value": 0.1,
+          "cumulative": 0.3,
+          "required_research_id": "EmitFlame2_3",
+          "required_work_amount": 5000000
+        }
       ]
     }
   ]

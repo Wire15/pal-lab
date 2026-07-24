@@ -15,7 +15,7 @@ use std::time::{Duration, Instant};
 
 use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
 use pal_data::types::{Guid, OwnedPal};
-use pal_data::{ActiveSkill, GameData};
+use pal_data::{ActiveSkill, GameData, LabResearch};
 use pal_solver::solver::{
     resolve_passive, resolve_species, solve_queue_monitored, solve_with_catching_monitored,
     BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel, ModeResult, QueueItem, SolveMonitor,
@@ -619,6 +619,17 @@ pub fn list_breeding_boosts() -> Vec<BreedingBoostEntry> {
             }
         })
         .collect()
+}
+
+/// Breeding-relevant lab-research lines for the Breeding Setup panel's LAB RESEARCH
+/// group. A pure mechanical passthrough of the pack's [`pal_data::LabResearch`] (names
+/// are already localized; no per-request resolution needed). Each line carries the
+/// cumulative per-rank incubation-speed fraction the UI composes into
+/// `incubation_reduction`. Two shipped branches (Cooling/Kindling) carry the identical
+/// "Incubation Acceleration" line — the UI dedupes by (name, effect, curve).
+#[tauri::command]
+pub fn list_lab_research() -> Vec<LabResearch> {
+    GameData::get().lab_research().to_vec()
 }
 
 /// Active-skill (waza) definitions keyed by the save-side waza id

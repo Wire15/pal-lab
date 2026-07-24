@@ -424,6 +424,29 @@ pub struct BreedingBoost {
     pub values_per_rank: Vec<f32>,
 }
 
+/// One breeding-relevant lab-research LINE from the own-install extraction
+/// (`tools/pal-extract`, `DT_LabResearchDataTable`). The research lab exposes
+/// work-suitability-gated research chains that grant a global buff; we carry only
+/// the incubation-speed lines (`PalEggHatchingSpeed` -> [`BreedingEffect::IncubationSpeed`]).
+/// `values_per_rank` is the CUMULATIVE fraction after completing each successive rank
+/// (node EffectValues are incremental), ascending and monotonic, so rank `k` (1-based)
+/// contributes `values_per_rank[k - 1]` and rank `0` contributes nothing. The solver
+/// does NOT consume this wave; surfaced for the Breeding Setup panel (composes into
+/// `incubation_reduction`). Two shipped branches (Cooling/Kindling) carry the identical
+/// "Incubation Acceleration" line — the UI dedupes by (name, effect, curve).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LabResearch {
+    /// Research line id (the work-suitability category, e.g. `"Cool"` / `"EmitFlame"`).
+    pub id: String,
+    /// Localized line name (e.g. `"Incubation Acceleration"`).
+    pub name: String,
+    /// Raw work suitability required to research it (`EmitFlame` = Kindling, `Cool` = Cooling).
+    pub category: String,
+    pub effect: BreedingEffect,
+    /// Cumulative fraction per rank (1-based index into this vec), ascending/monotonic.
+    pub values_per_rank: Vec<f32>,
+}
+
 /// The full serialized pack. This is exactly what `bincode` reads/writes; every
 /// field is a `Vec` (deterministic order) — no `HashMap`s cross the wire.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -455,6 +478,11 @@ pub struct Pack {
     /// (`breeding_boosts`), in deterministic `(source_kind, source, effect)` order.
     /// The solver does NOT read this wave; surfaced for the UI / Wave 2 setup UX.
     pub breeding_boosts: Vec<BreedingBoost>,
+    /// Breeding-relevant lab-research lines from the own-install extraction
+    /// (`lab_research`, `DT_LabResearchDataTable`), in deterministic id order. The
+    /// solver does NOT read this wave; surfaced for the Breeding Setup panel (composes
+    /// into `incubation_reduction`). See [`LabResearch`].
+    pub lab_research: Vec<LabResearch>,
 }
 
 /// Sentinel used by palcalc's min-steps matrix for "no path".
@@ -632,6 +660,12 @@ impl GameData {
     /// the solver does not consume these this wave). See [`BreedingBoost`].
     pub fn breeding_boosts(&self) -> &[BreedingBoost] {
         &self.pack.breeding_boosts
+    }
+
+    /// Breeding-relevant lab-research lines from the extraction (data only; the
+    /// solver does not consume these this wave). See [`LabResearch`].
+    pub fn lab_research(&self) -> &[LabResearch] {
+        &self.pack.lab_research
     }
 
     /// Passive-skill definition by its internal id (e.g. `"Runner"`).

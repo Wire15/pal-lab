@@ -603,3 +603,46 @@ fn breeding_boosts_extract_typed_effects() {
         "breeding boosts are in deterministic (source_kind, source) order",
     );
 }
+
+#[test]
+fn lab_research_incubation_lines_decode() {
+    use pal_data::gamedata::BreedingEffect;
+    let gd = GameData::get();
+    let lines = gd.lab_research();
+
+    // Both shipped PalEggHatchingSpeed branches decode: Cooling (`Cool`) and Kindling
+    // (`EmitFlame`). They carry the identical "Incubation Acceleration" line surfaced in
+    // two work-suitability research trees.
+    assert!(!lines.is_empty(), "lab_research decoded no lines");
+    for id in ["Cool", "EmitFlame"] {
+        let line = lines
+            .iter()
+            .find(|l| l.id == id)
+            .unwrap_or_else(|| panic!("lab research line {id} missing"));
+        assert_eq!(line.effect, BreedingEffect::IncubationSpeed, "{id} is an incubation-speed line");
+        assert_eq!(line.name, "Incubation Acceleration", "{id} localized name");
+        // Four ranks, cumulative +5% -> +30%.
+        assert_eq!(line.values_per_rank.len(), 4, "{id}: 4 research ranks");
+        let approx = |a: f32, b: f32| (a - b).abs() < 1e-6;
+        assert!(approx(line.values_per_rank[0], 0.05), "{id} rank1 = 0.05, got {}", line.values_per_rank[0]);
+        assert!(approx(line.values_per_rank[1], 0.15), "{id} rank2 = 0.15");
+        assert!(approx(line.values_per_rank[2], 0.20), "{id} rank3 = 0.20");
+        assert!(approx(*line.values_per_rank.last().unwrap(), 0.30), "{id} rank4 = 0.30");
+        // Cumulative curve is strictly monotonic ascending (never flat/decreasing).
+        assert!(
+            line.values_per_rank.windows(2).all(|w| w[1] > w[0]),
+            "{id} values ascend strictly by rank: {:?}",
+            line.values_per_rank,
+        );
+    }
+
+    // Every lab-research line is an incubation-speed line (the only breeding-relevant
+    // effect in DT_LabResearchDataTable this build), with a positive-monotonic curve.
+    assert!(
+        lines.iter().all(|l| l.effect == BreedingEffect::IncubationSpeed
+            && !l.values_per_rank.is_empty()
+            && l.values_per_rank[0] > 0.0
+            && l.values_per_rank.windows(2).all(|w| w[1] >= w[0])),
+        "all lab_research lines are positive-monotonic incubation lines",
+    );
+}

@@ -17,6 +17,7 @@ import type {
   BreedingEffect,
   BreedingSetup,
   CakeToken,
+  LabResearchEntry,
   WorldOptionsResponse,
 } from "../lib/types";
 import { PalIcon } from "./primitives";
@@ -26,6 +27,8 @@ import { useAppState, useBreedingSetup } from "../state";
  * lives in the shared store). */
 const SELECTED_KEY = "pal-calc.setup.boosters";
 const MANUAL_HATCH_KEY = "pal-calc.setup.manualHatch";
+/** Map of lab-research line key -> researched rank (0 = not researched). */
+const RESEARCH_KEY = "pal-calc.setup.research";
 
 /** Farm-speed boosts shorten each breed attempt as `time / (1 + bonus)`, so a
  * `+bonus` fraction reduces breed time by this percentage (non-linear). */
@@ -115,6 +118,34 @@ function effectSummary(effects: BoosterEffect[]): string {
     .join(" \u00b7 ");
 }
 
+/** One deduped lab-research line the panel offers: its display name, the
+ * cumulative incubation-speed fraction per rank (1-based; `values[k-1]` for rank
+ * `k`), and a stable key used to persist the chosen rank. */
+interface ResearchLine {
+  key: string;
+  name: string;
+  values: number[];
+  maxRank: number;
+}
+
+/** Collapse the raw lab-research catalogue into distinct offerable lines. The two
+ * shipped branches (Kindling/Cooling) carry the identical "Incubation Acceleration"
+ * curve, so we dedupe by (name, effect, curve): one buff, one selectable row, no
+ * double-count. Only incubation-speed lines are surfaced (they compose into
+ * `incubation_reduction`). */
+function dedupeResearch(entries: LabResearchEntry[]): ResearchLine[] {
+  const seen = new Set<string>();
+  const lines: ResearchLine[] = [];
+  for (const e of entries) {
+    if (e.effect !== "incubation_speed") continue;
+    const key = `${e.name}|${e.effect}|${e.values_per_rank.join(",")}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    lines.push({ key, name: e.name, values: e.values_per_rank, maxRank: e.values_per_rank.length });
+  }
+  return lines;
+}
+
 export function BreedingSetupPanel() {
   const { saveDir, saveSummary } = useAppState();
   const { setup, cake, setSetup, setCake } = useBreedingSetup();
@@ -122,6 +153,8 @@ export function BreedingSetupPanel() {
 
   const [boosts, setBoosts] = useState<BreedingBoostEntry[]>([]);
   const [boostsLoaded, setBoostsLoaded] = useState(false);
+  const [research, setResearch] = useState<LabResearchEntry[]>([]);
+  const [researchLoaded, setResearchLoaded] = useState(false);
   // undefined = not yet scanned; number = scanned world value; null = no world
   // file (dedicated server) -> manual entry.
   const [worldHatch, setWorldHatch] = useState<number | null | undefined>(undefined);
@@ -138,13 +171,26 @@ export function BreedingSetupPanel() {
     const raw = Number(localStorage.getItem(MANUAL_HATCH_KEY));
     return raw > 0 ? raw : 72;
   });
+  // Persisted researched rank per lab-research line key (0 = not researched).
+  const [researchRanks, setResearchRanks] = useState<Record<string, number>>(() => {
+    try {
+      const raw = localStorage.getItem(RESEARCH_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    } catch {
+      return {};
+    }
+  });
 
-  // Load the booster catalogue once.
+  // Load the booster + lab-research catalogues once.
   useEffect(() => {
     invoke<BreedingBoostEntry[]>("list_breeding_boosts")
       .then(setBoosts)
       .catch(() => {})
       .finally(() => setBoostsLoaded(true));
+    invoke<LabResearchEntry[]>("list_lab_research")
+      .then(setResearch)
+      .catch(() => {})
+      .finally(() => setResearchLoaded(true));
   }, []);
 
   // Scan the world's egg-hatch setting on save load. No save / any error ->
@@ -181,6 +227,13 @@ export function BreedingSetupPanel() {
       // Non-fatal (private mode / quota).
     }
   }, [manualHatch]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(RESEARCH_KEY, JSON.stringify(researchRanks));
+    } catch {
+      // Non-fatal (private mode / quota).
+    }
+  }, [researchRanks]);
 
   const scanned = typeof worldHatch === "number";
   const hatchHours = scanned ? (worldHatch as number) : manualHatch;
@@ -250,6 +303,11 @@ export function BreedingSetupPanel() {
       });
   }, [boosts, pals]);
 
+  // Deduped lab-research lines (the two identical Kindling/Cooling branches collapse
+  // to one "Incubation Acceleration"). Manual entry — save files don't expose which
+  // research a guild has completed, so the user sets their own researched rank.
+  const researchLines = useMemo<ResearchLine[]>(() => dedupeResearch(research), [research]);
+
   // Save-switch revalidation (AppReview P2). `selected` is a global localStorage
   // list, but a booster's applied value depends on the loaded roster: owned uses
   // the real best condensation rank, unowned a max-rank what-if. So when the
@@ -276,7 +334,9 @@ export function BreedingSetupPanel() {
     prevOwnedRef.current = next;
   }, [boosters, boostsLoaded]);
 
-  // Compose the selected boosters' effects additively into the setup fractions.
+  // Compose the selected boosters' + researched lab lines' effects additively into
+  // the setup fractions. Lab research composes into incubation_reduction exactly like
+  // an incubation-speed booster (contract: no new solver channel).
   const composed = useMemo<BreedingSetup>(() => {
     let farm = 0;
     let inc = 0;
@@ -289,19 +349,23 @@ export function BreedingSetupPanel() {
         else if (e.effect === "extra_egg_chance") egg += e.value;
       }
     }
+    for (const line of researchLines) {
+      const rank = researchRanks[line.key] ?? 0;
+      if (rank > 0) inc += line.values[Math.min(rank, line.maxRank) - 1] ?? 0;
+    }
     return {
       farm_speed_bonus: farm,
       incubation_reduction: inc,
       extra_egg_chance: egg,
       egg_hatch_hours: hatchHours,
     };
-  }, [boosters, selected, hatchHours]);
+  }, [boosters, selected, researchLines, researchRanks, hatchHours]);
 
-  // Sync the composed setup into the shared store once the catalogue + world
+  // Sync the composed setup into the shared store once the catalogues + world
   // scan have resolved (before that we'd zero the persisted setup). Guarded on
   // value equality so it never loops.
   useEffect(() => {
-    if (!boostsLoaded || !hatchReady) return;
+    if (!boostsLoaded || !researchLoaded || !hatchReady) return;
     if (
       composed.farm_speed_bonus !== setup.farm_speed_bonus ||
       composed.incubation_reduction !== setup.incubation_reduction ||
@@ -310,12 +374,16 @@ export function BreedingSetupPanel() {
     ) {
       setSetup(composed);
     }
-  }, [boostsLoaded, hatchReady, composed, setup, setSetup]);
+  }, [boostsLoaded, researchLoaded, hatchReady, composed, setup, setSetup]);
 
   const applied = describeSetup(composed, "normal");
 
   function toggle(source: string) {
     setSelected((s) => (s.includes(source) ? s.filter((x) => x !== source) : [...s, source]));
+  }
+
+  function setResearchRank(key: string, rank: number) {
+    setResearchRanks((r) => ({ ...r, [key]: rank }));
   }
 
   return (
@@ -502,6 +570,81 @@ export function BreedingSetupPanel() {
           in-game.
         </p>
       </div>
+
+      {/* LAB RESEARCH */}
+      {researchLines.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+            Lab research
+          </span>
+          <div className="flex flex-col gap-1.5">
+            {researchLines.map((line) => {
+              const rank = Math.min(researchRanks[line.key] ?? 0, line.maxRank);
+              const frac = rank > 0 ? line.values[rank - 1] ?? 0 : 0;
+              return (
+                <div
+                  key={line.key}
+                  className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2 py-1.5"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border border-amber/40 bg-amber/10 text-[14px] leading-none text-amber"
+                      aria-hidden
+                    >
+                      &#9879;
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-[13px] font-medium text-ink">
+                        {line.name}
+                      </span>
+                      <span
+                        className={`font-mono text-[11px] tabular-nums ${
+                          rank > 0 ? "text-amber-bright" : "text-ink-faint"
+                        }`}
+                      >
+                        {rank > 0 ? `-${Math.round(frac * 100)}% hatch time` : "Not researched"}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">
+                      Lv&nbsp;{rank}/{line.maxRank}
+                    </span>
+                  </div>
+                  <div
+                    className="flex overflow-hidden rounded-md border border-line"
+                    role="radiogroup"
+                    aria-label={`${line.name} researched rank`}
+                  >
+                    {Array.from({ length: line.maxRank + 1 }, (_, r) => {
+                      const active = r === rank;
+                      return (
+                        <button
+                          key={r}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          aria-label={`Rank ${r}`}
+                          onClick={() => setResearchRank(line.key, r)}
+                          className={`flex-1 border-r border-line py-1 font-mono text-[11px] tabular-nums transition-colors last:border-r-0 ${
+                            active
+                              ? "bg-raised text-amber"
+                              : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                          }`}
+                        >
+                          {r}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[11px] leading-relaxed text-ink-faint">
+            Set to your lab&rsquo;s researched rank &mdash; save files don&rsquo;t
+            expose research yet. Each rank speeds egg incubation, up to &minus;30%.
+          </p>
+        </div>
+      )}
 
       {/* CAKE */}
       <div className="flex flex-col gap-1.5">

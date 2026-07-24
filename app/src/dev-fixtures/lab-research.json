@@ -1,0 +1,26 @@
+[
+  {
+    "id": "Cool",
+    "name": "Incubation Acceleration",
+    "category": "Cool",
+    "effect": "incubation_speed",
+    "values_per_rank": [
+      0.05,
+      0.15,
+      0.2,
+      0.3
+    ]
+  },
+  {
+    "id": "EmitFlame",
+    "name": "Incubation Acceleration",
+    "category": "EmitFlame",
+    "effect": "incubation_speed",
+    "values_per_rank": [
+      0.05,
+      0.15,
+      0.2,
+      0.3
+    ]
+  }
+]

@@ -1591,3 +1591,118 @@ exists: a legacy-shaped plan degrades to header + `= Z%` + `<total> total` +
 pool (from node passives, highlights preserved), dropping the split, the egg
 breakdown, the IV gate, and the inheritance line. Queue synthetic seeds and the
 no-save case take the same node-passives fallback.
+
+## Wave — Pal-dex PALS grid → circular Palbox tiles (`views/paldex/index-view.tsx`)
+
+The PALS grid (grid section only; the header/search/sort/filter toolbar and the
+empty states are unchanged) is redrawn from the square card face (§9 grid,
+`[minmax(184px,1fr)]` auto-fill of `PalIcon 44` + text rows + `CardWorkBadges`)
+into a **fixed 5-wide grid of circular Palbox-style tiles**, adopting the Slot /
+plan-graph `PalCircle` visual language (§6, §7 Graph view). This is a *dex of
+species*, not instances, so the tile carries species-level chrome only. The old
+square-card face — including `CardWorkBadges` on the card (§ "Work badges on the
+dex card") — is superseded here; work suitability stays fully reachable in the
+`PalHoverCard`, which is still wired on every tile.
+
+### Layout
+
+- Container unchanged: `flex-1 overflow-auto px-6 py-5`. Inner grid is
+  `grid grid-cols-5 gap-x-4 gap-y-6` — exactly five per row at every width, with
+  generous gaps so the circles breathe.
+- Each tile is a centered column (`flex flex-col items-center gap-2`,
+  `rounded-2xl px-1 py-2 text-center`). The portrait is
+  `relative mx-auto aspect-square w-full max-w-[104px]` — it scales down with the
+  column on narrow windows and caps at 104px, giving ~80–104px circles across the
+  1280–1600 range.
+
+### Tile anatomy (top → bottom)
+
+- **Circular portrait (hero)** — `DexPortrait` (local to the view): the pal art
+  clipped to `overflow-hidden rounded-full bg-abyss/70` with a `ring-1`, the same
+  `group-hover:-translate-y-0.5` lift and `transition-[box-shadow,transform]` as
+  the Slot. It holds its own icon-`failed` state (so the `UNKNOWN_ICON` fallback
+  works inside the grid `.map`, where a hook per row is illegal).
+- **Owned vs unowned ring/saturation (dex-completion read)** — driven by roster
+  state: **owned** (`total > 0`) = amber ring (`ring-amber/55 group-hover:ring-amber`)
+  at full saturation; **unowned with a save loaded** = quiet ring
+  (`ring-line/50 group-hover:ring-amber/40`) plus a desaturated portrait
+  (`opacity-60 saturate-[0.45]`, restored to full on hover); **no save loaded** =
+  neutral ring (`ring-line/70 group-hover:ring-amber/50`), no dimming (there is no
+  ownership concept yet). Owned pals visibly pop against the dimmed field.
+- **Element chip** — an `ElementBadges size={13}` cluster on a dark
+  `bg-abyss/90 border-line` pill, absolutely positioned as a **bottom-center
+  overlay** on the ring (the Palbox badge idiom — mirrors the Slot's level pill
+  slot). Carries the 1–2 categorical element colors.
+- **Name** — centered directly below the circle, `text-[13px] font-medium text-ink`,
+  truncated.
+- **Identity line** — one centered mono `text-[10px] tabular-nums text-ink-faint`
+  row: `#NNN` (dex number, zero-padded), the variant **`B`** marker in `el-dragon`
+  when `is_variant`, a faint `·` divider, then `rank {combi_rank}` (combi rank is
+  **not** in the hover card, so it stays on the tile — nothing shown before became
+  unreachable).
+- **Owned counts** — when a roster is loaded and `total > 0`, a centered mono
+  `text-[11px]` row: `♂N` in `el-water`, `♀N` in `el-dragon` (§2 male=water /
+  female=dragon glyph coding, unchanged).
+
+### Interaction & a11y
+
+- Each tile is a real `<button>` (the `PalHoverCard` trigger it clones), `onClick`
+  → `onSelect(id)` (unchanged). `aria-label` is `"{name}, #NNN"`.
+- Keyboard parity with the Palbox wave: `outline-none` + a visible
+  `focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2
+  focus-visible:ring-offset-abyss` on the tile box (rounded amber halo on Tab
+  focus).
+- `PalHoverCard` stays wired per tile (species-only variant): hover after the
+  250 ms delay opens the full species briefing (elements, partner skill, work
+  suitability, food, wild levels), so every datum — including the work profile
+  dropped from the tile face — remains reachable.
+
+## Wave — Breeding Setup LAB RESEARCH group (`components/breeding-setup.tsx`)
+
+Adds a **LAB RESEARCH** group to the Solver's BREEDING SETUP panel, between BOOSTERS
+and CAKE. It surfaces the game's research-lab incubation buff so a player can tell the
+planner their researched rank — save files don't expose completed research, so this is
+manual entry, stated honestly.
+
+### Data
+
+- Sourced from the own-install extraction (`tools/pal-extract`, `DT_LabResearchDataTable`)
+  → pack `lab_research` → `list_lab_research` command → `LabResearchEntry[]`. Never
+  fabricated. Build 24181527 ships exactly one breeding-relevant research —
+  **Incubation Acceleration** (`EPalPassiveSkillEffectType::PalEggHatchingSpeed`), a
+  4-rank chain cumulative to **−30%** (`+5/+15/+20/+30%`).
+- The table carries this line **twice** (once per work-suitability tree it's researched
+  in: Kindling/`EmitFlame` and Cooling/`Cool`) with identical name + effect + curve. The
+  UI **dedupes by `(name, effect, curve)`** → one selectable row, so it never double-counts
+  to a fictional −60%. If a future build makes the branches diverge they re-split into
+  distinct rows automatically.
+- The selected rank's cumulative fraction composes **additively into
+  `incubation_reduction`** — the same store channel booster incubation effects use. No new
+  solver channel (contract). Persisted per line key in
+  `localStorage["pal-calc.setup.research"]` (`{ [key]: rank }`, `0` = not researched).
+
+### Layout & tokens
+
+- Group header `LAB RESEARCH` — mono `text-[11px] uppercase tracking-wider text-ink-faint`,
+  matching BOOSTERS / CAKE / EGG HATCH TIME.
+- One **line row** per deduped research: a `rounded-md border border-line bg-panel px-2 py-1.5`
+  card holding two stacked rows.
+  - **Top row**: a 26×26 amber-tile glyph (`border-amber/40 bg-amber/10 text-amber`) carrying
+    the alembic **⚗** (`&#9879;`, the lab idiom, distinct from the passive booster's `◆`);
+    then the line name (`text-[13px] font-medium text-ink`, truncated) over a mono status
+    line — `-{n}% hatch time` in `text-amber-bright` when a rank is set, else `Not researched`
+    in `text-ink-faint`; a right-aligned mono `LV {rank}/{maxRank}` counter.
+  - **Bottom row**: a horizontal **segmented rank selector**, `role="radiogroup"`, one button
+    per rank `0..maxRank`. Active = `bg-raised text-amber` (the CAKE-radio active idiom);
+    inactive = `bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim`. Buttons flex-fill,
+    `border-r border-line` dividers (`last:border-r-0`). `0` = not researched (neutral).
+- Honest microcopy below the group (`text-[11px] text-ink-faint`): "Set to your lab's
+  researched rank — save files don't expose research yet. Each rank speeds egg incubation,
+  up to −30%."
+
+### Reflection into the SETUP strip
+
+Because research folds into `incubation_reduction`, the shared `describeSetup` (panel's
+**APPLIED** line + the Solver's above-plan summary) automatically gains a `-{n}% incubation`
+part the moment a rank changes — e.g. rank 3 → `APPLIED  -20% incubation / 1h hatch`,
+rank 4 → `-30% incubation`. One source of truth; the strip never drifts from the selector.

@@ -52,6 +52,7 @@ static class Program
         if (args.Contains("--discover")) { Discover(provider); return 0; }
         if (args.Contains("--discover-learnset")) { DiscoverLearnset(provider); return 0; }
         if (args.Contains("--discover-breeding")) { DiscoverBreeding(provider); return 0; }
+        if (args.Contains("--discover-research")) { DiscoverResearch(provider); return 0; }
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -61,6 +62,7 @@ static class Program
         var itemNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_ItemNameText_Common");
         var mapObjNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapObjectNameText_Common");
         var uiCommon = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_UI_Common_Text_Common");
+        var researchNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_LabResearchText");
         var passiveMain = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PassiveSkill_Main");
         // partner-skill template resolution sources (see ResolvePartnerTemplates):
         var partnerParam = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/PassiveSkill/DT_PartnerSkillParameter");
@@ -288,6 +290,18 @@ static class Program
         foreach (var b in breedingBoosts)
             Console.WriteLine($"    {GetProp(b, "source_kind")} {GetProp(b, "source"),-22} {GetProp(b, "effect"),-18} = [{string.Join(", ", ((List<double>)GetProp(b, "values_per_rank")).Select(FmtNum))}]");
 
+        // ---- lab research (Pal Labor Research tree) ----
+        // The research-lab tech tree (DT_LabResearchDataTable): work-suitability-gated
+        // research nodes that grant a global buff (EffectType). We emit ONLY the
+        // breeding-relevant lines (PalEggHatchingSpeed -> incubation_speed, via the shared
+        // BreedEffect map), grouped into per-category chains ordered by prerequisite, with
+        // cumulative per-rank fractions the UI composes into incubation_reduction. See
+        // ExtractLabResearch. Coverage (total rows vs emitted nodes) is printed for audit.
+        var (labResearch, labRows, labEmitted) = ExtractLabResearch(provider, researchNames);
+        Console.WriteLine($"[lab-research] table=DT_LabResearchDataTable rows={labRows} breeding-relevant nodes emitted={labEmitted} lines={labResearch.Count}");
+        foreach (var line in labResearch)
+            Console.WriteLine($"    line '{GetProp(line, "id")}' ({GetProp(line, "category")}) name='{GetProp(line, "name")}' effect={GetProp(line, "effect")} values_per_rank=[{string.Join(", ", ((List<double>)GetProp(line, "values_per_rank")).Select(FmtNum))}]");
+
         // ---- partner-skill icons ----
         var (iconExported, iconUnresolved) = ExportPartnerIcons(provider, partnerIconIds);
         Console.WriteLine($"[partner-icons] distinctUsed={partnerIconIds.Count} exportedPng={iconExported} unresolvedTextureIds={iconUnresolved.Count}");
@@ -428,6 +442,7 @@ static class Program
             active_skills = activeSkills,
             learnsets,
             breeding_boosts = breedingBoosts,
+            lab_research = labResearch,
         };
         Directory.CreateDirectory(OutDir);
         var outPath = Path.Combine(OutDir, "extracted-game-data.json");
@@ -557,6 +572,29 @@ static class Program
         var baby = FindBoost("MutationPal_Babysitter", "incubation_speed");
         Gate(baby != null, "Babysitter incubation_speed boost missing");
         Gate(FindBoost("MutationPal_Babysitter", "farm_speed") != null, "Babysitter farm_speed boost missing");
+
+        // lab research: every emitted line is an incubation-speed chain with a monotonic
+        // cumulative curve; both known PalEggHatchingSpeed branches (EmitFlame/Cool) resolve
+        // to a 4-rank chain ending at +30%. This is the validation set for the discovery.
+        object FindLine(string id) => labResearch.FirstOrDefault(l => (string)GetProp(l, "id") == id);
+        Gate(labResearch.Count >= 1, "lab_research emitted no lines");
+        foreach (var l in labResearch)
+        {
+            Gate((string)GetProp(l, "effect") == "incubation_speed", $"lab line {GetProp(l, "id")} effect != incubation_speed");
+            var vs = (List<double>)GetProp(l, "values_per_rank");
+            Gate(vs.Count >= 1 && vs.SequenceEqual(vs.OrderBy(x => x)) && vs.First() > 0,
+                $"lab line {GetProp(l, "id")} values [{string.Join(",", vs.Select(FmtNum))}] not positive-monotonic");
+        }
+        foreach (var id in new[] { "EmitFlame", "Cool" })
+        {
+            var line = FindLine(id);
+            Gate(line != null, $"lab research {id} incubation line missing");
+            if (line == null) continue;
+            var vs = (List<double>)GetProp(line, "values_per_rank");
+            Gate(vs.Count == 4, $"lab line {id} expected 4 ranks, got {vs.Count}");
+            Gate(vs.Count == 4 && Math.Abs(vs[0] - 0.05) < 1e-6 && Math.Abs(vs.Last() - 0.30) < 1e-6,
+                $"lab line {id} range [{string.Join(",", vs.Select(FmtNum))}] != [0.05..0.30]");
+        }
 
         // ---- summary ----
         Console.WriteLine("==== SUMMARY ====");
@@ -763,6 +801,110 @@ static class Program
         }
     }
 
+    // Reusable discovery pass (`--discover-research`): locate the Lab Research (Pal
+    // Labor Research / technology tree) DataTable(s) and dump their shape. Prints every
+    // .uasset whose file name mentions Research/LabResearch/Technology/Skillfruit-adjacent
+    // labor tokens, loads each as a UDataTable, and dumps row count, first keys, and every
+    // row's property schema + a shallow value preview so the emit path can be written against
+    // real shape. Also aggregates every distinct enum-looking effect/type field value across
+    // rows (flagging breeding-relevant ones by keyword), reports rank/level fields, and finds
+    // the matching L10N/en text tables (Research name/desc) so the localized-name join is known.
+    static void DiscoverResearch(IFileProvider provider)
+    {
+        var needles = new[] { "labresearch", "research", "technology", "techtree", "laboratory" };
+        bool IsBreedish(string s) => s != null && (
+            s.Contains("Breed", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Egg", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Incubat", StringComparison.OrdinalIgnoreCase)
+            || s.Contains("Hatch", StringComparison.OrdinalIgnoreCase));
+
+        // (1) candidate DATA tables (exclude L10N text tables here; those are reported in step 3).
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => !f.Contains("/L10N/", StringComparison.OrdinalIgnoreCase))
+            .Where(f => needles.Any(n => Path.GetFileNameWithoutExtension(f).Contains(n, StringComparison.OrdinalIgnoreCase)))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[discover-research] candidate data files ({cands.Count}):");
+        foreach (var f in cands) Console.WriteLine($"  {f}");
+
+        foreach (var f in cands)
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            UDataTable dt;
+            try { if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable d) { Console.WriteLine($"[skip non-datatable] {pkgPath}"); continue; } dt = d; }
+            catch (Exception e) { Console.WriteLine($"[load fail] {pkgPath}: {e.Message}"); continue; }
+            Console.WriteLine($"==== {pkgPath} rows={dt.RowMap.Count} ====");
+            Console.WriteLine($"  keys(first 12)=[{string.Join(", ", dt.RowMap.Keys.Take(12).Select(k => k.Text))}]");
+
+            // Aggregate every distinct value of any enum-looking string field across ALL rows,
+            // grouped by field name, flagging breeding-relevant values.
+            var fieldEnumVals = new SortedDictionary<string, SortedSet<string>>(StringComparer.Ordinal);
+            foreach (var r in dt.RowMap)
+            {
+                foreach (var p in r.Value.Properties)
+                {
+                    var gv = p.Tag?.GenericValue;
+                    string sv = gv switch { FName fn => fn.Text, string s => s, _ => gv?.ToString() };
+                    if (sv == null) continue;
+                    if (!sv.Contains("::") && !sv.StartsWith("EPal", StringComparison.Ordinal)) continue; // enum-ish only
+                    if (!fieldEnumVals.TryGetValue(p.Name.Text, out var set)) { set = new SortedSet<string>(StringComparer.Ordinal); fieldEnumVals[p.Name.Text] = set; }
+                    set.Add(StripEnum(sv));
+                }
+            }
+            foreach (var kv in fieldEnumVals)
+                Console.WriteLine($"  enum field '{kv.Key}' distinct({kv.Value.Count}): {string.Join(", ", kv.Value.Select(v => IsBreedish(v) ? "**" + v + "**" : v))}");
+
+            // Full schema + shallow value preview for the first rows AND any breeding-relevant row.
+            int shown = 0;
+            foreach (var r in dt.RowMap)
+            {
+                bool breedRow = r.Value.Properties.Any(p =>
+                {
+                    var gv = p.Tag?.GenericValue;
+                    string sv = gv switch { FName fn => fn.Text, string s => s, _ => gv?.ToString() };
+                    return IsBreedish(sv) || IsBreedish(r.Key.Text);
+                });
+                if (shown >= 4 && !breedRow) continue;
+                shown++;
+                Console.WriteLine($"  {(breedRow ? "**BREED** " : "")}row '{r.Key.Text}': props=[{string.Join(", ", r.Value.Properties.Select(p => p.Name.Text))}]");
+                foreach (var p in r.Value.Properties)
+                {
+                    var gv = p.Tag?.GenericValue;
+                    string preview;
+                    if (gv is UScriptArray arr)
+                        preview = $"array[{arr.Properties.Count}]" + (arr.Properties.Count > 0 ? " first=" + DumpStruct(arr.Properties[0].GenericValue) : "");
+                    else preview = DumpStruct(gv);
+                    if (preview.Length > 400) preview = preview.Substring(0, 400) + "...";
+                    Console.WriteLine($"      {p.Name.Text} = {preview}");
+                }
+            }
+        }
+
+        // (2) L10N/en text tables mentioning Research/Technology (research names/descriptions).
+        Console.WriteLine("[discover-research] L10N/en text tables mentioning research/technology:");
+        foreach (var f in provider.Files.Keys.OrderBy(x => x, StringComparer.Ordinal))
+        {
+            if (!f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!f.Contains("/L10N/en/", StringComparison.OrdinalIgnoreCase)) continue;
+            var stem = Path.GetFileNameWithoutExtension(f);
+            if (!(stem.Contains("Research", StringComparison.OrdinalIgnoreCase) || stem.Contains("Technolog", StringComparison.OrdinalIgnoreCase) || stem.Contains("Lab", StringComparison.OrdinalIgnoreCase))) continue;
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            try
+            {
+                if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable dt) continue;
+                Console.WriteLine($"  TEXT {pkgPath} rows={dt.RowMap.Count} keys(first 8)=[{string.Join(", ", dt.RowMap.Keys.Take(8).Select(k => k.Text))}]");
+                foreach (var r in dt.RowMap.Take(6))
+                {
+                    string txt = null;
+                    try { txt = r.Value.Get<FText>("TextData")?.Text; } catch { }
+                    Console.WriteLine($"      '{r.Key.Text}' = {(txt == null ? "(no TextData)" : txt.Replace("\n", " ").Trim())}");
+                }
+            }
+            catch { }
+        }
+    }
+
     static string DumpStruct(object v)
     {
         var s = AsStruct(v);
@@ -816,6 +958,102 @@ static class Program
         ["EggAlphaConversion"] = "alpha_egg_chance",
     };
     static string BreedEffect(string et) => et != null && BreedEffectMap.TryGetValue(et, out var e) ? e : null;
+
+    // ---- lab research extraction (Pal Labor Research tree) ----
+    // The research lab's tech tree lives in DT_LabResearchDataTable: one row per research
+    // NODE, keyed generically (e.g. `EmitFlame2`, `Cool2_3`), grouped by the work suitability
+    // required to research it (`LabCategoryWorkSuitability`) and a `LabCategorySubType`. Each
+    // node grants a global buff via the SAME `EPalPassiveSkillEffectType` enum as passives
+    // (`EffectType` + `EffectValue` percent), and chains to its predecessor via
+    // `RequiredResearchId`. We keep ONLY nodes whose EffectType is breeding-relevant (the
+    // shared `BreedEffect` map — build 24181527 has exactly PalEggHatchingSpeed ->
+    // incubation_speed), group them per work-suitability category, order each group by the
+    // prerequisite chain, and emit one LINE per group with the cumulative per-rank fraction
+    // (node EffectValues are INCREMENTAL, so rank N's fraction = sum of the first N nodes).
+    // Localized node names come from the L10N/en DT_LabResearchText (keyed by the row's TextId);
+    // the line name is the first node's name with a trailing " LvN" stripped. Returns the lines
+    // plus (table row count, emitted node count) for coverage auditing.
+    static readonly Regex LabLvSuffix = new(@"\s*Lv\.?\s*\d+\s*$", RegexOptions.IgnoreCase);
+    static (List<object> lines, int tableRows, int emitted) ExtractLabResearch(
+        IFileProvider provider, Dictionary<string, string> researchNames)
+    {
+        var tab = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Lab/DT_LabResearchDataTable");
+        // One record per breeding-relevant research node.
+        var nodes = new List<(string id, string cat, string subType, string effect, double frac, string reqId, long work, string name)>();
+        foreach (var r in tab.RowMap)
+        {
+            var v = Vals(r.Value);
+            var effect = BreedEffect(StripEnum(S(v, "EffectType")));
+            if (effect == null) continue;
+            var textId = S(v, "TextId");
+            var name = textId != null && researchNames.TryGetValue(textId, out var nm) ? Clean(nm) : null;
+            nodes.Add((
+                r.Key.Text,
+                StripEnum(S(v, "LabCategoryWorkSuitability")) ?? "Unknown",
+                StripEnum(S(v, "LabCategorySubType")),
+                effect,
+                F(v, "EffectValue") / 100.0,
+                NonNone(StripEnum(S(v, "RequiredResearchId"))),
+                (long)Math.Round(F(v, "RequiredWorkAmount")),
+                name));
+        }
+
+        var lines = new List<object>();
+        foreach (var g in nodes.GroupBy(n => n.cat).OrderBy(g => g.Key, StringComparer.Ordinal))
+        {
+            var group = g.ToList();
+            var groupIds = new HashSet<string>(group.Select(n => n.id));
+            // Chain root = the node whose prerequisite is outside this group (or absent).
+            // Order forward by following RequiredResearchId (successor.reqId == current.id).
+            var ordered = new List<(string id, string cat, string subType, string effect, double frac, string reqId, long work, string name)>();
+            var seen = new HashSet<string>();
+            var cur = group.FirstOrDefault(n => n.reqId == null || !groupIds.Contains(n.reqId));
+            while (cur.id != null && seen.Add(cur.id))
+            {
+                ordered.Add(cur);
+                cur = group.FirstOrDefault(n => n.reqId == ordered[^1].id);
+            }
+            // Any node not reached by the chain walk (branching/unexpected shape) is appended
+            // by ascending effort so nothing is silently dropped.
+            foreach (var n in group.Where(n => !seen.Contains(n.id)).OrderBy(n => n.work))
+                ordered.Add(n);
+
+            double cum = 0;
+            var valuesPerRank = new List<double>();
+            var nodeObjs = new List<object>();
+            int rank = 0;
+            foreach (var n in ordered)
+            {
+                cum = Math.Round(cum + n.frac, 6);
+                rank++;
+                valuesPerRank.Add(cum);
+                nodeObjs.Add(new
+                {
+                    id = n.id,
+                    name = n.name,
+                    rank,
+                    effect_value = Math.Round(n.frac, 6),
+                    cumulative = cum,
+                    required_research_id = n.reqId,
+                    required_work_amount = n.work,
+                });
+            }
+            var first = ordered[0];
+            var lineName = first.name != null ? LabLvSuffix.Replace(first.name, "").Trim() : null;
+            if (string.IsNullOrEmpty(lineName)) lineName = "Egg Hatching Speed";
+            lines.Add(new
+            {
+                id = g.Key,
+                name = lineName,
+                category = g.Key,
+                sub_type = first.subType,
+                effect = first.effect,
+                values_per_rank = valuesPerRank,
+                nodes = nodeObjs,
+            });
+        }
+        return (lines, tab.RowMap.Count, nodes.Count);
+    }
 
     // Per-rank breeding boosts granted by a partner-skill param row. Scans PassiveSkills[]
     // (the passives ACTUALLY granted per rank — TextReferencePassiveSkills[] is display-only)

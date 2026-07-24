@@ -61,7 +61,8 @@ function loadDev(): Promise<DevFixtures> {
       import("../dev-fixtures/breeding-parents.json"),
       import("../dev-fixtures/breeding-child.json"),
       import("../dev-fixtures/breeding-boosts.json"),
-    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, child, boosts]) => {
+      import("../dev-fixtures/lab-research.json"),
+    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, child, boosts, labResearch]) => {
       const speciesData = species.default as unknown as SpeciesEntry[];
       return {
         simple: {
@@ -71,6 +72,7 @@ function loadDev(): Promise<DevFixtures> {
           list_species: speciesData.map((s) => ({ id: s.id, name: s.name })),
           list_passives: passives.default,
           list_breeding_boosts: boosts.default,
+          list_lab_research: labResearch.default,
           // Co-op reference world: egg incubation scanned as 1h so the setup
           // panel's "scanned from world" hatch state renders in browser dev.
           get_world_options: { egg_hatch_hours: 1 },

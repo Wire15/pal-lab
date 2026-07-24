@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
 import type { RosterCounts, SpeciesEntry } from "../../lib/types";
-import { PalIcon } from "../../components/primitives";
 import { PalHoverCard } from "../../components/pal-hover-card";
-import { CardWorkBadges } from "../../components/work-suit";
 import { ElementBadges, ElementIcon } from "../../components/element";
+import { palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
 import { DexTabs, type DexTab } from "../../components/dex-tabs";
 import {
   DexFilterButton,
@@ -35,6 +34,46 @@ const ELEMENT_KINDS = [
   "Dark",
   "Dragon",
 ];
+
+/** Circular species portrait in the Palbox slot idiom (see palbox/slot.tsx and
+ *  plan-graph PalCircle): art clipped to a ringed circle. Owned species carry a
+ *  full-saturation amber ring; unowned species (with a save loaded) desaturate
+ *  so dex completion reads at a glance; with no save every tile stays neutral.
+ *  Holds its own icon-failed state so the fallback works inside the grid map. */
+function DexPortrait({
+  id,
+  state,
+}: {
+  id: string;
+  state: "owned" | "unowned" | "neutral";
+}) {
+  const [failed, setFailed] = useState(false);
+  const src = !failed ? palIconUrl(id) : UNKNOWN_ICON;
+  const ring =
+    state === "owned"
+      ? "ring-amber/55 group-hover:ring-amber"
+      : state === "unowned"
+        ? "ring-line/50 group-hover:ring-amber/40"
+        : "ring-line/70 group-hover:ring-amber/50";
+  const dim =
+    state === "unowned"
+      ? "opacity-60 saturate-[0.45] group-hover:opacity-100 group-hover:saturate-100"
+      : "";
+  return (
+    <span
+      className={`block h-full w-full overflow-hidden rounded-full bg-abyss/70 ring-1 transition-[box-shadow,transform] group-hover:-translate-y-0.5 ${ring}`}
+    >
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        onError={() => setFailed(true)}
+        className={`h-full w-full object-contain transition-[opacity,filter] ${dim}`}
+      />
+    </span>
+  );
+}
 
 export default function PaldexIndex({
   species,
@@ -289,44 +328,46 @@ export default function PaldexIndex({
         </div>
       ) : (
         <div className="flex-1 overflow-auto px-6 py-5">
-          <div className="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(184px,1fr))]">
+          <div className="grid grid-cols-5 gap-x-4 gap-y-6">
             {rows.map((s) => {
               const owned = roster ? roster[s.id] : undefined;
               const total = owned ? owned.male + owned.female : 0;
+              const state = !roster ? "neutral" : total > 0 ? "owned" : "unowned";
               return (
                 <PalHoverCard key={s.id} speciesId={s.id}>
                   <button
                     onClick={() => onSelect(s.id)}
-                    className="group flex flex-col gap-2 rounded-md border border-line bg-panel p-3 text-left transition-colors hover:border-amber/40 hover:bg-hover"
+                    aria-label={`${s.name}, #${String(s.paldex_no).padStart(3, "0")}`}
+                    className="group flex flex-col items-center gap-2 rounded-2xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-abyss"
                   >
-                    <div className="flex items-start justify-between gap-2 font-mono text-[10px] leading-none">
-                      <div className="flex min-w-0 items-center gap-1.5">
-                        <span className="shrink-0 text-ink-faint tabular-nums">
-                          #{String(s.paldex_no).padStart(3, "0")}
-                          {s.is_variant && <span className="ml-1 text-el-dragon">B</span>}
-                        </span>
+                    <div className="relative mx-auto aspect-square w-full max-w-[104px]">
+                      <DexPortrait id={s.id} state={state} />
+                      {/* Element type chip — bottom overlay, palbox badge idiom */}
+                      <span className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-abyss/90 px-1.5 py-0.5">
                         <ElementBadges elements={s.elements} size={13} />
+                      </span>
+                    </div>
+                    <div className="flex w-full flex-col items-center gap-0.5">
+                      <div className="max-w-full truncate text-[13px] font-medium text-ink">
+                        {s.name}
+                      </div>
+                      <div className="flex items-center gap-1.5 font-mono text-[10px] leading-none tabular-nums text-ink-faint">
+                        <span>#{String(s.paldex_no).padStart(3, "0")}</span>
+                        {s.is_variant && <span className="font-bold text-el-dragon">B</span>}
+                        <span className="text-ink-faint/60">{"\u00b7"}</span>
+                        <span>rank {s.combi_rank}</span>
                       </div>
                       {total > 0 && (
-                        <span className="tabular-nums">
-                          {owned!.male > 0 && <span className="text-el-water">{"\u2642"}{owned!.male}</span>}
-                          {owned!.male > 0 && owned!.female > 0 && " "}
-                          {owned!.female > 0 && <span className="text-el-dragon">{"\u2640"}{owned!.female}</span>}
-                        </span>
+                        <div className="flex items-center gap-1.5 font-mono text-[11px] leading-none tabular-nums">
+                          {owned!.male > 0 && (
+                            <span className="text-el-water">{"\u2642"}{owned!.male}</span>
+                          )}
+                          {owned!.female > 0 && (
+                            <span className="text-el-dragon">{"\u2640"}{owned!.female}</span>
+                          )}
+                        </div>
                       )}
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <PalIcon id={s.id} name={s.name} size={44} />
-                      <div className="min-w-0">
-                        <div className="truncate text-[13px] font-medium text-ink group-hover:text-ink">
-                          {s.name}
-                        </div>
-                        <div className="font-mono text-[11px] tabular-nums text-ink-faint">
-                          rank {s.combi_rank}
-                        </div>
-                      </div>
-                    </div>
-                    <CardWorkBadges work={s.work_suitability} />
                   </button>
                 </PalHoverCard>
               );
