@@ -74,6 +74,10 @@ export interface PoiPoint {
   map: string;
   name?: string | null;
   guid?: string | null;
+  /** Bounty only: the wanted humanoid boss CharacterID (CamelCase, usually
+   *  `BOSS_`-prefixed). Bounty names are procedural (always null), so the UI
+   *  humanizes this into an enemy-type label. Absent on fast-travel/effigy. */
+  cid?: string | null;
 }
 
 /** The whole `map-data.json` document. Wave 2 consumes every pin array; the

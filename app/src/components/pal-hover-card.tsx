@@ -23,6 +23,7 @@ import {
   useRef,
   useState,
   type ReactElement,
+  type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
@@ -97,6 +98,7 @@ export function PalHoverCard({
   speciesId,
   pal,
   location,
+  note,
   children,
 }: {
   speciesId: string;
@@ -106,6 +108,10 @@ export function PalHoverCard({
    *  name). Rendered as a subtle mono footer in instance mode so the card reads
    *  unmistakably as one of YOUR pals. Ignored for species-only cards. */
   location?: string;
+  /** Species-only context strip rendered just below the header (e.g. an "Alpha
+   *  Pal · Lv N" line for a field-boss map pin). Ignored in instance mode,
+   *  where the instance strip already carries the level. */
+  note?: ReactNode;
   children: ReactElement;
 }) {
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -224,7 +230,7 @@ export function PalHoverCard({
               prized ? "border-transparent" : "border-line ring-1 ring-abyss/70"
             }`}
           >
-            <HoverCardBody entry={entry} pal={pal} location={location} tier={tier} />
+            <HoverCardBody entry={entry} pal={pal} location={location} note={note} tier={tier} />
           </div>,
           document.body,
         )}
@@ -251,11 +257,13 @@ function HoverCardBody({
   entry,
   pal,
   location,
+  note,
   tier,
 }: {
   entry: SpeciesEntry | null;
   pal?: OwnedPal;
   location?: string;
+  note?: ReactNode;
   tier: RarityTier | null;
 }) {
   const work = entry ? nonzeroWork(entry.work_suitability) : [];
@@ -310,6 +318,14 @@ function HoverCardBody({
           />
         )}
       </div>
+
+      {/* Context strip — species-only cards (e.g. an alpha map pin's
+          "Alpha Pal · Lv N" line). Instance mode carries level in its own strip. */}
+      {note && !pal && (
+        <div className="flex items-center gap-1.5 border-b border-line-soft bg-abyss/30 px-3 py-2 font-mono text-[11px] leading-none">
+          {note}
+        </div>
+      )}
 
       {/* Instance strip — owned pals only (level, gender, alpha, condensation,
           IVs, then passives). Absent for species-only (dex/breeding) cards. */}

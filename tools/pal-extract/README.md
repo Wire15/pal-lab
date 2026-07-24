@@ -76,7 +76,7 @@ and exits non-zero if any fail.
 
 - `worldmap.webp` / `treemap.webp` — `T_WorldMap` / `T_TreeMap` (both 8192x8192) re-encoded as lossy
   WebP (SkiaSharp, quality 85; each gated `<=10MB`).
-- `map-data.json` — per-layer metadata plus spawns/bosses/effigies/fast-travel:
+- `map-data.json` — per-layer metadata plus spawns/bosses/effigies/fast-travel/bounties:
   - `maps.{MainMap,Tree}`: `image`, `px`, `world_min`, `world_max`, `mask_px`, and the calibrated
     `world_to_px` formula string (see below) — bounds sourced from `DT_WorldMapUIData` (never hardcoded).
   - `spawns`: one entry per (species, map). Built by joining `DT_PalSpawnerPlacement` to
@@ -92,6 +92,13 @@ and exits non-zero if any fail.
     resolved via its **own** `RootComponent(FPackageIndex) -> RelativeLocation` (a naive first-component
     grab yields bogus constants). Fast-travel names resolve from `DT_MapRespawnPointInfoText` keyed by
     the actor's `FastTravelPointID`, else null.
+  - `bounties`: fixed PIDF wanted-target humanoid boss NPCs (the purple-hood map "bounty" POIs), from
+    the same `MainWorld_5` actor sweep for `BP_(Mono|Squad)NPCSpawnerBossBase_<CID>_C` placed actors,
+    resolved via `RootComponent -> RelativeLocation`. Merchant "boss" NPCs (CID contains `Trader`,
+    e.g. `DarkTrader`/`Male_Trader##`) are excluded. Each entry is `{x, y, map, name, cid}`: `name` is
+    always `null` (bounty NPC names are procedural, assigned from a pool at spawn — no fixed name per
+    location), `cid` is the humanoid boss `CharacterID` (enemy-type metadata for the pin hover). Spawn
+    locations are 100% static (gameplay ground truth); gated on count and world-spread (not clustered).
 
 Every point is assigned to `MainMap` or `Tree` by world-bounds containment (Tree checked first);
 points in neither are dropped with a logged count.
@@ -107,3 +114,25 @@ i.e. horizontal tracks worldY and vertical tracks worldX flipped — consistent 
 plausible spawn/boss/effigy/fast-travel counts, calibration dominance over the runner-up, and
 ground-truth spot checks (`BOSS_Horus_Water` at X=-867560.875 Y=-441338.219 Lv66 on MainMap, the
 `WorldTree_MiddleBoss_1` -> "Rotmist Root" fast-travel name, and non-empty `SheepBall` spawns).
+
+## Map icons (`--export-map-icons`)
+
+`dotnet run -c Release -- --export-map-icons` emits `app/public/map/icons/<key>.png` (native-res,
+transparent) plus an `icons.json` manifest. Each entry is `{file, px:[w,h], source, mono}`. The
+key->asset mapping is curated by visual inspection of the `--discover-map-icons` probe thumbnails;
+`marker_0..16` map the custom-marker palette to the ordinal `T_icon_compass_00..16` textures.
+
+`mono` (boolean) flags source art that is a white/gray silhouette needing runtime tinting: it is set
+when opaque pixels are `>=95%` near-white/neutral (saturation `<0.08` AND value `>0.75`). The consumer
+re-tints `mono:true` icons via a CSS `mask-image` pipeline (alpha channel only); `mono:false` icons
+render as-is. It is measured per icon, never forced — on the current build only `alpha_badge` (the
+white boss/alpha ring frame) qualifies; the colored diamond-framed compass glyphs, the green effigy,
+and the purple bounty portrait are all `mono:false`.
+
+## Data-grounding discovery modes
+
+Read-only sweeps that establish (never guess) the mappings baked into the exporters, each writing an
+evidence log under `testdata/probe/`: `--discover-incident` (incident/bounty DataTables ->
+`bounty.log`), `--discover-bounty-actors` (world-partition NPC/spawner actor histogram + bounty/FT
+actor locations -> `bounty-actors.log`), `--list-dt` (all DataTable paths -> `datatables.log`), and
+`--dump-table <pkgPath>` (one DataTable's rows to stdout).

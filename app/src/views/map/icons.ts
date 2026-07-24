@@ -12,6 +12,12 @@ export interface IconEntry {
   file: string;
   px: [number, number];
   source: string;
+  /** True when the source art is a white/gray silhouette meant to be tinted at
+   *  render time (the game colors these client-side). Contract X1: stamped by
+   *  the exporter when opaque pixels are ≥95% near-white/neutral. The pin layer
+   *  renders `mono` icons through a CSS mask (so they read over any terrain);
+   *  colored art (bounty, effigy, base, alpha badge) omits it and renders as-is. */
+  mono?: boolean;
 }
 
 export type IconManifest = Record<string, IconEntry>;
@@ -32,6 +38,27 @@ export function loadMapIcons(): Promise<IconManifest> {
 /** Public URL for a manifest entry's PNG (`/map/icons/<file>`). */
 export function iconUrl(entry: IconEntry): string {
   return `/map/icons/${entry.file}`;
+}
+
+/** Compass-glyph keys that are tint-me silhouettes even before the exporter
+ *  stamps `mono` (contract X2 fallback): the game colors these client-side.
+ *  `marker_*` (the custom-marker palette) match by prefix. An explicit manifest
+ *  `mono` always wins over this heuristic. */
+const MONO_DEFAULT: Record<string, true> = {
+  fast_travel: true,
+  tower: true,
+  dungeon: true,
+  unknown: true,
+};
+
+/** Whether icon `key` should render as a tinted CSS mask (a mono silhouette the
+ *  game tints at runtime) rather than as-is art. Honors an explicit manifest
+ *  `mono`; otherwise falls back to the compass-glyph heuristic so pins stay
+ *  legible before the regenerated manifest lands. */
+export function isMonoIcon(icons: IconManifest | null, key: string): boolean {
+  const mono = icons?.[key]?.mono;
+  if (mono !== undefined) return mono;
+  return MONO_DEFAULT[key] === true || key.startsWith("marker_");
 }
 
 // --- Vector fallbacks -----------------------------------------------------

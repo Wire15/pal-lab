@@ -70,6 +70,22 @@ function unionFlags(
   return out;
 }
 
+/** Turn a bounty's boss CharacterID into a readable enemy-type label. Bounty
+ *  names are procedural (always null), so the wanted-target TYPE is the useful
+ *  label: strip a leading `BOSS_`, then split on underscores, CamelCase, and
+ *  letter→digit boundaries. `BOSS_FireCult_FlameThrower` -> "Fire Cult Flame
+ *  Thrower", `VikingElite` -> "Viking Elite", `BOSS_Male_Soldier02` -> "Male
+ *  Soldier 02". */
+function humanizeCid(cid: string): string {
+  return cid
+    .replace(/^BOSS_/, "")
+    .replace(/_/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/([A-Za-z])(\d)/g, "$1 $2")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Build the POI pin list + per-layer counts for the active player scope. */
 export function buildPois(
   data: MapData,
@@ -143,7 +159,7 @@ export function buildPois(
       y: p.y,
       found: false,
       known: false,
-      name: p.name ?? null,
+      name: p.name ?? (p.cid ? humanizeCid(p.cid) : null),
     });
   });
 

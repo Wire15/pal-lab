@@ -2035,3 +2035,100 @@ legend + clear; (e) under fog all 8 unlocked FT + 5 found effigies stay visible
 while locked/unfound/alpha pins hide, and "Show hidden" reveals them with the
 warning; (f) dex "Show on map" opens the overlay, and alpha-pin / legend-chip
 both open the dex.
+
+## Wave 2.5 — World Map pin anatomy v2 (`views/map/`)
+
+> **Supersedes** the Wave 2 §"Pin overlay + anatomy", the effigy **✓** badge and
+> alpha `Lv N` chip in it, and the §"Bounties … dormant" note. Fixes four user
+> reports: invisible fast-travel/marker pins, illegible effigies, alpha pins
+> wanting the Palbox treatment, and missing bounties. The cull, translate-only
+> container, constant-screen-size rule, R3 join, spawn heat, and spoiler rules
+> are unchanged.
+
+### The mono tint pipeline + dark chips (`icons.ts`, `PinLayer.tsx`)
+
+The real bug was never that the icons failed to load — it was contrast. Every
+glyph now sits on a **dark rounded chip** (`GlyphChip`: `bg-abyss/80`, a 1px
+`rgba(255,255,255,0.12)` light hairline, a soft drop shadow), mirroring the
+game's own dark icon medallion, so a glyph reads over **any** terrain — bright
+snow, dark volcano, water. The chip, not tinting, is what fixes the "invisible
+over terrain" report.
+
+`icons.json` entries carry an optional **`mono: boolean`** (contract X1, stamped
+by the exporter — never hand-edited) and the layer branches on it via
+`isMonoIcon` (`Glyph`): **`mono` → a CSS mask** (`mask-image: url(png)` filled
+with a token `background-color`, alpha-only so it tints regardless of the
+source's own color); **non-`mono` → the art as-is**. Ground truth from the
+regenerated manifest corrected the Wave-2 assumption: the compass glyphs
+(`fast_travel`, `tower`, `dungeon`, `unknown`, `marker_*`) are **colored,
+diamond-framed icons**, not white silhouettes, so they render **as-is** on the
+chip. The only genuine `mono` asset is **`alpha_badge`** (a white boss-ring
+frame) → masked in **`amber`**. `isMonoIcon` keeps a compass-glyph heuristic
+fallback for when a manifest predates the `mono` field.
+
+### Per-kind anatomy v2
+
+- **Fast travel** — the colored compass icon on a chip, **20px**. Unlocked =
+  full color (reads `el-ice` cyan, opacity 1); locked = **grayscaled + dim 0.7**
+  (reads inactive gray — conveyed by filter, not a recolor). Hover: statue name.
+- **Alpha pals** — the **Palbox slot idiom** (§11): a circular ring-clipped
+  portrait **~38px** (`overflow-hidden rounded-full`, `ring-2 ring-abyss` →
+  `amber/80` + a lift on hover), the `amber` `alpha_badge` mask composited at the
+  top-left corner. Hover = the **existing `PalHoverCard`** (§10) in species mode,
+  enriched with a new `note` strip **"⬦ Alpha Pal · Lv N"** above the header — so
+  the card carries the level, the species' elements (badges), and the partner
+  skill. The old inline `Lv N` chip is **removed**. The pin is still a `<button>`
+  → opens the species in the Pal-dex.
+- **Effigies** — the green Lifmunk statuette on a chip, **24px**. Unfound = full
+  color + a **faint green glow** on the chip (actionable). Found = **grayscale +
+  dim 0.45, and the ✓ badge is GONE** — the badge read as "the icon *is* a
+  checkmark"; dimming + the tooltip carry the state. Tooltip on all: **"Lifmunk
+  Effigy"** (found: "· collected").
+- **Bounties** — **now active** (supersedes the Wave-2 "dormant" note): bounties
+  are **static** POIs (the `RandomIncident` boss-spawn table's fixed
+  `SpawnLocation` coords, extracted to `map-data.json` `bounties[]`, contract X1).
+  The colored purple-hooded `bounty` icon on a chip, **22px**. Names are
+  procedural (always null), so the tooltip humanizes the wanted boss `cid` into an
+  enemy-type label — **"Bounty · Fire Cult Flame Thrower"**, "Bounty · Viking
+  Elite" (`humanizeCid`: strip `BOSS_`, split underscores + CamelCase + digits).
+  Fog spoiler applies (bounties are never `known`).
+- **Custom markers** — `marker_<icon_type>.png` on a chip, **18px** (warm-neutral
+  fallback tint); **Bases** — the `base` camp icon on a chip, **20px**, amber;
+  **Players** — amber dot + nickname label (unchanged).
+
+### Low-zoom de-emphasis
+
+Below **k = 0.28** the non-alpha pins (fast travel / effigy / bounty / markers)
+scale to **0.8** and drop to **0.85** opacity, so the alpha portraits and player
+markers lead a crowded overview. It is a single CSS-custom-property switch on the
+pin container (`--pin-dim-scale` / `--pin-dim-op`, inherited by each dimmable
+wrapper via `var()`) — one style write when `k` crosses the threshold, **zero
+per-pin JS**.
+
+### Gesture-zoom cooperation + render cost (with MapPerf)
+
+MapView owns the wheel-zoom hot path and must not re-lay-out ~360 pins per tick.
+PinLayer exposes an optional **`containerRef`** on its translate-only positioning
+div (kept `origin-top-left`); during a gesture MapView writes that div's
+`style.transform = translate(txLive,tyLive) scale(kLive/kCommitted)`
+imperatively — no prop changes, so the layer never re-renders mid-gesture and the
+pins ride the zoom, snapping crisp on settle when `k` commits and React restores
+translate-only. The default export is wrapped in **`React.memo`** and MapView
+passes a stable `onOpenSpecies` (`useCallback`), so the mousemove coordinate
+readout and spawn-hover state never re-render the pins (and can't clobber the
+imperative transform). `PalHoverCard` gains one additive optional prop, `note`
+(a species-mode context strip); every existing call site is unaffected.
+
+### Verification (fixture mode, 1280 + 1600)
+
+Screenshot- and DOM-proven against the fixture (All-scope: 8 FT unlocked, 5
+effigies found, 15 markers, 3 bases, 1 player) with the real `map-data.json`:
+(a) fast-travel reads cyan (unlocked, full color) vs gray (locked, grayscaled)
+on chips over bright **and** dark terrain; (b) markers render on chips; (c) an
+alpha pin is a circular portrait whose hover opens the `PalHoverCard` with the
+"Alpha Pal · Lv N" line + elements + partner skill (e.g. Reptyro #129, Lv 50);
+(d) effigies read at default zoom, found (grayscale, dim) vs unfound (green +
+glow) with **zero** ✓ badges in the DOM; (e) all **29** bounty pins render with
+humanized `cid` tooltips; (f) the filter panel counts read FT 8/152, Alpha 90,
+Effigies 5/155, **Bounties 29**, Players 1, Markers 15, Bases 3. `bun run build`
+green.

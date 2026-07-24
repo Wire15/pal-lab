@@ -147,13 +147,27 @@ export default function MapView() {
   } | null>(null);
 
   const [view, setView] = useState<ViewTransform>({ k: 0.1, tx: 0, ty: 0 });
-  const viewRef = useRef(view);
+  const viewRef = useRef(view); // committed transform (mirrors `view`; kCommitted for gesture math)
   viewRef.current = view;
+  // Live render transform: equals the committed view when idle, diverges during
+  // an active wheel-zoom gesture. Updated via refs (never setState) so a zoom
+  // tick does ZERO React work — the gesture is shown by one container transform
+  // written in requestFrame's rAF; k is committed once on settle.
+  const liveRef = useRef(view);
+  const gesturing = useRef(false);
+  if (!gesturing.current) liveRef.current = view;
+  const frameRef = useRef(0);
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const pinContainerRef = useRef<HTMLDivElement>(null);
+  const zoomPctRef = useRef<HTMLSpanElement>(null);
   const [dragging, setDragging] = useState(false);
   const [readout, setReadout] = useState<{ x: number; y: number } | null>(null);
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
   const bitmapCache = useRef<Map<string, ImageBitmap>>(new Map());
 
   const entry: MapEntry | null = mapData?.maps[layer] ?? null;
@@ -383,7 +397,11 @@ export default function MapView() {
     const [W, H] = entry.px;
     const pad = 24;
     const k = clampZoom(Math.min((vw - 2 * pad) / W, (vh - 2 * pad) / H));
-    setView({ k, tx: (vw - W * k) / 2, ty: (vh - H * k) / 2 });
+    const nv = { k, tx: (vw - W * k) / 2, ty: (vh - H * k) / 2 };
+    gesturing.current = false;
+    clearTimeout(settleTimer.current);
+    liveRef.current = nv;
+    setView(nv);
   }, [entry]);
 
   useLayoutEffect(() => {
@@ -420,7 +438,7 @@ export default function MapView() {
     ctx.fillRect(0, 0, bw, bh);
     if (!bitmap) return;
 
-    const { k, tx, ty } = viewRef.current;
+    const { k, tx, ty } = liveRef.current;
     ctx.setTransform(k * dpr, 0, 0, k * dpr, tx * dpr, ty * dpr);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
@@ -450,65 +468,138 @@ export default function MapView() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }, [entry, bitmap, fogDrawn, fogMask, spawnActive, spawnDots]);
 
+  // One rAF coalesces the canvas paint and (during a gesture) the pin-container
+  // transform + zoom-readout writes, so a burst of wheel ticks collapses to a
+  // single frame of work with no per-tick React commit.
+  const paintRef = useRef(paint);
+  paintRef.current = paint;
+
+  const applyGestureOverlay = useCallback(() => {
+    const base = viewRef.current; // committed layout PinLayer currently renders
+    const live = liveRef.current;
+    const c = pinContainerRef.current;
+    if (c) {
+      // Map committed pin positions (u*kCommitted + txCommitted) onto the live
+      // view with one affine: scale kLive/kCommitted, then translate to live
+      // pan. Origin is top-left (PinLayer's `origin-top-left`). We touch ONLY
+      // .transform — PinPolish owns className + the --pin-dim-* custom props.
+      const s = live.k / base.k;
+      c.style.transform = `translate(${live.tx}px, ${live.ty}px) scale(${s})`;
+    }
+    if (zoomPctRef.current) {
+      zoomPctRef.current.textContent = `${Math.round(live.k * 100)}%`;
+    }
+  }, []);
+
+  const requestFrame = useCallback(() => {
+    if (frameRef.current) return;
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = 0;
+      paintRef.current();
+      if (gesturing.current) applyGestureOverlay();
+    });
+  }, [applyGestureOverlay]);
+
+  // Commit an in-flight zoom gesture to React state once: PinLayer recomputes
+  // crisp constant-size pins and its normal render restores the translate-only
+  // transform (scale 1). We pre-write that exact translate so there is never a
+  // frame where React skips the rewrite and leaves the gesture scale stuck.
+  const commitGesture = useCallback(() => {
+    clearTimeout(settleTimer.current);
+    if (!gesturing.current) return;
+    gesturing.current = false;
+    const live = liveRef.current;
+    const c = pinContainerRef.current;
+    if (c) c.style.transform = `translate(${live.tx}px, ${live.ty}px)`;
+    setView(live);
+  }, []);
+
   useEffect(() => {
-    const raf = requestAnimationFrame(paint);
-    return () => cancelAnimationFrame(raf);
-  }, [paint, view]);
+    requestFrame();
+  }, [requestFrame, paint, view]);
+
+  useEffect(
+    () => () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+        // Reset so a later requestFrame() is not permanently blocked by the
+        // guard — StrictMode's dev remount runs this cleanup while the mount
+        // frame is still pending.
+        frameRef.current = 0;
+      }
+      clearTimeout(settleTimer.current);
+    },
+    [],
+  );
 
   // --- Wheel zoom to cursor (native non-passive so page scroll is blocked). -
+  // Attached to the map SURFACE wrapper (canvas + pin overlay), not the canvas:
+  // pins are pointer-events-auto siblings above the canvas, so a wheel over a
+  // pin never reaches a canvas-only listener — zooming must work everywhere.
   useEffect(() => {
-    const el = canvasRef.current;
+    const el = surfaceRef.current;
     if (!el) return;
     function onWheel(e: WheelEvent) {
       e.preventDefault();
       const rect = el!.getBoundingClientRect();
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
-      setView((v) => {
-        const nk = clampZoom(v.k * Math.exp(-e.deltaY * 0.0015));
-        if (nk === v.k) return v;
-        const contentX = (cx - v.tx) / v.k;
-        const contentY = (cy - v.ty) / v.k;
-        return { k: nk, tx: cx - contentX * nk, ty: cy - contentY * nk };
-      });
+      // Accumulate on the LIVE transform (refs only) — never setState in this
+      // hot path. PinLayer keeps its committed layout; the gesture shows as one
+      // container transform written by requestFrame's rAF.
+      const base = liveRef.current;
+      const nk = clampZoom(base.k * Math.exp(-e.deltaY * 0.0015));
+      if (nk === base.k) return;
+      const contentX = (cx - base.tx) / base.k;
+      const contentY = (cy - base.ty) / base.k;
+      liveRef.current = { k: nk, tx: cx - contentX * nk, ty: cy - contentY * nk };
+      gesturing.current = true;
+      requestFrame();
+      // Settle ~130ms after the last tick: commit k once so pins snap crisp.
+      clearTimeout(settleTimer.current);
+      settleTimer.current = setTimeout(commitGesture, 130);
     }
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [requestFrame, commitGesture]);
 
   // --- Background pan (engage past a 4px threshold). -----------------------
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-    const sx = e.clientX;
-    const sy = e.clientY;
-    const base = viewRef.current;
-    let panning = false;
-    function move(ev: PointerEvent) {
-      const dx = ev.clientX - sx;
-      const dy = ev.clientY - sy;
-      if (!panning && Math.hypot(dx, dy) < 4) return;
-      if (!panning) {
-        panning = true;
-        setDragging(true);
-        setSpawnHover(null);
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.button !== 0) return;
+      commitGesture(); // flush any in-flight zoom before panning
+      const sx = e.clientX;
+      const sy = e.clientY;
+      const base = liveRef.current;
+      let panning = false;
+      function move(ev: PointerEvent) {
+        const dx = ev.clientX - sx;
+        const dy = ev.clientY - sy;
+        if (!panning && Math.hypot(dx, dy) < 4) return;
+        if (!panning) {
+          panning = true;
+          setDragging(true);
+          setSpawnHover(null);
+        }
+        setView({ k: base.k, tx: base.tx + dx, ty: base.ty + dy });
       }
-      setView({ k: base.k, tx: base.tx + dx, ty: base.ty + dy });
-    }
-    function up() {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      setDragging(false);
-    }
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-  }, []);
+      function up() {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        setDragging(false);
+      }
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    },
+    [commitGesture],
+  );
 
   // --- Cursor coordinate readout + spawn hover hit-test. -------------------
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!entry) return;
       const rect = e.currentTarget.getBoundingClientRect();
-      const v = viewRef.current;
+      const v = liveRef.current;
       const cx = e.clientX - rect.left;
       const cy = e.clientY - rect.top;
       const contentX = (cx - v.tx) / v.k;
@@ -536,23 +627,37 @@ export default function MapView() {
     [entry, spawnActive, spawnDots, dragging, spawnHover],
   );
 
-  const zoomBy = useCallback((mult: number) => {
-    const el = canvasRef.current;
-    if (!el) return;
-    const cx = el.clientWidth / 2;
-    const cy = el.clientHeight / 2;
-    setView((v) => {
-      const nk = clampZoom(v.k * mult);
-      if (nk === v.k) return v;
-      const contentX = (cx - v.tx) / v.k;
-      const contentY = (cy - v.ty) / v.k;
-      return { k: nk, tx: cx - contentX * nk, ty: cy - contentY * nk };
-    });
-  }, []);
+  const zoomBy = useCallback(
+    (mult: number) => {
+      const el = canvasRef.current;
+      if (!el) return;
+      commitGesture();
+      const cx = el.clientWidth / 2;
+      const cy = el.clientHeight / 2;
+      const base = liveRef.current;
+      const nk = clampZoom(base.k * mult);
+      if (nk === base.k) return;
+      const contentX = (cx - base.tx) / base.k;
+      const contentY = (cy - base.ty) / base.k;
+      const nv = { k: nk, tx: cx - contentX * nk, ty: cy - contentY * nk };
+      liveRef.current = nv;
+      setView(nv);
+    },
+    [commitGesture],
+  );
 
   const setFilter = useCallback((key: keyof LayerFilters, on: boolean) => {
     setFilters((f) => ({ ...f, [key]: on }));
   }, []);
+
+  // Stable callback so a memoized PinLayer can skip re-rendering all ~360 pins
+  // on unrelated MapView state churn (coordinate readout on mousemove, spawn
+  // hover). Also keeps a stray mid-gesture re-render from clobbering the
+  // imperative pin-container transform.
+  const openSpecies = useCallback(
+    (id: string) => requestDex(id),
+    [requestDex],
+  );
 
   const ctrlBtn =
     "flex h-8 w-8 items-center justify-center border-b border-line text-ink-dim transition-colors last:border-b-0 hover:bg-hover hover:text-ink";
@@ -602,7 +707,7 @@ export default function MapView() {
               legend={spawnLegend}
               onSelect={setSpawnSpecies}
               onClear={() => setSpawnSpecies(null)}
-              onOpenDex={(id) => requestDex(id)}
+              onOpenDex={openSpecies}
             />
           )}
 
@@ -692,7 +797,7 @@ export default function MapView() {
       </header>
 
       {/* Map surface. */}
-      <div className="relative flex-1 overflow-hidden bg-abyss">
+      <div ref={surfaceRef} className="relative flex-1 overflow-hidden bg-abyss">
         <canvas
           ref={canvasRef}
           onPointerDown={onPointerDown}
@@ -711,6 +816,7 @@ export default function MapView() {
         {entry && (
           <PinLayer
             entry={entry}
+            containerRef={pinContainerRef}
             layer={layer}
             k={view.k}
             tx={view.tx}
@@ -726,7 +832,7 @@ export default function MapView() {
             showHidden={showHidden}
             filters={filters}
             icons={icons}
-            onOpenSpecies={(id) => requestDex(id)}
+            onOpenSpecies={openSpecies}
           />
         )}
 
@@ -786,7 +892,7 @@ export default function MapView() {
             </span>
           </div>
           <div className="rounded-md border border-line bg-panel/85 px-2.5 py-1.5 font-mono text-[11px] tabular-nums text-ink-dim">
-            {Math.round(view.k * 100)}%
+            <span ref={zoomPctRef}>{`${Math.round(view.k * 100)}%`}</span>
           </div>
         </div>
 

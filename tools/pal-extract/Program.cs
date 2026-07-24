@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using CUE4Parse.Compression;
 using CUE4Parse.FileProvider;
 using CUE4Parse.MappingsProvider.Usmap;
+using CUE4Parse.UE4.Assets.Exports;
 using CUE4Parse.UE4.Assets.Exports.Engine;
 using CUE4Parse.UE4.Assets.Exports.Texture;
 using CUE4Parse.UE4.Assets.Objects;
@@ -60,6 +61,10 @@ static class Program
         if (args.Contains("--export-map")) return ExportMap(provider);
         if (args.Contains("--discover-map-icons")) { DiscoverMapIcons(provider); return 0; }
         if (args.Contains("--discover-map-guids")) { DiscoverMapGuids(provider); return 0; }
+        if (args.Contains("--discover-incident")) { DiscoverIncident(provider); return 0; }
+        if (args.Contains("--discover-bounty-actors")) { DiscoverBountyActors(provider); return 0; }
+        if (args.Contains("--list-dt")) { ListDataTables(provider); return 0; }
+        if (args.Contains("--dump-table")) { DumpTable(provider, args); return 0; }
         if (args.Contains("--export-map-icons")) return ExportMapIcons(provider);
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
@@ -868,13 +873,22 @@ static class Program
         Console.WriteLine($"[bosses] rows={bossTable.RowMap.Count} emitted={bosses.Count} emptyCharacterID={bossEmptyCid} distinctSpecies={bosses.Select(b => b.species).Distinct().Count()}");
         if (bossEmptySamples.Count > 0) Console.WriteLine($"[bosses] empty-CID SpawnerIDs (sample): {string.Join(", ", bossEmptySamples)}");
 
-        // ---- (e) actor sweep: Relic effigies + Tower fast-travel points ----
+        // ---- (e) actor sweep: Relic effigies + Tower fast-travel points + humanoid bounty targets ----
+        // Bounty targets are the fixed PIDF wanted-list humanoid boss NPCs (purple-hood map icon),
+        // placed as BP_(Mono|Squad)NPCSpawnerBossBase_<CID>_C actors with a world RootComponent.
+        // Their spawn locations are 100% static (gameplay ground truth). Merchant "boss" NPCs
+        // (DarkTrader / Male_Trader##) share the spawner class but are NOT bounties -> excluded by
+        // CID token "Trader". Names are procedural (assigned from a name pool at spawn), so no fixed
+        // name links per location -> name=null per contract X1 (never fabricated).
         var ftNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapRespawnPointInfoText");
         var effigies = new List<(double x, double y, double z, string guid)>();
         var fastTravel = new List<(double x, double y, string name, string guid)>();
+        var bounties = new List<(double x, double y, string cid)>();
         var effigySeen = new HashSet<(long, long, long)>();
         var ftSeen = new HashSet<(long, long, long)>();
-        int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0;
+        var bountySeen = new HashSet<(long, long, long)>();
+        var bountyRx = new Regex(@"^BP_(?:Mono|Squad)NPCSpawnerBossBase_(.+)_C$", RegexOptions.Compiled);
+        int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0, bountyDup = 0, bountyNoRoot = 0, bountyTrader = 0;
         var mapCells = provider.Files.Values
             .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
                 && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase))
@@ -889,14 +903,23 @@ static class Program
                 var cls = ptr?.Class?.Name.Text;
                 bool isRelic = cls == "BP_LevelObject_Relic_C";
                 bool isFt = cls == "BP_LevelObject_TowerFastTravelPoint_C";
-                if (!isRelic && !isFt) continue;
+                bool isBounty = cls != null && bountyRx.IsMatch(cls);
+                if (!isRelic && !isFt && !isBounty) continue;
                 var actor = ptr.Object?.Value;
                 if (actor == null) continue;
                 var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
                 var comp = rootIdx != null && rootIdx.IsExport ? rootIdx.Load() : null;
-                if (comp == null) { if (isRelic) relicNoRoot++; else ftNoRoot++; continue; }
+                if (comp == null) { if (isRelic) relicNoRoot++; else if (isFt) ftNoRoot++; else bountyNoRoot++; continue; }
                 var loc = comp.GetOrDefault("RelativeLocation", new FVector());
                 var dedupe = ((long)Math.Round(loc.X * 10), (long)Math.Round(loc.Y * 10), (long)Math.Round(loc.Z * 10));
+                if (isBounty)
+                {
+                    var cid = bountyRx.Match(cls).Groups[1].Value;
+                    if (cid.Contains("Trader", StringComparison.OrdinalIgnoreCase)) { bountyTrader++; continue; } // merchant, not a bounty
+                    if (!bountySeen.Add(dedupe)) { bountyDup++; continue; }
+                    bounties.Add((loc.X, loc.Y, cid));
+                    continue;
+                }
                 // World-static actor instance GUID: matches the player save's
                 // FastTravelPointUnlockFlag / RelicObtainForInstanceFlag map keys when formatted as
                 // UE Digits (verified 8/9 FT + 5/5 effigy vs testdata/probe/coop-Player-host.sav).
@@ -917,7 +940,8 @@ static class Program
                 }
             }
         }
-        Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} ({sw.Elapsed.TotalSeconds:F0}s)");
+        Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} bounties={bounties.Count} (dup={bountyDup} noRoot={bountyNoRoot} tradersExcluded={bountyTrader}) ({sw.Elapsed.TotalSeconds:F0}s)");
+        Console.WriteLine($"[bounty] CIDs: {string.Join(", ", bounties.Select(b => b.cid).OrderBy(c => c, StringComparer.Ordinal))}");
 
         // ---- calibration: pick world->pixel axis orientation empirically ----
         var calPts = new List<(double x, double y)>();
@@ -1001,7 +1025,17 @@ static class Program
             if (m == null) { ftDropped++; continue; }
             ftOut.Add(new { x = Math.Round(f.x, 3), y = Math.Round(f.y, 3), map = m, name = f.name, guid = f.guid });
         }
-        Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped}");
+        var bountiesOut = new List<object>();
+        int bountyDropped = 0;
+        foreach (var b in bounties.OrderBy(b => (int)Math.Round(b.x)).ThenBy(b => (int)Math.Round(b.y)))
+        {
+            var m = AssignMap(b.x, b.y);
+            if (m == null) { bountyDropped++; continue; }
+            // name is procedural (assigned from a pool at spawn) -> null per contract X1; cid = the
+            // humanoid boss CharacterID (grounded enemy-type metadata for the pin hover).
+            bountiesOut.Add(new { x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), map = m, name = (string)null, cid = b.cid });
+        }
+        Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped} bountyDropped={bountyDropped}");
 
         object MapMeta(MapLayer L) => new
         {
@@ -1020,6 +1054,7 @@ static class Program
             bosses = bossesOut,
             effigies = effigiesOut,
             fast_travel = ftOut,
+            bounties = bountiesOut,
         };
         var outPath = Path.Combine(mapDir, "map-data.json");
         File.WriteAllText(outPath, JsonConvert.SerializeObject(root, Formatting.None));
@@ -1037,6 +1072,17 @@ static class Program
         Gate(bossesOut.Count >= 85, $"bosses low ({bossesOut.Count})");
         Gate(effigiesOut.Count >= 100, $"effigies low ({effigiesOut.Count})");
         Gate(ftOut.Count >= 40, $"fast_travel low ({ftOut.Count})");
+        // bounty POIs: fixed humanoid PIDF wanted-target NPCs. Expect ~25+ across the world; must not
+        // be clustered at origin (sanity: X-span and Y-span each > 100k world units).
+        Gate(bountiesOut.Count >= 25, $"bounties low ({bountiesOut.Count})");
+        if (bountiesOut.Count > 0)
+        {
+            var bx = bountiesOut.Select(b => (double)GetProp(b, "x")).ToList();
+            var by = bountiesOut.Select(b => (double)GetProp(b, "y")).ToList();
+            Gate(bx.Max() - bx.Min() > 100000 && by.Max() - by.Min() > 100000,
+                $"bounties clustered (Xspan={bx.Max() - bx.Min():F0} Yspan={by.Max() - by.Min():F0})");
+            Gate(bountiesOut.All(b => (string)GetProp(b, "name") == null), "bounty name must be null (procedural)");
+        }
         // orientation is confirmed by land-hit dominance over the other 7 candidates (my IsLand heuristic
         // under-counts coastal/shallow-water spawns, so the absolute fraction is not 100%); cross-validated
         // visually in calibration.png and against SaveSide's fog texture (u=worldY, v=worldX, v-flipped).
@@ -1071,7 +1117,7 @@ static class Program
 
         Console.WriteLine("==== MAP SUMMARY ====");
         Console.WriteLine($"species with spawns={spawnsOut.Select(s => (string)GetProp(s, "species")).Distinct().Count()} spawnEntries(species x map)={spawnsOut.Count} totalPoints={spawnsOut.Sum(s => ((List<object>)GetProp(s, "points")).Count)}");
-        Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit})");
+        Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit}) bounties={bountiesOut.Count}");
         Console.WriteLine($"guids: fast_travel host-flag match={ftGuidMatch}/9 (of {ftOut.Count} emitted, {ftGuidNull} null); effigy match={effigyGuidMatch}/5 (of {effigiesOut.Count} emitted, {effigyGuidNull} null)");
         Console.WriteLine($"webp: worldmap={worldWebp / 1024 / 1024.0:F2}MB treemap={treeWebp / 1024 / 1024.0:F2}MB");
         Console.WriteLine($"world_to_px: {formula}");
@@ -1277,6 +1323,192 @@ static class Program
         return sb.ToString();
     }
 
+    // ---- INCIDENT / BOUNTY DISCOVERY (`--discover-incident`) ------------------------------------
+    // Dumps every DataTable / DataAsset whose name matches /incident|bounty|wanted|hunter|raid|
+    // invader/i to testdata/probe/bounty.log with FULL recursive property structure, so the static
+    // bounty SpawnLocation/radius/icon-ref/name-key columns can be identified from real data.
+    static void DiscoverIncident(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(probeDir);
+        var nameRx = new Regex(@"(incident|bounty|wanted|hunter|raid|invader)", RegexOptions.IgnoreCase);
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => nameRx.IsMatch(Path.GetFileNameWithoutExtension(f)))
+            .OrderBy(x => x, StringComparer.Ordinal).ToList();
+        var log = new System.Text.StringBuilder();
+        log.AppendLine($"# incident/bounty candidate assets (build {GameBuild}): {cands.Count} matches");
+        foreach (var f in cands) log.AppendLine("  " + f);
+        log.AppendLine();
+        int tablesDumped = 0;
+        foreach (var f in cands)
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            try
+            {
+                if (!provider.TryLoadPackageObject(pkgPath, out var o)) { log.AppendLine($"=== {pkgPath} (load failed) ==="); continue; }
+                if (o is UDataTable dt)
+                {
+                    log.AppendLine($"=== DATATABLE {pkgPath} ({dt.RowMap.Count} rows) ===");
+                    foreach (var r in dt.RowMap)
+                    {
+                        log.AppendLine($"  ROW {r.Key.Text}:");
+                        DumpStruct(r.Value, log, "      ");
+                    }
+                    tablesDumped++;
+                }
+                else
+                {
+                    log.AppendLine($"=== OBJECT {pkgPath} (class={o.ExportType}) ===");
+                    DumpStruct(o, log, "      ");
+                    tablesDumped++;
+                }
+                log.AppendLine();
+            }
+            catch (Exception e) { log.AppendLine($"=== {pkgPath} ERROR: {e.Message} ==="); }
+        }
+        log.AppendLine($"# dumped {tablesDumped} objects");
+        File.WriteAllText(Path.Combine(probeDir, "bounty.log"), log.ToString());
+        Console.WriteLine($"[incident] {cands.Count} candidate assets; dumped {tablesDumped} -> testdata/probe/bounty.log");
+    }
+
+    // ---- BOUNTY ACTOR SWEEP (`--discover-bounty-actors`) ---------------------------------------
+    // Sweeps the World-Partition MainWorld_5 cells for placed actors whose class name hints at the
+    // fixed bounty-trader / predator / wanted markers, and dumps each occurrence's world location
+    // (RootComponent RelativeLocation), instance GUID, and string/name props. Grounds the static
+    // bounty POI set in real placed-actor data (never guessed). Also reports the full class-name
+    // histogram for the matched regex so the correct class can be identified.
+    static void DiscoverBountyActors(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(probeDir);
+        // broad histogram over NPC/spawner/boss actor classes; DETAIL dump for any actor whose class
+        // OR any string/name/soft-ref property value references bounty/navigator (the placed bounty NPC
+        // may be a generic spawner class that references the BountyTrader NPC only via a property).
+        var histRx = new Regex(@"(Spawner|NPC|Boss|Bounty|Navigator|Trader|Merchant|FastTravel|Warp)", RegexOptions.IgnoreCase);
+        var refRx = new Regex(@"(NPCSpawnerBossBase|Bounty|Navigator)", RegexOptions.IgnoreCase);
+        var mapCells = provider.Files.Values
+            .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
+                && f.Path.Contains("Pal/Content/Pal/Maps/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var log = new System.Text.StringBuilder();
+        var classCounts = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        int occurrences = 0, cells = 0;
+        foreach (var gf in mapCells)
+        {
+            cells++;
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                if (cls == null || !histRx.IsMatch(cls)) continue;
+                classCounts[cls] = classCounts.TryGetValue(cls, out var c) ? c + 1 : 1;
+                var actor = ptr.Object?.Value;
+                if (actor == null) continue;
+                bool hit = refRx.IsMatch(cls);
+                if (!hit)
+                    foreach (var p in actor.Properties)
+                    {
+                        var gv = p.Tag?.GenericValue;
+                        if (gv != null && refRx.IsMatch(gv.ToString())) { hit = true; break; }
+                    }
+                if (!hit) continue;
+                var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
+                var comp = rootIdx != null && rootIdx.IsExport ? rootIdx.Load() : null;
+                var loc = comp?.GetOrDefault("RelativeLocation", new FVector()) ?? new FVector();
+                var iid = actor.GetOrDefault<FGuid>("LevelObjectInstanceId");
+                string guid = (iid.A | iid.B | iid.C | iid.D) != 0 ? UeDigits(iid) : null;
+                occurrences++;
+                log.AppendLine($"HIT CLASS {cls}  cell={Path.GetFileNameWithoutExtension(gf.Path)}");
+                log.AppendLine($"    loc = ({loc.X:F1}, {loc.Y:F1}, {loc.Z:F1})  guid={guid ?? "-"}");
+                DumpStruct(actor, log, "      ");
+            }
+        }
+        log.Insert(0, $"# bounty/navigator actor sweep over {cells} map cells (build {GameBuild})\n" +
+            $"# refHits={occurrences} distinctSpawnerClasses={classCounts.Count}\n# class histogram (NPC/spawner/boss):\n" +
+            string.Join("\n", classCounts.Select(kv => $"#   {kv.Key} = {kv.Value}")) + "\n\n");
+        File.WriteAllText(Path.Combine(probeDir, "bounty-actors.log"), log.ToString());
+        Console.WriteLine($"[bounty-actors] cells={cells} refHits={occurrences} distinctSpawnerClasses={classCounts.Count} -> testdata/probe/bounty-actors.log");
+    }
+
+    // `--list-dt`: write every DataTable asset path to testdata/probe/datatables.log (grep target).
+    static void ListDataTables(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(probeDir);
+        var dts = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase)
+                && Path.GetFileName(f).StartsWith("DT_", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x, StringComparer.Ordinal).ToList();
+        File.WriteAllText(Path.Combine(probeDir, "datatables.log"), string.Join("\n", dts));
+        Console.WriteLine($"[list-dt] {dts.Count} DataTable assets -> testdata/probe/datatables.log");
+    }
+
+    // `--dump-table <pkgPath>`: dump one DataTable's rows (full recursive structure) to stdout.
+    static void DumpTable(IFileProvider provider, string[] args)
+    {
+        int idx = Array.IndexOf(args, "--dump-table");
+        if (idx < 0 || idx + 1 >= args.Length) { Console.WriteLine("[dump-table] usage: --dump-table <pkgPath>"); return; }
+        var pkgPath = args[idx + 1];
+        if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UDataTable dt)
+        { Console.WriteLine($"[dump-table] not a DataTable: {pkgPath}"); return; }
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"=== {pkgPath} ({dt.RowMap.Count} rows) ===");
+        foreach (var r in dt.RowMap) { sb.AppendLine($"  ROW {r.Key.Text}:"); DumpStruct(r.Value, sb, "      "); }
+        Console.WriteLine(sb.ToString());
+    }
+
+    // Recursively dump an FStructFallback / UObject's properties as "name = value" lines; nested
+    // structs/arrays/maps recurse so SpawnLocation vectors, radii, and soft object refs are visible.
+    static void DumpStruct(FStructFallback s, System.Text.StringBuilder sb, string indent) => DumpProps(s.Properties, sb, indent);
+    static void DumpStruct(UObject o, System.Text.StringBuilder sb, string indent) => DumpProps(o.Properties, sb, indent);
+    static void DumpProps(System.Collections.Generic.List<FPropertyTag> props, System.Text.StringBuilder sb, string indent)
+    {
+        foreach (var p in props)
+        {
+            sb.Append($"{indent}{p.Name.Text} = ");
+            DumpValue(p.Tag?.GenericValue, sb, indent);
+        }
+    }
+
+    static void DumpValue(object v, System.Text.StringBuilder sb, string indent)
+    {
+        switch (v)
+        {
+            case null:
+                sb.AppendLine("null");
+                break;
+            case FStructFallback s:
+                sb.AppendLine("{");
+                DumpStruct(s, sb, indent + "    ");
+                sb.AppendLine($"{indent}}}");
+                break;
+            case CUE4Parse.UE4.Assets.Objects.UScriptArray arr:
+                if (arr.Properties.Count == 0) { sb.AppendLine("[]"); break; }
+                sb.AppendLine($"[{arr.Properties.Count}]");
+                for (int i = 0; i < arr.Properties.Count; i++)
+                {
+                    sb.Append($"{indent}    [{i}] = ");
+                    DumpValue(arr.Properties[i].GenericValue, sb, indent + "    ");
+                }
+                break;
+            case CUE4Parse.UE4.Assets.Objects.UScriptMap map:
+                sb.AppendLine($"map[{map.Properties.Count}]");
+                int mi = 0;
+                foreach (var kv in map.Properties)
+                {
+                    sb.Append($"{indent}    key[{mi}] = "); DumpValue(kv.Key?.GenericValue, sb, indent + "    ");
+                    sb.Append($"{indent}    val[{mi}] = "); DumpValue(kv.Value?.GenericValue, sb, indent + "    ");
+                    mi++;
+                }
+                break;
+            default:
+                sb.AppendLine(v.ToString());
+                break;
+        }
+    }
+
     // ---- MAP ICON EXTRACTION (--export-map-icons) -----------------------------------------------
     // Emits app/public/map/icons/<key>.png (native res, transparent) + icons.json manifest per
     // Wave-2 contract C1: Record<string,{file,px:[w,h],source}>. The key->asset mapping below is
@@ -1326,8 +1558,11 @@ static class Program
                 using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
                 var file = $"{key}.png";
                 using (var fs = File.Create(Path.Combine(iconDir, file))) data.SaveTo(fs);
-                manifest[key] = new { file, px = new[] { bmp.Width, bmp.Height }, source = asset };
-                Console.WriteLine($"[map-icon] {key} {bmp.Width}x{bmp.Height} <- {asset}");
+                bool mono = IsMono(bmp, out double neutralFrac, out double meanSat, out double transparentFrac);
+                // mono:true => white/gray silhouette re-tinted via the consumer's CSS mask-image pipeline
+                // (contract X1/X2). Detected by >=95% near-white/neutral pixels; measured, not forced.
+                manifest[key] = new { file, px = new[] { bmp.Width, bmp.Height }, source = asset, mono };
+                Console.WriteLine($"[map-icon] {key} {bmp.Width}x{bmp.Height} mono={mono} (near-white {neutralFrac:P1}, meanSat {meanSat:F2}, transparent {transparentFrac:P1}) <- {asset}");
             }
             catch (Exception e) { missing.Add($"{key} <- {asset} ({e.Message})"); }
         }
@@ -1337,6 +1572,10 @@ static class Program
 
         File.WriteAllText(Path.Combine(mapDir, "icons.json"), JsonConvert.SerializeObject(manifest, Formatting.Indented));
         Console.WriteLine($"[map-icons] wrote icons.json with {manifest.Count} keys -> {iconDir}");
+        var monoKeys = manifest.Where(kv => (bool)GetProp(kv.Value, "mono")).Select(kv => kv.Key).ToList();
+        var colorKeys = manifest.Where(kv => !(bool)GetProp(kv.Value, "mono")).Select(kv => kv.Key).ToList();
+        Console.WriteLine($"[mono-matrix] mono=true ({monoKeys.Count}): {string.Join(", ", monoKeys)}");
+        Console.WriteLine($"[mono-matrix] mono=false ({colorKeys.Count}): {string.Join(", ", colorKeys)}");
         if (missing.Count > 0) { Console.WriteLine("[map-icons] MISSING/failed keys:"); foreach (var m in missing) Console.WriteLine("  " + m); }
         Gate_Icons(manifest, iconDir);
         return 0;
@@ -1353,6 +1592,36 @@ static class Program
         }
         if (errs.Count > 0) { Console.WriteLine("==== ICON VALIDATION FAILED ===="); foreach (var e in errs) Console.WriteLine("  FAIL: " + e); }
         else Console.WriteLine("==== ICON GATES PASSED ====");
+    }
+
+    // Detects a "mono" glyph per contract X1: source art that is a white/gray silhouette needing runtime
+    // tinting == opaque pixels are >=95% near-white/neutral (saturation < 0.08 AND value > 0.75). Only
+    // such a pure silhouette is re-tinted via the consumer's CSS mask-image pipeline (which uses the
+    // ALPHA channel only); everything else (the colored diamond-framed compass glyphs, the green effigy,
+    // the purple bounty portrait) renders AS-IS. Confirmed with PinPolish: only alpha_badge (the white
+    // boss/alpha ring frame, tinted to element color) qualifies. meanSat/transparentFrac are reported
+    // diagnostics; the matrix is measured, never forced.
+    static bool IsMono(SKBitmap bmp, out double neutralFrac, out double meanSat, out double transparentFrac)
+    {
+        long total = 0, opaque = 0, neutral = 0; double satSum = 0;
+        for (int y = 0; y < bmp.Height; y++)
+            for (int x = 0; x < bmp.Width; x++)
+            {
+                total++;
+                var c = bmp.GetPixel(x, y);
+                if (c.Alpha < 24) continue; // ignore (near-)transparent pixels
+                opaque++;
+                int max = Math.Max(c.Red, Math.Max(c.Green, c.Blue));
+                int min = Math.Min(c.Red, Math.Min(c.Green, c.Blue));
+                double value = max / 255.0;
+                double sat = max == 0 ? 0 : (max - min) / (double)max;
+                satSum += sat;
+                if (sat < 0.08 && value > 0.75) neutral++;
+            }
+        neutralFrac = opaque == 0 ? 0 : (double)neutral / opaque;
+        meanSat = opaque == 0 ? 1 : satSum / opaque;
+        transparentFrac = total == 0 ? 0 : (double)(total - opaque) / total;
+        return opaque > 0 && neutralFrac >= 0.95;
     }
 
     static SKBitmap DecodeMapTexture(IFileProvider provider, string path)
