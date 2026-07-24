@@ -7,11 +7,13 @@ pub mod characters;
 pub mod compress;
 pub mod gvas;
 pub mod localdata;
+pub mod map_objects;
 pub mod worldoption;
 
 pub use localdata::{
     read_local_data, parse_player_map_state, CustomMarker, FogLayer, LocalData, PlayerMapRecord,
 };
+pub use map_objects::{read_base_points, read_map_objects, BasePoint, MapObjectInstance};
 pub use worldoption::WorldOptions;
 
 use std::collections::HashSet;
@@ -166,9 +168,16 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
 /// Read a single `Level.sav` file. Containers are left `Unknown` (no player
 /// saves are consulted); use [`read_save_dir`] for full classification.
 pub fn read_level_sav(path: impl AsRef<Path>) -> Result<SaveData, SaveError> {
-    let mut warnings = Vec::new();
     let blob = read_and_decompress(path.as_ref())?;
-    let parsed = characters::parse_level(&blob, &mut warnings)?;
+    read_level_sav_from_blob(&blob)
+}
+
+/// Parse an already-decompressed `Level.sav` blob (same result as
+/// [`read_level_sav`]). Lets callers that also need other `worldSaveData`
+/// sections (e.g. `map_objects`) decompress the level once and reuse the blob.
+pub fn read_level_sav_from_blob(blob: &[u8]) -> Result<SaveData, SaveError> {
+    let mut warnings = Vec::new();
+    let parsed = characters::parse_level(blob, &mut warnings)?;
     let bases = build_bases(
         &parsed.guilds,
         &parsed.base_id_to_container,

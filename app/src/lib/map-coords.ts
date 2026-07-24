@@ -29,14 +29,64 @@ export interface MapEntry {
   world_to_px: string;
 }
 
-/** The whole `map-data.json` document. Wave 1 (this view) consumes only `maps`;
- *  the pin arrays are Wave 2 and typed loosely so the shape can evolve. */
+/** One wild-spawn location for a species: world `[x,y]`, spawn `r`adius (world
+ *  units), level range `lv`, pack-size range `n`, and optional `time`/`weather`
+ *  gates (`"night"` etc., or null = anytime). `boss` flags a field-boss spawn. */
+export interface SpawnPoint {
+  x: number;
+  y: number;
+  r: number;
+  lv: [number, number];
+  n: [number, number];
+  time: string | null;
+  weather: string | null;
+  boss: boolean;
+}
+
+/** All spawn points of one species on one map layer. `species` is the internal
+ *  id (joins `/pals/<id>.png` and the pal-dex species id). */
+export interface SpawnEntry {
+  species: string;
+  map: string;
+  points: SpawnPoint[];
+}
+
+/** A field-boss (alpha) location. `species` is `BOSS_<Internal>` (strip the
+ *  case-insensitive `BOSS_` prefix for the pal-icon / dex id). */
+export interface BossEntry {
+  species: string;
+  x: number;
+  y: number;
+  level: number;
+  map: string;
+}
+
+/** A world POI point: fast-travel statue, effigy, or bounty board. `name` is
+ *  null for the unnamed (effigy) variety. `guid` is the world-static actor
+ *  instance GUID (32-char UPPERCASE UE-Digits hex) that matches a player's
+ *  save-side found/unlocked flag keys exactly (R1); it is absent/null on POIs
+ *  the extractor could not resolve, and the found/unlocked join degrades to
+ *  counts-only when no POI carries one. */
+export interface PoiPoint {
+  x: number;
+  y: number;
+  z?: number;
+  map: string;
+  name?: string | null;
+  guid?: string | null;
+}
+
+/** The whole `map-data.json` document. Wave 2 consumes every pin array; the
+ *  optional `bounties` is appended by IconExtract only if bounty POI locations
+ *  are found in the paks (contract C1), so it may be absent. */
 export interface MapData {
+  meta?: { game_build?: string; extracted_at?: string; usmap?: string };
   maps: Record<string, MapEntry>;
-  spawns?: unknown[];
-  bosses?: unknown[];
-  effigies?: unknown[];
-  fast_travel?: unknown[];
+  spawns: SpawnEntry[];
+  bosses: BossEntry[];
+  effigies: PoiPoint[];
+  fast_travel: PoiPoint[];
+  bounties?: PoiPoint[];
 }
 
 /**

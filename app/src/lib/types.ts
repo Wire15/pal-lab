@@ -612,10 +612,13 @@ export interface MapPlayerState {
 /** Response from `get_map_state(saveDir)`. `fog` is `null` when no client
  * `LocalData.sav` was found (the map then renders with no fog overlay);
  * `local_source` is the absolute path the fog/markers were read from, or
- * `null`. `markers` are player-placed custom markers. */
+ * `null`. `markers` are player-placed custom markers. `bases` (R2) is one
+ * world-coord point per player base camp decoded from `Level.sav`, or `null`
+ * when no `Level.sav` was readable or the world has no base camps. */
 export interface MapState {
   fog: FogLayer[] | null;
   local_source: string | null;
   markers: { x: number; y: number; icon_type: number }[];
   players: MapPlayerState[];
+  bases?: { x: number; y: number }[] | null;
 }

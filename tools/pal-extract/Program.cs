@@ -7,6 +7,7 @@ using CUE4Parse.UE4.Assets.Exports.Texture;
 using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Assets.Objects.Properties;
 using CUE4Parse.UE4.Objects.Core.i18N;
+using CUE4Parse.UE4.Objects.Core.Misc;
 using CUE4Parse.UE4.Objects.Core.Math;
 using CUE4Parse.UE4.Objects.UObject;
 using CUE4Parse.UE4.Versions;
@@ -57,6 +58,9 @@ static class Program
         if (args.Contains("--discover-drops")) { DiscoverDrops(provider); return 0; }
         if (args.Contains("--discover-element")) { DiscoverElement(provider); return 0; }
         if (args.Contains("--export-map")) return ExportMap(provider);
+        if (args.Contains("--discover-map-icons")) { DiscoverMapIcons(provider); return 0; }
+        if (args.Contains("--discover-map-guids")) { DiscoverMapGuids(provider); return 0; }
+        if (args.Contains("--export-map-icons")) return ExportMapIcons(provider);
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -866,8 +870,8 @@ static class Program
 
         // ---- (e) actor sweep: Relic effigies + Tower fast-travel points ----
         var ftNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapRespawnPointInfoText");
-        var effigies = new List<(double x, double y, double z)>();
-        var fastTravel = new List<(double x, double y, string name)>();
+        var effigies = new List<(double x, double y, double z, string guid)>();
+        var fastTravel = new List<(double x, double y, string name, string guid)>();
         var effigySeen = new HashSet<(long, long, long)>();
         var ftSeen = new HashSet<(long, long, long)>();
         int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0;
@@ -893,10 +897,15 @@ static class Program
                 if (comp == null) { if (isRelic) relicNoRoot++; else ftNoRoot++; continue; }
                 var loc = comp.GetOrDefault("RelativeLocation", new FVector());
                 var dedupe = ((long)Math.Round(loc.X * 10), (long)Math.Round(loc.Y * 10), (long)Math.Round(loc.Z * 10));
+                // World-static actor instance GUID: matches the player save's
+                // FastTravelPointUnlockFlag / RelicObtainForInstanceFlag map keys when formatted as
+                // UE Digits (verified 8/9 FT + 5/5 effigy vs testdata/probe/coop-Player-host.sav).
+                var iid = actor.GetOrDefault<FGuid>("LevelObjectInstanceId");
+                string guid = (iid.A | iid.B | iid.C | iid.D) != 0 ? UeDigits(iid) : null;
                 if (isRelic)
                 {
                     if (!effigySeen.Add(dedupe)) { effigyDup++; continue; }
-                    effigies.Add((loc.X, loc.Y, loc.Z));
+                    effigies.Add((loc.X, loc.Y, loc.Z, guid));
                 }
                 else
                 {
@@ -904,7 +913,7 @@ static class Program
                     var id = actor.GetOrDefault<FName>("FastTravelPointID").Text;
                     string name = null;
                     if (!string.IsNullOrEmpty(id) && id != "None" && ftNames.TryGetValue(id, out var raw)) { name = Clean(raw); if (!string.IsNullOrEmpty(name)) ftNameHit++; else name = null; }
-                    fastTravel.Add((loc.X, loc.Y, name));
+                    fastTravel.Add((loc.X, loc.Y, name, guid));
                 }
             }
         }
@@ -982,7 +991,7 @@ static class Program
         {
             var m = AssignMap(e.x, e.y);
             if (m == null) { effigyDropped++; continue; }
-            effigiesOut.Add(new { x = Math.Round(e.x, 3), y = Math.Round(e.y, 3), z = Math.Round(e.z, 3), map = m });
+            effigiesOut.Add(new { x = Math.Round(e.x, 3), y = Math.Round(e.y, 3), z = Math.Round(e.z, 3), map = m, guid = e.guid });
         }
         var ftOut = new List<object>();
         int ftDropped = 0;
@@ -990,7 +999,7 @@ static class Program
         {
             var m = AssignMap(f.x, f.y);
             if (m == null) { ftDropped++; continue; }
-            ftOut.Add(new { x = Math.Round(f.x, 3), y = Math.Round(f.y, 3), map = m, name = f.name });
+            ftOut.Add(new { x = Math.Round(f.x, 3), y = Math.Round(f.y, 3), map = m, name = f.name, guid = f.guid });
         }
         Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped}");
 
@@ -1046,10 +1055,24 @@ static class Program
         Gate(ftOut.Any(f => (string)GetProp(f, "name") == "Rotmist Root"), "fast_travel 'Rotmist Root' (WorldTree_MiddleBoss_1) not resolved");
         // a known species must have spawn points (Lamball = SheepBall)
         Gate(spawnsOut.Any(s => (string)GetProp(s, "species") == "SheepBall"), "no SheepBall spawn points");
+        // GUID emission + empirical host-player join gate (R1): every FT/effigy actor must carry an
+        // instance GUID, and the emitted GUIDs must string-match the host player's unlock-flag keys.
+        // testdata/probe/coop-Player-host.sav has 9 FT + 5 effigy flag GUIDs; require >=1 match each.
+        var ftGuidSet = new HashSet<string>(ftOut.Select(f => (string)GetProp(f, "guid")).Where(g => g != null), StringComparer.OrdinalIgnoreCase);
+        var effigyGuidSet = new HashSet<string>(effigiesOut.Select(e => (string)GetProp(e, "guid")).Where(g => g != null), StringComparer.OrdinalIgnoreCase);
+        int ftGuidNull = ftOut.Count(f => GetProp(f, "guid") == null);
+        int effigyGuidNull = effigiesOut.Count(e => GetProp(e, "guid") == null);
+        int ftGuidMatch = GuidGroundTruth.Take(9).Count(ftGuidSet.Contains);
+        int effigyGuidMatch = GuidGroundTruth.Skip(9).Count(effigyGuidSet.Contains);
+        Gate(ftGuidNull == 0, $"fast_travel entries missing guid ({ftGuidNull}/{ftOut.Count})");
+        Gate(effigyGuidNull == 0, $"effigy entries missing guid ({effigyGuidNull}/{effigiesOut.Count})");
+        Gate(ftGuidMatch >= 1, "no fast_travel guid matched host-player flags (0/9)");
+        Gate(effigyGuidMatch >= 1, "no effigy guid matched host-player flags (0/5)");
 
         Console.WriteLine("==== MAP SUMMARY ====");
         Console.WriteLine($"species with spawns={spawnsOut.Select(s => (string)GetProp(s, "species")).Distinct().Count()} spawnEntries(species x map)={spawnsOut.Count} totalPoints={spawnsOut.Sum(s => ((List<object>)GetProp(s, "points")).Count)}");
         Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit})");
+        Console.WriteLine($"guids: fast_travel host-flag match={ftGuidMatch}/9 (of {ftOut.Count} emitted, {ftGuidNull} null); effigy match={effigyGuidMatch}/5 (of {effigiesOut.Count} emitted, {effigyGuidNull} null)");
         Console.WriteLine($"webp: worldmap={worldWebp / 1024 / 1024.0:F2}MB treemap={treeWebp / 1024 / 1024.0:F2}MB");
         Console.WriteLine($"world_to_px: {formula}");
         Console.WriteLine($"wall={sw.Elapsed.TotalSeconds:F0}s");
@@ -1061,6 +1084,275 @@ static class Program
         }
         Console.WriteLine("==== ALL MAP GATES PASSED ====");
         return 0;
+    }
+
+    // Reusable discovery pass (`--discover-map-icons`): enumerate every UI texture asset whose
+    // path/name hints at map/compass/marker/POI iconography, decode each, record dimensions, and
+    // export a native-res PNG thumbnail to testdata/probe/mapicons/ so the map-icon key->asset
+    // mapping can be established by eyeballing real art (never guessed). Also dumps the custom
+    // marker icon-type enum (EPal*IconType / *CustomMarker*) from the usmap + any icon DataTable.
+    static void DiscoverMapIcons(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        var iconProbe = Path.Combine(probeDir, "mapicons");
+        Directory.CreateDirectory(iconProbe);
+        // Broad path/name filters: map/compass/marker UI trees + POI icon name tokens.
+        var pathRx = new Regex(@"UI/.*(Map|Compass|Marker)", RegexOptions.IgnoreCase);
+        var nameRx = new Regex(@"(MapIcon|CompassIcon|Compass_|Marker|Bounty|Wanted|Hunter|FastTravel|Fast_Travel|Dungeon|Tower|Relic|Effigy|Boss|Alpha|Dungeon|BaseCamp|Waypoint|POI|Pin|Objective|Quest)", RegexOptions.IgnoreCase);
+        var cands = provider.Files.Keys
+            .Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+            .Where(f => f.Contains("/Texture/", StringComparison.OrdinalIgnoreCase)
+                && (pathRx.IsMatch(f) || nameRx.IsMatch(Path.GetFileNameWithoutExtension(f))))
+            .OrderBy(x => x, StringComparer.Ordinal)
+            .ToList();
+        Console.WriteLine($"[map-icons] {cands.Count} candidate texture assets (writing testdata/probe/mapicons.log + PNG thumbs)");
+        var log = new System.Text.StringBuilder();
+        log.AppendLine($"# map-icon texture candidates (build {GameBuild}); {cands.Count} matches");
+        log.AppendLine("# <w>x<h>  <status>  <asset-path>  -> <probe-png>");
+        int exported = 0, tooBig = 0, notTex = 0;
+        foreach (var f in cands)
+        {
+            var pkgPath = f.Substring(0, f.Length - ".uasset".Length);
+            try
+            {
+                if (!provider.TryLoadPackageObject(pkgPath, out var o) || o is not UTexture2D tex)
+                { notTex++; log.AppendLine($"  --x--   not-a-texture  {pkgPath}"); continue; }
+                int w = tex.PlatformData.SizeX, h = tex.PlatformData.SizeY;
+                // skip the giant map/mask textures; icons are small
+                if (w > 1024 || h > 1024) { tooBig++; log.AppendLine($"  {w}x{h}  skip-large  {pkgPath}"); continue; }
+                using var bmp = tex.Decode(ETexturePlatform.DesktopMobile)?.ToSkBitmap();
+                if (bmp == null) { log.AppendLine($"  {w}x{h}  decode-null  {pkgPath}"); continue; }
+                // flatten path to a unique, readable filename
+                var rel = pkgPath.Contains("/Texture/", StringComparison.OrdinalIgnoreCase)
+                    ? pkgPath.Substring(pkgPath.IndexOf("/Texture/", StringComparison.OrdinalIgnoreCase) + "/Texture/".Length)
+                    : Path.GetFileNameWithoutExtension(pkgPath);
+                var flat = rel.Replace('/', '_');
+                var png = Path.Combine(iconProbe, flat + ".png");
+                using (var data = bmp.Encode(SKEncodedImageFormat.Png, 100))
+                using (var fs = File.Create(png)) data.SaveTo(fs);
+                exported++;
+                log.AppendLine($"  {bmp.Width}x{bmp.Height}  ok  {pkgPath}  -> mapicons/{flat}.png");
+            }
+            catch (Exception e) { log.AppendLine($"  --x--   error:{e.Message}  {pkgPath}"); }
+        }
+        log.AppendLine($"# exported={exported} tooBig={tooBig} notTexture={notTex}");
+        File.WriteAllText(Path.Combine(probeDir, "mapicons.log"), log.ToString());
+        Console.WriteLine($"[map-icons] exported={exported} tooBig(skipped)={tooBig} notTexture={notTex}");
+
+        // ---- custom-marker icon-type enum ----
+        DumpMarkerEnum(provider);
+    }
+
+    // Locate + dump the custom-marker icon-type enum (players' placeable map-marker palette).
+    // Searches the usmap-provided enums for CustomMarker/IconType names, printing ordinal->name
+    // so marker_<int> texture keying can be established from data (never guessed).
+    static void DumpMarkerEnum(IFileProvider provider)
+    {
+        try
+        {
+            var enums = provider.MappingsForGame?.Enums;
+            if (enums == null) { Console.WriteLine("[marker-enum] no usmap enums available"); return; }
+            var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+            Directory.CreateDirectory(probeDir);
+            // dump EVERY enum (name + ordinal->value) to a log so the marker enum can be found by grep
+            var all = new System.Text.StringBuilder();
+            all.AppendLine($"# {enums.Count} usmap enums (build {GameBuild})");
+            foreach (var kv in enums.OrderBy(k => k.Key, StringComparer.Ordinal))
+            {
+                all.AppendLine($"ENUM {kv.Key} ({kv.Value.Count})");
+                foreach (var e in kv.Value.OrderBy(x => x.Key)) all.AppendLine($"  {e.Key} = {e.Value}");
+            }
+            File.WriteAllText(Path.Combine(probeDir, "enums.log"), all.ToString());
+            Console.WriteLine($"[marker-enum] wrote testdata/probe/enums.log ({enums.Count} enums)");
+            // print candidates whose NAME hints at the marker palette (there is no such enum in the
+            // current usmap — IconType is a raw i32 index into T_icon_compass_00..16 — so this is the
+            // negative evidence backing the ordinal marker mapping).
+            var nameTok = new[] { "Marker", "IconType", "Compass", "MapObjectIcon" };
+            int shown = 0;
+            foreach (var kv in enums.OrderBy(k => k.Key, StringComparer.Ordinal))
+            {
+                if (!nameTok.Any(t => kv.Key.Contains(t, StringComparison.OrdinalIgnoreCase))) continue;
+                shown++;
+                Console.WriteLine($"  ENUM {kv.Key} ({kv.Value.Count}):");
+                foreach (var e in kv.Value.OrderBy(x => x.Key)) Console.WriteLine($"    {e.Key} = {e.Value}");
+            }
+            Console.WriteLine($"[marker-enum] matched {shown} candidate enums");
+        }
+        catch (Exception e) { Console.WriteLine($"[marker-enum] failed: {e.Message}"); }
+        // No usmap enum backs IconType (it's a plain IntProperty). Locate the marker widget/BP/DataTable
+        // assets that consume IconType so the int->texture linkage can be confirmed (not guessed).
+        try
+        {
+            var hits = provider.Files.Keys
+                .Where(f => (f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".umap", StringComparison.OrdinalIgnoreCase))
+                    && Path.GetFileNameWithoutExtension(f).Contains("CustomMarker", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => x, StringComparer.Ordinal).ToList();
+            Console.WriteLine($"[marker-files] {hits.Count} assets with 'CustomMarker' in name:");
+            foreach (var h in hits) Console.WriteLine("    " + h);
+        }
+        catch (Exception e) { Console.WriteLine($"[marker-files] failed: {e.Message}"); }
+    }
+
+    // ---- GUID DISCOVERY (`--discover-map-guids`) ------------------------------------------------
+    // Dumps every GUID-typed value found on a handful of sample BP_LevelObject_Relic_C /
+    // BP_LevelObject_TowerFastTravelPoint_C actors (actor props + RootComponent props, recursively)
+    // formatted as UE `Digits` (four LE uint32 groups, upper-hex), and flags any that match the
+    // host player's known unlock-flag keys. This is how the actor-instance-GUID <-> save-flag-key
+    // linkage was established (never guessed); once confirmed, --export-map emits the winning source.
+    static readonly string[] GuidGroundTruth =
+    {
+        // testdata/probe/coop-Player-host.sav RecordData.FastTravelPointUnlockFlag keys (9)
+        "6E03F8464BAD9E458B843AA30BE1CC8F", "DDBBFFAF43D9219AE68DF98744DF0831", "603ED0CD4CFB9AFDC9E11F805594CCE5",
+        "6282FE1E4029EDCDB14135AA4C171E4C", "9FBB93D84811BE424A37C391DBFBB476", "979BF2044C8E8FE559B598A95A83EDE3",
+        "41727100495D21DC905D309C53989914", "11E3E3C44F040B34E3809CB69CD87435", "74270C2F45B8DCA66B6A1FAAA911D024",
+        // RelicObtainForInstanceFlag keys (5)
+        "A360858E448AF927AF914D8E9D74E416", "8BCDE3654504C5823162BE83EB674216", "6CA64B00492057D6B5D82D96C534472F",
+        "0D0BF38A4E8EF27A57F81CB5154C4633", "E4286D164A8925DFC09D0FBFDA2B3698",
+    };
+
+    // FGuid -> UE `Digits` format: A,B,C,D each printed as 8 upper-hex chars (this is the exact
+    // string form of the save's FastTravelPointUnlockFlag / RelicObtainForInstanceFlag map keys).
+    static string UeDigits(FGuid g) => $"{g.A:X8}{g.B:X8}{g.C:X8}{g.D:X8}";
+
+    static void DiscoverMapGuids(IFileProvider provider)
+    {
+        var truthFt = new HashSet<string>(GuidGroundTruth.Take(9), StringComparer.OrdinalIgnoreCase);
+        var truthEffigy = new HashSet<string>(GuidGroundTruth.Skip(9), StringComparer.OrdinalIgnoreCase);
+        var mapCells = provider.Files.Values
+            .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
+                && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var ftGuids = new List<FGuid>();
+        var relicGuids = new List<FGuid>();
+        foreach (var gf in mapCells)
+        {
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                bool isRelic = cls == "BP_LevelObject_Relic_C";
+                bool isFt = cls == "BP_LevelObject_TowerFastTravelPoint_C";
+                if (!isRelic && !isFt) continue;
+                var actor = ptr.Object?.Value;
+                if (actor == null) continue;
+                var g = actor.GetOrDefault<FGuid>("LevelObjectInstanceId");
+                (isRelic ? relicGuids : ftGuids).Add(g);
+            }
+        }
+        Console.WriteLine($"[guids] swept ft={ftGuids.Count} relic={relicGuids.Count}; testing encodings vs ground truth (9 FT + 5 effigy)");
+        // Candidate string encodings of the actor's LevelObjectInstanceId, tested against the save
+        // flag keys. `digits` = UE Digits (four LE uint32 groups, upper-hex). `rawLE` = raw 16 bytes
+        // in memory order. `bytesBE` = raw bytes reversed. Whichever encoding matches wins.
+        var encoders = new (string name, Func<FGuid, string> f)[]
+        {
+            ("digits", UeDigits),
+            ("rawLE", g => BytesHex(GuidBytes(g), false)),
+            ("bytesBE", g => BytesHex(GuidBytes(g), true)),
+        };
+        foreach (var (name, f) in encoders)
+        {
+            var ftSet = new HashSet<string>(ftGuids.Select(f), StringComparer.OrdinalIgnoreCase);
+            var relicSet = new HashSet<string>(relicGuids.Select(f), StringComparer.OrdinalIgnoreCase);
+            int ftHit = truthFt.Count(ftSet.Contains);
+            int effHit = truthEffigy.Count(relicSet.Contains);
+            Console.WriteLine($"    encoding={name,-8} FT match={ftHit}/9  effigy match={effHit}/5");
+        }
+    }
+
+    // Raw 16 bytes of an FGuid in memory order: LE(A) ++ LE(B) ++ LE(C) ++ LE(D).
+    static byte[] GuidBytes(FGuid g)
+    {
+        var b = new byte[16];
+        BitConverter.GetBytes(g.A).CopyTo(b, 0);
+        BitConverter.GetBytes(g.B).CopyTo(b, 4);
+        BitConverter.GetBytes(g.C).CopyTo(b, 8);
+        BitConverter.GetBytes(g.D).CopyTo(b, 12);
+        return b;
+    }
+    static string BytesHex(byte[] b, bool reversed)
+    {
+        var sb = new System.Text.StringBuilder(32);
+        for (int i = 0; i < b.Length; i++) sb.Append(b[reversed ? b.Length - 1 - i : i].ToString("X2"));
+        return sb.ToString();
+    }
+
+    // ---- MAP ICON EXTRACTION (--export-map-icons) -----------------------------------------------
+    // Emits app/public/map/icons/<key>.png (native res, transparent) + icons.json manifest per
+    // Wave-2 contract C1: Record<string,{file,px:[w,h],source}>. The key->asset mapping below is
+    // curated by VISUAL INSPECTION of the probe thumbnails dumped by --discover-map-icons (never
+    // guessed): each entry was confirmed to depict its key's in-game glyph. Missing keys are simply
+    // absent -> the consumer (MapOverlays) degrades to vector fallbacks.
+    //
+    // marker_<int> keys map the placeable custom-marker palette by EPal...IconType enum ordinal;
+    // only emitted when an ordinal<->texture mapping is established from data.
+    static readonly (string key, string asset)[] IconAssets =
+    {
+        // POI glyphs — the in-game map/compass icon set (UI/InGame/T_icon_compass_*).
+        ("fast_travel", "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_FTtower"),   // eagle statue (diamond-framed)
+        ("tower",       "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_tower"),     // tower spire (diamond-framed)
+        ("dungeon",     "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_dungeon"),   // cave archway
+        ("bounty",      "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Bounty"),    // purple hooded figure
+        ("base",        "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_camp"),      // fortress/castle (player base)
+        ("alpha_badge", "Pal/Content/Pal/Texture/UI/Map/T_prt_map_BossIconFrame"),     // white ring/frame drawn around boss pins (tint in UI)
+        ("unknown",     "Pal/Content/Pal/Texture/UI/Map/T_icon_compass_Boss_Unknown"), // '?' glyph for undiscovered pins
+        ("effigy",      "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic"), // green Lifmunk Effigy statuette (item id "Relic")
+    };
+    // Custom-marker palette: no usmap enum backs the marker IconType (a raw i32 IntProperty in the
+    // save); it indexes the contiguous ordinal-named T_icon_compass_00..16 textures 1:1 (17 slots,
+    // confirmed via the WBP_IngameCompass_CustomMarker widget + EPalLocationType.CustomMarker). So
+    // marker_<N> <- T_icon_compass_<NN> is the data-grounded ordinal mapping, not a guess.
+    static readonly (int ord, string enumName, string asset)[] MarkerAssets =
+        Enumerable.Range(0, 17)
+            .Select(i => (i, "IconType(i32 index; no usmap enum)", $"Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_{i:00}"))
+            .ToArray();
+
+    static int ExportMapIcons(IFileProvider provider)
+    {
+        var mapDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "app", "public", "map"));
+        var iconDir = Path.Combine(mapDir, "icons");
+        Directory.CreateDirectory(iconDir);
+        var manifest = new SortedDictionary<string, object>(StringComparer.Ordinal);
+        var missing = new List<string>();
+
+        void Emit(string key, string asset)
+        {
+            try
+            {
+                if (!provider.TryLoadPackageObject(asset, out var o) || o is not UTexture2D tex)
+                { missing.Add($"{key} <- {asset} (not a texture)"); return; }
+                using var bmp = tex.Decode(ETexturePlatform.DesktopMobile)?.ToSkBitmap();
+                if (bmp == null) { missing.Add($"{key} <- {asset} (decode null)"); return; }
+                using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
+                var file = $"{key}.png";
+                using (var fs = File.Create(Path.Combine(iconDir, file))) data.SaveTo(fs);
+                manifest[key] = new { file, px = new[] { bmp.Width, bmp.Height }, source = asset };
+                Console.WriteLine($"[map-icon] {key} {bmp.Width}x{bmp.Height} <- {asset}");
+            }
+            catch (Exception e) { missing.Add($"{key} <- {asset} ({e.Message})"); }
+        }
+
+        foreach (var (key, asset) in IconAssets) Emit(key, asset);
+        foreach (var (ord, enumName, asset) in MarkerAssets) Emit($"marker_{ord}", asset);
+
+        File.WriteAllText(Path.Combine(mapDir, "icons.json"), JsonConvert.SerializeObject(manifest, Formatting.Indented));
+        Console.WriteLine($"[map-icons] wrote icons.json with {manifest.Count} keys -> {iconDir}");
+        if (missing.Count > 0) { Console.WriteLine("[map-icons] MISSING/failed keys:"); foreach (var m in missing) Console.WriteLine("  " + m); }
+        Gate_Icons(manifest, iconDir);
+        return 0;
+    }
+
+    static void Gate_Icons(SortedDictionary<string, object> manifest, string iconDir)
+    {
+        // every referenced file must exist on disk
+        var errs = new List<string>();
+        foreach (var kv in manifest)
+        {
+            var file = (string)GetProp(kv.Value, "file");
+            if (!File.Exists(Path.Combine(iconDir, file))) errs.Add($"{kv.Key}: {file} missing on disk");
+        }
+        if (errs.Count > 0) { Console.WriteLine("==== ICON VALIDATION FAILED ===="); foreach (var e in errs) Console.WriteLine("  FAIL: " + e); }
+        else Console.WriteLine("==== ICON GATES PASSED ====");
     }
 
     static SKBitmap DecodeMapTexture(IFileProvider provider, string path)
@@ -1119,7 +1411,7 @@ static class Program
 
     static void RenderCalibration(SKBitmap worldBmp, MapLayer L, (bool uIsY, bool uFlip, bool vFlip) o,
         List<(string species, double x, double y, int level)> bosses,
-        List<(double x, double y, string name)> ft, List<(double x, double y, double z)> effigies, string outPath)
+        List<(double x, double y, string name, string guid)> ft, List<(double x, double y, double z, string guid)> effigies, string outPath)
     {
         const int S = 1536;
         using var canvas = new SKBitmap(S, S);

@@ -30,6 +30,7 @@ import { hexGuid } from "../../components/palbox/selectors";
 import { ActiveSkillRow } from "../../components/active-skill";
 import ReverseBreeding from "../../components/reverse-breeding";
 import { loadActiveSkills, type ActiveSkills } from "../../lib/active-skills";
+import { loadMapData, speciesHasSpawns } from "../../lib/map-data";
 import { useAppState } from "../../state";
 
 /** Slots in the game-style food demand meter (matches paldb's 10-pip bar). */
@@ -529,7 +530,7 @@ export default function PaldexDetail({
   /** Jump to the MOVES tab focused on a waza id — a LEARNABLE MOVES name link. */
   onOpenMove: (wazaId: string) => void;
 }) {
-  const { requestSolve, setView } = useAppState();
+  const { requestSolve, setView, requestMapSpawn } = useAppState();
   const [detail, setDetail] = useState<SpeciesDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [names, setNames] = useState<NamedEntry[]>([]);
@@ -537,6 +538,7 @@ export default function PaldexDetail({
   const [child, setChild] = useState<ChildResult | null>(null);
   const [childLoading, setChildLoading] = useState(false);
   const [activeMap, setActiveMap] = useState<ActiveSkills>({});
+  const [hasSpawns, setHasSpawns] = useState(false);
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species").then(setNames).catch(() => {});
@@ -545,6 +547,20 @@ export default function PaldexDetail({
   useEffect(() => {
     loadActiveSkills().then(setActiveMap).catch(() => {});
   }, []);
+
+  // Lazy-load the (6 MB) map manifest off the dex render path to gate the
+  // "Show on map" cross-link — the dex never blocks on it; the button just
+  // appears once the check resolves (and disappears for species with no spawns).
+  useEffect(() => {
+    let alive = true;
+    setHasSpawns(false);
+    loadMapData()
+      .then((d) => alive && setHasSpawns(speciesHasSpawns(d, id)))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [id]);
 
   useEffect(() => {
     setDetail(null);
@@ -725,7 +741,23 @@ export default function PaldexDetail({
           </div>
 
           {/* Field data — spec sheet */}
-          <Section eyebrow="Field data">
+          <Section
+            eyebrow="Field data"
+            right={
+              hasSpawns ? (
+                <button
+                  onClick={() => requestMapSpawn(detail.id)}
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-el-leaf/45 bg-el-leaf/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-el-leaf transition-colors hover:bg-el-leaf/20"
+                  title={`Show ${detail.name} spawn locations on the world map`}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16" />
+                  </svg>
+                  Show on map
+                </button>
+              ) : undefined
+            }
+          >
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
               <div className="col-span-2 sm:col-span-3">
                 <FactCell label="Food">

@@ -54,6 +54,14 @@ pub struct MapPlayerState {
     pub areas_found: Vec<String>,
 }
 
+/// One player base-camp map point (R2): world `x`/`y` of a base camp anchor
+/// (the Pal Box position, else the base's building centroid).
+#[derive(Debug, Clone, Serialize)]
+pub struct BaseDto {
+    pub x: f64,
+    pub y: f64,
+}
+
 /// The full map state for one world.
 #[derive(Debug, Clone, Serialize)]
 pub struct MapState {
@@ -63,6 +71,10 @@ pub struct MapState {
     pub local_source: Option<String>,
     pub markers: Vec<MarkerDto>,
     pub players: Vec<MapPlayerState>,
+    /// One point per player base camp (R2), decoded lazily from
+    /// `Level.sav` `MapObjectSaveData`. `null` when no `Level.sav` was
+    /// readable or the world has no base camps.
+    pub bases: Option<Vec<BaseDto>>,
 }
 
 /// Read the map state for `save_dir`. Read-only. Never errors on a missing
@@ -72,9 +84,13 @@ pub struct MapState {
 pub fn get_map_state(save_dir: String) -> Result<MapState, String> {
     let dir = Path::new(&save_dir);
 
-    // Nicknames come from Level.sav (player saves carry no nickname). A missing
-    // or unreadable Level.sav degrades to no nicknames rather than failing.
-    let nicknames: HashMap<String, String> = pal_save::read_level_sav(dir.join("Level.sav"))
+    // Decompress Level.sav once; nicknames + base camps share the blob.
+    // A missing or unreadable Level.sav degrades gracefully (no nicknames /
+    // null bases) rather than failing the whole command.
+    let level_blob = decompress(&dir.join("Level.sav")).ok();
+    let nicknames: HashMap<String, String> = level_blob
+        .as_deref()
+        .and_then(|b| pal_save::read_level_sav_from_blob(b).ok())
         .map(|s| {
             s.players
                 .iter()
@@ -84,6 +100,17 @@ pub fn get_map_state(save_dir: String) -> Result<MapState, String> {
         .unwrap_or_default();
 
     let players = read_players(dir, &nicknames);
+
+    // R2: one point per player base camp, decoded lazily from
+    // `MapObjectSaveData` (NOT the shared summary hot path). `None` when the
+    // level is unreadable or has no base camps.
+    let bases = level_blob.as_deref().and_then(|blob| {
+        let pts = pal_save::read_base_points(blob).ok()?;
+        if pts.is_empty() {
+            return None;
+        }
+        Some(pts.into_iter().map(|b| BaseDto { x: b.x, y: b.y }).collect())
+    });
 
     let (local, local_source) = discover_local_data(dir);
     let (fog, markers) = match local {
@@ -96,6 +123,7 @@ pub fn get_map_state(save_dir: String) -> Result<MapState, String> {
         local_source,
         markers,
         players,
+        bases,
     })
 }
 

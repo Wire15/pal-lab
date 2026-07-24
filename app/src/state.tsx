@@ -233,6 +233,13 @@ export interface AppState {
   requestDex: (speciesId: string, instanceId?: string) => void;
   /** Pal-dex clears the pending target + instance once it has consumed them. */
   clearDexTarget: () => void;
+  /** Species id the World Map should open with its spawn overlay active on the
+   * next render, or null. Set by the Pal-dex "Show on map" cross-link. */
+  mapSpawnTarget: string | null;
+  /** Jump to the World Map and activate `speciesId`'s spawn overlay. */
+  requestMapSpawn: (speciesId: string) => void;
+  /** The World Map clears the pending spawn target once it has consumed it. */
+  clearMapSpawnTarget: () => void;
   /** Shared breeding-farm setup: composed farm/incubation/egg fractions + world
    * egg-hatch hours. Consumed by the Solver (rides the solve request) and the IV
    * Lab. Persisted. */
@@ -257,6 +264,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [solveTarget, setSolveTarget] = useState<string | null>(null);
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
+  const [mapSpawnTarget, setMapSpawnTarget] = useState<string | null>(null);
   const [playerScope, setPlayerScopeState] = useState<string>("all");
   const [scopePromptOpen, setScopePromptOpen] = useState(false);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
@@ -470,6 +478,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setDexInstance(null);
   }, []);
 
+  const requestMapSpawn = useCallback((speciesId: string) => {
+    setMapSpawnTarget(speciesId);
+    setView("worldmap");
+  }, []);
+  const clearMapSpawnTarget = useCallback(() => setMapSpawnTarget(null), []);
+
   const value = useMemo<AppState>(
     () => ({
       saveDir,
@@ -496,6 +510,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       dexInstance,
       requestDex,
       clearDexTarget,
+      mapSpawnTarget,
+      requestMapSpawn,
+      clearMapSpawnTarget,
       setup,
       cake,
       setSetup,
@@ -525,6 +542,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       dexInstance,
       requestDex,
       clearDexTarget,
+      mapSpawnTarget,
+      requestMapSpawn,
+      clearMapSpawnTarget,
       setup,
       cake,
       setSetup,

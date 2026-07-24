@@ -1897,3 +1897,141 @@ texture UV).
 Spawn / boss / effigy / fast-travel pin rendering, found/unfound per-pin
 coloring, dex/solver cross-links, tile pyramids. The `map-data.json` pin arrays
 are wired through the manifest type but not yet rendered.
+
+## Wave 2 — World Map overlays (`views/map/`)
+
+The overlay finish for the World Map. Adds an in-game-style **POI pin system**
+(fast travel / alpha pals / effigies / bounties / custom markers / players /
+bases), a per-layer **filter panel**, a species **spawn-heat** overlay, and
+two-way **dex ↔ map cross-links** — and **reworks the fog** to be spoiler-proof.
+
+> **Supersedes Wave 1** where they conflict: the Wave 1 §"Fog overlay"
+> (desaturate + dim, "barely legible") is replaced by the near-opaque recipe
+> below; the Wave 1 §"Custom markers" neutral-dot note and the §"Non-goals
+> (Wave 2/3)" list (pin rendering, found/unfound, cross-links) are all now
+> shipped. The pan/zoom model, coordinate transform, and HUD readout are
+> unchanged.
+
+### Fog recipe — rework (`views/map/fog.ts`)
+
+Wave 1 desaturated unexplored terrain (a spoiler leak — you could still read the
+coastline). Wave 2 **hides** it. `buildFogMask` bakes the reveal PNG once into an
+offscreen canvas: fogged cells fill a deep **abyss-navy** `rgb(8,12,20)` at alpha
+**249** (`~0.976` — near-opaque, terrain not legible beneath, but not pure black
+so a faint abyss depth remains), revealed cells stay transparent. A single
+`ctx.filter = "blur(1.6px)"` pass at native mask resolution softens the cell
+edges; the paint loop then bilinear-upscales that ~1024² canvas to the 8192px
+content box, and the two smoothing stages together dissolve the 8-px mask blocks
+into a **soft cloud edge** (softer as you zoom in). Ocean beyond the map edges
+stays the existing `#0d1117` abyss backdrop. Spawn heat is drawn *before* fog, so
+points in unrevealed terrain are covered for free. The sharp (pre-blur) mask is
+kept as a `Uint8Array` reveal bit-array (`isRevealed(mask, fu, fv)`) for the
+per-pin spoiler test.
+
+### Pin overlay + anatomy (`views/map/PinLayer.tsx`)
+
+A screen-space **DOM** layer above the canvas — DOM (not more canvas) so labels,
+hover chips, and clicks stay crisp and cheap. All pins live in one container that
+carries **only the pan translate** (`transform: translate(tx,ty)`), so a pan
+updates a single GPU-composited transform and never re-lays-out the pins; 150+
+pins stay smooth. The visible set is **culled** to the viewport + a 200px margin
+and only recomputed when the pan crosses a coarse 160px bucket. Pins render at a
+**constant screen size** (they never scale with map zoom).
+
+Per-kind anatomy (icons from `icons.json`, contract R1; each degrades to a tuned
+inline-SVG vector fallback so a missing key is never a broken image):
+
+- **Fast travel** — the in-game eagle-statue icon, **24px**. Unlocked = full
+  `el-ice` cyan, opacity 1; locked = `ink-faint` gray, opacity 0.55. Hover shows
+  the statue name.
+- **Alpha pals** — a circular **pal portrait** (`PalIcon` by species id) in a
+  dark `ring-2 ring-abyss` (→ `amber/70` on hover), with the cyan **`alpha_badge`**
+  composited at the lower-right and a **`Lv N` chip** that fades in on hover. The
+  whole pin is a `<button>` → opens the species in the Pal-dex.
+- **Effigies** — the green Lifmunk-statuette icon, **22px**. Unfound = full
+  `el-leaf` green, opacity 1 (the actionable ones pop); found = grayscaled,
+  opacity 0.5, with a small green **✓** badge at the lower-right.
+- **Bounties** — the `bounty` icon in `el-dark` purple. Dormant this build: no
+  fixed-coordinate bounty POIs exist in the paks (bounties are dynamic incident
+  spawns), so `map-data.json` ships no `bounties[]` and the row/pin never render.
+- **Custom markers** — `marker_<icon_type>.png` (the raw i32 `IconType` indexes
+  `T_icon_compass_00..16`), **20px**; falls back to a small outlined diamond.
+- **Bases** — the `base` (camp) icon, **22px**, amber-tinted (the player's own).
+- **Players** — amber dot + nickname label (unchanged from Wave 1).
+
+### Found / unlocked join — R3 (`views/map/pins.ts`)
+
+Each fast-travel / effigy POI in `map-data.json` carries a **`guid`** — the
+world-static actor instance GUID as 32-char **UPPERCASE UE-Digits hex** (R1) —
+that matches the keys in a player's `fast_travel_unlocked` / `effigies_found`
+flag arrays **exactly**. The join is plain **string set-membership**: a pin is
+found/unlocked iff some scoped player's flag set *contains* that pin's guid (no
+coordinate join, no radius). `playerScope` `"all"` unions every player's flags.
+**Degradation:** a pin with a null guid renders neutral; when *no* POI carries a
+guid the filter counts fall back to the raw flag-set sizes (clamped to the pak
+total) and are shown dim + italic with *"(per-pin match unavailable)"* microcopy
+— honest "you've unlocked N", never a fabricated per-pin state.
+
+### Filter panel (`views/map/FilterPanel.tsx`)
+
+The in-game "Filter" equivalent: a popover under the header **Filter** button,
+one switch row per layer with a live right-aligned count — Fast Travel
+`found/total`, Alpha Pals, Effigies `found/total`, Bounties (only when present),
+Spawns (active species label), Players, Markers, **Bases** (only when the save
+has any). State persists to `localStorage` (`pal-calc.mapFilters`). When the join
+is live the FT/effigy counts read normal weight (`8/152`, `5/155`); when degraded
+they go dim + italic. A trailing **"Show hidden"** override (only while fog is on)
+with an amber spoiler warning toggles the fog gate.
+
+### Spawn-heat overlay (`SpawnSearch.tsx` + canvas)
+
+A species search combobox (the Solver's datalist pattern, matched on display
+name) renders that species' **wild** spawn points as soft heat dots on the
+canvas: low-alpha radius-scaled fills, **amber** for day/anytime and **indigo**
+for night-only, so overlapping radii build a readable heat cloud. Hover gives
+Lv range / pack size / time; a legend chip shows the species portrait, on-layer
+**site count**, level range, a ☀/☾ day-night key, a jump-to-dex link, and a
+clear (×). **Wild-only:** field-boss (`BOSS_<id>`) entries are excluded from the
+heat, the combobox, and the dex gate (`isFieldBossSpawn` in `lib/map-data.ts`) —
+alphas are already the Alpha pin layer, so folding them in would double-show them
+and over-count (e.g. Lamball reads **383 sites · Lv 1–9**, not 416 · 1–13).
+
+### Bases layer
+
+`MapState.bases` (R2) — one world point per player base camp (the PalBox anchor).
+Rendered with the `base` icon whenever the layer is on and the coord lands in the
+active layer's bounds. **Not fog-gated:** these are the player's *own* bases, so
+there is no spoiler to hide — they always show.
+
+### Spoiler rules
+
+With fog **on**, a pin whose world cell is unrevealed is **culled** (not drawn) —
+the map never leaks the location of content you haven't found. **Exempt:** an
+unlocked fast-travel or a found effigy is already known to the player (`known`),
+so it shows through fog; bases are exempt (own bases); alpha / locked / unfound
+pins are hidden. The **"Show hidden"** panel toggle overrides the gate (with a
+*"Revealing pins in unexplored areas — spoilers."* warning) for players who
+want the full atlas.
+
+### Dex ↔ map cross-links
+
+- **Dex → map:** the Pal-dex detail Field-data header shows a **"Show on map"**
+  button when the species has wild spawns (`speciesHasSpawns`, lazy-loaded off
+  the dex render path so the 6 MB manifest never blocks it). It routes to the
+  World Map with that species' spawn overlay active (`requestMapSpawn` →
+  `mapSpawnTarget` in `state.tsx`, consumed once on the map).
+- **Map → dex:** clicking an alpha pin, or the spawn legend chip's species name,
+  opens that species in the Pal-dex detail (`requestDex`).
+
+### Verification (fixture mode, 1280 + 1600)
+
+Screenshot-proven against the co-op fixture (host: 9 FT flags, 5 effigy flags;
+3 base camps; 20.96% MainMap reveal): (a) fog hides terrain with soft cloud edges
+(no 8-px blocks), toggle on/off swaps the visible pin set; (b) real in-game icons
+render, and the guid join lights **8/152 unlocked FT** (cyan) + **5/155 found
+effigies** (dim + ✓) with joined counts; (c) filter toggles update the map and
+survive a reload; (d) Lamball spawn search = 383 wild sites, Lv 1–9, day heat,
+legend + clear; (e) under fog all 8 unlocked FT + 5 found effigies stay visible
+while locked/unfound/alpha pins hide, and "Show hidden" reveals them with the
+warning; (f) dex "Show on map" opens the overlay, and alpha-pin / legend-chip
+both open the dex.
