@@ -61,6 +61,7 @@ static class Program
         if (args.Contains("--export-map")) return ExportMap(provider);
         if (args.Contains("--discover-map-icons")) { DiscoverMapIcons(provider); return 0; }
         if (args.Contains("--discover-map-guids")) { DiscoverMapGuids(provider); return 0; }
+        if (args.Contains("--discover-tower")) { DiscoverTower(provider); return 0; }
         if (args.Contains("--discover-incident")) { DiscoverIncident(provider); return 0; }
         if (args.Contains("--discover-bounty-actors")) { DiscoverBountyActors(provider); return 0; }
         if (args.Contains("--list-dt")) { ListDataTables(provider); return 0; }
@@ -888,6 +889,18 @@ static class Program
         var ftSeen = new HashSet<(long, long, long)>();
         var bountySeen = new HashSet<(long, long, long)>();
         var bountyRx = new Regex(@"^BP_(?:Mono|Squad)NPCSpawnerBossBase_(.+)_C$", RegexOptions.Compiled);
+        // Tower POIs (contract T1): the placed "* Tower Entrance" fast-travel actors are the tower
+        // map markers; the per-player defeat proxy is the FindAreaFlagMap `Tower_<Region>` key, whose
+        // world placement is carried by the `BP_PalRegionTriggerBox_C` region actors (AreaName.Key).
+        // We collect both here (same MainWorld_5 sweep — all 6 Tower_* boxes are inside it) and join
+        // them by nearest-center after the sweep. Grounding + method: testdata/probe/tower.log.
+        var towerFtIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var kv in ftNames)
+            if (Regex.IsMatch(Clean(kv.Value) ?? "", @"Tower (Entrance|in Sight)", RegexOptions.IgnoreCase))
+                towerFtIds.Add(kv.Key);
+        var towerEntrances = new List<(double x, double y, string name, string guid)>();
+        var towerBoxes = new List<(string key, double x, double y)>();
+        var towerAreaRx = new Regex(@"^Tower_[A-Za-z]+$", RegexOptions.Compiled);
         int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0, bountyDup = 0, bountyNoRoot = 0, bountyTrader = 0;
         var mapCells = provider.Files.Values
             .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
@@ -904,7 +917,8 @@ static class Program
                 bool isRelic = cls == "BP_LevelObject_Relic_C";
                 bool isFt = cls == "BP_LevelObject_TowerFastTravelPoint_C";
                 bool isBounty = cls != null && bountyRx.IsMatch(cls);
-                if (!isRelic && !isFt && !isBounty) continue;
+                bool isTowerBox = cls == "BP_PalRegionTriggerBox_C";
+                if (!isRelic && !isFt && !isBounty && !isTowerBox) continue;
                 var actor = ptr.Object?.Value;
                 if (actor == null) continue;
                 var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
@@ -912,6 +926,14 @@ static class Program
                 if (comp == null) { if (isRelic) relicNoRoot++; else if (isFt) ftNoRoot++; else bountyNoRoot++; continue; }
                 var loc = comp.GetOrDefault("RelativeLocation", new FVector());
                 var dedupe = ((long)Math.Round(loc.X * 10), (long)Math.Round(loc.Y * 10), (long)Math.Round(loc.Z * 10));
+                if (isTowerBox)
+                {
+                    // Region trigger box: AreaName.Key is the FindAreaFlagMap key. Keep only Tower_*.
+                    var an = AsStruct(actor.Properties.FirstOrDefault(p => p.Name.Text == "AreaName")?.Tag?.GenericValue);
+                    var key = an?.Properties.FirstOrDefault(p => p.Name.Text == "Key")?.Tag?.GenericValue?.ToString();
+                    if (key != null && towerAreaRx.IsMatch(key)) towerBoxes.Add((key, loc.X, loc.Y));
+                    continue;
+                }
                 if (isBounty)
                 {
                     var cid = bountyRx.Match(cls).Groups[1].Value;
@@ -937,11 +959,38 @@ static class Program
                     string name = null;
                     if (!string.IsNullOrEmpty(id) && id != "None" && ftNames.TryGetValue(id, out var raw)) { name = Clean(raw); if (!string.IsNullOrEmpty(name)) ftNameHit++; else name = null; }
                     fastTravel.Add((loc.X, loc.Y, name, guid));
+                    // Tower entrances are also full fast-travel points; additionally record them as
+                    // tower POIs (name resolved above; guid carried for reference).
+                    if (!string.IsNullOrEmpty(id) && towerFtIds.Contains(id))
+                        towerEntrances.Add((loc.X, loc.Y, name, guid));
                 }
             }
         }
         Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} bounties={bounties.Count} (dup={bountyDup} noRoot={bountyNoRoot} tradersExcluded={bountyTrader}) ({sw.Elapsed.TotalSeconds:F0}s)");
         Console.WriteLine($"[bounty] CIDs: {string.Join(", ", bounties.Select(b => b.cid).OrderBy(c => c, StringComparer.Ordinal))}");
+
+        // ---- tower join: assign each Tower_* region box to a tower entrance by greedy global-min
+        // XY distance (each box + entrance used once). 5/6 boxes sit tight (<24k) to their entrance;
+        // Tower_Grass is authored at world-origin so it resolves as the residual (independently
+        // confirmed by host ground truth). Feybreak-era entrances have no Tower_* box -> key stays null.
+        var towerKeyByEntrance = new string[towerEntrances.Count];
+        var pairs = new List<(double d, int ei, int bi)>();
+        for (int bi = 0; bi < towerBoxes.Count; bi++)
+            for (int ei = 0; ei < towerEntrances.Count; ei++)
+            {
+                double dx = towerBoxes[bi].x - towerEntrances[ei].x, dy = towerBoxes[bi].y - towerEntrances[ei].y;
+                pairs.Add((Math.Sqrt(dx * dx + dy * dy), ei, bi));
+            }
+        var entUsed = new bool[towerEntrances.Count];
+        var boxUsed = new bool[towerBoxes.Count];
+        foreach (var (d, ei, bi) in pairs.OrderBy(p => p.d))
+        {
+            if (entUsed[ei] || boxUsed[bi]) continue;
+            entUsed[ei] = true; boxUsed[bi] = true;
+            towerKeyByEntrance[ei] = towerBoxes[bi].key;
+            Console.WriteLine($"[tower-join] '{towerBoxes[bi].key}' <- '{towerEntrances[ei].name}' (dist={d:F0})");
+        }
+        Console.WriteLine($"[tower] entrances={towerEntrances.Count} regionBoxes={towerBoxes.Count} keyed={towerKeyByEntrance.Count(k => k != null)}");
 
         // ---- calibration: pick world->pixel axis orientation empirically ----
         var calPts = new List<(double x, double y)>();
@@ -1035,7 +1084,19 @@ static class Program
             // humanoid boss CharacterID (grounded enemy-type metadata for the pin hover).
             bountiesOut.Add(new { x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), map = m, name = (string)null, cid = b.cid });
         }
-        Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped} bountyDropped={bountyDropped}");
+        var towersOut = new List<object>();
+        int towerDropped = 0;
+        for (int ei = 0; ei < towerEntrances.Count; ei++)
+        {
+            var t = towerEntrances[ei];
+            var m = AssignMap(t.x, t.y);
+            if (m == null) { towerDropped++; continue; }
+            // key = the Tower_<Region> FindAreaFlagMap key joined via nearest region box (null when no
+            // Tower_* box exists, e.g. Feybreak-era towers). name = localized "* Tower Entrance" text.
+            towersOut.Add(new { x = Math.Round(t.x, 3), y = Math.Round(t.y, 3), map = m, name = t.name, key = towerKeyByEntrance[ei] });
+        }
+        towersOut = towersOut.OrderBy(o => (double)GetProp(o, "x")).ThenBy(o => (double)GetProp(o, "y")).ToList();
+        Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped} bountyDropped={bountyDropped} towerDropped={towerDropped}");
 
         object MapMeta(MapLayer L) => new
         {
@@ -1055,6 +1116,7 @@ static class Program
             effigies = effigiesOut,
             fast_travel = ftOut,
             bounties = bountiesOut,
+            towers = towersOut,
         };
         var outPath = Path.Combine(mapDir, "map-data.json");
         File.WriteAllText(outPath, JsonConvert.SerializeObject(root, Formatting.None));
@@ -1083,6 +1145,19 @@ static class Program
                 $"bounties clustered (Xspan={bx.Max() - bx.Min():F0} Yspan={by.Max() - by.Min():F0})");
             Gate(bountiesOut.All(b => (string)GetProp(b, "name") == null), "bounty name must be null (procedural)");
         }
+        // tower POIs: 9 named "* Tower Entrance" fast-travel actors (5 base + Sakurajima + 3 Feybreak-
+        // era). Exactly 6 have a Tower_* region box -> keyed; the rest key=null. The grass join is the
+        // ground-truth anchor: 'Tower_Grass' must be present and must resolve to the Rayne Syndicate
+        // Tower entrance (host defeated it; see coop-Player-host.sav FindAreaFlagMap + FT-unlock GUID).
+        Gate(towersOut.Count >= 5, $"towers low ({towersOut.Count})");
+        var towerKeys = towersOut.Select(t => (string)GetProp(t, "key")).Where(k => k != null).ToList();
+        Gate(towerKeys.Count == towerBoxes.Count, $"tower key count {towerKeys.Count} != region boxes {towerBoxes.Count}");
+        Gate(towerKeys.Distinct().Count() == towerKeys.Count, "duplicate tower keys assigned");
+        Gate(towerKeys.Contains("Tower_Grass"), "Tower_Grass not joined to any entrance");
+        var grassTower = towersOut.FirstOrDefault(t => (string)GetProp(t, "key") == "Tower_Grass");
+        Gate(grassTower != null && (string)GetProp(grassTower, "name") == "Rayne Syndicate Tower Entrance",
+            $"Tower_Grass joined to '{(grassTower == null ? "-" : GetProp(grassTower, "name"))}' != 'Rayne Syndicate Tower Entrance'");
+        Gate(towersOut.All(t => GetProp(t, "name") != null), "tower name must resolve (all are localized)");
         // orientation is confirmed by land-hit dominance over the other 7 candidates (my IsLand heuristic
         // under-counts coastal/shallow-water spawns, so the absolute fraction is not 100%); cross-validated
         // visually in calibration.png and against SaveSide's fog texture (u=worldY, v=worldX, v-flipped).
@@ -1117,7 +1192,7 @@ static class Program
 
         Console.WriteLine("==== MAP SUMMARY ====");
         Console.WriteLine($"species with spawns={spawnsOut.Select(s => (string)GetProp(s, "species")).Distinct().Count()} spawnEntries(species x map)={spawnsOut.Count} totalPoints={spawnsOut.Sum(s => ((List<object>)GetProp(s, "points")).Count)}");
-        Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit}) bounties={bountiesOut.Count}");
+        Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit}) bounties={bountiesOut.Count} towers={towersOut.Count} (keyed={towerKeys.Count})");
         Console.WriteLine($"guids: fast_travel host-flag match={ftGuidMatch}/9 (of {ftOut.Count} emitted, {ftGuidNull} null); effigy match={effigyGuidMatch}/5 (of {effigiesOut.Count} emitted, {effigyGuidNull} null)");
         Console.WriteLine($"webp: worldmap={worldWebp / 1024 / 1024.0:F2}MB treemap={treeWebp / 1024 / 1024.0:F2}MB");
         Console.WriteLine($"world_to_px: {formula}");
@@ -1431,6 +1506,120 @@ static class Program
         File.WriteAllText(Path.Combine(probeDir, "bounty-actors.log"), log.ToString());
         Console.WriteLine($"[bounty-actors] cells={cells} refHits={occurrences} distinctSpawnerClasses={classCounts.Count} -> testdata/probe/bounty-actors.log");
     }
+    // ---- TOWER DISCOVERY (`--discover-tower`) ---------------------------------------------------
+    // Two grounding goals dumped to testdata/probe/tower.log:
+    //   (1) Placement: the "* Tower Entrance" fast-travel points (DT_MapRespawnPointInfoText rows
+    //       whose text ends "Tower Entrance"/"Tower in Sight"). For each matching BP_LevelObject_
+    //       TowerFastTravelPoint_C actor dump coords + instance GUID + FULL actor/root props, so any
+    //       region/area link field (that would join to the player save's FindAreaFlagMap Tower_* key)
+    //       is visible if it exists.
+    //   (2) Join bridge hunt: sweep EVERY actor class across the world cells for a Name/String
+    //       property whose value is a Tower_* area key (Tower_Grass, Tower_Forest, ...); if such an
+    //       actor exists it carries both a world location AND the area-flag key -> a data-driven join.
+    static void DiscoverTower(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(probeDir);
+        var ftNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapRespawnPointInfoText");
+        // FT-point ids whose localized text names a tower entrance.
+        var towerFtIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var kv in ftNames)
+        {
+            var n = Clean(kv.Value) ?? "";
+            if (Regex.IsMatch(n, @"Tower (Entrance|in Sight)", RegexOptions.IgnoreCase))
+                towerFtIds.Add(kv.Key);
+        }
+        var log = new System.Text.StringBuilder();
+        log.AppendLine($"# tower discovery (build {GameBuild})");
+        log.AppendLine($"# tower-entrance FT ids ({towerFtIds.Count}): " +
+            string.Join(", ", towerFtIds.OrderBy(x => x, StringComparer.Ordinal)
+                .Select(id => $"{id}='{Clean(ftNames[id])}'")));
+        log.AppendLine();
+        var towerAreaRx = new Regex(@"^Tower_[A-Za-z]+$", RegexOptions.Compiled);
+        var mapCells = provider.Files.Values
+            .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
+                && f.Path.Contains("Pal/Content/Pal/Maps/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        int cells = 0, ftHits = 0;
+        var areaKeyClasses = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        foreach (var gf in mapCells)
+        {
+            cells++;
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                if (cls == null) continue;
+                var actor = ptr.Object?.Value;
+                if (actor == null) continue;
+                // (2) hunt the area-flag actor: gated to area/region/volume-like class names, scan
+                // ALL properties (recursively) for any value referencing a known FindArea key
+                // (Tower_* or the confirmed Grass_001 / Grass_4). Reports class + location so the
+                // placement<->area-key bridge can be established (or proven absent).
+                if (Regex.IsMatch(cls, @"(Area|Region|MapPoint|PointOfInterest|POI|Landmark|Location|FindArea|WorldMap|Change|Volume)", RegexOptions.IgnoreCase))
+                {
+                    string hitKey = null, hitProp = null;
+                    void Scan(IEnumerable<FPropertyTag> props, string path)
+                    {
+                        if (hitKey != null) return;
+                        foreach (var p in props)
+                        {
+                            var gv = p.Tag?.GenericValue;
+                            var s = gv?.ToString();
+                            if (s != null && (towerAreaRx.IsMatch(s) || s == "Grass_001" || s == "Grass_4"))
+                            { hitKey = s; hitProp = $"{path}{p.Name.Text}"; return; }
+                            var st = AsStruct(gv);
+                            if (st != null) { Scan(st.Properties, $"{path}{p.Name.Text}."); if (hitKey != null) return; }
+                            if (gv is CUE4Parse.UE4.Assets.Objects.UScriptArray arr)
+                                foreach (var el in arr.Properties)
+                                { var es = AsStruct(el.GenericValue); if (es != null) { Scan(es.Properties, $"{path}{p.Name.Text}[]."); if (hitKey != null) return; } }
+                        }
+                    }
+                    Scan(actor.Properties, "");
+                    if (hitKey != null)
+                    {
+                        areaKeyClasses[cls] = areaKeyClasses.TryGetValue(cls, out var c) ? c + 1 : 1;
+                        var r2 = actor.GetOrDefault<FPackageIndex>("RootComponent");
+                        var cp2 = r2 != null && r2.IsExport ? r2.Load() : null;
+                        var l2 = cp2?.GetOrDefault("RelativeLocation", new FVector()) ?? new FVector();
+                        bool inMw5 = gf.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase);
+                        log.AppendLine($"AREAKEY '{hitKey}' class={cls} inMW5={inMw5} path={gf.Path} loc=({l2.X:F1},{l2.Y:F1},{l2.Z:F1}) prop={hitProp}");
+                        if (hitKey.StartsWith("Tower_", StringComparison.Ordinal))
+                        {
+                            log.AppendLine("    -- region-box actor props --");
+                            DumpStruct(actor, log, "      ");
+                            if (cp2 != null) { log.AppendLine("    -- region-box root props --"); DumpStruct(cp2, log, "      "); }
+                            log.AppendLine();
+                        }
+                    }
+                }
+                // (1) tower-entrance FT actors: full dump.
+                if (cls != "BP_LevelObject_TowerFastTravelPoint_C") continue;
+                var id = actor.GetOrDefault<FName>("FastTravelPointID").Text;
+                if (string.IsNullOrEmpty(id) || !towerFtIds.Contains(id)) continue;
+                var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
+                var comp = rootIdx != null && rootIdx.IsExport ? rootIdx.Load() : null;
+                var loc = comp?.GetOrDefault("RelativeLocation", new FVector()) ?? new FVector();
+                var iid = actor.GetOrDefault<FGuid>("LevelObjectInstanceId");
+                string guid = (iid.A | iid.B | iid.C | iid.D) != 0 ? UeDigits(iid) : null;
+                ftHits++;
+                log.AppendLine($"TOWER-FT id={id} name='{Clean(ftNames.GetValueOrDefault(id))}' cell={Path.GetFileNameWithoutExtension(gf.Path)}");
+                log.AppendLine($"    loc=({loc.X:F1},{loc.Y:F1},{loc.Z:F1}) guid={guid ?? "-"}");
+                log.AppendLine("    -- actor props --");
+                DumpStruct(actor, log, "      ");
+                if (comp != null) { log.AppendLine("    -- root component props --"); DumpStruct(comp, log, "      "); }
+                log.AppendLine();
+            }
+        }
+        log.Insert(0, $"# cells={cells} towerFtActorHits={ftHits} distinctAreaKeyClasses={areaKeyClasses.Count}\n");
+        if (areaKeyClasses.Count > 0)
+            log.Insert(0, "# actor classes carrying a Tower_* area-key property value:\n" +
+                string.Join("\n", areaKeyClasses.Select(kv => $"#   {kv.Key} = {kv.Value}")) + "\n");
+        File.WriteAllText(Path.Combine(probeDir, "tower.log"), log.ToString());
+        Console.WriteLine($"[tower] cells={cells} towerFtActorHits={ftHits} areaKeyActorClasses={areaKeyClasses.Count} -> testdata/probe/tower.log");
+    }
+
 
     // `--list-dt`: write every DataTable asset path to testdata/probe/datatables.log (grep target).
     static void ListDataTables(IFileProvider provider)

@@ -31,12 +31,13 @@ import {
   worldToPx,
   pxToWorld,
   worldToInGame,
+  worldInBounds,
   type MapData,
   type MapEntry,
 } from "../../lib/map-coords";
 import { loadMapData, baseSpeciesId, isFieldBossSpawn } from "../../lib/map-data";
 import type { MapState, NamedEntry } from "../../lib/types";
-import { buildFogMask, type FogMask } from "./fog";
+import { buildFogMask, isRevealed, type FogMask } from "./fog";
 import { buildPois } from "./pins";
 import { loadMapIcons, type IconManifest } from "./icons";
 import PinLayer, { type LayerFilters, type PlayerPin } from "./PinLayer";
@@ -62,16 +63,19 @@ const SPAWN_NIGHT = "138,104,214"; // el-dark indigo
 
 const FILTERS_KEY = "pal-calc.mapFilters";
 const SHOW_HIDDEN_KEY = "pal-calc.mapShowHidden";
+const FOG_ON_KEY = "pal-calc.mapFogOn";
 
 const DEFAULT_FILTERS: LayerFilters = {
   fastTravel: true,
   alpha: true,
   effigies: true,
   bounties: true,
+  towers: true,
   spawns: true,
   players: true,
   markers: true,
   bases: true,
+  hideUnfoundEffigies: false,
 };
 
 function readFilters(): LayerFilters {
@@ -126,7 +130,15 @@ export default function MapView() {
 
   const [mapState, setMapState] = useState<MapState | null>(null);
   const [fogMask, setFogMask] = useState<FogMask | null>(null);
-  const [fogOn, setFogOn] = useState(true);
+  const [fogOn, setFogOn] = useState<boolean>(() => {
+    try {
+      const raw = localStorage.getItem(FOG_ON_KEY);
+      if (raw !== null) return raw === "1";
+    } catch {
+      // Ignore storage failures — fall through to the default.
+    }
+    return true; // first run: fog ON, the spoiler-safe default
+  });
 
   const [icons, setIcons] = useState<IconManifest | null>(null);
   const [speciesNames, setSpeciesNames] = useState<NamedEntry[]>([]);
@@ -162,6 +174,9 @@ export default function MapView() {
   );
   const pinContainerRef = useRef<HTMLDivElement>(null);
   const zoomPctRef = useRef<HTMLSpanElement>(null);
+  // Aborts the in-flight background-pan's window listeners if the view unmounts
+  // mid-drag (they otherwise self-clear only on the next pointerup).
+  const dragAbort = useRef<AbortController | null>(null);
   const [dragging, setDragging] = useState(false);
   const [readout, setReadout] = useState<{ x: number; y: number } | null>(null);
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
@@ -204,6 +219,23 @@ export default function MapView() {
       // Ignore storage failures — non-fatal.
     }
   }, [showHidden]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(FOG_ON_KEY, fogOn ? "1" : "0");
+    } catch {
+      // Ignore storage failures — non-fatal.
+    }
+  }, [fogOn]);
+
+  // --- Filter popover: close on Escape (outside-click handled by the overlay). -
+  useEffect(() => {
+    if (!filterOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setFilterOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [filterOpen]);
 
   // --- Consume a one-shot dex -> map spawn target. -------------------------
   useEffect(() => {
@@ -299,6 +331,7 @@ export default function MapView() {
         counts: {
           fastTravel: { found: 0, total: 0 },
           effigies: { found: 0, total: 0 },
+          towers: { found: 0, total: 0, joined: false },
           bounties: 0,
           alphas: 0,
           joined: false,
@@ -528,6 +561,7 @@ export default function MapView() {
         frameRef.current = 0;
       }
       clearTimeout(settleTimer.current);
+      dragAbort.current?.abort();
     },
     [],
   );
@@ -584,12 +618,15 @@ export default function MapView() {
         setView({ k: base.k, tx: base.tx + dx, ty: base.ty + dy });
       }
       function up() {
-        window.removeEventListener("pointermove", move);
-        window.removeEventListener("pointerup", up);
+        controller.abort();
+        dragAbort.current = null;
         setDragging(false);
       }
-      window.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", up);
+      const controller = new AbortController();
+      dragAbort.current = controller;
+      const opts = { signal: controller.signal };
+      window.addEventListener("pointermove", move, opts);
+      window.addEventListener("pointerup", up, opts);
     },
     [commitGesture],
   );
@@ -605,12 +642,20 @@ export default function MapView() {
       const contentX = (cx - v.tx) / v.k;
       const contentY = (cy - v.ty) / v.k;
       const [wx, wy] = pxToWorld(entry, contentX, contentY);
-      setReadout(worldToInGame(wx, wy));
+      // Clamp to the map: beyond the image edge the transform extrapolates into
+      // ocean/void, so show em-dashes rather than fabricated coordinates.
+      setReadout(worldInBounds(entry, wx, wy) ? worldToInGame(wx, wy) : null);
 
       if (spawnActive && !dragging) {
+        // Spoiler parity with paint(): heat under fog is hidden, so the hover
+        // hit-test must skip fogged dots too, or hovering blank fog would leak a
+        // spawn's level/pack. Exempt only when "show hidden" is on.
+        const [W, H] = entry.px;
+        const gateFog = fogDrawn && fogMask != null && !showHidden;
         let hit: SpawnDot | null = null;
         let bestSq = Infinity;
         for (const d of spawnDots) {
+          if (gateFog && !isRevealed(fogMask, d.u / W, d.v / H)) continue;
           const dx = d.u - contentX;
           const dy = d.v - contentY;
           const sq = dx * dx + dy * dy;
@@ -624,7 +669,7 @@ export default function MapView() {
         setSpawnHover(null);
       }
     },
-    [entry, spawnActive, spawnDots, dragging, spawnHover],
+    [entry, spawnActive, spawnDots, dragging, spawnHover, fogDrawn, fogMask, showHidden],
   );
 
   const zoomBy = useCallback(

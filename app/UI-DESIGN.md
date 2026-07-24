@@ -2132,3 +2132,83 @@ glow) with **zero** ✓ badges in the DOM; (e) all **29** bounty pins render wit
 humanized `cid` tooltips; (f) the filter panel counts read FT 8/152, Alpha 90,
 Effigies 5/155, **Bounties 29**, Players 1, Markers 15, Bases 3. `bun run build`
 green.
+
+## Wave 3 — World Map polish & towers (`views/map/`, `lib/map-coords.ts`)
+
+> **Extends** the Wave 2.5 pin anatomy to **v3**. Adds a screen-scale model, a
+> syndicate-tower layer, an effigy spoiler modifier, and a HUD/interaction sweep.
+
+### Pin screen-scale model (contract T2)
+
+Pins are positioned in content px (`worldToPx · k`) at a **fixed glyph size**, so
+historically they were the same screen size at every zoom — a crowded overview.
+Wave 3 keeps that constant size **at and below 100%** (`k <= 1`), so an overview
+pin never shrinks to a dot, and grows **sub-linearly above 100%**:
+`pinZoomScale(k) = 1` for `k <= 1`, else `min(k^0.45, 1.5)` (≈1.20× at 150%,
+≈1.37× at 200%, capped well under 1.5×). It is emitted as **one** inherited
+container custom property `--pin-zoom-scale`, folded into each pin's centered
+transform (`scale(dim · zoom)` for de-emphasizable pins, `scale(zoom)` for the
+lead pins) — **zero per-pin JS on zoom**. During a wheel gesture MapPerf's
+imperative container scale drifts linearly; the 130ms settle commit re-renders at
+the new `k` and a 150ms `transition-transform` eases the snap to `s(k)`.
+
+### Sizes toward in-game proportions
+
+Non-pal pins are noticeably larger (glyph px): fast_travel **30** (was 20), tower
+**34**, effigy/bounty **28**, markers **22**, base **26**; alpha portrait trimmed
+**38 → 34** so the ~90 field-boss portraits crowd the overview a touch less while
+still leading it. Chips stay `glyph + 10px` padding.
+
+### Towers layer (`towers[]` + `MapPlayerState.towers_defeated`)
+
+`map-data.json` gains `towers: {x, y, map, name, key}` (TowerData/T1). A tower
+renders the extracted `tower` compass art on a large chip in **crimson**
+(`#e06a5e`, el-fire family) and is **always `known`** — a major in-game landmark
+visible from the start, so it is **never fog-gated** (unlike effigies/FT). The
+per-player **reached** state joins each `towers[].key` against the scoped players'
+`towers_defeated` (string equality, `"all"` = union): reached = **grayscale + dim
+0.5** + `Tower · reached` tooltip (mirrors the found-effigy done look);
+not-reached = **full color + faint crimson glow** + `Tower · <name>`. The filter
+panel gains a **Towers** row with a **reached/total** count (total-only when no
+key joins). Honesty: the save carries **no boss-defeat flag**, only the
+`FindAreaFlagMap` `Tower_<Region>` *area-reached* boolean — so the copy says
+"reached", never "conquered". Absent `towers[]` (older data) → no layer, no row.
+
+### Effigy spoiler modifier
+
+The effigy row gains a nested **Hide unfound** toggle (persisted in
+`pal-calc.mapFilters`, default **off** = show all). On: only collected effigies
+render even in revealed terrain (the location itself is the spoiler), and the
+count reads **`N found`**. Microcopy names it spoiler protection.
+
+### HUD & interaction sweep
+
+- **Coordinate readout clamps to map bounds** — beyond the image rectangle the
+  transform extrapolates into ocean/void, so the HUD shows **em-dashes** rather
+  than fabricated coords (`worldInBounds` gate before `worldToInGame`).
+- **Fog toggle persists** (`pal-calc.mapFogOn`; default **on** first-run, the
+  spoiler-safe default), alongside the existing filter + show-hidden persistence.
+- **Filter popover** closes on **Escape** (outside-click already handled).
+- **Spawn-heat hover honors fog** — the hover hit-test now skips dots in
+  unrevealed cells (parity with the paint pass, which hides heat under fog), so
+  hovering blank fog can't leak a spawn's level/pack (MapReview P2).
+- **A11y/robustness:** alpha-pin buttons are `tabIndex={-1}` (the pin overlay is
+  an `aria-hidden` decorative layer; real keyboard focus lives on the controls,
+  which inherit the app-wide amber `:focus-visible` ring — MapReview P3); the
+  in-flight pan's window listeners are torn down via an `AbortController` on
+  unmount (MapReview P3). Filter state + layer switch preserve the panel.
+
+### Verification (fixture mode, 1280 + 1600)
+
+Screenshot- and DOM-proven with the real `map-data.json`: (a) `--pin-zoom-scale`
+reads exactly **1.0 at 8% / 50% / 99%**, **1.20 at 150%**, **1.366 at 200%** —
+constant below 100%, sub-linear above; (b) fast_travel/effigy/etc. visibly larger
+at default zoom, legible and non-overlapping; (c) with throwaway tower data
+(reverted), the filter reads **Towers 1/2**, the reached tower is grayscale/dim
+with a `Tower · reached` tooltip and the not-reached one full color, and with fog
+**on** both towers stay visible while **0** effigies show (fog-exempt landmarks);
+(d) the **Hide unfound** toggle drops effigies to **5 (all collected)**, label
+`5 found`, persisted; (e) the coordinate readout shows real coords over the map
+and **em-dashes** off the image edge; (f) fog-off survives a reload
+(`mapFogOn="0"` round-trips). All other counts unchanged (FT 8/152, Effigies
+5/155, Bounties 29, Players 1, Markers 15, Bases 3). `bun run build` green.

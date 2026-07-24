@@ -80,6 +80,21 @@ export interface PoiPoint {
   cid?: string | null;
 }
 
+/** A syndicate-tower landmark POI (Map Wave 3). Towers are major in-game
+ *  landmarks visible from the start, so they are NEVER fog-gated. `name` is the
+ *  tower's display name (null when unnamed); `key` is the identifier that joins
+ *  a tower to a player's `towers_defeated` flag set (TowerData/T1 — the exact
+ *  RecordData-derived string), or null when no static join exists (the UI then
+ *  degrades to neutral pins + a total-only count). Owned by MapData (this file);
+ *  the array is populated by the extractor and may be absent on older data. */
+export interface TowerPoint {
+  x: number;
+  y: number;
+  map: string;
+  name?: string | null;
+  key?: string | null;
+}
+
 /** The whole `map-data.json` document. Wave 2 consumes every pin array; the
  *  optional `bounties` is appended by IconExtract only if bounty POI locations
  *  are found in the paks (contract C1), so it may be absent. */
@@ -91,6 +106,9 @@ export interface MapData {
   effigies: PoiPoint[];
   fast_travel: PoiPoint[];
   bounties?: PoiPoint[];
+  /** Syndicate-tower landmarks (Map Wave 3, TowerData/T1). Absent on data
+   *  extracted before towers were added; the UI degrades to no tower layer. */
+  towers?: TowerPoint[];
 }
 
 /**

@@ -52,6 +52,7 @@ pub struct MapPlayerState {
     pub effigy_possess_num: i32,
     pub bosses_defeated: Vec<String>,
     pub areas_found: Vec<String>,
+    pub towers_defeated: Vec<String>,
 }
 
 /// One player base-camp map point (R2): world `x`/`y` of a base camp anchor
@@ -162,6 +163,7 @@ fn read_players(dir: &Path, nicknames: &HashMap<String, String>) -> Vec<MapPlaye
             effigy_possess_num: rec.effigy_possess_num,
             bosses_defeated: rec.bosses_defeated,
             areas_found: rec.areas_found,
+            towers_defeated: rec.towers_defeated,
         });
     }
     players

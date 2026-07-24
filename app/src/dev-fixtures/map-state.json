@@ -145,6 +145,9 @@
         "74270C2F45B8DCA66B6A1FAAA911D024"
       ],
       "nickname": "ThatOneChad",
+      "towers_defeated": [
+        "Tower_Grass"
+      ],
       "uid": "00000000000000000000000001000000",
       "x": -293899.9302971826,
       "y": 192425.91684518242

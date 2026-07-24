@@ -5,18 +5,26 @@
 // set is culled to the viewport (plus a margin) and only recomputed when the
 // pan crosses a coarse bucket, so the cull never costs per-frame work.
 //
-// Pin anatomy v2 (Map Wave 2.5):
+// Pin anatomy v3 (Map Wave 3 — polish):
 //   • Mono tint pipeline — the in-game compass glyphs (fast_travel, tower,
 //     dungeon, unknown, marker_*) are WHITE silhouettes the game tints at render
 //     time, so as-is <img>s vanish over terrain. `mono` icons (contract X1/X2)
 //     are drawn as a CSS mask filled with a token tint; colored art (effigy,
-//     bounty, base, alpha badge) renders as-is. Either way each glyph sits on a
-//     dark rounded chip so it reads over ANY terrain (mirrors the game's backing).
+//     bounty, base, tower, alpha badge) renders as-is. Either way each glyph sits
+//     on a dark rounded chip so it reads over ANY terrain (mirrors the backing).
+//   • Sizes approach in-game proportions: fast_travel 30, tower 34 (major
+//     landmark), effigy/bounty 28, base 26, markers 22; alpha portrait 34.
+//   • Screen-scale model (T2): pins are BASE size at k <= 1 (constant when zoomed
+//     out) and grow SUB-linearly above 100% (`pinZoomScale` = k^0.45, cap 1.5x),
+//     emitted as ONE inherited container var `--pin-zoom-scale` — zero per-pin JS.
 //   • Alpha pins are Palbox-style circular ring-clipped portraits with the rich
 //     PalHoverCard (species + an "Alpha Pal · Lv N" context strip) on hover.
-//   • Effigies read via a dark chip + color/dim state (no checkmark badge).
-//   • Low-zoom de-emphasis fades non-alpha pins via a single container CSS var,
-//     so alpha portraits + player pins lead when zoomed out — zero per-pin JS.
+//   • Effigies read via a dark chip + color/dim state (no checkmark badge); a
+//     spoiler modifier (`hideUnfoundEffigies`) hides the unfound ones entirely.
+//   • Towers are always-`known` (fog-exempt) crimson landmarks; reached = grayscale
+//     + dim (join on `towers_defeated`), not-reached = full color + crimson glow.
+//   • Low-zoom de-emphasis fades non-lead pins via a container var, so alpha
+//     portraits, towers, and player pins lead when zoomed out — zero per-pin JS.
 //
 // The gesture-zoom transform on the positioning container is owned by MapView
 // (MapPerf): it writes `containerRef.current.style.transform` imperatively
@@ -37,16 +45,20 @@ import {
 import { alphaIconUrl, palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
 import type { PoiPin } from "./pins";
 
-/** Per-layer visibility toggles (persisted by MapView). */
+/** Per-layer visibility toggles (persisted by MapView). `hideUnfoundEffigies`
+ *  is a spoiler modifier on the effigy layer, not a layer of its own. */
 export interface LayerFilters {
   fastTravel: boolean;
   alpha: boolean;
   effigies: boolean;
   bounties: boolean;
+  towers: boolean;
   spawns: boolean;
   players: boolean;
   markers: boolean;
   bases: boolean;
+  /** When true, only collected effigies render (spoiler protection). */
+  hideUnfoundEffigies: boolean;
 }
 
 /** A player pin resolved to world coords + label (built by MapView). */
@@ -75,17 +87,36 @@ const PURPLE = "#8a68d6"; // el-dark — bounty
 const AMBER = "#f0a94a"; // player / base
 const DIM = "#63717f"; // ink-faint — locked / found-and-done
 const MARKER = "#dcc19a"; // warm neutral — custom map markers
+const TOWER = "#e06a5e"; // soft crimson (el-fire family) — syndicate tower landmark
 
 /** Glyph diameter -> chip diameter padding, and the alpha portrait size. */
 const CHIP_PAD = 10;
-const ALPHA_SIZE = 38;
+const ALPHA_SIZE = 34;
 
-/** Low-zoom de-emphasis, driven by the container's `--pin-dim-*` custom props
- *  (set once on the positioning container, inherited by every dimmable pin — no
- *  per-pin state). The `var()` fallbacks keep it a no-op if the props are unset. */
+/** Pin screen-scale curve (Map Wave 3 / contract T2). Pins render at BASE size
+ *  for k <= 1 (100%) and below — constant screen size when zoomed out, so a
+ *  100% pin never shrinks in the overview — then grow SUB-linearly above 100%
+ *  (k^0.45, capped ~1.5x) so pixel-peeping enlarges landmarks gently instead of
+ *  linearly. Emitted as ONE inherited container CSS var; never per-pin JS. */
+export function pinZoomScale(k: number): number {
+  if (k <= 1) return 1;
+  return Math.min(Math.pow(k, 0.45), 1.5);
+}
+
+/** Low-zoom de-emphasis + zoom growth for the dimmable pins (markers / POIs),
+ *  driven by the container's `--pin-*` custom props (set once on the positioning
+ *  container, inherited by every pin — no per-pin state). The `var()` fallbacks
+ *  keep it a no-op if the props are unset. The transition eases the settle snap
+ *  from the mid-gesture container scale to the sub-linear s(k). */
 const DIM_STYLE: CSSProperties = {
-  transform: "scale(var(--pin-dim-scale, 1))",
+  transform: "scale(calc(var(--pin-dim-scale, 1) * var(--pin-zoom-scale, 1)))",
   opacity: "var(--pin-dim-op, 1)",
+};
+
+/** Zoom growth only (no low-zoom de-emphasis) for the lead pins — alpha
+ *  portraits, towers, bases — that should stay full strength in the overview. */
+const ZOOM_STYLE: CSSProperties = {
+  transform: "scale(var(--pin-zoom-scale, 1))",
 };
 
 /** A single icon glyph: a `mono` silhouette painted as a CSS mask filled with
@@ -204,7 +235,7 @@ function PinTypeIcon({
         src={entry ? iconUrl(entry) : fallbackIcon("fast_travel", tint)}
         mono={isMonoIcon(icons, "fast_travel")}
         tint={tint}
-        size={20}
+        size={30}
         dim={pin.found ? 1 : 0.7}
         grayscale={!pin.found}
         title={pin.found ? "Fast travel · unlocked" : "Fast travel · locked"}
@@ -221,11 +252,38 @@ function PinTypeIcon({
         src={entry ? iconUrl(entry) : fallbackIcon("effigy", pin.found ? DIM : GREEN)}
         mono={isMonoIcon(icons, "effigy")}
         tint={GREEN}
-        size={24}
+        size={28}
         grayscale={pin.found}
         dim={pin.found ? 0.45 : 1}
         glow={pin.found ? undefined : GREEN}
         title={pin.found ? "Lifmunk Effigy · collected" : "Lifmunk Effigy"}
+      />
+    );
+  }
+  if (pin.kind === "tower") {
+    // Syndicate tower — a major landmark. Colored compass-tower art on a large
+    // chip: not-reached = full color + faint crimson glow (a boss target);
+    // reached = grayscale + dimmed (mirrors the found-effigy done treatment).
+    // "Reached" (not "conquered") is honest: the save's only per-tower flag is
+    // the FindAreaFlagMap `Tower_<Region>` area-reached boolean (TowerData/T1),
+    // not a boss-defeat flag.
+    const entry = icons?.tower ?? null;
+    return (
+      <GlyphChip
+        src={entry ? iconUrl(entry) : fallbackIcon("tower", pin.found ? DIM : TOWER)}
+        mono={isMonoIcon(icons, "tower")}
+        tint={TOWER}
+        size={34}
+        grayscale={pin.found}
+        dim={pin.found ? 0.5 : 1}
+        glow={pin.found ? undefined : TOWER}
+        title={
+          pin.found
+            ? `Tower · reached${pin.name ? ` · ${pin.name}` : ""}`
+            : pin.name
+              ? `Tower · ${pin.name}`
+              : "Syndicate Tower"
+        }
       />
     );
   }
@@ -236,7 +294,7 @@ function PinTypeIcon({
       src={entry ? iconUrl(entry) : fallbackIcon("bounty", PURPLE)}
       mono={isMonoIcon(icons, "bounty")}
       tint={PURPLE}
-      size={22}
+      size={28}
       title={pin.name ? `Bounty · ${pin.name}` : "Bounty"}
     />
   );
@@ -318,12 +376,13 @@ function AlphaPin({
   const button = (
     <button
       type="button"
+      tabIndex={-1}
       onClick={() => pin.speciesId && onOpenSpecies(pin.speciesId)}
       className="group pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber"
       style={{ left, top }}
       aria-label={`Alpha Pal${pin.level != null ? `, level ${pin.level}` : ""}`}
     >
-      <span className="relative block">
+      <span className="relative block transition-transform duration-150 ease-out" style={ZOOM_STYLE}>
         <AlphaPortrait speciesId={pin.speciesId ?? null} size={ALPHA_SIZE} />
         {badgeSrc && (
           <span
@@ -420,7 +479,12 @@ function PinLayer({
       if (pin.kind === "fast_travel" && !filters.fastTravel) continue;
       if (pin.kind === "alpha" && !filters.alpha) continue;
       if (pin.kind === "effigy" && !filters.effigies) continue;
+      // Spoiler modifier: hide effigies the scoped player hasn't collected, even
+      // in revealed terrain (the location itself is the spoiler).
+      if (pin.kind === "effigy" && filters.hideUnfoundEffigies && !pin.found)
+        continue;
       if (pin.kind === "bounty" && !filters.bounties) continue;
+      if (pin.kind === "tower" && !filters.towers) continue;
       const [u, v] = worldToPx(entry, pin.x, pin.y);
       if (u < minU || u > maxU || v < minV || v > maxV) continue;
       if (spoilerHidden(pin.x, pin.y, pin.known)) continue;
@@ -468,6 +532,9 @@ function PinLayer({
     transform: `translate(${tx}px, ${ty}px)`,
     "--pin-dim-scale": lowZoom ? "0.8" : "1",
     "--pin-dim-op": lowZoom ? "0.85" : "1",
+    // Pin screen-scale (T2): 1 at/below 100%, sub-linear growth above. Committed
+    // on render (settle/fit/layer-switch/zoom-button); inherited by every pin.
+    "--pin-zoom-scale": String(pinZoomScale(k)),
   } as CSSProperties;
 
   return (
@@ -494,7 +561,7 @@ function PinLayer({
                   src={entryIcon ? iconUrl(entryIcon) : markerFallback(MARKER)}
                   mono={entryIcon ? isMonoIcon(icons, key) : false}
                   tint={MARKER}
-                  size={18}
+                  size={22}
                   title="Custom marker"
                 />
               </span>
@@ -510,13 +577,15 @@ function PinLayer({
               className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left, top }}
             >
-              <GlyphChip
-                src={entryIcon ? iconUrl(entryIcon) : fallbackIcon("base", AMBER)}
-                mono={isMonoIcon(icons, "base")}
-                tint={AMBER}
-                size={20}
-                title="Base camp"
-              />
+              <span className="block transition-transform duration-150 ease-out" style={ZOOM_STYLE}>
+                <GlyphChip
+                  src={entryIcon ? iconUrl(entryIcon) : fallbackIcon("base", AMBER)}
+                  mono={isMonoIcon(icons, "base")}
+                  tint={AMBER}
+                  size={26}
+                  title="Base camp"
+                />
+              </span>
             </div>
           );
         })}
@@ -537,7 +606,10 @@ function PinLayer({
               className="group pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left, top }}
             >
-              <span className="block transition-[transform,opacity] duration-150 ease-out" style={DIM_STYLE}>
+              <span
+                className="block transition-[transform,opacity] duration-150 ease-out"
+                style={pin.kind === "tower" ? ZOOM_STYLE : DIM_STYLE}
+              >
                 <PinTypeIcon pin={pin} icons={icons} />
               </span>
               {pin.name && (

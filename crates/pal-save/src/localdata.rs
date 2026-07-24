@@ -156,6 +156,10 @@ pub struct PlayerMapRecord {
     pub effigy_possess_num: i32,
     pub bosses_defeated: Vec<String>,
     pub areas_found: Vec<String>,
+    /// Per-player tower progress. The save exposes no dedicated tower-defeat flag, so this is the
+    /// `Tower_<Region>`-prefixed subset of `FindAreaFlagMap` (semantics: tower area reached), which
+    /// is the only per-player tower-keyed signal in the save. Joins to `map-data.json` `towers[].key`.
+    pub towers_defeated: Vec<String>,
 }
 
 /// Parse a decompressed player `.sav` blob into its map state.
@@ -224,6 +228,14 @@ fn fill_record(rec: &mut PlayerMapRecord, props: &[(String, Value)]) {
         .unwrap_or(0);
     rec.bosses_defeated = true_keys(props, "NormalBossDefeatFlag");
     rec.areas_found = true_keys(props, "FindAreaFlagMap");
+    // No dedicated tower-defeat flag exists in the save; the `Tower_<Region>` area keys are the only
+    // per-player tower signal (join key for map-data.json towers[].key).
+    rec.towers_defeated = rec
+        .areas_found
+        .iter()
+        .filter(|k| k.starts_with("Tower_"))
+        .cloned()
+        .collect();
 }
 
 /// Collect the keys of a `Map<Name, Bool>` property whose value is `true`.
@@ -299,5 +311,25 @@ mod tests {
         assert_eq!(rec.effigy_possess_num, 2, "relic possess num");
         // Position recovered from LastTransform.
         assert!(rec.x.is_some() && rec.y.is_some(), "player position");
+    }
+
+    #[test]
+    fn coop_player_towers_defeated_grass() {
+        // Ground truth: the co-op host reached/cleared the grass-region tower (Rayne Syndicate).
+        // The player save has NO dedicated tower-defeat flag (verified: RecordData has no
+        // TowerBossDefeatFlag, NormalBossDefeatFlag holds field bosses only, and the decompressed
+        // Level.sav contains zero tower/boss/gym defeat strings). The only per-player tower signal is
+        // FindAreaFlagMap's `Tower_<Region>` keys, so `towers_defeated` surfaces exactly those.
+        let rec = parse_player_map_state(&load("coop-Player-host.sav")).expect("player");
+        assert_eq!(
+            rec.towers_defeated,
+            vec!["Tower_Grass".to_string()],
+            "host towers_defeated should be exactly [Tower_Grass]"
+        );
+        // Every tower key is a strict subset of areas_found (same underlying FindAreaFlagMap).
+        for k in &rec.towers_defeated {
+            assert!(k.starts_with("Tower_"), "tower key {k} not Tower_-prefixed");
+            assert!(rec.areas_found.contains(k), "tower key {k} missing from areas_found");
+        }
     }
 }

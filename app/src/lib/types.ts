@@ -607,6 +607,9 @@ export interface MapPlayerState {
   effigy_possess_num: number;
   bosses_defeated: string[];
   areas_found: string[];
+  /** Tower-region area keys the player has reached (`Tower_<Region>`; joins to
+   * `MapData.towers[].key`). No dedicated tower-defeat flag exists in the save. */
+  towers_defeated: string[];
 }
 
 /** Response from `get_map_state(saveDir)`. `fog` is `null` when no client
