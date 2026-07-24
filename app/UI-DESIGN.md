@@ -1808,3 +1808,92 @@ than fabricating a chart from folklore.
 - Every optional section is presence-gated (`drops.length`, `learnset.length`, work zero-kinds),
   so absent data hides the entire section — verified on Dumud Gild (no learnable moves + drops
   blanked): the page flows Field data → Work → BRED FROM with no empty shells or gaps.
+
+## Wave — World Map (`views/map/MapView.tsx`, `lib/map-coords.ts`)
+
+A new nav destination ("World Map · Explore", folded-map glyph, last in the
+sidebar order) rendering the two Palworld map textures — **Palpagos** (the
+`MainMap` overworld) and the **World Tree** sanctuary — with an optional
+fog-of-war overlay driven by the loaded save's client-side `LocalData`. It is a
+**canvas** view, not a DOM one: the image is 8192×8192, so it draws to a single
+`<canvas>` (one `ctx.drawImage` per frame under a viewport transform) instead of
+paying DOM/SVG layout for a huge raster.
+
+### Direction
+
+Same **breeder's field terminal** chrome as every other view — abyss surface,
+`panel/60` header, amber eyebrow + Chakra-Petch title, mono microcopy. The map
+art is the only saturated thing on screen (as the §1 rule intends); the UI stays
+quiet gunmetal around it. The one signature flourish is the **fog**: a
+game-adjacent unexplored haze, never a flat black mask.
+
+### Interaction — reused from the plan graph
+
+The pan/zoom model is lifted verbatim from `components/plan-graph.tsx` (§7 Graph
+view) so the two pannable surfaces feel identical: wheel **zooms to the cursor**
+(exp curve, clamped `0.06–2` — a viewport-fit lands near 8–12% for an 8192 image,
+so the floor sits well below fit and the ceiling is a 200% pixel-peep), a
+left-drag **pans past a 4px threshold** (`grab`/`grabbing`), the view
+**fit-to-views** on first image, on every layer switch, and on resize, and a
+bottom-right **−/+/fit** cluster mirrors the graph's control chassis exactly. The
+difference is the *content*: instead of a CSS-transformed DOM viewport, an
+rAF-coalesced `paint()` redraws the canvas under `ctx.setTransform(k·dpr, …)`
+(DPR-aware backing store).
+
+### Coordinate transform (`lib/map-coords.ts`)
+
+The world↔pixel math is data-driven: the numeric calibration (image px, world
+bounds, mask px) is read verbatim from `public/map/map-data.json` (contract C1),
+never hardcoded — a recalibration is a data edit. The one thing in code is the
+axis **orientation** (`ORIENT`), mirroring each layer's `world_to_px` string:
+Palworld's texture is axis-swapped — the horizontal pixel `u` tracks world **Y**,
+the vertical `v` tracks world **X** with a top-down flip. `worldToPx`/`pxToWorld`
+are exact inverses. The HUD readout is separate and fixed — the in-game map
+coords players actually see: `MapX = (worldY − 158000) / 459`,
+`MapY = (worldX + 123888) / 459`.
+
+### Fog overlay
+
+`get_map_state(saveDir)` (C2) yields a `FogLayer` per map: a base64 8-bit
+grayscale PNG (255 revealed / 0 fogged) at the layer's mask resolution (MainMap
+1024², Tree 512²). It decodes once per layer into two offscreen mask canvases —
+`gray` (neutral, opaque over fogged) and `tint` (abyss @ ~0.66 over fogged). Each
+frame the composite is: draw the map, then over the fogged region **desaturate**
+it (`globalCompositeOperation = "saturation"` with the gray mask — drains color
+to grayscale) and **dim** it (source-over abyss tint). The read matches the game:
+revealed terrain full-color, unexplored terrain a dark desaturated haze that
+stays **barely legible, never pure black**. The mask is texture-aligned (drawn to
+the same content box as the image), so fog needs no world transform. Verified
+against the dedicated fixture: the ~21% revealed cluster renders, and the player +
+custom markers all land on `255`/revealed mask cells (world→px agrees with the
+texture UV).
+
+### HUD, pins, controls
+
+- **Coordinate readout** (top-left, mono `tabular-nums`): live `X · Y` in the
+  in-game convention, updated on canvas hover, `—` when the cursor is off-canvas.
+- **Zoom %** chip beside it (`round(k·100)`).
+- **Fog toggle + reveal chip** (header right): the `FOG` toggle is amber-active
+  when fog exists and on; **disabled** with honest microcopy *"No local map data
+  found for this world"* when `fog:null`; **hidden entirely** when no save is
+  loaded. The `NN.N% revealed` chip shows the layer's `revealed_pct`.
+- **Player pins**: amber dot + nickname label (from `MapPlayerState`, positioned
+  via `worldToPx`) for players with a recoverable position; a screen-space DOM
+  overlay so labels stay crisp under zoom and never intercept a pan.
+- **Custom markers**: small neutral `ink-dim` dots (icon-type semantics are not
+  yet decoded — no fabricated icon set).
+
+### States
+
+- **No save** → full map, no fog controls.
+- **Save, no LocalData** (`fog:null`) → full map, disabled FOG + microcopy.
+- **Tree at 0% reveal** → still renders: the whole layer is fogged, so it reads
+  as a dark desaturated relief rather than a blank.
+- **Loading** → centered mono spinner ("Loading map…"); **load failure** → a
+  `bad`-toned "Map failed to load".
+
+### Non-goals (Wave 2/3)
+
+Spawn / boss / effigy / fast-travel pin rendering, found/unfound per-pin
+coloring, dex/solver cross-links, tile pyramids. The `map-data.json` pin arrays
+are wired through the manifest type but not yet rendered.

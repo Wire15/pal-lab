@@ -6,8 +6,12 @@ pub mod archive;
 pub mod characters;
 pub mod compress;
 pub mod gvas;
+pub mod localdata;
 pub mod worldoption;
 
+pub use localdata::{
+    read_local_data, parse_player_map_state, CustomMarker, FogLayer, LocalData, PlayerMapRecord,
+};
 pub use worldoption::WorldOptions;
 
 use std::collections::HashSet;

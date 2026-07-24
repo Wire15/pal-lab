@@ -7,6 +7,7 @@ using CUE4Parse.UE4.Assets.Exports.Texture;
 using CUE4Parse.UE4.Assets.Objects;
 using CUE4Parse.UE4.Assets.Objects.Properties;
 using CUE4Parse.UE4.Objects.Core.i18N;
+using CUE4Parse.UE4.Objects.Core.Math;
 using CUE4Parse.UE4.Objects.UObject;
 using CUE4Parse.UE4.Versions;
 using CUE4Parse_Conversion.Textures;
@@ -55,6 +56,7 @@ static class Program
         if (args.Contains("--discover-research")) { DiscoverResearch(provider); return 0; }
         if (args.Contains("--discover-drops")) { DiscoverDrops(provider); return 0; }
         if (args.Contains("--discover-element")) { DiscoverElement(provider); return 0; }
+        if (args.Contains("--export-map")) return ExportMap(provider);
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
         var skillNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_SkillNameText_Common");
@@ -728,6 +730,418 @@ static class Program
         }
         Console.WriteLine("==== ALL GATES PASSED ====");
         return 0;
+    }
+
+    static List<string> LayerNamesOf(Dictionary<string, object> v)
+    {
+        var res = new List<string>();
+        if (v.TryGetValue("LayerNames", out var o) && o is CUE4Parse.UE4.Assets.Objects.UScriptArray arr)
+            foreach (var p in arr.Properties)
+            {
+                var g = p.GenericValue;
+                var t = g is FName fn ? fn.Text : g?.ToString();
+                if (!string.IsNullOrEmpty(t) && t != "None") res.Add(t);
+            }
+        return res;
+    }
+
+    // ---- MAP EXTRACTION (--export-map) ----------------------------------------------------------
+    // Emits app/public/map/{worldmap.webp,treemap.webp,map-data.json} per Wave-1 contract C1:
+    //   (a) T_WorldMap/T_TreeMap -> 8192x8192 lossy WebP (q85, asserted <=10MB each)
+    //   (b) DT_WorldMapUIData bounds/mask sizes (single source of truth; never hardcoded)
+    //   (c) DT_PalSpawnerPlacement x DT_PalWildSpawner spawn points (join on wild.SpawnerName field)
+    //   (d) DT_BossSpawnerLoactionData bosses
+    //   (e) World-Partition actor sweep (MainWorld_5) for Relic effigies + Tower fast-travel points,
+    //       each resolved via its OWN RootComponent(FPackageIndex)->RelativeLocation
+    // then empirically calibrates the world->pixel axis orientation and writes the formula verbatim.
+    sealed class MapLayer
+    {
+        public double Xmin, Ymin, Xmax, Ymax;
+        public int MaskW, MaskH, ImgW, ImgH;
+        public string Image;
+        public bool Contains(double x, double y) => x >= Xmin && x <= Xmax && y >= Ymin && y <= Ymax;
+    }
+
+    static int ExportMap(IFileProvider provider)
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var mapDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "app", "public", "map"));
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(mapDir);
+
+        // ---- (b) DT_WorldMapUIData: world bounds + mask sizes ----
+        var mapUi = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/WorldMapUIData/DT_WorldMapUIData");
+        var layers = new Dictionary<string, MapLayer>(StringComparer.Ordinal);
+        foreach (var r in mapUi.RowMap)
+        {
+            var min = r.Value.GetOrDefault<FVector>("landScapeRealPositionMin");
+            var max = r.Value.GetOrDefault<FVector>("landScapeRealPositionMax");
+            var mask = r.Value.GetOrDefault<FVector2D>("MaskTextureSize");
+            layers[r.Key.Text] = new MapLayer { Xmin = min.X, Ymin = min.Y, Xmax = max.X, Ymax = max.Y, MaskW = (int)mask.X, MaskH = (int)mask.Y };
+            Console.WriteLine($"[map-ui] {r.Key.Text} worldMin=({min.X},{min.Y}) worldMax=({max.X},{max.Y}) mask={(int)mask.X}x{(int)mask.Y}");
+        }
+        if (!layers.TryGetValue("MainMap", out var main) || !layers.TryGetValue("Tree", out var tree))
+        { Console.WriteLine("[export-map] FAIL: DT_WorldMapUIData missing MainMap/Tree rows"); return 1; }
+        main.Image = "/map/worldmap.webp";
+        tree.Image = "/map/treemap.webp";
+
+        // ---- (a) textures -> webp (keep worldBmp for calibration) ----
+        SKBitmap worldBmp = DecodeMapTexture(provider, "Pal/Content/Pal/Texture/UI/Map/T_WorldMap");
+        SKBitmap treeBmp = DecodeMapTexture(provider, "Pal/Content/Pal/Texture/UI/Map/T_TreeMap");
+        if (worldBmp == null || treeBmp == null) { Console.WriteLine("[export-map] FAIL: map texture decode returned null"); return 1; }
+        main.ImgW = worldBmp.Width; main.ImgH = worldBmp.Height;
+        tree.ImgW = treeBmp.Width; tree.ImgH = treeBmp.Height;
+        long worldWebp = EncodeWebp(worldBmp, Path.Combine(mapDir, "worldmap.webp"), 85);
+        long treeWebp = EncodeWebp(treeBmp, Path.Combine(mapDir, "treemap.webp"), 85);
+        Console.WriteLine($"[map-tex] worldmap.webp {worldBmp.Width}x{worldBmp.Height} {worldWebp / 1024 / 1024.0:F2}MB; treemap.webp {treeBmp.Width}x{treeBmp.Height} {treeWebp / 1024 / 1024.0:F2}MB");
+        treeBmp.Dispose();
+
+        // ---- (c) spawns: DT_PalSpawnerPlacement x DT_PalWildSpawner ----
+        var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
+        var palIds = new HashSet<string>(monsters.RowMap.Select(r => r.Key.Text), StringComparer.OrdinalIgnoreCase);
+        var placement = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Spawner/DT_PalSpawnerPlacement");
+        var wild = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Spawner/DT_PalWildSpawner");
+        // group wild rows by their SpawnerName field (the group key placements join to)
+        var wildByField = new Dictionary<string, List<FStructFallback>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var r in wild.RowMap)
+        {
+            var f = S(Vals(r.Value), "SpawnerName");
+            if (!string.IsNullOrEmpty(f)) (wildByField.TryGetValue(f, out var l) ? l : (wildByField[f] = new List<FStructFallback>())).Add(r.Value);
+        }
+        // aggregate spawn points: key (species, xInt, yInt, time, weather, boss) -> level/count ranges
+        var spawnAgg = new Dictionary<(string, int, int, string, string, bool), int[]>(); // [lvMin,lvMax,nMin,nMax,r]
+        int joinMiss = 0, palUnknown = 0; var palUnknownSamples = new SortedSet<string>(StringComparer.Ordinal);
+        foreach (var pr in placement.RowMap)
+        {
+            var pv = Vals(pr.Value);
+            var sn = S(pv, "SpawnerName");
+            List<FStructFallback> group = null;
+            if (sn != null && wildByField.TryGetValue(sn, out var g0)) group = g0;
+            else foreach (var ln in LayerNamesOf(pv))
+            {
+                var strip = ln.StartsWith("EnemySpawner_", StringComparison.OrdinalIgnoreCase) ? ln.Substring("EnemySpawner_".Length) : ln;
+                if (wildByField.TryGetValue(strip, out var g1)) { group = g1; break; }
+            }
+            if (group == null) { joinMiss++; continue; }
+            var loc = pr.Value.GetOrDefault<FVector>("Location");
+            int px = (int)Math.Round(loc.X), py = (int)Math.Round(loc.Y);
+            int radius = (int)Math.Round(F(pv, "StaticRadius"));
+            foreach (var wr in group)
+            {
+                var wv = Vals(wr);
+                bool boss = string.Equals(StripEnum(S(wv, "SpawnerType")), "FieldBoss", StringComparison.OrdinalIgnoreCase);
+                var time = NormTime(S(wv, "OnlyTime"));
+                var weather = NormWeather(S(wv, "OnlyWeather"));
+                for (int n = 1; n <= 3; n++)
+                {
+                    var pal = S(wv, "Pal_" + n);
+                    if (string.IsNullOrEmpty(pal) || pal == "None") continue;          // NPC-only / empty slot
+                    if (!palIds.Contains(pal)) { palUnknown++; if (palUnknownSamples.Count < 30) palUnknownSamples.Add(pal); continue; } // RowName / junk
+                    int lvMin = I(wv, "LvMin_" + n), lvMax = I(wv, "LvMax_" + n);
+                    int nMin = I(wv, "NumMin_" + n), nMax = I(wv, "NumMax_" + n);
+                    var key = (pal, px, py, time, weather, boss);
+                    if (spawnAgg.TryGetValue(key, out var a))
+                    { a[0] = Math.Min(a[0], lvMin); a[1] = Math.Max(a[1], lvMax); a[2] = Math.Min(a[2], nMin); a[3] = Math.Max(a[3], nMax); a[4] = Math.Max(a[4], radius); }
+                    else spawnAgg[key] = new[] { lvMin, lvMax, nMin, nMax, radius };
+                }
+            }
+        }
+        Console.WriteLine($"[spawns] placements={placement.RowMap.Count} joinMiss={joinMiss} wildGroups={wildByField.Count} aggregatedPoints={spawnAgg.Count} palUnknownSlots={palUnknown}");
+        if (palUnknownSamples.Count > 0) Console.WriteLine($"[spawns] non-species Pal values skipped: {string.Join(", ", palUnknownSamples)}");
+
+        // ---- (d) bosses: DT_BossSpawnerLoactionData ----
+        var bossTable = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/UI/DT_BossSpawnerLoactionData");
+        var bosses = new List<(string species, double x, double y, int level)>();
+        int bossEmptyCid = 0; var bossEmptySamples = new List<string>();
+        foreach (var r in bossTable.RowMap)
+        {
+            var v = Vals(r.Value);
+            var cid = S(v, "CharacterID");
+            if (string.IsNullOrEmpty(cid) || cid == "None") { bossEmptyCid++; if (bossEmptySamples.Count < 8) bossEmptySamples.Add(S(v, "SpawnerID") ?? r.Key.Text); continue; }
+            var loc = r.Value.GetOrDefault<FVector>("Location");
+            bosses.Add((cid, loc.X, loc.Y, I(v, "Level")));
+        }
+        Console.WriteLine($"[bosses] rows={bossTable.RowMap.Count} emitted={bosses.Count} emptyCharacterID={bossEmptyCid} distinctSpecies={bosses.Select(b => b.species).Distinct().Count()}");
+        if (bossEmptySamples.Count > 0) Console.WriteLine($"[bosses] empty-CID SpawnerIDs (sample): {string.Join(", ", bossEmptySamples)}");
+
+        // ---- (e) actor sweep: Relic effigies + Tower fast-travel points ----
+        var ftNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapRespawnPointInfoText");
+        var effigies = new List<(double x, double y, double z)>();
+        var fastTravel = new List<(double x, double y, string name)>();
+        var effigySeen = new HashSet<(long, long, long)>();
+        var ftSeen = new HashSet<(long, long, long)>();
+        int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0;
+        var mapCells = provider.Files.Values
+            .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
+                && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        foreach (var gf in mapCells)
+        {
+            cellsSwept++;
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                bool isRelic = cls == "BP_LevelObject_Relic_C";
+                bool isFt = cls == "BP_LevelObject_TowerFastTravelPoint_C";
+                if (!isRelic && !isFt) continue;
+                var actor = ptr.Object?.Value;
+                if (actor == null) continue;
+                var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
+                var comp = rootIdx != null && rootIdx.IsExport ? rootIdx.Load() : null;
+                if (comp == null) { if (isRelic) relicNoRoot++; else ftNoRoot++; continue; }
+                var loc = comp.GetOrDefault("RelativeLocation", new FVector());
+                var dedupe = ((long)Math.Round(loc.X * 10), (long)Math.Round(loc.Y * 10), (long)Math.Round(loc.Z * 10));
+                if (isRelic)
+                {
+                    if (!effigySeen.Add(dedupe)) { effigyDup++; continue; }
+                    effigies.Add((loc.X, loc.Y, loc.Z));
+                }
+                else
+                {
+                    if (!ftSeen.Add(dedupe)) { ftDup++; continue; }
+                    var id = actor.GetOrDefault<FName>("FastTravelPointID").Text;
+                    string name = null;
+                    if (!string.IsNullOrEmpty(id) && id != "None" && ftNames.TryGetValue(id, out var raw)) { name = Clean(raw); if (!string.IsNullOrEmpty(name)) ftNameHit++; else name = null; }
+                    fastTravel.Add((loc.X, loc.Y, name));
+                }
+            }
+        }
+        Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} ({sw.Elapsed.TotalSeconds:F0}s)");
+
+        // ---- calibration: pick world->pixel axis orientation empirically ----
+        var calPts = new List<(double x, double y)>();
+        foreach (var b in bosses) if (main.Contains(b.x, b.y)) calPts.Add((b.x, b.y));
+        foreach (var f in fastTravel) if (main.Contains(f.x, f.y)) calPts.Add((f.x, f.y));
+        foreach (var e in effigies) if (main.Contains(e.x, e.y)) calPts.Add((e.x, e.y));
+        (bool uIsY, bool uFlip, bool vFlip) best = default; double bestScore = -1, secondScore = -1;
+        Console.WriteLine($"[calibrate] scoring {calPts.Count} MainMap points across 8 orientations (land-hit fraction):");
+        foreach (var uIsY in new[] { true, false })
+            foreach (var uFlip in new[] { false, true })
+                foreach (var vFlip in new[] { false, true })
+                {
+                    int hit = 0;
+                    foreach (var (x, y) in calPts)
+                    {
+                        var (fx, fy) = Project(uIsY, uFlip, vFlip, main, x, y);
+                        int ix = (int)fx, iy = (int)fy;
+                        if (ix < 0 || iy < 0 || ix >= main.ImgW || iy >= main.ImgH) continue;
+                        if (IsLand(worldBmp.GetPixel(ix, iy))) hit++;
+                    }
+                    double score = calPts.Count > 0 ? (double)hit / calPts.Count : 0;
+                    Console.WriteLine($"    uIsY={uIsY} uFlip={uFlip} vFlip={vFlip} -> {score:P1}");
+                    if (score > bestScore) { secondScore = bestScore; bestScore = score; best = (uIsY, uFlip, vFlip); }
+                    else if (score > secondScore) secondScore = score;
+                }
+        Console.WriteLine($"[calibrate] WINNER uIsY={best.uIsY} uFlip={best.uFlip} vFlip={best.vFlip} landHit={bestScore:P1} (runner-up {secondScore:P1}, separation {bestScore / Math.Max(secondScore, 0.001):F2}x)");
+        var formula = BuildFormula(best.uIsY, best.uFlip, best.vFlip);
+        Console.WriteLine($"[calibrate] world_to_px = {formula}");
+        RenderCalibration(worldBmp, main, best, bosses, fastTravel, effigies, Path.Combine(probeDir, "calibration.png"));
+        worldBmp.Dispose();
+
+        // ---- assign every point to a map layer (Tree first: more specific), build JSON ----
+        int droppedOutside = 0;
+        string AssignMap(double x, double y)
+        {
+            if (tree.Contains(x, y)) return "Tree";
+            if (main.Contains(x, y)) return "MainMap";
+            return null;
+        }
+        // spawns grouped by (species, map)
+        var spawnsBySpeciesMap = new SortedDictionary<(string, string), List<object>>(Comparer<(string, string)>.Create((a, b) =>
+        {
+            int c = string.CompareOrdinal(a.Item1, b.Item1); return c != 0 ? c : string.CompareOrdinal(a.Item2, b.Item2);
+        }));
+        foreach (var kv in spawnAgg)
+        {
+            var (species, x, y, time, weather, boss) = kv.Key;
+            var m = AssignMap(x, y);
+            if (m == null) { droppedOutside++; continue; }
+            var a = kv.Value;
+            (spawnsBySpeciesMap.TryGetValue((species, m), out var lst) ? lst : (spawnsBySpeciesMap[(species, m)] = new List<object>()))
+                .Add(new { x, y, r = a[4], lv = new[] { a[0], a[1] }, n = new[] { a[2], a[3] }, time, weather, boss });
+        }
+        var spawnsOut = new List<object>();
+        foreach (var kv in spawnsBySpeciesMap)
+        {
+            var pts = kv.Value.OrderBy(p => (int)GetProp(p, "x")).ThenBy(p => (int)GetProp(p, "y")).ToList();
+            spawnsOut.Add(new { species = kv.Key.Item1, map = kv.Key.Item2, points = pts });
+        }
+        var bossesOut = new List<object>();
+        int bossDropped = 0;
+        foreach (var b in bosses.OrderBy(b => b.species, StringComparer.Ordinal).ThenBy(b => (int)Math.Round(b.x)).ThenBy(b => (int)Math.Round(b.y)))
+        {
+            var m = AssignMap(b.x, b.y);
+            if (m == null) { bossDropped++; continue; }
+            bossesOut.Add(new { species = b.species, x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), level = b.level, map = m });
+        }
+        var effigiesOut = new List<object>();
+        int effigyDropped = 0;
+        foreach (var e in effigies.OrderBy(e => (int)Math.Round(e.x)).ThenBy(e => (int)Math.Round(e.y)))
+        {
+            var m = AssignMap(e.x, e.y);
+            if (m == null) { effigyDropped++; continue; }
+            effigiesOut.Add(new { x = Math.Round(e.x, 3), y = Math.Round(e.y, 3), z = Math.Round(e.z, 3), map = m });
+        }
+        var ftOut = new List<object>();
+        int ftDropped = 0;
+        foreach (var f in fastTravel.OrderBy(f => (int)Math.Round(f.x)).ThenBy(f => (int)Math.Round(f.y)))
+        {
+            var m = AssignMap(f.x, f.y);
+            if (m == null) { ftDropped++; continue; }
+            ftOut.Add(new { x = Math.Round(f.x, 3), y = Math.Round(f.y, 3), map = m, name = f.name });
+        }
+        Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped}");
+
+        object MapMeta(MapLayer L) => new
+        {
+            image = L.Image,
+            px = new[] { L.ImgW, L.ImgH },
+            world_min = new[] { L.Xmin, L.Ymin },
+            world_max = new[] { L.Xmax, L.Ymax },
+            mask_px = new[] { L.MaskW, L.MaskH },
+            world_to_px = formula,
+        };
+        var root = new
+        {
+            meta = new { game_build = GameBuild, extracted_at = DateTimeOffset.UtcNow.ToString("o"), usmap = UsmapSource },
+            maps = new Dictionary<string, object> { ["MainMap"] = MapMeta(main), ["Tree"] = MapMeta(tree) },
+            spawns = spawnsOut,
+            bosses = bossesOut,
+            effigies = effigiesOut,
+            fast_travel = ftOut,
+        };
+        var outPath = Path.Combine(mapDir, "map-data.json");
+        File.WriteAllText(outPath, JsonConvert.SerializeObject(root, Formatting.None));
+        Console.WriteLine($"[write] {outPath} ({new FileInfo(outPath).Length / 1024.0:F0}KB)");
+
+        // ---- validation gates ----
+        var errors = new List<string>();
+        void Gate(bool ok, string msg) { if (!ok) errors.Add(msg); }
+        Gate(worldWebp <= 10 * 1024 * 1024, $"worldmap.webp {worldWebp / 1024 / 1024.0:F2}MB > 10MB");
+        Gate(treeWebp <= 10 * 1024 * 1024, $"treemap.webp {treeWebp / 1024 / 1024.0:F2}MB > 10MB");
+        Gate(main.ImgW == 8192 && main.ImgH == 8192, $"worldmap not 8192x8192 ({main.ImgW}x{main.ImgH})");
+        Gate(tree.ImgW == 8192 && tree.ImgH == 8192, $"treemap not 8192x8192 ({tree.ImgW}x{tree.ImgH})");
+        Gate(spawnsOut.Count > 0 && spawnAgg.Count > 5000, $"spawns unexpectedly low (groups={spawnsOut.Count} pts={spawnAgg.Count})");
+        Gate(bosses.Count + bossEmptyCid == bossTable.RowMap.Count, $"boss row accounting mismatch (emitted={bosses.Count} emptyCID={bossEmptyCid} rows={bossTable.RowMap.Count})");
+        Gate(bossesOut.Count >= 85, $"bosses low ({bossesOut.Count})");
+        Gate(effigiesOut.Count >= 100, $"effigies low ({effigiesOut.Count})");
+        Gate(ftOut.Count >= 40, $"fast_travel low ({ftOut.Count})");
+        // orientation is confirmed by land-hit dominance over the other 7 candidates (my IsLand heuristic
+        // under-counts coastal/shallow-water spawns, so the absolute fraction is not 100%); cross-validated
+        // visually in calibration.png and against SaveSide's fog texture (u=worldY, v=worldX, v-flipped).
+        Gate(bestScore >= 0.5 && bestScore >= 1.4 * secondScore, $"calibration ambiguous: winner {bestScore:P1} vs runner-up {secondScore:P1} (need >=50% and >=1.4x)");
+        // ground-truth spot check: BOSS_Horus_Water at X=-867560.875 Y=-441338.219 Lv66 must appear
+        var horus = bossesOut.FirstOrDefault(b => (string)GetProp(b, "species") == "BOSS_Horus_Water");
+        Gate(horus != null, "BOSS_Horus_Water missing from bosses");
+        if (horus != null)
+        {
+            Gate(Math.Abs((double)GetProp(horus, "x") - (-867560.875)) < 1 && Math.Abs((double)GetProp(horus, "y") - (-441338.219)) < 1,
+                $"BOSS_Horus_Water coords ({GetProp(horus, "x")},{GetProp(horus, "y")}) != (-867560.875,-441338.219)");
+            Gate((int)GetProp(horus, "level") == 66, $"BOSS_Horus_Water level {GetProp(horus, "level")} != 66");
+            Gate((string)GetProp(horus, "map") == "MainMap", $"BOSS_Horus_Water map {GetProp(horus, "map")} != MainMap");
+        }
+        // a known fast-travel name must resolve
+        Gate(ftOut.Any(f => (string)GetProp(f, "name") == "Rotmist Root"), "fast_travel 'Rotmist Root' (WorldTree_MiddleBoss_1) not resolved");
+        // a known species must have spawn points (Lamball = SheepBall)
+        Gate(spawnsOut.Any(s => (string)GetProp(s, "species") == "SheepBall"), "no SheepBall spawn points");
+
+        Console.WriteLine("==== MAP SUMMARY ====");
+        Console.WriteLine($"species with spawns={spawnsOut.Select(s => (string)GetProp(s, "species")).Distinct().Count()} spawnEntries(species x map)={spawnsOut.Count} totalPoints={spawnsOut.Sum(s => ((List<object>)GetProp(s, "points")).Count)}");
+        Console.WriteLine($"bosses={bossesOut.Count} effigies={effigiesOut.Count} fast_travel={ftOut.Count} (named={ftNameHit})");
+        Console.WriteLine($"webp: worldmap={worldWebp / 1024 / 1024.0:F2}MB treemap={treeWebp / 1024 / 1024.0:F2}MB");
+        Console.WriteLine($"world_to_px: {formula}");
+        Console.WriteLine($"wall={sw.Elapsed.TotalSeconds:F0}s");
+        if (errors.Count > 0)
+        {
+            Console.WriteLine("==== VALIDATION FAILED ====");
+            foreach (var e in errors) Console.WriteLine("  FAIL: " + e);
+            return 1;
+        }
+        Console.WriteLine("==== ALL MAP GATES PASSED ====");
+        return 0;
+    }
+
+    static SKBitmap DecodeMapTexture(IFileProvider provider, string path)
+    {
+        if (!provider.TryLoadPackageObject(path, out var o) || o is not UTexture2D tex) { Console.WriteLine($"[map-tex] MISS {path}"); return null; }
+        return tex.Decode(ETexturePlatform.DesktopMobile)?.ToSkBitmap();
+    }
+
+    static long EncodeWebp(SKBitmap bmp, string outPath, int quality)
+    {
+        using var data = bmp.Encode(SKEncodedImageFormat.Webp, quality);
+        using var fs = File.Create(outPath);
+        data.SaveTo(fs);
+        return data.Size;
+    }
+
+    static string NormTime(string raw)
+    {
+        var t = StripEnum(raw);
+        if (string.Equals(t, "Day", StringComparison.OrdinalIgnoreCase)) return "day";
+        if (string.Equals(t, "Night", StringComparison.OrdinalIgnoreCase)) return "night";
+        return null;
+    }
+    static string NormWeather(string raw)
+    {
+        var w = StripEnum(raw);
+        if (string.IsNullOrEmpty(w) || w.Equals("Undefined", StringComparison.OrdinalIgnoreCase) || w.Equals("None", StringComparison.OrdinalIgnoreCase)) return null;
+        return w;
+    }
+
+    // world->pixel projection for a candidate orientation. u = pixel x (horizontal), v = pixel y (vertical, top-left origin).
+    static (double, double) Project(bool uIsY, bool uFlip, bool vFlip, MapLayer L, double wx, double wy)
+    {
+        double uW = uIsY ? wy : wx, uMin = uIsY ? L.Ymin : L.Xmin, uMax = uIsY ? L.Ymax : L.Xmax;
+        double vW = uIsY ? wx : wy, vMin = uIsY ? L.Xmin : L.Ymin, vMax = uIsY ? L.Xmax : L.Ymax;
+        double un = (uW - uMin) / (uMax - uMin); if (uFlip) un = 1 - un;
+        double vn = (vW - vMin) / (vMax - vMin); if (vFlip) vn = 1 - vn;
+        return (un * L.ImgW, vn * L.ImgH);
+    }
+
+    static string BuildFormula(bool uIsY, bool uFlip, bool vFlip)
+    {
+        string Ax(bool isY, bool flip) => isY
+            ? (flip ? "(world_max[1]-worldY)/(world_max[1]-world_min[1])" : "(worldY-world_min[1])/(world_max[1]-world_min[1])")
+            : (flip ? "(world_max[0]-worldX)/(world_max[0]-world_min[0])" : "(worldX-world_min[0])/(world_max[0]-world_min[0])");
+        return $"u_px = {Ax(uIsY, uFlip)} * px[0]; v_px = {Ax(!uIsY, vFlip)} * px[1]  (u=pixel x horizontal, v=pixel y vertical, top-left origin; worldX=world_min[0]..world_max[0], worldY=world_min[1]..world_max[1])";
+    }
+
+    // ocean/background is dark blue-green dominant; land is brighter or red-leaning.
+    static bool IsLand(SKColor c)
+    {
+        int lum = (c.Red * 299 + c.Green * 587 + c.Blue * 114) / 1000;
+        bool ocean = c.Red < 90 && c.Blue >= c.Red && c.Green >= c.Red && c.Blue > 40;
+        return !ocean && lum > 35;
+    }
+
+    static void RenderCalibration(SKBitmap worldBmp, MapLayer L, (bool uIsY, bool uFlip, bool vFlip) o,
+        List<(string species, double x, double y, int level)> bosses,
+        List<(double x, double y, string name)> ft, List<(double x, double y, double z)> effigies, string outPath)
+    {
+        const int S = 1536;
+        using var canvas = new SKBitmap(S, S);
+        using (var g = new SKCanvas(canvas))
+        {
+            g.Clear(SKColors.Black);
+            g.DrawBitmap(worldBmp, new SKRect(0, 0, worldBmp.Width, worldBmp.Height), new SKRect(0, 0, S, S));
+            void Plot(double wx, double wy, SKColor col, float rad)
+            {
+                if (!L.Contains(wx, wy)) return;
+                var (fx, fy) = Project(o.uIsY, o.uFlip, o.vFlip, L, wx, wy);
+                using var p = new SKPaint { Color = col, IsAntialias = true, Style = SKPaintStyle.Fill };
+                g.DrawCircle((float)(fx * S / L.ImgW), (float)(fy * S / L.ImgH), rad, p);
+            }
+            foreach (var e in effigies) Plot(e.x, e.y, new SKColor(255, 220, 40, 210), 2.5f);
+            foreach (var f in ft) Plot(f.x, f.y, new SKColor(40, 220, 255, 255), 4f);
+            foreach (var b in bosses) Plot(b.x, b.y, new SKColor(255, 40, 40, 255), 4f);
+        }
+        using var data = canvas.Encode(SKEncodedImageFormat.Png, 90);
+        using var fs = File.Create(outPath);
+        data.SaveTo(fs);
+        Console.WriteLine($"[calibrate] wrote {outPath}");
     }
 
     // Reusable discovery pass (`--discover`): full-text search every L10N/en text DataTable

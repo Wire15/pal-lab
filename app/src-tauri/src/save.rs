@@ -47,7 +47,7 @@ pub struct SaveSummary {
 }
 
 /// Format a GUID as the lowercase 32-char hex string the UI expects.
-fn guid_str(g: &Guid) -> String {
+pub(crate) fn guid_str(g: &Guid) -> String {
     g.iter().map(|b| format!("{b:02x}")).collect::<String>()
 }
 

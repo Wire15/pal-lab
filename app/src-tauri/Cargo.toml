@@ -31,4 +31,7 @@ pal-solver = { path = "../../crates/pal-solver" }
 notify = "6"
 # Non-poisoning Mutex for the watcher handle (rs-parking-lot rule).
 parking_lot = "0.12"
+# Grayscale-PNG encode + base64 for the map fog layers (get_map_state).
+png = "0.17"
+base64 = "0.22"
 

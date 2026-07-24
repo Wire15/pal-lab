@@ -29,7 +29,7 @@ import type {
 } from "./lib/types";
 import { hexGuid } from "./components/palbox/selectors";
 
-export type View = "save" | "solver" | "paldex" | "ivlab";
+export type View = "save" | "solver" | "paldex" | "ivlab" | "worldmap";
 
 /** localStorage key for the last successfully loaded save folder. */
 const SAVE_DIR_KEY = "pal-calc.saveDir";

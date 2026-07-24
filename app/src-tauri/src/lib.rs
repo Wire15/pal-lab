@@ -1,3 +1,4 @@
+mod mapstate;
 mod paldex;
 mod save;
 mod solver;
@@ -27,7 +28,8 @@ pub fn run() {
             paldex::breeding_child,
             paldex::breeding_parents,
             paldex::reverse_breeding,
-            paldex::roster_counts
+            paldex::roster_counts,
+            mapstate::get_map_state
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

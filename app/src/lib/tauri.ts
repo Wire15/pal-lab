@@ -66,7 +66,8 @@ function loadDev(): Promise<DevFixtures> {
       import("../dev-fixtures/breeding-child.json"),
       import("../dev-fixtures/breeding-boosts.json"),
       import("../dev-fixtures/lab-research.json"),
-    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, reverse, child, boosts, labResearch]) => {
+      import("../dev-fixtures/map-state.json"),
+    ]).then(([species, roster, save, solve, solveQueue, passives, detail, parents, reverse, child, boosts, labResearch, mapState]) => {
       const speciesData = species.default as unknown as SpeciesEntry[];
       return {
         simple: {
@@ -82,6 +83,7 @@ function loadDev(): Promise<DevFixtures> {
           get_world_options: { egg_hatch_hours: 1 },
           paldex_species: speciesData,
           roster_counts: roster.default,
+          get_map_state: mapState.default,
         },
         detail: detail.default as unknown as Record<string, SpeciesDetail>,
         parents: parents.default as Record<string, ParentsResult>,

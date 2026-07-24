@@ -578,3 +578,44 @@ export interface RosterCount {
 
 /** `roster_counts` returns a map of character id -> tally. */
 export type RosterCounts = Record<string, RosterCount>;
+
+// --- Map (mirrors app/src-tauri/src/mapstate.rs, the `get_map_state` command) ---
+
+/** One world-map fog layer from `get_map_state`. `revealed_png_base64` is a
+ * base64 8-bit grayscale PNG the same size as the layer's fog mask, where
+ * 255 = revealed and 0 = fogged; `revealed_pct` is the revealed percentage
+ * (0-100). */
+export interface FogLayer {
+  map: "MainMap" | "Tree";
+  width: number;
+  height: number;
+  revealed_png_base64: string;
+  revealed_pct: number;
+}
+
+/** Per-player map state from `get_map_state`. `uid` is the lowercase 32-char
+ * hex GUID (joins `PlayerRef.uid`); `x`/`y` are world coords, `null` when the
+ * position could not be recovered. The flag arrays hold only found/true keys
+ * (fast-travel + effigy GUID hex keys, defeated-boss + discovered-area names). */
+export interface MapPlayerState {
+  uid: string;
+  nickname: string | null;
+  x: number | null;
+  y: number | null;
+  fast_travel_unlocked: string[];
+  effigies_found: string[];
+  effigy_possess_num: number;
+  bosses_defeated: string[];
+  areas_found: string[];
+}
+
+/** Response from `get_map_state(saveDir)`. `fog` is `null` when no client
+ * `LocalData.sav` was found (the map then renders with no fog overlay);
+ * `local_source` is the absolute path the fog/markers were read from, or
+ * `null`. `markers` are player-placed custom markers. */
+export interface MapState {
+  fog: FogLayer[] | null;
+  local_source: string | null;
+  markers: { x: number; y: number; icon_type: number }[];
+  players: MapPlayerState[];
+}

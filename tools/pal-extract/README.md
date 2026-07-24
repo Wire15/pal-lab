@@ -68,3 +68,42 @@ partner descriptions, Cattiva's resolved carry-capacity range `100~200`, and act
 `active_skills` count >= 300 with zero coverage regressions vs the old name set, `AirCanon`
 resolving to name "Air Cannon"/element `Normal`/power > 0, and `Unique_SheepBall_Roll` resolvable)
 and exits non-zero if any fail.
+
+## Map extraction (`--export-map`)
+
+`dotnet run -c Release -- --export-map` emits the World-Map assets the app's Map view needs, into
+`app/public/map/`:
+
+- `worldmap.webp` / `treemap.webp` — `T_WorldMap` / `T_TreeMap` (both 8192x8192) re-encoded as lossy
+  WebP (SkiaSharp, quality 85; each gated `<=10MB`).
+- `map-data.json` — per-layer metadata plus spawns/bosses/effigies/fast-travel:
+  - `maps.{MainMap,Tree}`: `image`, `px`, `world_min`, `world_max`, `mask_px`, and the calibrated
+    `world_to_px` formula string (see below) — bounds sourced from `DT_WorldMapUIData` (never hardcoded).
+  - `spawns`: one entry per (species, map). Built by joining `DT_PalSpawnerPlacement` to
+    `DT_PalWildSpawner` on the wild row's **`SpawnerName` field** (placement `SpawnerName`, then each
+    stripped `LayerNames` entry, exact-matches that group key — ~99.6% coverage; the residual join-miss
+    count is reported). Each `Pal_1..3` slot becomes a point at the placement `Location`/`StaticRadius`
+    with level/count ranges, `time` (`day`/`night`/null), `weather` (raw or null), and a `boss` flag
+    (`SpawnerType==FieldBoss`). NPC-only slots and non-species `Pal` values (e.g. `RowName`) are dropped.
+  - `bosses`: `DT_BossSpawnerLoactionData` rows with a real pal `CharacterID` (rows for human/NPC
+    bosses carry no `CharacterID` and are excluded).
+  - `effigies` / `fast_travel`: a World-Partition actor sweep of `Pal/Content/Pal/Maps/MainWorld_5`
+    (~10k cells, ~60s) for `BP_LevelObject_Relic_C` and `BP_LevelObject_TowerFastTravelPoint_C`, each
+    resolved via its **own** `RootComponent(FPackageIndex) -> RelativeLocation` (a naive first-component
+    grab yields bogus constants). Fast-travel names resolve from `DT_MapRespawnPointInfoText` keyed by
+    the actor's `FastTravelPointID`, else null.
+
+Every point is assigned to `MainMap` or `Tree` by world-bounds containment (Tree checked first);
+points in neither are dropped with a logged count.
+
+**Axis calibration.** The world->pixel orientation is calibrated empirically: all 8 candidate
+orientations (axis swap x two flips) are scored by the fraction of boss/fast-travel/effigy points that
+land on non-ocean pixels of the decoded worldmap; the winner is written verbatim into `world_to_px`
+and a diagnostic overlay is saved to `testdata/probe/calibration.png` (evidence). The winner for the
+current build is `u_px = (worldY-world_min[1])/(world_max[1]-world_min[1]) * px[0]; v_px =
+(world_max[0]-worldX)/(world_max[0]-world_min[0]) * px[1]` (u = pixel x, v = pixel y, top-left origin),
+i.e. horizontal tracks worldY and vertical tracks worldX flipped — consistent with the community
+`MapX=(worldY-158000)/459, MapY=(worldX+123888)/459` axis mapping. The run gates on webp size/dims,
+plausible spawn/boss/effigy/fast-travel counts, calibration dominance over the runner-up, and
+ground-truth spot checks (`BOSS_Horus_Water` at X=-867560.875 Y=-441338.219 Lv66 on MainMap, the
+`WorldTree_MiddleBoss_1` -> "Rotmist Root" fast-travel name, and non-empty `SheepBall` spawns).

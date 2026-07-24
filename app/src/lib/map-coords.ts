@@ -1,0 +1,116 @@
+// World <-> texture-pixel transforms for the World Map view, plus the in-game
+// coordinate readout. The numeric constants (image px, world bounds, mask px)
+// are NEVER hardcoded here — they are read verbatim from
+// `public/map/map-data.json` (contract C1), so a recalibration is a data change,
+// not a code change.
+//
+// The one thing that lives in code is the axis *orientation* — which world axis
+// drives the horizontal pixel (u) vs the vertical pixel (v), and whether either
+// is flipped. Palworld's world-map texture is axis-swapped relative to world
+// coordinates: the horizontal texture axis tracks world Y, the vertical tracks
+// world X (with a top-down flip). MapExtract calibrated this empirically (boss +
+// fast-travel pins land on terrain) and documents it in each layer's
+// `world_to_px` string, which this ORIENT constant mirrors verbatim. If that
+// string ever changes, change ORIENT to match and re-verify the two spot coords.
+
+/** One map layer's calibration as published in `public/map/map-data.json`. */
+export interface MapEntry {
+  /** Public URL of the layer image (8192x8192 lossy webp). */
+  image: string;
+  /** Logical image size in pixels, `[width, height]`. */
+  px: [number, number];
+  /** World-space bounds of the image, `[minX, minY]`. */
+  world_min: [number, number];
+  /** World-space bounds of the image, `[maxX, maxY]`. */
+  world_max: [number, number];
+  /** Fog mask resolution for this layer, `[width, height]`. */
+  mask_px: [number, number];
+  /** Human-readable source-of-truth formula this module implements. */
+  world_to_px: string;
+}
+
+/** The whole `map-data.json` document. Wave 1 (this view) consumes only `maps`;
+ *  the pin arrays are Wave 2 and typed loosely so the shape can evolve. */
+export interface MapData {
+  maps: Record<string, MapEntry>;
+  spawns?: unknown[];
+  bosses?: unknown[];
+  effigies?: unknown[];
+  fast_travel?: unknown[];
+}
+
+/**
+ * Axis orientation of the landscape -> texture mapping, mirroring the
+ * `world_to_px` string baked in `map-data.json`:
+ *   u (horizontal px) = (worldY - minY) / (maxY - minY) * W
+ *   v (vertical px)   = (1 - (worldX - minX) / (maxX - minX)) * H
+ * i.e. u tracks world **Y**, v tracks world **X** with a vertical flip.
+ */
+const ORIENT = {
+  uAxis: "y" as "x" | "y",
+  vAxis: "x" as "x" | "y",
+  uFlip: false,
+  vFlip: true,
+} as const;
+
+/**
+ * World -> texture pixel `[u, v]` in the layer's own px space (top-left origin,
+ * u right, v down). Pure function of `entry`'s calibration + the ORIENT above.
+ */
+export function worldToPx(
+  entry: MapEntry,
+  wx: number,
+  wy: number,
+): [number, number] {
+  const [minX, minY] = entry.world_min;
+  const [maxX, maxY] = entry.world_max;
+  const [W, H] = entry.px;
+  const fx = (wx - minX) / (maxX - minX);
+  const fy = (wy - minY) / (maxY - minY);
+  const uN = ORIENT.uAxis === "y" ? fy : fx;
+  const vN = ORIENT.vAxis === "x" ? fx : fy;
+  const u = (ORIENT.uFlip ? 1 - uN : uN) * W;
+  const v = (ORIENT.vFlip ? 1 - vN : vN) * H;
+  return [u, v];
+}
+
+/**
+ * Texture pixel `[u, v]` -> world `[x, y]`. Exact inverse of {@link worldToPx};
+ * used by the cursor readout (screen -> content px -> world -> in-game).
+ */
+export function pxToWorld(
+  entry: MapEntry,
+  u: number,
+  v: number,
+): [number, number] {
+  const [minX, minY] = entry.world_min;
+  const [maxX, maxY] = entry.world_max;
+  const [W, H] = entry.px;
+  let uN = u / W;
+  let vN = v / H;
+  if (ORIENT.uFlip) uN = 1 - uN;
+  if (ORIENT.vFlip) vN = 1 - vN;
+  const fx = ORIENT.vAxis === "x" ? vN : uN;
+  const fy = ORIENT.uAxis === "y" ? uN : vN;
+  const wx = minX + fx * (maxX - minX);
+  const wy = minY + fy * (maxY - minY);
+  return [wx, wy];
+}
+
+/** True when a world point lies within a layer's world bounds. */
+export function worldInBounds(entry: MapEntry, wx: number, wy: number): boolean {
+  const [minX, minY] = entry.world_min;
+  const [maxX, maxY] = entry.world_max;
+  return wx >= minX && wx <= maxX && wy >= minY && wy <= maxY;
+}
+
+/** The in-game map coordinate readout — the numbers a player sees in-game.
+ *  Palworld's UI is axis-swapped: the displayed X is derived from world Y, the
+ *  displayed Y from world X. Constants are the game's own (verified in the probe
+ *  contract), so this readout matches the in-client coordinate overlay. */
+export function worldToInGame(
+  wx: number,
+  wy: number,
+): { x: number; y: number } {
+  return { x: (wy - 158000) / 459, y: (wx + 123888) / 459 };
+}

@@ -38,10 +38,15 @@ pub enum Value {
     Props(Props),
     /// `StructProperty` scalar of type `Guid`.
     Guid(Guid),
-    /// `StructProperty` scalar we don't decode (Vector/Quat/DateTime/...).
+    /// `StructProperty` scalar we don't decode (Quat/DateTime/LinearColor/...).
     OpaqueStruct,
+    /// `StructProperty` scalar of type `Vector` (`x`, `y`, `z` doubles).
+    Vec3(f64, f64, f64),
     /// Array of nested property sets / scalars (`ArrayProperty`).
     Array(Vec<Value>),
+    /// Decoded `MapProperty` entries (`(key, value)`), for the small key/value
+    /// combos we materialize; unsupported combos are skipped upstream instead.
+    Map(Vec<(Value, Value)>),
     /// Raw bytes of a `ByteProperty` array (e.g. `RawData`).
     Bytes(Vec<u8>),
 }
@@ -89,6 +94,19 @@ impl Value {
     pub fn as_bytes(&self) -> Option<&[u8]> {
         match self {
             Value::Bytes(b) => Some(b),
+            _ => None,
+        }
+    }
+    pub fn as_map(&self) -> Option<&[(Value, Value)]> {
+        match self {
+            Value::Map(m) => Some(m),
+            _ => None,
+        }
+    }
+    /// `(x, y, z)` of a decoded `Vector` struct.
+    pub fn as_vec3(&self) -> Option<(f64, f64, f64)> {
+        match self {
+            Value::Vec3(x, y, z) => Some((*x, *y, *z)),
             _ => None,
         }
     }
@@ -242,12 +260,10 @@ pub fn read_property(r: &mut Reader, type_name: &str, size: usize) -> Result<Val
             read_array(r, &array_type, size)?
         }
         "MapProperty" => {
-            // Not needed inside materialized subtrees; skip the value region.
-            let _key_type = r.fstring()?;
-            let _value_type = r.fstring()?;
+            let key_type = r.fstring()?;
+            let value_type = r.fstring()?;
             r.optional_guid()?;
-            r.skip(size)?;
-            Value::OpaqueStruct
+            read_map(r, &key_type, &value_type, size)?
         }
         other => {
             return Err(SaveError::Gvas(format!(
@@ -267,8 +283,10 @@ fn read_struct_value(r: &mut Reader, struct_type: &str) -> Result<Value, SaveErr
             Value::OpaqueStruct
         }
         "Vector" => {
-            r.skip(24)?; // 3 x f64
-            Value::OpaqueStruct
+            let x = r.f64()?;
+            let y = r.f64()?;
+            let z = r.f64()?;
+            Value::Vec3(x, y, z)
         }
         "Quat" => {
             r.skip(32)?; // 4 x f64
@@ -289,6 +307,41 @@ fn read_struct_value(r: &mut Reader, struct_type: &str) -> Result<Value, SaveErr
 /// process on a multi-gigabyte allocation.
 fn capped_capacity(count: usize, remaining: usize, min_elem_bytes: usize) -> usize {
     count.min(remaining / min_elem_bytes.max(1))
+}
+
+/// Decode a `MapProperty` value region: a `u32` padding word, a `u32` entry
+/// count, then `count` `(key, value)` pairs whose serialized shape depends on
+/// the map's key/value types. Only the small combos the map/UI features need
+/// are materialized — `Name`/`Enum` keys with `Bool`/`Int`/`Struct` values;
+/// every other combo is structurally skipped by `size` (returning
+/// [`Value::OpaqueStruct`]) so this decoder never has to know every map shape
+/// in a save and the `Level.sav` hot path (whose maps are skipped upstream via
+/// [`skip_property`]) is untouched. `size` is the value region excluding the
+/// key/value-type/optional-guid header the caller already consumed.
+fn read_map(r: &mut Reader, key_type: &str, value_type: &str, size: usize) -> Result<Value, SaveError> {
+    let key_ok = matches!(key_type, "NameProperty" | "EnumProperty");
+    let val_ok = matches!(value_type, "BoolProperty" | "IntProperty" | "StructProperty");
+    if !key_ok || !val_ok {
+        r.skip(size)?;
+        return Ok(Value::OpaqueStruct);
+    }
+    r.u32()?; // padding (always 0)
+    let count = r.u32()? as usize;
+    // Smallest possible entry: a 4-byte empty-key FString + a 1-byte value.
+    let mut out = Vec::with_capacity(capped_capacity(count, r.remaining(), 5));
+    for _ in 0..count {
+        // `Name`/`Enum` keys serialize as a bare `FString`.
+        let key = Value::Name(r.fstring()?);
+        let value = match value_type {
+            "BoolProperty" => Value::Bool(r.u8()? != 0),
+            "IntProperty" => Value::Int(r.i32()?),
+            // Struct map values are a bare property set (properties-until-end),
+            // with no inline struct header (the type comes from the map).
+            _ => Value::Props(read_properties_until_end(r)?),
+        };
+        out.push((key, value));
+    }
+    Ok(Value::Map(out))
 }
 
 /// Decode an `ArrayProperty` value region (`count` prefix + elements).

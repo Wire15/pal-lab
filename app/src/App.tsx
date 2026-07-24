@@ -4,6 +4,7 @@ import SaveInspector from "./views/SaveInspector";
 import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
 import IvLab from "./views/IvLab";
+import MapView from "./views/map/MapView";
 import { AppStateProvider, useAppState } from "./state";
 import { hexGuid } from "./components/palbox/selectors";
 import type { View } from "./state";
@@ -47,6 +48,13 @@ function NavIcon({ view }: { view: View }) {
         <circle cx="8" cy="17" r="2" fill="currentColor" stroke="none" />
       </svg>
     );
+  if (view === "worldmap")
+    return (
+      <svg {...common}>
+        <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" />
+        <path d="M9 4v14M15 6v14" />
+      </svg>
+    );
   return (
     <svg {...common}>
       <rect x="3.5" y="3.5" width="7" height="7" rx="1.4" />
@@ -62,6 +70,7 @@ const NAV: { id: View; label: string; hint: string }[] = [
   { id: "solver", label: "Solver", hint: "Breeding plans" },
   { id: "ivlab", label: "IV Lab", hint: "Stat breeding" },
   { id: "paldex", label: "Pal-dex", hint: "Reference" },
+  { id: "worldmap", label: "World Map", hint: "Explore" },
 ];
 
 /** Two-arrow swap glyph for the "switch save" affordance. */
@@ -523,6 +532,7 @@ function Shell() {
         {view === "solver" && <Solver />}
         {view === "ivlab" && <IvLab />}
         {view === "paldex" && <Paldex />}
+        {view === "worldmap" && <MapView />}
       </main>
       {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
       {scopePromptOpen && (
