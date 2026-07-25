@@ -178,7 +178,8 @@ export default function MapView() {
   // mid-drag (they otherwise self-clear only on the next pointerup).
   const dragAbort = useRef<AbortController | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [readout, setReadout] = useState<{ x: number; y: number } | null>(null);
+  const readoutXRef = useRef<HTMLSpanElement>(null);
+  const readoutYRef = useRef<HTMLSpanElement>(null);
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -612,14 +613,21 @@ export default function MapView() {
         if (!panning && Math.hypot(dx, dy) < 4) return;
         if (!panning) {
           panning = true;
+          gesturing.current = true; // pan is a gesture: refs + rAF, no commits
           setDragging(true);
           setSpawnHover(null);
         }
-        setView({ k: base.k, tx: base.tx + dx, ty: base.ty + dy });
+        // Accumulate the live transform on refs and let requestFrame's rAF paint
+        // the canvas + write the ONE pin-container translate — the same pattern
+        // as wheel-zoom. Zero React commits mid-drag, so the memoized PinLayer
+        // never reconciles its ~360 pins until the pan commits on pointerup.
+        liveRef.current = { k: base.k, tx: base.tx + dx, ty: base.ty + dy };
+        requestFrame();
       }
       function up() {
         controller.abort();
         dragAbort.current = null;
+        commitGesture(); // commit the pan once so culling snaps crisp (no-op if never engaged)
         setDragging(false);
       }
       const controller = new AbortController();
@@ -628,7 +636,7 @@ export default function MapView() {
       window.addEventListener("pointermove", move, opts);
       window.addEventListener("pointerup", up, opts);
     },
-    [commitGesture],
+    [commitGesture, requestFrame],
   );
 
   // --- Cursor coordinate readout + spawn hover hit-test. -------------------
@@ -644,7 +652,14 @@ export default function MapView() {
       const [wx, wy] = pxToWorld(entry, contentX, contentY);
       // Clamp to the map: beyond the image edge the transform extrapolates into
       // ocean/void, so show em-dashes rather than fabricated coordinates.
-      setReadout(worldInBounds(entry, wx, wy) ? worldToInGame(wx, wy) : null);
+      // Live coordinate readout: written straight to the DOM via refs (mirrors
+      // the zoom-% readout) so a pointermove never setStates — the pan hot path
+      // and hover both stay commit-free for the readout.
+      const ig = worldInBounds(entry, wx, wy) ? worldToInGame(wx, wy) : null;
+      if (readoutXRef.current)
+        readoutXRef.current.textContent = ig ? String(Math.round(ig.x)) : "\u2014";
+      if (readoutYRef.current)
+        readoutYRef.current.textContent = ig ? String(Math.round(ig.y)) : "\u2014";
 
       if (spawnActive && !dragging) {
         // Spoiler parity with paint(): heat under fog is hidden, so the hover
@@ -848,7 +863,8 @@ export default function MapView() {
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerLeave={() => {
-            setReadout(null);
+            if (readoutXRef.current) readoutXRef.current.textContent = "\u2014";
+            if (readoutYRef.current) readoutYRef.current.textContent = "\u2014";
             setSpawnHover(null);
           }}
           aria-label={`World map, ${LAYERS.find((l) => l.key === layer)?.label} layer`}
@@ -927,13 +943,13 @@ export default function MapView() {
         <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2">
           <div className="rounded-md border border-line bg-panel/85 px-2.5 py-1.5 font-mono text-[11px] tabular-nums">
             <span className="text-ink-faint">X</span>{" "}
-            <span className="text-ink">
-              {readout ? Math.round(readout.x) : "—"}
+            <span ref={readoutXRef} className="text-ink">
+              —
             </span>
             <span className="mx-1.5 text-line">·</span>
             <span className="text-ink-faint">Y</span>{" "}
-            <span className="text-ink">
-              {readout ? Math.round(readout.y) : "—"}
+            <span ref={readoutYRef} className="text-ink">
+              —
             </span>
           </div>
           <div className="rounded-md border border-line bg-panel/85 px-2.5 py-1.5 font-mono text-[11px] tabular-nums text-ink-dim">
