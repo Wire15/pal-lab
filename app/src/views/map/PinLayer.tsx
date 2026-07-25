@@ -89,8 +89,7 @@ const DIM = "#63717f"; // ink-faint — locked / found-and-done
 const MARKER = "#dcc19a"; // warm neutral — custom map markers
 const TOWER = "#e06a5e"; // soft crimson (el-fire family) — syndicate tower landmark
 
-/** Glyph diameter -> chip diameter padding, and the alpha portrait size. */
-const CHIP_PAD = 10;
+/** The alpha portrait size — non-pal glyphs now render full-bleed at this scale. */
 const ALPHA_SIZE = 34;
 
 /** Pin screen-scale curve (Map Wave 3 / contract T2). Pins render at BASE size
@@ -154,7 +153,6 @@ function Glyph({
           maskRepeat: "no-repeat",
           WebkitMaskPosition: "center",
           maskPosition: "center",
-          filter: "drop-shadow(0 0.5px 0.5px rgba(0,0,0,0.5))",
         }}
       />
     );
@@ -172,14 +170,16 @@ function Glyph({
         width: size,
         height: size,
         opacity: dim,
-        filter: "drop-shadow(0 1px 1.5px rgba(0,0,0,0.85))",
       }}
     />
   );
 }
 
-/** A glyph on a dark rounded chip so it reads over ANY terrain (mirrors the
- *  in-game dark icon backing). `glow` adds a soft colored halo (unfound effigy). */
+/** A full-bleed icon glyph (no chip backing — the art fills the pin footprint,
+ *  matching the pal-portrait size). Legibility over any terrain comes from a
+ *  stacked drop-shadow on the WRAPPER: filters apply before masks, so the
+ *  shadow must sit outside the masked mono glyph to shadow the silhouette.
+ *  `glow` adds a soft colored halo (unfound effigy / unreached tower). */
 function GlyphChip({
   src,
   mono,
@@ -200,17 +200,16 @@ function GlyphChip({
   title?: string;
 }) {
   if (!src) return null;
-  const chip = size + CHIP_PAD;
+  const shadow =
+    "drop-shadow(0 1px 1.5px rgba(0,0,0,0.9)) drop-shadow(0 0 1px rgba(0,0,0,0.85))";
   return (
     <span
       title={title}
-      className="relative flex items-center justify-center rounded-full bg-abyss/80"
+      className="relative flex items-center justify-center"
       style={{
-        width: chip,
-        height: chip,
-        boxShadow: glow
-          ? `0 0 0 1px rgba(255,255,255,0.12), 0 1px 3px rgba(0,0,0,0.65), 0 0 10px -1px ${glow}`
-          : "0 0 0 1px rgba(255,255,255,0.12), 0 1px 3px rgba(0,0,0,0.65)",
+        width: size,
+        height: size,
+        filter: glow ? `${shadow} drop-shadow(0 0 6px ${glow})` : shadow,
       }}
     >
       <Glyph src={src} mono={mono} tint={tint} size={size} dim={dim} grayscale={grayscale} />
@@ -235,7 +234,7 @@ function PinTypeIcon({
         src={entry ? iconUrl(entry) : fallbackIcon("fast_travel", tint)}
         mono={isMonoIcon(icons, "fast_travel")}
         tint={tint}
-        size={30}
+        size={56}
         dim={pin.found ? 1 : 0.7}
         grayscale={!pin.found}
         title={pin.found ? "Fast travel · unlocked" : "Fast travel · locked"}
@@ -252,7 +251,7 @@ function PinTypeIcon({
         src={entry ? iconUrl(entry) : fallbackIcon("effigy", pin.found ? DIM : GREEN)}
         mono={isMonoIcon(icons, "effigy")}
         tint={GREEN}
-        size={28}
+        size={ALPHA_SIZE}
         grayscale={pin.found}
         dim={pin.found ? 0.45 : 1}
         glow={pin.found ? undefined : GREEN}
@@ -273,9 +272,9 @@ function PinTypeIcon({
         src={entry ? iconUrl(entry) : fallbackIcon("tower", pin.found ? DIM : TOWER)}
         mono={isMonoIcon(icons, "tower")}
         tint={TOWER}
-        size={34}
+        size={60}
         grayscale={pin.found}
-        dim={pin.found ? 0.5 : 1}
+        dim={pin.found ? 0.8 : 1}
         glow={pin.found ? undefined : TOWER}
         title={
           pin.found
@@ -294,7 +293,7 @@ function PinTypeIcon({
       src={entry ? iconUrl(entry) : fallbackIcon("bounty", PURPLE)}
       mono={isMonoIcon(icons, "bounty")}
       tint={PURPLE}
-      size={28}
+      size={56}
       title={pin.name ? `Bounty · ${pin.name}` : "Bounty"}
     />
   );
@@ -561,7 +560,7 @@ function PinLayer({
                   src={entryIcon ? iconUrl(entryIcon) : markerFallback(MARKER)}
                   mono={entryIcon ? isMonoIcon(icons, key) : false}
                   tint={MARKER}
-                  size={22}
+                  size={28}
                   title="Custom marker"
                 />
               </span>
@@ -582,7 +581,7 @@ function PinLayer({
                   src={entryIcon ? iconUrl(entryIcon) : fallbackIcon("base", AMBER)}
                   mono={isMonoIcon(icons, "base")}
                   tint={AMBER}
-                  size={26}
+                  size={32}
                   title="Base camp"
                 />
               </span>
