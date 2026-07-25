@@ -222,8 +222,14 @@ function loadPassives(): Promise<Map<string, PassiveRow>> {
 }
 
 function usePassiveRow(id: string): PassiveRow | null {
-  const [row, setRow] = useState<PassiveRow | null>(() => passivesCache?.get(id) ?? null);
+  // When the shared payload is already cached (the common case once any strip
+  // has loaded it), resolve synchronously and skip the effect entirely — a
+  // passive-heavy list (the 637-row roster mounts ~2k strips) otherwise pays a
+  // redundant promise + setState per strip on every mount.
+  const cached = passivesCache?.get(id) ?? null;
+  const [row, setRow] = useState<PassiveRow | null>(cached);
   useEffect(() => {
+    if (passivesCache) return;
     let live = true;
     loadPassives().then((m) => {
       if (live) setRow(m.get(id) ?? null);
@@ -232,7 +238,7 @@ function usePassiveRow(id: string): PassiveRow | null {
       live = false;
     };
   }, [id]);
-  return row;
+  return passivesCache ? cached : row;
 }
 
 /** Resolved name + signed rank + tier for a passive id — pack data when known,

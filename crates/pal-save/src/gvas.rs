@@ -345,7 +345,7 @@ fn read_map(r: &mut Reader, key_type: &str, value_type: &str, size: usize) -> Re
 }
 
 /// Decode an `ArrayProperty` value region (`count` prefix + elements).
-fn read_array(r: &mut Reader, array_type: &str, size: usize) -> Result<Value, SaveError> {
+pub(crate) fn read_array(r: &mut Reader, array_type: &str, size: usize) -> Result<Value, SaveError> {
     let count = r.u32()? as usize;
     match array_type {
         "ByteProperty" => {

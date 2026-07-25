@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import type { RosterCounts, SpeciesEntry } from "../../lib/types";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { ElementBadges, ElementIcon } from "../../components/element";
@@ -74,6 +74,64 @@ function DexPortrait({
     </span>
   );
 }
+
+/** One species grid tile — memoized so a re-sort or filter reorders the keyed
+ *  tiles without re-rendering each tile's portrait/hover-card/badges (299 tiles
+ *  otherwise re-render on every sort). Props are all stable values: `s` is a
+ *  fixed object from the species list, `onSelect` a stable setter. */
+const DexTile = memo(function DexTile({
+  s,
+  state,
+  male,
+  female,
+  onSelect,
+}: {
+  s: SpeciesEntry;
+  state: "owned" | "unowned" | "neutral";
+  male: number;
+  female: number;
+  onSelect: (id: string) => void;
+}) {
+  const total = male + female;
+  return (
+    <PalHoverCard speciesId={s.id}>
+      <button
+        onClick={() => onSelect(s.id)}
+        aria-label={`${s.name}, #${String(s.paldex_no).padStart(3, "0")}`}
+        className="group flex flex-col items-center gap-2 rounded-2xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-abyss"
+      >
+        <div className="relative mx-auto aspect-square w-full max-w-[104px]">
+          <DexPortrait id={s.id} state={state} />
+          {/* Element type chip — bottom overlay, palbox badge idiom */}
+          <span className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-abyss/90 px-1.5 py-0.5">
+            <ElementBadges elements={s.elements} size={13} />
+          </span>
+        </div>
+        <div className="flex w-full flex-col items-center gap-0.5">
+          <div className="max-w-full truncate text-[13px] font-medium text-ink">
+            {s.name}
+          </div>
+          <div className="flex items-center gap-1.5 font-mono text-[10px] leading-none tabular-nums text-ink-faint">
+            <span>#{String(s.paldex_no).padStart(3, "0")}</span>
+            {s.is_variant && <span className="font-bold text-el-dragon">B</span>}
+            <span className="text-ink-faint/60">{"\u00b7"}</span>
+            <span>rank {s.combi_rank}</span>
+          </div>
+          {total > 0 && (
+            <div className="flex items-center gap-1.5 font-mono text-[11px] leading-none tabular-nums">
+              {male > 0 && (
+                <span className="text-el-water">{"\u2642"}{male}</span>
+              )}
+              {female > 0 && (
+                <span className="text-el-dragon">{"\u2640"}{female}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </button>
+    </PalHoverCard>
+  );
+});
 
 export default function PaldexIndex({
   species,
@@ -334,42 +392,14 @@ export default function PaldexIndex({
               const total = owned ? owned.male + owned.female : 0;
               const state = !roster ? "neutral" : total > 0 ? "owned" : "unowned";
               return (
-                <PalHoverCard key={s.id} speciesId={s.id}>
-                  <button
-                    onClick={() => onSelect(s.id)}
-                    aria-label={`${s.name}, #${String(s.paldex_no).padStart(3, "0")}`}
-                    className="group flex flex-col items-center gap-2 rounded-2xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-abyss"
-                  >
-                    <div className="relative mx-auto aspect-square w-full max-w-[104px]">
-                      <DexPortrait id={s.id} state={state} />
-                      {/* Element type chip — bottom overlay, palbox badge idiom */}
-                      <span className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-abyss/90 px-1.5 py-0.5">
-                        <ElementBadges elements={s.elements} size={13} />
-                      </span>
-                    </div>
-                    <div className="flex w-full flex-col items-center gap-0.5">
-                      <div className="max-w-full truncate text-[13px] font-medium text-ink">
-                        {s.name}
-                      </div>
-                      <div className="flex items-center gap-1.5 font-mono text-[10px] leading-none tabular-nums text-ink-faint">
-                        <span>#{String(s.paldex_no).padStart(3, "0")}</span>
-                        {s.is_variant && <span className="font-bold text-el-dragon">B</span>}
-                        <span className="text-ink-faint/60">{"\u00b7"}</span>
-                        <span>rank {s.combi_rank}</span>
-                      </div>
-                      {total > 0 && (
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] leading-none tabular-nums">
-                          {owned!.male > 0 && (
-                            <span className="text-el-water">{"\u2642"}{owned!.male}</span>
-                          )}
-                          {owned!.female > 0 && (
-                            <span className="text-el-dragon">{"\u2640"}{owned!.female}</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                </PalHoverCard>
+                <DexTile
+                  key={s.id}
+                  s={s}
+                  state={state}
+                  male={owned?.male ?? 0}
+                  female={owned?.female ?? 0}
+                  onSelect={onSelect}
+                />
               );
             })}
           </div>

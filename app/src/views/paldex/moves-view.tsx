@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SpeciesEntry } from "../../lib/types";
 import { PalIcon } from "../../components/primitives";
 import { ElementIcon } from "../../components/element";
@@ -41,6 +41,10 @@ interface MoveEntry {
   skill: ActiveSkill;
 }
 
+/** Stable empty learners array so a memoized {@link MoveRow} for a move with no
+ *  learners doesn't see a fresh `[]` prop on every parent render. */
+const NO_LEARNERS: MoveLearner[] = [];
+
 /**
  * Pal-dex MOVES browser: the paldb-style active-skills reference. Lists every
  * active skill from `list_active_skills` as an in-game strip (element segment +
@@ -81,6 +85,12 @@ export default function MovesIndex({
 
   const rowRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
+  // Stable ref registrar so memoized MoveRows keep a fixed `registerRow` prop.
+  const registerRow = useCallback((id: string, el: HTMLDivElement | null) => {
+    if (el) rowRefs.current.set(id, el);
+    else rowRefs.current.delete(id);
+  }, []);
+
   useEffect(() => {
     loadActiveSkills().then(setActiveMap).catch(() => {});
   }, []);
@@ -108,14 +118,14 @@ export default function MovesIndex({
     }
   }
 
-  function toggleOpen(id: string) {
+  const toggleOpen = useCallback((id: string) => {
     setOpen((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
-  }
+  }, []);
 
   const moves = useMemo<MoveEntry[]>(
     () => Object.entries(activeMap).map(([id, skill]) => ({ id, skill })),
@@ -339,15 +349,12 @@ export default function MovesIndex({
                 key={m.id}
                 id={m.id}
                 skill={m.skill}
-                learners={learners.get(m.id) ?? []}
+                learners={learners.get(m.id) ?? NO_LEARNERS}
                 open={open.has(m.id)}
-                onToggle={() => toggleOpen(m.id)}
+                onToggle={toggleOpen}
                 onSelectPal={onSelectPal}
                 highlighted={highlight === m.id}
-                rowRef={(el) => {
-                  if (el) rowRefs.current.set(m.id, el);
-                  else rowRefs.current.delete(m.id);
-                }}
+                registerRow={registerRow}
               />
             ))}
           </div>
@@ -364,7 +371,7 @@ export default function MovesIndex({
  * listing the species that learn it and the level each does. A `highlighted`
  * flash ring marks a row jumped to from a detail's move link.
  */
-function MoveRow({
+const MoveRow = memo(function MoveRow({
   id,
   skill,
   learners,
@@ -372,20 +379,20 @@ function MoveRow({
   onToggle,
   onSelectPal,
   highlighted,
-  rowRef,
+  registerRow,
 }: {
   id: string;
   skill: ActiveSkill;
   learners: MoveLearner[];
   open: boolean;
-  onToggle: () => void;
+  onToggle: (id: string) => void;
   onSelectPal: (id: string) => void;
   highlighted: boolean;
-  rowRef: (el: HTMLDivElement | null) => void;
+  registerRow: (id: string, el: HTMLDivElement | null) => void;
 }) {
   return (
     <div
-      ref={rowRef}
+      ref={(el) => registerRow(id, el)}
       className={`scroll-mt-6 rounded-md transition-shadow ${
         highlighted ? "ring-1 ring-amber ring-offset-2 ring-offset-abyss" : ""
       }`}
@@ -395,7 +402,7 @@ function MoveRow({
         <>
           <button
             type="button"
-            onClick={onToggle}
+            onClick={() => onToggle(id)}
             aria-expanded={open}
             className="mt-1 flex w-full items-center gap-1.5 rounded-sm px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber/70"
           >
@@ -432,4 +439,4 @@ function MoveRow({
       )}
     </div>
   );
-}
+});

@@ -84,7 +84,9 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
     let mut parsed = characters::parse_level(&level_blob, &mut warnings)?;
 
     // Player saves tell us which container guids are the party / palbox;
-    // `*_dps.sav` files hold each player's dimensional pal storage.
+    // `*_dps.sav` files hold each player's dimensional pal storage. Viewing-cage
+    // and global-storage container ids come from `Level.sav` map objects
+    // (`parsed.cage_containers` / `parsed.global_containers`).
     let mut party: HashSet<Guid> = HashSet::new();
     let mut palbox: HashSet<Guid> = HashSet::new();
     let mut dps_paths: Vec<std::path::PathBuf> = Vec::new();
@@ -115,15 +117,14 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
 
     for pal in &mut parsed.pals {
         if let Some(c) = pal.container_id {
-            pal.container_kind = if party.contains(&c) {
-                ContainerKind::Party
-            } else if palbox.contains(&c) {
-                ContainerKind::Palbox
-            } else if parsed.base_containers.contains(&c) {
-                ContainerKind::Base
-            } else {
-                ContainerKind::Unknown
-            };
+            pal.container_kind = classify_container(
+                &c,
+                &party,
+                &palbox,
+                &parsed.base_containers,
+                &parsed.cage_containers,
+                &parsed.global_containers,
+            );
         }
     }
 
@@ -251,4 +252,90 @@ pub fn read_world_options(
     }
     let blob = read_and_decompress(&path)?;
     Ok(Some(worldoption::parse_world_options(&blob)?))
+}
+
+/// Classify a pal's physical container. Precedence follows provenance
+/// strength: the player's own party/palbox ids, then base-camp worker
+/// containers, then viewing-cage containers (world `DisplayCharacter`
+/// objects), then the world-shared global pal storage. Anything else is
+/// honestly `Unknown`.
+fn classify_container(
+    c: &Guid,
+    party: &HashSet<Guid>,
+    palbox: &HashSet<Guid>,
+    bases: &HashSet<Guid>,
+    cages: &HashSet<Guid>,
+    global: &HashSet<Guid>,
+) -> ContainerKind {
+    if party.contains(c) {
+        ContainerKind::Party
+    } else if palbox.contains(c) {
+        ContainerKind::Palbox
+    } else if bases.contains(c) {
+        ContainerKind::Base
+    } else if cages.contains(c) {
+        ContainerKind::ViewingCage
+    } else if global.contains(c) {
+        ContainerKind::GlobalPalStorage
+    } else {
+        ContainerKind::Unknown
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Real-save invariant: the co-op fixture classifies every pal — zero
+    /// `Unknown` kinds — with the exact per-kind counts the ground-truth probe
+    /// established. Also exercises the `MapObjectSaveData` storage-machine
+    /// pass over a real `Level.sav` (this world has no cages / global storage
+    /// built, so the new kinds legitimately count 0).
+    #[test]
+    fn coop_save_container_kinds_fully_classified() {
+        let dir = format!(
+            "{}/../../testdata/save1/SaveGames/0/11B693994C6849F2AAF47088BD302C58",
+            env!("CARGO_MANIFEST_DIR")
+        );
+        let save = read_save_dir(&dir).expect("read save");
+        let mut counts: std::collections::HashMap<&'static str, usize> =
+            std::collections::HashMap::new();
+        for p in &save.pals {
+            let k = match p.container_kind {
+                ContainerKind::Party => "party",
+                ContainerKind::Palbox => "palbox",
+                ContainerKind::Base => "base",
+                ContainerKind::DimensionalPalStorage => "dps",
+                ContainerKind::ViewingCage => "cage",
+                ContainerKind::GlobalPalStorage => "global",
+                ContainerKind::Unknown => "unknown",
+            };
+            *counts.entry(k).or_default() += 1;
+        }
+        assert_eq!(save.pals.len(), 1669);
+        assert_eq!(counts.get("unknown"), None, "no pal may be Unknown");
+        assert_eq!(counts.get("party"), Some(&20));
+        assert_eq!(counts.get("palbox"), Some(&1537));
+        assert_eq!(counts.get("base"), Some(&76));
+        assert_eq!(counts.get("dps"), Some(&36));
+        assert_eq!(counts.get("cage"), None);
+        assert_eq!(counts.get("global"), None);
+    }
+
+    #[test]
+    fn classify_container_covers_cage_and_global() {
+        let mk = |b: u8| -> Guid { [b; 16] };
+        let party: HashSet<Guid> = [mk(1)].into();
+        let palbox: HashSet<Guid> = [mk(2)].into();
+        let bases: HashSet<Guid> = [mk(3)].into();
+        let cages: HashSet<Guid> = [mk(4)].into();
+        let global: HashSet<Guid> = [mk(5)].into();
+        let f = |g: &Guid| classify_container(g, &party, &palbox, &bases, &cages, &global);
+        assert!(matches!(f(&mk(1)), ContainerKind::Party));
+        assert!(matches!(f(&mk(2)), ContainerKind::Palbox));
+        assert!(matches!(f(&mk(3)), ContainerKind::Base));
+        assert!(matches!(f(&mk(4)), ContainerKind::ViewingCage));
+        assert!(matches!(f(&mk(5)), ContainerKind::GlobalPalStorage));
+        assert!(matches!(f(&mk(9)), ContainerKind::Unknown));
+    }
 }

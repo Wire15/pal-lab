@@ -32,6 +32,8 @@ pub struct LevelParse {
     pub players: Vec<PlayerEntry>,
     pub base_containers: HashSet<Guid>,
     pub base_id_to_container: HashMap<Guid, Guid>,
+    pub cage_containers: HashSet<Guid>,
+    pub global_containers: HashSet<Guid>,
     pub guilds: Vec<GuildRaw>,
 }
 
@@ -112,6 +114,19 @@ fn parse_world_save_data(
             match parse_group_map(r, size) {
                 Ok(guilds) => out.guilds = guilds,
                 Err(e) => warnings.push(format!("GroupSaveDataMap: {e}")),
+            }
+        } else if name == "MapObjectSaveData" && type_name == "ArrayProperty" {
+            // Storage-machine containers: `DisplayCharacter` (viewing cage) and
+            // `GlobalPalStorage` (global pal storage) map objects each carry a
+            // `::CharacterContainer` module whose RawData leads with the
+            // machine's pal-container guid (palcalc `MapObjectVisitor` lineage).
+            // Isolated decode from a copy; malformed data is fail-soft.
+            match storage_containers_from_map_objects(r, size) {
+                Ok((cages, global)) => {
+                    out.cage_containers = cages;
+                    out.global_containers = global;
+                }
+                Err(e) => warnings.push(format!("MapObjectSaveData: {e}")),
             }
         } else {
             gvas::skip_property(r, &type_name, size)?;
@@ -538,6 +553,68 @@ fn container_ref(v: &Value) -> Option<Guid> {
         .or_else(|| v.as_guid())
 }
 
+/// Collect storage-machine pal-container guids from `MapObjectSaveData`:
+/// `DisplayCharacter` (viewing cage) and `GlobalPalStorage` (global pal
+/// storage) instances each carry a `ConcreteModel.ModuleMap` with a
+/// `::CharacterContainer` module whose `RawData` leads with the container
+/// guid — byte layout per the palcalc `MapObjectVisitor` lineage, same
+/// raw-guid convention as `Model.RawData` in `map_objects.rs`. The whole
+/// value region is consumed up front and decoded from a copy, so a decode
+/// failure cannot desync the outer cursor (fail-soft). Returns
+/// `(cage_ids, global_ids)`.
+fn storage_containers_from_map_objects(
+    r: &mut Reader,
+    size: usize,
+) -> Result<(HashSet<Guid>, HashSet<Guid>), SaveError> {
+    let array_type = r.fstring()?;
+    r.optional_guid()?;
+    let body = r.bytes(size)?.to_vec();
+    let mut sub = Reader::new(&body);
+    let value = gvas::read_array(&mut sub, &array_type, body.len())?;
+    Ok(storage_ids_from_elements(&value))
+}
+
+/// Pure extraction over the decoded `MapObjectSaveData` array value.
+fn storage_ids_from_elements(value: &Value) -> (HashSet<Guid>, HashSet<Guid>) {
+    let mut cages = HashSet::new();
+    let mut global = HashSet::new();
+    for el in value.as_array().unwrap_or(&[]) {
+        let Some(props) = el.as_props() else { continue };
+        let bucket = match gvas::find(props, "MapObjectId").and_then(Value::as_str) {
+            Some("DisplayCharacter") => &mut cages,
+            Some("GlobalPalStorage") => &mut global,
+            _ => continue,
+        };
+        let Some(modules) = gvas::find(props, "ConcreteModel")
+            .and_then(Value::as_props)
+            .and_then(|c| gvas::find(c, "ModuleMap"))
+            .and_then(Value::as_map)
+        else {
+            continue;
+        };
+        for (key, module) in modules {
+            if !key
+                .as_str()
+                .is_some_and(|s| s.ends_with("::CharacterContainer"))
+            {
+                continue;
+            }
+            if let Some(raw) = module
+                .as_props()
+                .and_then(|p| gvas::find(p, "RawData"))
+                .and_then(Value::as_bytes)
+            {
+                if raw.len() >= 16 {
+                    let mut g: Guid = [0u8; 16];
+                    g.copy_from_slice(&raw[..16]);
+                    bucket.insert(g);
+                }
+            }
+        }
+    }
+    (cages, global)
+}
+
 /// Best-effort world name from `LevelMeta.sav`. Returns `Ok(None)` when no
 /// `WorldName` string is present; parse errors bubble up to the caller, which
 /// downgrades them to "no name".
@@ -629,4 +706,48 @@ fn dimensional_pal(elem: &Value) -> Result<Option<OwnedPal>, SaveError> {
     let mut pal = build_pal(param, instance_id)?;
     pal.container_kind = ContainerKind::DimensionalPalStorage;
     Ok(Some(pal))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::compress::decompress_sav;
+
+    /// Synthetic: extraction digs MapObjectId -> ConcreteModel -> ModuleMap ->
+    /// ::CharacterContainer module RawData -> leading guid, routing cages and
+    /// global-storage machines to their buckets and ignoring other objects.
+    #[test]
+    fn storage_ids_extracted_from_map_object_module_maps() {
+        fn machine(object_id: &str, guid: Guid) -> Value {
+            let mut raw = guid.to_vec();
+            raw.extend_from_slice(&[0xAA; 8]); // trailing module payload
+            Value::Props(vec![
+                ("MapObjectId".into(), Value::Str(object_id.into())),
+                (
+                    "ConcreteModel".into(),
+                    Value::Props(vec![(
+                        "ModuleMap".into(),
+                        Value::Map(vec![(
+                            Value::Name(
+                                "EPalMapObjectConcreteModelModuleType::CharacterContainer".into(),
+                            ),
+                            Value::Props(vec![("RawData".into(), Value::Bytes(raw))]),
+                        )]),
+                    )]),
+                ),
+            ])
+        }
+        let cage_guid: Guid = [7u8; 16];
+        let global_guid: Guid = [9u8; 16];
+        let elements = Value::Array(vec![
+            machine("DisplayCharacter", cage_guid),
+            machine("GlobalPalStorage", global_guid),
+            Value::Props(vec![("MapObjectId".into(), Value::Str("PalBoxV2".into()))]),
+        ]);
+        let (cages, global) = storage_ids_from_elements(&elements);
+        assert_eq!(cages.len(), 1);
+        assert!(cages.contains(&cage_guid));
+        assert_eq!(global.len(), 1);
+        assert!(global.contains(&global_guid));
+    }
 }

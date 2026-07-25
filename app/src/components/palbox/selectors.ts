@@ -267,6 +267,10 @@ export interface PlayerContainers {
   party: OwnedPal[];
   palbox: OwnedPal[];
   dimensional: OwnedPal[];
+  /** World-shared Global Pal Storage machine(s) — own bucket, not folded. */
+  global: OwnedPal[];
+  /** Viewing cages (display pedestals); pals remain owned + solver-visible. */
+  cage: OwnedPal[];
 }
 
 /** Split all pals owned by / stored for one player by container kind. */
@@ -277,18 +281,18 @@ export function playerContainers(
   const party: OwnedPal[] = [];
   const palbox: OwnedPal[] = [];
   const dimensional: OwnedPal[] = [];
+  const global: OwnedPal[] = [];
+  const cage: OwnedPal[] = [];
   for (const p of pals) {
     const owner = p.owner_player_uid ? hexGuid(p.owner_player_uid) : null;
     if (owner !== playerUidHex) continue;
     if (p.container_kind === "Party") party.push(p);
     else if (p.container_kind === "Palbox") palbox.push(p);
-    else if (
-      p.container_kind === "DimensionalPalStorage" ||
-      p.container_kind === "GlobalPalStorage"
-    )
-      dimensional.push(p);
+    else if (p.container_kind === "DimensionalPalStorage") dimensional.push(p);
+    else if (p.container_kind === "GlobalPalStorage") global.push(p);
+    else if (p.container_kind === "ViewingCage") cage.push(p);
   }
-  return { party, palbox, dimensional };
+  return { party, palbox, dimensional, global, cage };
 }
 
 /**

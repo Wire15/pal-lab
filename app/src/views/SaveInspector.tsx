@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
 import { isAlpha, type NamedEntry, type OwnedPal, type SpeciesEntry } from "../lib/types";
 import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
@@ -27,7 +27,14 @@ import {
   type SortKey,
 } from "../components/palbox/selectors";
 
-type BoxSurface = "palbox" | "dimensional";
+type BoxSurface = "palbox" | "dimensional" | "global" | "cage";
+
+const SURFACE_LABEL: Record<BoxSurface, string> = {
+  palbox: "Palbox",
+  dimensional: "Dimensional",
+  global: "Global storage",
+  cage: "Viewing cages",
+};
 
 /** One IV talent for the list table: mono numeral tinted by band + quality bar. */
 function IvCell({ value }: { value: number }) {
@@ -50,6 +57,92 @@ function IvCell({ value }: { value: number }) {
 /** Column headers that map to a shared sort key are clickable; the rest are
  *  plain labels. Ordering for both modes comes from the one shared query. */
 const SORTABLE_COLUMNS: Partial<Record<SortKey, true>> = { name: true, level: true };
+
+/** One roster row — memoized so re-sorts, filter changes and selection moves
+ *  only re-render the rows that actually changed (a 637-row list otherwise
+ *  re-renders every row, each with an icon + IV cells + passive strips). Props
+ *  are stable: `pal` is a fixed object, `name` a resolved string, `onSelect` a
+ *  stable callback; only `selected` flips for the two rows a cursor move touches. */
+const RosterRow = memo(function RosterRow({
+  pal,
+  name,
+  selected,
+  onSelect,
+}: {
+  pal: OwnedPal;
+  name: string;
+  selected: boolean;
+  onSelect: (pal: OwnedPal) => void;
+}) {
+  const g = genderView(pal.gender);
+  return (
+    <tr
+      data-pal={palKey(pal)}
+      onClick={() => onSelect(pal)}
+      aria-selected={selected}
+      className={`cursor-pointer border-b border-line-soft transition-colors ${
+        selected ? "bg-hover" : "hover:bg-panel/70"
+      }`}
+    >
+      <td className="relative px-4 py-2">
+        {selected && (
+          <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-amber" />
+        )}
+        <div className="flex items-center gap-3">
+          <PalIcon id={pal.character_id} name={name} size={34} />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="truncate font-medium text-ink">{name}</span>
+              {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
+              {pal.rank > 0 && (
+                <span
+                  className="font-mono text-[11px] text-amber"
+                  title={`Condensation rank ${pal.rank}`}
+                >
+                  {"\u2605".repeat(pal.rank)}
+                </span>
+              )}
+            </div>
+            <div className="truncate font-mono text-[11px] text-ink-faint">
+              {pal.nickname ? `"${pal.nickname}"` : pal.character_id}
+            </div>
+          </div>
+        </div>
+      </td>
+      <td className="px-4 py-2">
+        <span className={`text-base leading-none ${g.className}`} title={g.label}>
+          {g.glyph}
+        </span>
+      </td>
+      <td className="px-4 py-2 text-right font-mono text-[13px] tabular-nums text-ink-dim">
+        {pal.level}
+      </td>
+      <td className="px-4 py-2">
+        <IvCell value={pal.ivs.hp} />
+      </td>
+      <td className="px-4 py-2">
+        <IvCell value={pal.ivs.attack} />
+      </td>
+      <td className="px-4 py-2">
+        <IvCell value={pal.ivs.defense} />
+      </td>
+      <td className="px-4 py-2">
+        <Tag>{containerLabel(pal.container_kind)}</Tag>
+      </td>
+      <td className="px-4 py-2">
+        {pal.passives.length > 0 ? (
+          <div className="flex max-w-[24rem] flex-col gap-1">
+            {pal.passives.map((p, i) => (
+              <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
+            ))}
+          </div>
+        ) : (
+          <span className="text-ink-faint">&mdash;</span>
+        )}
+      </td>
+    </tr>
+  );
+});
 
 function RosterTable({
   rows,
@@ -106,76 +199,15 @@ function RosterTable({
       </thead>
       <tbody>
         {rows.map((pal) => {
-          const g = genderView(pal.gender);
           const key = palKey(pal);
-          const isSelected = key === selectedKey;
           return (
-            <tr
+            <RosterRow
               key={key}
-              data-pal={key}
-              onClick={() => onSelect(pal)}
-              aria-selected={isSelected}
-              className={`cursor-pointer border-b border-line-soft transition-colors ${
-                isSelected ? "bg-hover" : "hover:bg-panel/70"
-              }`}
-            >
-              <td className="relative px-4 py-2">
-                {isSelected && (
-                  <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-amber" />
-                )}
-                <div className="flex items-center gap-3">
-                  <PalIcon id={pal.character_id} name={nameOf(pal)} size={34} />
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="truncate font-medium text-ink">{nameOf(pal)}</span>
-                      {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
-                      {pal.rank > 0 && (
-                        <span
-                          className="font-mono text-[11px] text-amber"
-                          title={`Condensation rank ${pal.rank}`}
-                        >
-                          {"\u2605".repeat(pal.rank)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="truncate font-mono text-[11px] text-ink-faint">
-                      {pal.nickname ? `"${pal.nickname}"` : pal.character_id}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-4 py-2">
-                <span className={`text-base leading-none ${g.className}`} title={g.label}>
-                  {g.glyph}
-                </span>
-              </td>
-              <td className="px-4 py-2 text-right font-mono text-[13px] tabular-nums text-ink-dim">
-                {pal.level}
-              </td>
-              <td className="px-4 py-2">
-                <IvCell value={pal.ivs.hp} />
-              </td>
-              <td className="px-4 py-2">
-                <IvCell value={pal.ivs.attack} />
-              </td>
-              <td className="px-4 py-2">
-                <IvCell value={pal.ivs.defense} />
-              </td>
-              <td className="px-4 py-2">
-                <Tag>{containerLabel(pal.container_kind)}</Tag>
-              </td>
-              <td className="px-4 py-2">
-                {pal.passives.length > 0 ? (
-                  <div className="flex max-w-[24rem] flex-col gap-1">
-                    {pal.passives.map((p, i) => (
-                      <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
-                    ))}
-                  </div>
-                ) : (
-                  <span className="text-ink-faint">&mdash;</span>
-                )}
-              </td>
-            </tr>
+              pal={pal}
+              name={nameOf(pal)}
+              selected={key === selectedKey}
+              onSelect={onSelect}
+            />
           );
         })}
       </tbody>
@@ -222,7 +254,7 @@ export default function SaveInspector() {
     () =>
       saveSummary
         ? playerContainers(saveSummary.pals, activeUid)
-        : { party: [], palbox: [], dimensional: [] },
+        : { party: [], palbox: [], dimensional: [], global: [], cage: [] },
     [saveSummary, activeUid],
   );
 
@@ -276,7 +308,12 @@ export default function SaveInspector() {
     return slotSize * (GRID_COLS + 1) + ROW_GAP + (GRID_COLS - 1) * SLOT_GAP;
   }, [slotSize]);
 
-  const active = isQueryActive(query);
+  // Typing in the search bar updates `query` synchronously (the FilterBar input
+  // stays instant); the expensive filtered/paged/roster derivations below read a
+  // DEFERRED copy so React renders them in an interruptible pass instead of
+  // blocking the keystroke on a full 637-row re-filter+re-render.
+  const dq = useDeferredValue(query);
+  const active = isQueryActive(dq);
 
   // The pool that both the list table and the shown/total counter range over:
   // the active player's own pals plus the (player-independent) base pals.
@@ -285,30 +322,39 @@ export default function SaveInspector() {
       ...containers.party,
       ...containers.palbox,
       ...containers.dimensional,
+      ...containers.global,
+      ...containers.cage,
       ...scopedBases.flatMap((b) => b.pals),
     ],
     [containers, scopedBases],
   );
 
   const shown = useMemo(
-    () => pool.filter((p) => matchesQuery(p, query, namesById, species)).length,
-    [pool, query, namesById, species],
+    () => pool.filter((p) => matchesQuery(p, dq, namesById, species)).length,
+    [pool, dq, namesById, species],
   );
 
   // Grid-mode surface pages for the active box surface.
   const pages: GridCell[][] = useMemo(() => {
-    const pals = surface === "palbox" ? containers.palbox : containers.dimensional;
-    if (active) return compactPages(applyQuery(pals, query, namesById, species));
+    const pals =
+      surface === "palbox"
+        ? containers.palbox
+        : surface === "global"
+          ? containers.global
+          : surface === "cage"
+            ? containers.cage
+            : containers.dimensional;
+    if (active) return compactPages(applyQuery(pals, dq, namesById, species));
     if (surface === "palbox") return physicalPages(pals);
     return dimensionalPages(pals).map((dp) =>
       dp.pals.map((pal, i) => ({ pal, cell: i })),
     );
-  }, [surface, containers, active, query, namesById, species]);
+  }, [surface, containers, active, dq, namesById, species]);
 
   // List-mode rows: the whole pool under the shared query.
   const rows = useMemo(
-    () => applyQuery(pool, query, namesById, species),
-    [pool, query, namesById, species],
+    () => applyQuery(pool, dq, namesById, species),
+    [pool, dq, namesById, species],
   );
 
   // The bar hides non-matches on EVERY surface (PALBOX decision 4), not just
@@ -318,16 +364,16 @@ export default function SaveInspector() {
     const slots = partySlots(containers.party);
     if (!active) return slots;
     return slots.map((p) =>
-      p && matchesQuery(p, query, namesById, species) ? p : null,
+      p && matchesQuery(p, dq, namesById, species) ? p : null,
     );
-  }, [containers.party, active, query, namesById, species]);
+  }, [containers.party, active, dq, namesById, species]);
 
   const visibleBases = useMemo(() => {
     if (!active) return scopedBases;
     return scopedBases
-      .map((b) => ({ ...b, pals: applyQuery(b.pals, query, namesById, species) }))
+      .map((b) => ({ ...b, pals: applyQuery(b.pals, dq, namesById, species) }))
       .filter((b) => b.pals.length > 0);
-  }, [scopedBases, active, query, namesById, species]);
+  }, [scopedBases, active, dq, namesById, species]);
 
   // Reset paging when the underlying page set changes (player / surface / query).
   // Land on the first box that actually holds a pal so a player whose pals sit
@@ -428,7 +474,13 @@ export default function SaveInspector() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedKey, navList, mode, pages.length, openPal]);
 
-  const hasDimensional = containers.dimensional.length > 0;
+  const surfaces = useMemo(() => {
+    const s: BoxSurface[] = ["palbox"];
+    if (containers.dimensional.length > 0) s.push("dimensional");
+    if (containers.global.length > 0) s.push("global");
+    if (containers.cage.length > 0) s.push("cage");
+    return s;
+  }, [containers]);
 
   return (
     <div className="flex h-full flex-col">
@@ -523,10 +575,10 @@ export default function SaveInspector() {
                   className="mx-auto flex w-full flex-col gap-6"
                   style={{ maxWidth: composeWidth }}
                 >
-                {/* Surface toggle (Palbox / Dimensional) */}
-                {hasDimensional && (
+                {/* Surface toggle (Palbox / Dimensional / Global / Cages) */}
+                {surfaces.length > 1 && (
                   <div className="flex items-center gap-1 self-start rounded-md border border-line p-0.5">
-                    {(["palbox", "dimensional"] as BoxSurface[]).map((s) => (
+                    {surfaces.map((s) => (
                       <button
                         key={s}
                         onClick={() => setSurface(s)}
@@ -537,7 +589,7 @@ export default function SaveInspector() {
                             : "text-ink-dim hover:bg-hover hover:text-ink"
                         }`}
                       >
-                        {s === "palbox" ? "Palbox" : "Dimensional"}
+                        {SURFACE_LABEL[s]}
                       </button>
                     ))}
                   </div>
@@ -568,7 +620,7 @@ export default function SaveInspector() {
                           ? "No pals match your filters."
                           : surface === "palbox"
                             ? "This player has no boxed pals."
-                            : "No dimensional storage pals."
+                            : `No ${SURFACE_LABEL[surface].toLowerCase()} pals.`
                       }
                     />
                   </div>

@@ -42,6 +42,18 @@ function readLastSaveDir(): string {
   }
 }
 
+/** Map a raw backend load error to friendly, actionable copy. Xbox / Game Pass
+ * saves use the CNK chunked-compression format the reader can't decode yet; the
+ * backend tags that variant with a stable "CNK" token, so detect it and explain
+ * the Steam-conversion path instead of surfacing a raw parse error. Everything
+ * else passes through unchanged. */
+function friendlySaveError(raw: string): string {
+  if (raw.includes("CNK")) {
+    return "This looks like an Xbox / Game Pass save (CNK format), which Pal Calc can't read yet \u2014 convert it to a Steam save with a tool like palworld-save-pal, or point at a Steam / dedicated-server save.";
+  }
+  return raw;
+}
+
 /** localStorage key for the recent-saves profile list (contract #Profiles). */
 const RECENT_SAVES_KEY = "pal-calc.recentSaves";
 /** Max recent-save rows kept, most-recent first. */
@@ -176,6 +188,9 @@ export interface AppState {
   saveSummary: SaveSummary | null;
   /** True while `loadSave` is in flight. */
   saveLoading: boolean;
+  /** True only during the one-shot boot auto-load of a persisted save. Gates the
+   * startup modal so it never flashes while the auto-load is in flight. */
+  booting: boolean;
   /** Last load error message, or null. */
   saveError: string | null;
   /** Per-species owned tally derived from `saveSummary` (null when no save). */
@@ -270,6 +285,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
   const [cake, setCakeState] = useState<CakeToken>(readCake);
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
+  // Boot auto-load: try the persisted save once on startup. `booting` starts
+  // true when a folder is persisted so the startup modal is suppressed until the
+  // auto-load resolves; `bootedRef` guards against StrictMode's double-invoke.
+  const [booting, setBooting] = useState<boolean>(() => readLastSaveDir() !== "");
+  const bootedRef = useRef(false);
   const [toast, setToast] = useState<{ text: string; nonce: number } | null>(
     null,
   );
@@ -365,7 +385,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       // No-op in plain-browser dev (no such command) — swallow the error.
       invoke("watch_save", { saveDir: trimmed }).catch(() => {});
     } catch (e) {
-      setSaveError(String(e));
+      setSaveError(friendlySaveError(String(e)));
       setSaveSummary(null);
       setSaveDir("");
     } finally {
@@ -435,6 +455,38 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("save-changed", handler);
   }, [reloadSave]);
 
+  // Boot auto-load (once): if a save folder is persisted, silently re-open it
+  // instead of showing the startup modal. Any failure (moved/deleted dir, Xbox
+  // CNK save, corrupt file) falls through to `saveError` + the modal via Shell —
+  // never a crash. Fresh installs (no persisted dir) skip straight to done.
+  useEffect(() => {
+    if (bootedRef.current) return;
+    bootedRef.current = true;
+    const dir = readLastSaveDir();
+    if (!dir) {
+      setBooting(false);
+      return;
+    }
+    loadSave(dir).finally(() => setBooting(false));
+  }, [loadSave]);
+
+  // Last-resort net for uncaught async failures (watcher reload rejects, event
+  // decode, stray promise rejections): surface a non-blocking toast so a
+  // background error never silently white-screens or is lost. Synchronous render
+  // errors are caught by the view ErrorBoundary, not here.
+  useEffect(() => {
+    const onError = () =>
+      showToast("Something went wrong \u2014 the app kept running.");
+    const onRejection = () =>
+      showToast("A background task failed \u2014 the app kept running.");
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, [showToast]);
+
   // Owned tally per species, mirroring the backend `roster_counts` command but
   // computed from the single cached summary so the dex never fetches again.
   // Player-scoped: under a scope only that player's pals count (null-owner /
@@ -489,6 +541,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       saveDir,
       saveSummary,
       saveLoading,
+      booting,
       saveError,
       roster,
       playerScope,
@@ -522,6 +575,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       saveDir,
       saveSummary,
       saveLoading,
+      booting,
       saveError,
       roster,
       playerScope,

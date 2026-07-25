@@ -2,6 +2,7 @@ mod mapstate;
 mod paldex;
 mod save;
 mod solver;
+mod updater;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -29,6 +30,8 @@ pub fn run() {
             paldex::breeding_parents,
             paldex::reverse_breeding,
             paldex::roster_counts,
+            updater::check_update,
+            updater::data_pack_info,
             mapstate::get_map_state
         ])
         .run(tauri::generate_context!())

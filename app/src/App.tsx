@@ -7,6 +7,8 @@ import IvLab from "./views/IvLab";
 import MapView from "./views/map/MapView";
 import { AppStateProvider, useAppState } from "./state";
 import { hexGuid } from "./components/palbox/selectors";
+import ErrorBoundary from "./components/error-boundary";
+import AboutButton from "./components/about-panel";
 import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
@@ -396,12 +398,13 @@ function Shell() {
     view,
     setView,
     saveSummary,
+    booting,
     toast,
     playerScope,
     scopePromptOpen,
     setScopePromptOpen,
   } = useAppState();
-  const [modalOpen, setModalOpen] = useState(() => saveSummary === null);
+  const [modalOpen, setModalOpen] = useState(false);
   // Human-readable label for the active scope pill: the player's name, or "All".
   const scopeLabel =
     playerScope === "all"
@@ -413,6 +416,13 @@ function Shell() {
   useEffect(() => {
     if (saveSummary) setModalOpen(false);
   }, [saveSummary]);
+
+  // Boot resolved with no save (fresh install, "Skip for now", or a failed
+  // auto-load whose error rides `saveError`) — open the startup modal. These
+  // deps change only once per boot, so dismissing the modal never re-triggers it.
+  useEffect(() => {
+    if (!booting && !saveSummary) setModalOpen(true);
+  }, [booting, saveSummary]);
 
   return (
     <div className="flex h-full bg-abyss text-ink">
@@ -520,19 +530,18 @@ function Shell() {
               Load save
             </button>
           )}
-          <div className="mt-2.5 flex items-center gap-2 px-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            <span className="h-1.5 w-1.5 rounded-full bg-good" />
-            Offline &middot; v0.2
-          </div>
+          <AboutButton />
         </div>
       </nav>
 
       <main className="flex-1 overflow-hidden">
-        {view === "save" && <SaveInspector />}
-        {view === "solver" && <Solver />}
-        {view === "ivlab" && <IvLab />}
-        {view === "paldex" && <Paldex />}
-        {view === "worldmap" && <MapView />}
+        <ErrorBoundary key={view} onReset={() => setView("save")}>
+          {view === "save" && <SaveInspector />}
+          {view === "solver" && <Solver />}
+          {view === "ivlab" && <IvLab />}
+          {view === "paldex" && <Paldex />}
+          {view === "worldmap" && <MapView />}
+        </ErrorBoundary>
       </main>
       {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
       {scopePromptOpen && (

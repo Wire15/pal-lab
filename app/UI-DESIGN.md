@@ -2212,3 +2212,50 @@ with a `Tower · reached` tooltip and the not-reached one full color, and with f
 and **em-dashes** off the image edge; (f) fog-off survives a reload
 (`mapFogOn="0"` round-trips). All other counts unchanged (FT 8/152, Effigies
 5/155, Bounties 29, Players 1, Markers 15, Bases 3). `bun run build` green.
+
+## Wave — v1.0 smoothness sweep (non-map views)
+
+A profile-first perf pass over the non-map views (map is done). Measured every
+listed interaction in the **release exe** against the real save (`testdata/save1`,
+scope ThatOneChad — 637 pals in the palbox pool, 1669 total) with an rAF
+frame-gap recorder + per-keystroke synchronous-scripting timer over CDP, fixed
+only what measurably janked, and re-measured. No visual/behavior changes; filter
+results and sort orders are byte-identical (deferred values converge to the same
+query; sort/`matchesQuery` logic untouched).
+
+**Fixes (each cites its before number):**
+- **`views/SaveInspector.tsx` — `useDeferredValue(query)` for the heavy
+  derivations + a memoized `RosterRow`.** The FilterBar `<input>` stays bound to
+  the live `query` (instant), while `rows`/`pages`/`shown`/`partyCells`/
+  `visibleBases` read a deferred copy, so a keystroke never blocks on a 637-row
+  re-filter+re-render. List-mode typing **19.7 → 1.9 ms** worst keystroke (1 jank
+  frame → 0); clear-to-full keystroke **71 → 0.2 ms** synchronous (the list
+  catch-up moves to a non-blocking deferred pass). `RosterRow` (`React.memo`,
+  stable `pal`/`name`/`selected`/`onSelect` props) means a sort or cursor move
+  only re-renders the rows that changed.
+- **`components/passive-strip.tsx` — `usePassiveRow` cache fast-path.** Once the
+  shared `list_passives` payload is cached (the common case), the hook resolves
+  synchronously and skips its per-strip effect/`setState`, so a passive-heavy
+  list (~2k strips in the 637-row roster) stops paying a redundant promise +
+  state churn per strip on mount. Combined with `RosterRow`, the list-mode
+  view-switch **mount dropped ~400 → ~220 ms** (paldex→save 366→206, map→save
+  411→240).
+- **`views/paldex/index-view.tsx` — memoized `DexTile`.** The 299-species grid
+  tile (portrait + hover card + element badges) is `React.memo`'d with stable
+  props, so a re-sort reorders keyed tiles without re-rendering their internals:
+  dex **sort 57 → 36 ms**. (Residual is the inherent 299-node DOM reorder.)
+- **`views/paldex/moves-view.tsx` — memoized `MoveRow`** (+ stable `onToggle`/
+  `registerRow` callbacks and a shared `NO_LEARNERS` empty array so props stay
+  referentially stable): moves **sort 49 → 34 ms**, jank frame eliminated.
+
+**Measured fine — left alone (honest no-ops):** palbox grid-mode typing (4.5 ms)
+and grid/list **scroll** (0 jank both — so list virtualization was NOT warranted
+per the grid-scroll gate); dex filter typing (3.9 ms) and detail open (43 ms);
+moves filter typing; passive-picker typing (1.7 ms); solver plan-tab switch
+(8–10 ms) and the Graph pan/zoom (own imperative-transform impl, 0 jank); IV Lab
+sliders (0.7–1.7 ms, 0 jank even with a plan graph mounted). The **Pal-dex
+mount** (~85 ms to render 299 tiles on every switch) and the residual ~220 ms
+**list-mode** roster mount are fresh-mount costs that `memo`/`useDeferredValue`
+can't erase; the sanctioned deeper fix (row/tile virtualization) is gated off by
+the grid-scroll criterion (scroll doesn't jank), so both are documented rather
+than force-fixed. `bun run build` green.

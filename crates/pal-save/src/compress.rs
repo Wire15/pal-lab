@@ -182,4 +182,23 @@ mod tests {
             other => panic!("expected compression error, got {other:?}"),
         }
     }
+
+    /// A `CNK`-magic (Xbox / Game Pass chunked) save must surface as the
+    /// distinct `NotSupportedYet` variant — not a generic `Compression` error —
+    /// so the UI can show the convert-to-Steam guidance. Synthetic 12-byte
+    /// header: uncompressed_len=64, compressed_len=0, magic=b"CNK", type=0x31.
+    #[test]
+    fn cnk_magic_detected_as_not_supported() {
+        let mut data = Vec::with_capacity(HEADER_LEN);
+        data.extend_from_slice(&64u32.to_le_bytes());
+        data.extend_from_slice(&0u32.to_le_bytes());
+        data.extend_from_slice(b"CNK");
+        data.push(0x31);
+        match decompress_sav(&data) {
+            Err(SaveError::NotSupportedYet(msg)) => {
+                assert!(msg.contains("CNK"), "unexpected message: {msg}");
+            }
+            other => panic!("expected NotSupportedYet, got {other:?}"),
+        }
+    }
 }
