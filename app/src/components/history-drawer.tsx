@@ -9,12 +9,10 @@
 // solves (zero plans) are never recorded (that policy lives in the caller).
 
 import { useEffect, useState } from "react";
-import type { SolveRequest, SolveResponse } from "../lib/types";
+import type { IvThresholds, SolveRequest, SolveResponse } from "../lib/types";
 import { formatDuration } from "../lib/ui";
 import { PalIcon } from "./primitives";
 
-/** localStorage key for the persisted solve-history list. */
-const STORAGE_KEY = "pal-lab.solveHistory";
 /** Max history rows kept, most-recent first; older ones are evicted. */
 const CAP = 20;
 
@@ -32,9 +30,9 @@ export interface SolveHistoryEntry {
   activePlan: number;
 }
 
-function readAll(): SolveHistoryEntry[] {
+function readAll(storageKey: string): SolveHistoryEntry[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     if (!raw) return [];
     const arr = JSON.parse(raw);
     return Array.isArray(arr) ? (arr as SolveHistoryEntry[]) : [];
@@ -43,22 +41,23 @@ function readAll(): SolveHistoryEntry[] {
   }
 }
 
-function writeAll(list: SolveHistoryEntry[]): void {
+function writeAll(storageKey: string, list: SolveHistoryEntry[]): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    localStorage.setItem(storageKey, JSON.stringify(list));
   } catch {
     /* storage full / disabled — history is best-effort */
   }
 }
 
 /** All history entries, most-recent first. */
-export function listSolveHistory(): SolveHistoryEntry[] {
-  return readAll().sort((a, b) => b.timestamp - a.timestamp);
+export function listSolveHistory(storageKey: string): SolveHistoryEntry[] {
+  return readAll(storageKey).sort((a, b) => b.timestamp - a.timestamp);
 }
 
 /** Record a completed successful solve: prepend it, cap at 20 (evict oldest),
  *  persist. The caller guarantees the solve produced at least one plan. */
 export function pushHistoryEntry(input: {
+  storageKey: string;
   request: SolveRequest;
   response: SolveResponse;
   activePlan: number;
@@ -71,14 +70,14 @@ export function pushHistoryEntry(input: {
     response: input.response,
     activePlan: input.activePlan,
   };
-  const next = [entry, ...readAll()].slice(0, CAP);
-  writeAll(next);
+  const next = [entry, ...readAll(input.storageKey)].slice(0, CAP);
+  writeAll(input.storageKey, next);
   return entry;
 }
 
 /** Drop the whole history list. */
-export function clearSolveHistory(): void {
-  writeAll([]);
+export function clearSolveHistory(storageKey: string): void {
+  writeAll(storageKey, []);
 }
 
 /** Compact relative-time label ("just now", "3h ago", "2w ago"). */
@@ -107,13 +106,33 @@ function CloseGlyph() {
   );
 }
 
+/** Compact IV-floor summary for a history row ("HP≥80 · ATK≥90"), or null when
+ *  no stat floor was set. Drives the IV Lab drawer's request-summary chip. */
+function ivFloorLabel(ivs?: IvThresholds): string | null {
+  if (!ivs) return null;
+  const parts: string[] = [];
+  if (ivs.hp > 0) parts.push(`HP\u2265${ivs.hp}`);
+  if (ivs.attack > 0) parts.push(`ATK\u2265${ivs.attack}`);
+  if (ivs.defense > 0) parts.push(`DEF\u2265${ivs.defense}`);
+  return parts.length > 0 ? parts.join(" \u00b7 ") : null;
+}
+
 export interface HistoryDrawerProps {
   open: boolean;
   onClose: () => void;
   /** Species name -> id, for the target icon. */
   nameToId: Map<string, string>;
-  /** Restore an entry as the current solve session. */
+  /** Restore an entry as the current session. */
   onRestore: (entry: SolveHistoryEntry) => void;
+  /** localStorage key this drawer's list is persisted under. */
+  storageKey: string;
+  /** Drawer heading (h2 label). */
+  title: string;
+  /** Dialog aria-label. */
+  ariaLabel: string;
+  /** Which view owns this drawer — selects the request-summary meta chips
+   *  (source pool for the Solver, IV floors for the IV Lab). */
+  variant: "solver" | "ivlab";
 }
 
 export function HistoryDrawer({
@@ -121,10 +140,14 @@ export function HistoryDrawer({
   onClose,
   nameToId,
   onRestore,
+  storageKey,
+  title,
+  ariaLabel,
+  variant,
 }: HistoryDrawerProps) {
   const [entries, setEntries] = useState<SolveHistoryEntry[]>([]);
 
-  const reload = () => setEntries(listSolveHistory());
+  const reload = () => setEntries(listSolveHistory(storageKey));
 
   // Re-read storage each time the drawer opens (a solve may have landed while it
   // was closed).
@@ -143,7 +166,7 @@ export function HistoryDrawer({
   }, [open, onClose]);
 
   function clearAll() {
-    clearSolveHistory();
+    clearSolveHistory(storageKey);
     reload();
   }
 
@@ -159,7 +182,7 @@ export function HistoryDrawer({
       />
       <aside
         role="dialog"
-        aria-label="Solve history"
+        aria-label={ariaLabel}
         aria-hidden={!open}
         className={`fixed right-0 top-0 z-50 flex h-full w-[400px] max-w-full flex-col border-l border-line bg-panel transition-transform duration-200 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
@@ -172,7 +195,7 @@ export function HistoryDrawer({
               History
             </div>
             <h2 className="font-display text-base font-bold tracking-wide text-ink">
-              Recent solves
+              {title}
             </h2>
           </div>
           <div className="flex items-center gap-1.5">
@@ -273,9 +296,16 @@ export function HistoryDrawer({
                         <span className="text-ink-faint">
                           {(r.max_steps ?? 5)} step cap
                         </span>
-                        <span className="text-ink-faint">
-                          {r.include_wild ? "owned + wild" : "owned"}
-                        </span>
+                        {variant === "solver" && (
+                          <span className="text-ink-faint">
+                            {r.include_wild ? "owned + wild" : "owned"}
+                          </span>
+                        )}
+                        {variant === "ivlab" && ivFloorLabel(r.ivs) && (
+                          <span className="text-ink-faint">
+                            {ivFloorLabel(r.ivs)}
+                          </span>
+                        )}
                         {(r.cake ?? "normal") !== "normal" && (
                           <span className="text-ink-faint">{r.cake} cake</span>
                         )}

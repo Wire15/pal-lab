@@ -6,7 +6,7 @@
 // strategy note, and a BEST DONORS scan of the owned pals that could seed the
 // line. Farm setup + cake are shared with the Solver via useBreedingSetup().
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   CakeToken,
   IvModel,
@@ -26,6 +26,12 @@ import { useSolve } from "../lib/use-solve";
 import { SolveProgress } from "../components/solve-progress";
 import { usePlanActions } from "../components/plan-actions";
 import { PalHoverCard } from "../components/pal-hover-card";
+import {
+  HistoryDrawer,
+  pushHistoryEntry,
+  type SolveHistoryEntry,
+} from "../components/history-drawer";
+import { NoPathPanel } from "../components/no-path-panel";
 
 const STAT_KEYS: readonly StatKey[] = ["hp", "attack", "defense"];
 const STAT_LABEL: Record<StatKey, string> = {
@@ -179,7 +185,8 @@ function DonorRow({
 }
 
 export default function IvLab() {
-  const { saveDir, saveSummary, requestDex, playerScope } = useAppState();
+  const { saveDir, saveSummary, requestDex, playerScope, ivLabSession, setIvLabSession } =
+    useAppState();
   const { setup, cake, setCake } = useBreedingSetup();
 
   const [species, setSpecies] = useState("");
@@ -188,12 +195,14 @@ export default function IvLab() {
   const [maxSteps, setMaxSteps] = useState(5);
   const [ivModel, setIvModel] = useState<IvModel>("empirical");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const {
     speciesList,
     nameToId,
     plans,
     fallbackUsed,
+    diagnosis,
     error,
     solving,
     progress,
@@ -208,6 +217,7 @@ export default function IvLab() {
     restoredFrom,
     rehydrate,
     solve,
+    restoreSession,
     reset,
   } = useSolve();
 
@@ -257,14 +267,35 @@ export default function IvLab() {
 
   // IV Lab sends only its own field set ({ ivs, iv_model }); the hook injects
   // the shared setup/cake.
-  function runSolve() {
-    return solve({
+  async function runSolve() {
+    const outcome = await solve({
       target_species: species,
       required_passives: passives,
       max_steps: maxSteps,
       ivs,
       iv_model: ivModel,
     });
+    if (!outcome) return; // errored or cancelled — nothing to record
+    const timestamp = Date.now();
+    // Lift the fresh result into the IV Lab's own session slot so it survives
+    // navigation. A new solve always lands on the first plan tab.
+    setIvLabSession({
+      request: outcome.request,
+      response: outcome.response,
+      activePlan: 0,
+      timestamp,
+      saveDir,
+    });
+    // Record successful solves only (a zero-plan "no line" is not history-worthy).
+    if (outcome.response.plans.length > 0) {
+      pushHistoryEntry({
+        storageKey: "pal-lab.ivLabHistory",
+        request: outcome.request,
+        response: outcome.response,
+        activePlan: 0,
+        timestamp,
+      });
+    }
   }
 
   // RESET the query: clear the target, IV thresholds, passives and max-steps,
@@ -278,6 +309,7 @@ export default function IvLab() {
     setMaxSteps(5);
     closeNaming();
     reset();
+    setIvLabSession(null);
   }
 
   // Sync the briefing form to a saved/imported request (target + IV briefing).
@@ -289,6 +321,49 @@ export default function IvLab() {
     setIvs(r.ivs ?? { hp: 0, attack: 0, defense: 0 });
     setIvModel(r.iv_model ?? "empirical");
   }
+
+  // User-driven plan-tab switch: update the live view AND the stored session so
+  // the tab the user left on is what a navigation return restores. Internal
+  // resets (fresh solve / save switch) go through the hook's own setter.
+  function selectPlan(i: number) {
+    setActivePlan(i);
+    setIvLabSession((prev) => (prev ? { ...prev, activePlan: i } : prev));
+  }
+
+  // Restore an IV LAB HISTORY entry as the current session. Does NOT record a
+  // new entry; a later re-solve appends as usual. Tagged with the live save so
+  // navigation restore treats it as the current session.
+  function restoreFromHistory(entry: SolveHistoryEntry) {
+    applyRequestToForm(entry.request);
+    restoreSession(entry);
+    setIvLabSession({
+      request: entry.request,
+      response: entry.response,
+      activePlan: entry.activePlan,
+      timestamp: entry.timestamp,
+      saveDir,
+    });
+  }
+
+  // Restore the current IV Lab session when returning after a view switch (the
+  // view unmounts on nav), so plans/graph/active tab survive without re-solving.
+  // Runs once per real mount; guarded to the same save. The ref makes it
+  // StrictMode-safe (its double-invoke mount fires the effect twice).
+  const sessionRestored = useRef(false);
+  useEffect(() => {
+    if (sessionRestored.current) return;
+    sessionRestored.current = true;
+    if (
+      ivLabSession &&
+      ivLabSession.saveDir === saveDir &&
+      !plans &&
+      !solving
+    ) {
+      applyRequestToForm(ivLabSession.request);
+      restoreSession(ivLabSession);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { headerButtons, banners, drawer, closeNaming } = usePlanActions({
     plans,
@@ -319,14 +394,24 @@ export default function IvLab() {
               Stat breeding
             </h1>
           </div>
-          <button
-            type="button"
-            onClick={resetForm}
-            title="Clear target, IV floors and passives (keeps breeding setup & cake)"
-            className="mt-0.5 shrink-0 rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
-          >
-            Reset
-          </button>
+          <div className="mt-0.5 flex shrink-0 items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setHistoryOpen(true)}
+              title="Recent IV lines — reopen a previous solve"
+              className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/50 hover:text-amber focus-visible:border-amber/50 focus-visible:text-amber"
+            >
+              History
+            </button>
+            <button
+              type="button"
+              onClick={resetForm}
+              title="Clear target, IV floors and passives (keeps breeding setup & cake)"
+              className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
+            >
+              Reset
+            </button>
+          </div>
         </div>
 
         <label className="flex flex-col gap-1.5">
@@ -592,13 +677,17 @@ export default function IvLab() {
         )}
 
         {plans && plans.length === 0 && (
-          <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-            <div className="font-display text-lg text-ink-dim">No line found</div>
-            <p className="max-w-xs text-sm text-ink-faint">
-              No breeding chain reaches those IV floors within {maxSteps} steps.
-              Loosen a threshold, raise max steps, or try a cake with an IV floor.
-            </p>
-          </div>
+          <NoPathPanel
+            diagnosis={diagnosis}
+            maxSteps={maxSteps}
+            title="No line found"
+            fallback={
+              <p className="max-w-xs text-sm text-ink-faint">
+                No breeding chain reaches those IV floors within {maxSteps} steps.
+                Loosen a threshold, raise max steps, or try a cake with an IV floor.
+              </p>
+            }
+          />
         )}
 
         {plans && plans.length > 0 && (
@@ -618,7 +707,7 @@ export default function IvLab() {
                       type="button"
                       role="tab"
                       aria-selected={on}
-                      onClick={() => setActivePlan(i)}
+                      onClick={() => selectPlan(i)}
                       className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-colors ${
                         on
                           ? "border-amber/50 bg-amber/10 text-amber"
@@ -710,6 +799,16 @@ export default function IvLab() {
           </>
         )}
         {drawer}
+        <HistoryDrawer
+          open={historyOpen}
+          onClose={() => setHistoryOpen(false)}
+          nameToId={nameToId}
+          onRestore={restoreFromHistory}
+          storageKey="pal-lab.ivLabHistory"
+          title="Recent IV lines"
+          ariaLabel="IV line history"
+          variant="ivlab"
+        />
       </section>
     </div>
   );

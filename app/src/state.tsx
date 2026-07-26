@@ -293,6 +293,14 @@ export interface AppState {
   /** Replace / clear the current solve session (React setState, so it accepts a
    * functional updater for in-place activePlan syncing). */
   setSolveSession: React.Dispatch<React.SetStateAction<SolveSession | null>>;
+  /** The current IV Lab result session — the IV Lab's own slot, structurally
+   * identical to {@link solveSession} but never shared with the Solver, so
+   * switching between the two views never clobbers or mixes their sessions.
+   * Null before the first IV solve / after an IV Lab RESET. */
+  ivLabSession: SolveSession | null;
+  /** Replace / clear the current IV Lab session (accepts a functional updater
+   * for in-place activePlan syncing). */
+  setIvLabSession: React.Dispatch<React.SetStateAction<SolveSession | null>>;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -315,6 +323,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
   // Lifted Solver result session (survives view switches; see AppState.solveSession).
   const [solveSession, setSolveSession] = useState<SolveSession | null>(null);
+  // Lifted IV Lab result session — its own slot, independent of solveSession
+  // (see AppState.ivLabSession) so the two views never clobber each other.
+  const [ivLabSession, setIvLabSession] = useState<SolveSession | null>(null);
   // Boot auto-load: try the persisted save once on startup. `booting` starts
   // true when a folder is persisted so the startup modal is suppressed until the
   // auto-load resolves; `bootedRef` guards against StrictMode's double-invoke.
@@ -602,6 +613,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setCake,
       solveSession,
       setSolveSession,
+      ivLabSession,
+      setIvLabSession,
     }),
     [
       saveDir,
@@ -636,6 +649,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setSetup,
       setCake,
       solveSession,
+      ivLabSession,
     ],
   );
 

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   BreedingPlan,
   Guid,
-  NoPathReason,
   PlanNode,
   QueueItemResult,
   QueueResponse,
@@ -36,28 +35,10 @@ import {
   pushHistoryEntry,
   type SolveHistoryEntry,
 } from "../components/history-drawer";
+import { NoPathPanel } from "../components/no-path-panel";
 
 /** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
 type CatchingMode = NonNullable<SolveRequest["catching"]>;
-
-/** One actionable line of no-path copy per structured diagnosis reason. Terse,
- *  mono voice; the render branch lists one row per reason. */
-function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
-  switch (reason.kind) {
-    case "missing_passive_carrier":
-      return `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
-    case "target_species_unreachable":
-      return reason.min_steps == null
-        ? `Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.`
-        : `Target isn't reachable from your pals. Breedable in ${reason.min_steps} steps from species you don't own — add a source pal or include pals you don't own.`;
-    case "step_cap_too_low":
-      return `Reachable in ${reason.needed} steps but cap is ${reason.cap} — raise Max steps to ${reason.needed}.`;
-    case "gender_bottleneck":
-      return `Every ${reason.species_name} you own shares one gender, so no pair can breed — add an opposite-gender ${reason.species_name} or include pals you don't own.`;
-    case "exhausted_search":
-      return `No viable pairing in your pool reaches the target within ${maxSteps} steps. Try raising Max steps, relaxing passives, or including pals you don't own.`;
-  }
-}
 
 /** One wild species the active plan needs caught, aggregated across the tree. */
 interface CatchChip {
@@ -800,6 +781,7 @@ export default function Solver() {
     // Record successful solves only (a zero-plan "no path" is not history-worthy).
     if (outcome.response.plans.length > 0) {
       pushHistoryEntry({
+        storageKey: "pal-lab.solveHistory",
         request: outcome.request,
         response: outcome.response,
         activePlan: 0,
@@ -1170,26 +1152,17 @@ export default function Solver() {
             {plans && plans.length === 0 && (
               <>
                 {!pinsSatisfied && <PinsUnsatisfiedBanner />}
-                <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-                  <div className="font-display text-lg text-ink-dim">No path found</div>
-                  {diagnosis.length > 0 ? (
-                    <ul className="flex max-w-md flex-col gap-2 text-left">
-                      {diagnosis.map((reason, i) => (
-                        <li
-                          key={i}
-                          className="rounded-md border border-line bg-abyss/40 px-3 py-2 text-sm text-ink-faint"
-                        >
-                          {diagnosisCopy(reason, maxSteps)}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
+                <NoPathPanel
+                  diagnosis={diagnosis}
+                  maxSteps={maxSteps}
+                  title="No path found"
+                  fallback={
                     <p className="max-w-xs text-sm text-ink-faint">
                       No breeding chain reaches that target within {maxSteps} steps. Try
                       raising max steps or including pals you don&rsquo;t own.
                     </p>
-                  )}
-                </div>
+                  }
+                />
               </>
             )}
 
@@ -1233,6 +1206,10 @@ export default function Solver() {
           onClose={() => setHistoryOpen(false)}
           nameToId={nameToId}
           onRestore={restoreFromHistory}
+          storageKey="pal-lab.solveHistory"
+          title="Recent solves"
+          ariaLabel="Solve history"
+          variant="solver"
         />
       </section>
     </div>
