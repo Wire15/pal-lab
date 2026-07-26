@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   BreedingPlan,
   Guid,
+  NoPathReason,
   PlanNode,
   QueueItemResult,
   QueueResponse,
@@ -30,9 +31,33 @@ import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel } from "../components/plan-node-panel";
 import { SolveProgress } from "../components/solve-progress";
 import { usePlanActions } from "../components/plan-actions";
+import {
+  HistoryDrawer,
+  pushHistoryEntry,
+  type SolveHistoryEntry,
+} from "../components/history-drawer";
 
 /** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
 type CatchingMode = NonNullable<SolveRequest["catching"]>;
+
+/** One actionable line of no-path copy per structured diagnosis reason. Terse,
+ *  mono voice; the render branch lists one row per reason. */
+function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
+  switch (reason.kind) {
+    case "missing_passive_carrier":
+      return `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
+    case "target_species_unreachable":
+      return reason.min_steps == null
+        ? `Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.`
+        : `Target isn't reachable from your pals. Breedable in ${reason.min_steps} steps from species you don't own — add a source pal or include pals you don't own.`;
+    case "step_cap_too_low":
+      return `Reachable in ${reason.needed} steps but cap is ${reason.cap} — raise Max steps to ${reason.needed}.`;
+    case "gender_bottleneck":
+      return `Every ${reason.species_name} you own shares one gender, so no pair can breed — add an opposite-gender ${reason.species_name} or include pals you don't own.`;
+    case "exhausted_search":
+      return `No viable pairing in your pool reaches the target within ${maxSteps} steps. Try raising Max steps, relaxing passives, or including pals you don't own.`;
+  }
+}
 
 /** One wild species the active plan needs caught, aggregated across the tree. */
 interface CatchChip {
@@ -678,6 +703,8 @@ export default function Solver() {
     clearSolveTarget,
     requestDex,
     playerScope,
+    solveSession,
+    setSolveSession,
   } = useAppState();
   const [species, setSpecies] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
@@ -687,12 +714,14 @@ export default function Solver() {
   const [viewMode, setViewMode] = useState<"graph" | "list">("graph");
   const [pins, setPins] = useState<Guid[]>([]);
   const [queue, setQueue] = useState<QueueEntry[]>(readQueue);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const {
     speciesList,
     nameToId,
     plans,
     fallbackUsed,
+    diagnosis,
     pinsSatisfied,
     error,
     solving,
@@ -706,6 +735,7 @@ export default function Solver() {
     lastRequest,
     restoredFrom,
     rehydrate,
+    restoreSession,
     solve,
     queueResult,
     queueSolving,
@@ -754,8 +784,28 @@ export default function Solver() {
     };
   }
 
-  function runSolve() {
-    return solve(buildSpec());
+  async function runSolve() {
+    const outcome = await solve(buildSpec());
+    if (!outcome) return; // errored or cancelled — nothing to record
+    const timestamp = Date.now();
+    // Lift the fresh result into the store so it survives navigation. A new
+    // solve always lands on the first plan tab.
+    setSolveSession({
+      request: outcome.request,
+      response: outcome.response,
+      activePlan: 0,
+      timestamp,
+      saveDir,
+    });
+    // Record successful solves only (a zero-plan "no path" is not history-worthy).
+    if (outcome.response.plans.length > 0) {
+      pushHistoryEntry({
+        request: outcome.request,
+        response: outcome.response,
+        activePlan: 0,
+        timestamp,
+      });
+    }
   }
 
   // RESET the query: clear the target, passives, pins, and the results — restore
@@ -771,6 +821,7 @@ export default function Solver() {
     setCatching("breeding_only");
     closeNaming();
     reset();
+    setSolveSession(null);
   }
 
   function addPin(id: Guid) {
@@ -807,6 +858,51 @@ export default function Solver() {
     setPins(r.pinned_parents ?? []);
   }
 
+  // Restore the current solve session when returning to the Solver after a view
+  // switch (the view unmounts on nav), so plans/graph/active tab survive without
+  // re-solving. Runs once per real mount; guarded to the same save, and skipped
+  // when a dex "solve for this pal" jump is pre-filling a fresh target.
+  const sessionRestored = useRef(false);
+  useEffect(() => {
+    if (sessionRestored.current) return;
+    sessionRestored.current = true;
+    if (
+      solveTarget === null &&
+      solveSession &&
+      solveSession.saveDir === saveDir &&
+      !plans &&
+      !solving
+    ) {
+      applyRequestToForm(solveSession.request);
+      restoreSession(solveSession);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // User-driven plan-tab switch: update the live view AND the stored session so
+  // the tab the user left on is what a navigation return restores. Internal
+  // resets (fresh solve / save switch) go through the hook's own setter, so they
+  // never clobber the session here.
+  function selectPlan(i: number) {
+    setActivePlan(i);
+    setSolveSession((prev) => (prev ? { ...prev, activePlan: i } : prev));
+  }
+
+  // Restore a SOLVE HISTORY entry as the current session. Does NOT record a new
+  // entry (contract #4); a later re-solve appends as usual. Tagged with the live
+  // save so navigation restore treats it as the current session.
+  function restoreFromHistory(entry: SolveHistoryEntry) {
+    applyRequestToForm(entry.request);
+    restoreSession(entry);
+    setSolveSession({
+      request: entry.request,
+      response: entry.response,
+      activePlan: entry.activePlan,
+      timestamp: entry.timestamp,
+      saveDir,
+    });
+  }
+
   const { headerButtons, banners, drawer, closeNaming } = usePlanActions({
     plans,
     fallbackUsed,
@@ -835,14 +931,24 @@ export default function Solver() {
               Breeding plan
             </h1>
           </div>
-          <button
-            type="button"
-            onClick={resetForm}
-            title="Clear target, passives, pins and results (keeps breeding setup & queue)"
-            className="mt-0.5 shrink-0 rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
-          >
-            Reset
-          </button>
+          <div className="mt-0.5 flex shrink-0 items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setHistoryOpen(true)}
+              title="Recent solves — reopen a previous plan"
+              className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/50 hover:text-amber focus-visible:border-amber/50 focus-visible:text-amber"
+            >
+              History
+            </button>
+            <button
+              type="button"
+              onClick={resetForm}
+              title="Clear target, passives, pins and results (keeps breeding setup & queue)"
+              className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
+            >
+              Reset
+            </button>
+          </div>
         </div>
 
         <label className="flex flex-col gap-1.5">
@@ -1066,10 +1172,23 @@ export default function Solver() {
                 {!pinsSatisfied && <PinsUnsatisfiedBanner />}
                 <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
                   <div className="font-display text-lg text-ink-dim">No path found</div>
-                  <p className="max-w-xs text-sm text-ink-faint">
-                    No breeding chain reaches that target within {maxSteps} steps. Try
-                    raising max steps or including pals you don&rsquo;t own.
-                  </p>
+                  {diagnosis.length > 0 ? (
+                    <ul className="flex max-w-md flex-col gap-2 text-left">
+                      {diagnosis.map((reason, i) => (
+                        <li
+                          key={i}
+                          className="rounded-md border border-line bg-abyss/40 px-3 py-2 text-sm text-ink-faint"
+                        >
+                          {diagnosisCopy(reason, maxSteps)}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="max-w-xs text-sm text-ink-faint">
+                      No breeding chain reaches that target within {maxSteps} steps. Try
+                      raising max steps or including pals you don&rsquo;t own.
+                    </p>
+                  )}
                 </div>
               </>
             )}
@@ -1083,7 +1202,7 @@ export default function Solver() {
                   nameToId={nameToId}
                   requestDex={requestDex}
                   activePlan={activePlan}
-                  setActivePlan={setActivePlan}
+                  setActivePlan={selectPlan}
                   selection={selection}
                   setSelection={setSelection}
                   viewMode={viewMode}
@@ -1109,6 +1228,12 @@ export default function Solver() {
         )}
 
         {drawer}
+        <HistoryDrawer
+          open={historyOpen}
+          onClose={() => setHistoryOpen(false)}
+          nameToId={nameToId}
+          onRestore={restoreFromHistory}
+        />
       </section>
     </div>
   );

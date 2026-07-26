@@ -14,7 +14,7 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import type { BreedingPlan, SolveRequest } from "../lib/types";
-import type { RestoredInfo, RestoredPlan, SolveSpec } from "../lib/use-solve";
+import type { RestoredInfo, RestoredPlan, SolveOutcome, SolveSpec } from "../lib/use-solve";
 import {
   downloadBlob,
   encodePlanCode,
@@ -47,7 +47,7 @@ export interface UsePlanActionsInput {
   /** Restore a saved plan's result — from the shared {@link useSolve}. */
   rehydrate: (saved: RestoredPlan) => void;
   /** Re-solve a request live (import-code path); the hook re-injects setup/cake. */
-  solve: (spec: SolveSpec) => Promise<void>;
+  solve: (spec: SolveSpec) => Promise<SolveOutcome | null>;
   /** Apply a loaded / imported request back onto the view's own briefing form. */
   applyRequestToForm: (r: SolveRequest) => void;
 }

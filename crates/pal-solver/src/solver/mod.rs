@@ -3,6 +3,7 @@
 //! palcalc `PalCalc.Solver` (MIT) — see `DESIGN.md` and each submodule's header.
 
 pub mod config;
+pub mod diagnose;
 pub mod engine;
 pub mod progress;
 pub mod pruning;
@@ -14,6 +15,7 @@ pub mod spec;
 pub mod working_set;
 
 pub use config::{BreedingSetup, CakeKind, IvModel, SolverConfig};
+pub use diagnose::{diagnose_no_path, NoPathReason};
 pub use engine::{
     build_initial_content, solve, solve_modes, solve_modes_monitored, solve_reporting,
     solve_with_catching, solve_with_catching_monitored, Catching, ModeResult,

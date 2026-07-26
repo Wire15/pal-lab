@@ -34,6 +34,7 @@ import { formatDuration, genderView, probBand } from "../lib/ui";
 import { palIconUrl, UNKNOWN_ICON } from "../lib/assets";
 import { PalHoverCard } from "./pal-hover-card";
 import { BreedHoverCard } from "./breed-hover";
+import { BredHoverCard } from "./bred-hover";
 import { usePalByInstance } from "../lib/owned-lookup";
 import { Tag } from "./primitives";
 
@@ -162,7 +163,9 @@ function PalCircle({
       className="absolute flex flex-col items-center gap-1.5"
       style={{ left: laid.x - NODE_W / 2, top: laid.y - NODE_R, width: NODE_W }}
     >
-      {iconId ? (
+      {isBred ? (
+        <BredHoverCard node={node}>{trigger}</BredHoverCard>
+      ) : iconId ? (
         ownedInstance && owned ? (
           <PalHoverCard
             speciesId={iconId}

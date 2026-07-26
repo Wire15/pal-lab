@@ -17,9 +17,10 @@ use pal_data::gamedata::{BreedingBoostSource, BreedingEffect, PassiveTier};
 use pal_data::types::{Guid, OwnedPal};
 use pal_data::{ActiveSkill, GameData, LabResearch};
 use pal_solver::solver::{
-    resolve_passive, resolve_species, solve_queue_monitored, solve_with_catching_monitored,
-    BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel, ModeResult, QueueItem, SolveMonitor,
-    SolvePhase, SolveProgress, SolverConfig, TargetPal, TargetSpec,
+    diagnose_no_path, resolve_passive, resolve_species, solve_queue_monitored,
+    solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel,
+    ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase, SolveProgress, SolverConfig,
+    TargetPal, TargetSpec,
 };
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
@@ -96,6 +97,9 @@ pub struct SolveResponse {
     /// empty `plans`) only when pinning eliminated an otherwise-valid result;
     /// `true` when there are no pins or a pinned plan survived.
     pub pins_satisfied: bool,
+    /// Structured reasons the solve found no path. Empty when `plans` is
+    /// non-empty; populated (priority order) only when zero plans were returned.
+    pub diagnosis: Vec<NoPathReason>,
 }
 
 /// An `{id, name}` pair (internal id + English display name) for autocomplete.
@@ -329,7 +333,14 @@ fn run_with_progress(
     let pool = scope_owned(&save.pals, req.player_uid);
     match solve_with_catching_monitored(gd, &spec, &pool, &cfg, catching, monitor) {
         Ok(ModeResult { plans, fallback_used, pins_satisfied }) => {
-            Ok(SolveResponse { plans, fallback_used, pins_satisfied })
+            // Diagnose only when the search returned nothing (cheap static
+            // preconditions over the same scoped pool + resolved spec/config).
+            let diagnosis = if plans.is_empty() {
+                diagnose_no_path(gd, &spec, &pool, &cfg)
+            } else {
+                Vec::new()
+            };
+            Ok(SolveResponse { plans, fallback_used, pins_satisfied, diagnosis })
         }
         Err(_) => Err("cancelled".into()),
     }

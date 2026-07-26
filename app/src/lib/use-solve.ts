@@ -22,6 +22,7 @@ import { invoke, isFixtureMode, devListenProgress } from "./tauri";
 import type {
   BreedingPlan,
   NamedEntry,
+  NoPathReason,
   QueueResponse,
   SolveProgressEvent,
   SolveRequest,
@@ -68,6 +69,15 @@ export interface RestoredPlan extends RestoredInfo {
   activePlan: number;
 }
 
+/** What a live {@link UseSolve.solve} returns on completion: the exact frozen
+ *  request (shared setup/cake/player_uid baked in) and the response. Null when
+ *  the solve errored or was cancelled. Lets the caller snapshot the session /
+ *  push a history entry without re-deriving the request. */
+export interface SolveOutcome {
+  request: SolveRequest;
+  response: SolveResponse;
+}
+
 export interface UseSolve {
   /** Full species list from `list_species` (drives the datalist). */
   speciesList: NamedEntry[];
@@ -77,6 +87,9 @@ export interface UseSolve {
   plans: BreedingPlan[] | null;
   /** Whether a `breeding_only` solve fell back to catch-assisted plans. */
   fallbackUsed: boolean;
+  /** Structured no-path reasons from the last single solve (priority order).
+   *  Empty unless the solve returned zero plans. */
+  diagnosis: NoPathReason[];
   /** Whether the last single solve's `pinned_parents` constraint held. `false`
    *  (with empty `plans`) means pinning eliminated every otherwise-valid plan;
    *  defaults `true` (no pins, or a pinned plan survived). */
@@ -111,8 +124,17 @@ export interface UseSolve {
   /** Restore a saved plan's plans/activePlan into the view exactly as a live
    *  solve would, flagging the source so the header shows the staleness banner. */
   rehydrate: (saved: RestoredPlan) => void;
-  /** Run a solve for `spec`; the hook injects the shared setup/cake. */
-  solve: (spec: SolveSpec) => Promise<void>;
+  /** Restore a persisted solve session (navigation / solve-history restore) into
+   *  the view WITHOUT the staleness banner — same-session/same-save replay, not a
+   *  stale saved plan. Clears `restoredFrom`. */
+  restoreSession: (s: {
+    request: SolveRequest;
+    response: SolveResponse;
+    activePlan: number;
+  }) => void;
+  /** Run a solve for `spec`; the hook injects the shared setup/cake. Resolves to
+   *  the frozen request + response on completion, or null on error/cancel. */
+  solve: (spec: SolveSpec) => Promise<SolveOutcome | null>;
   /** Queue-solve result (one entry per target, seeded left-to-right), or null
    *  when not in queue mode. Non-null flips the Solver to its queue view. */
   queueResult: QueueResponse | null;
@@ -137,6 +159,7 @@ export function useSolve(): UseSolve {
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
   const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
   const [fallbackUsed, setFallbackUsed] = useState(false);
+  const [diagnosis, setDiagnosis] = useState<NoPathReason[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [solving, setSolving] = useState(false);
   const [activePlan, setActivePlan] = useState(0);
@@ -173,6 +196,7 @@ export function useSolve(): UseSolve {
     setError(null);
     setCancelled(false);
     setFallbackUsed(false);
+    setDiagnosis([]);
     setLastRequest(null);
     setRestoredFrom(null);
     setPinsSatisfied(true);
@@ -273,6 +297,7 @@ export function useSolve(): UseSolve {
     setProgress(null);
     setPlans(null);
     setFallbackUsed(false);
+    setDiagnosis([]);
     setRestoredFrom(null);
     setPinsSatisfied(true);
     // A single solve exits the queue view (they share the one results pane).
@@ -300,11 +325,14 @@ export function useSolve(): UseSolve {
       });
       setPlans(resp.plans);
       setFallbackUsed(resp.fallback_used);
+      setDiagnosis(resp.diagnosis ?? []);
       // Serde-defaults to `true` for responses predating the pin field.
       setPinsSatisfied(resp.pins_satisfied ?? true);
+      return { request: full, response: resp };
     } catch (e) {
       if (isCancelled(e)) setCancelled(true);
       else setError(String(e));
+      return null;
     } finally {
       unlisten?.();
       setProgress(null);
@@ -370,6 +398,7 @@ export function useSolve(): UseSolve {
     setSelection(null);
     setLastRequest(saved.request);
     setFallbackUsed(saved.response.fallback_used);
+    setDiagnosis(saved.response.diagnosis ?? []);
     setPinsSatisfied(saved.response.pins_satisfied ?? true);
     // Loading a saved single plan leaves the queue view.
     setQueueResult(null);
@@ -383,11 +412,35 @@ export function useSolve(): UseSolve {
     setPlans(saved.response.plans);
   }
 
+  // Restore a persisted session (navigation return, or a SOLVE HISTORY entry)
+  // into the view exactly as the live solve left it — but WITHOUT `restoredFrom`,
+  // since this is the same session replayed, not a stale saved plan. The saved
+  // active-plan index rides the ref so the reset-to-0 effect can't clobber it.
+  function restoreSession(s: {
+    request: SolveRequest;
+    response: SolveResponse;
+    activePlan: number;
+  }) {
+    setError(null);
+    setSolving(false);
+    setSelection(null);
+    setLastRequest(s.request);
+    setFallbackUsed(s.response.fallback_used);
+    setDiagnosis(s.response.diagnosis ?? []);
+    setPinsSatisfied(s.response.pins_satisfied ?? true);
+    setQueueResult(null);
+    setQueueError(null);
+    setRestoredFrom(null);
+    pendingActivePlan.current = s.activePlan;
+    setPlans(s.response.plans);
+  }
+
   return {
     speciesList,
     nameToId,
     plans,
     fallbackUsed,
+    diagnosis,
     pinsSatisfied,
     error,
     solving,
@@ -402,6 +455,7 @@ export function useSolve(): UseSolve {
     lastRequest,
     restoredFrom,
     rehydrate,
+    restoreSession,
     solve,
     queueResult,
     queueSolving,

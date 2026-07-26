@@ -353,6 +353,30 @@ export interface BreedingPlan {
   cake_count: number;
 }
 
+/** A structured reason the solver found no path, computed only when a solve
+ * returns zero plans. Internally tagged on `kind` (mirrors the Rust
+ * `NoPathReason` serde enum). Consumers discriminate on `kind`. */
+export type NoPathReason =
+  | {
+      kind: "missing_passive_carrier";
+      passive_id: string;
+      passive_name: string;
+      /** Echoes the request's include-wild flag. Even when true, wild catches
+       * cannot introduce this passive (it is not a species-innate guaranteed
+       * passive on any catchable species). */
+      wild_sourcing_enabled: boolean;
+    }
+  | {
+      kind: "target_species_unreachable";
+      /** Min breeding steps to the target from ANY species in the game:
+       * a number = breedable in principle from species you neither own nor can
+       * catch; null = not obtainable by breeding at all. */
+      min_steps: number | null;
+    }
+  | { kind: "step_cap_too_low"; needed: number; cap: number }
+  | { kind: "gender_bottleneck"; species_name: string }
+  | { kind: "exhausted_search" };
+
 /** Response from the `solve` command: the ranked breeding plans plus whether a
  * `"breeding_only"` request had to fall back to catch-assisted plans because no
  * pure owned-breeding path existed. `fallback_used` is always false for
@@ -365,6 +389,9 @@ export interface SolveResponse {
    * `true` when there are no pins or a pinned plan survived. Serde-defaults to
    * `true` for responses predating the field. */
   pins_satisfied?: boolean;
+  /** Structured no-path reasons (priority order), populated only when `plans`
+   * is empty. Absent on responses predating the field / legacy saved plans. */
+  diagnosis?: NoPathReason[];
 }
 
 /** One request in a `solve_queue` batch — a `SolveRequest` solved in order,

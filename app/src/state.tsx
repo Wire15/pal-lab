@@ -26,6 +26,8 @@ import type {
   CakeToken,
   RosterCounts,
   SaveSummary,
+  SolveRequest,
+  SolveResponse,
 } from "./lib/types";
 import { hexGuid } from "./components/palbox/selectors";
 
@@ -181,6 +183,24 @@ function readCake(): CakeToken {
   }
 }
 
+/** The current Solver result session, lifted out of the Solver view so it
+ * survives navigation (view switches unmount the view). Holds exactly what the
+ * results pane needs to re-render without re-solving: the full frozen request,
+ * the solve response (plans + fallback/pins flags), the active plan tab, the
+ * solve time, and the save it was solved against (so a stale session from
+ * another save is never restored). In-memory only — not persisted across app
+ * restarts (that is the SOLVE HISTORY localStorage layer's job). */
+export interface SolveSession {
+  request: SolveRequest;
+  response: SolveResponse;
+  /** Active plan tab index at last sync. */
+  activePlan: number;
+  /** Epoch-ms the solve completed. */
+  timestamp: number;
+  /** Save folder the session was solved against. */
+  saveDir: string;
+}
+
 export interface AppState {
   /** Currently-loaded save folder; empty until a save loads. */
   saveDir: string;
@@ -265,6 +285,14 @@ export interface AppState {
   setSetup: (setup: BreedingSetup) => void;
   /** Set the selected breeding cake. */
   setCake: (cake: CakeToken) => void;
+  /** The current Solver result session (request + plans + active tab), lifted
+   * here so it survives view switches. Null before the first solve / after a
+   * Solver RESET. The Solver restores from it on mount and writes to it on
+   * every solve and tab switch. */
+  solveSession: SolveSession | null;
+  /** Replace / clear the current solve session (React setState, so it accepts a
+   * functional updater for in-place activePlan syncing). */
+  setSolveSession: React.Dispatch<React.SetStateAction<SolveSession | null>>;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -285,6 +313,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
   const [cake, setCakeState] = useState<CakeToken>(readCake);
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
+  // Lifted Solver result session (survives view switches; see AppState.solveSession).
+  const [solveSession, setSolveSession] = useState<SolveSession | null>(null);
   // Boot auto-load: try the persisted save once on startup. `booting` starts
   // true when a folder is persisted so the startup modal is suppressed until the
   // auto-load resolves; `bootedRef` guards against StrictMode's double-invoke.
@@ -570,6 +600,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       cake,
       setSetup,
       setCake,
+      solveSession,
+      setSolveSession,
     }),
     [
       saveDir,
@@ -603,6 +635,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       cake,
       setSetup,
       setCake,
+      solveSession,
     ],
   );
 
