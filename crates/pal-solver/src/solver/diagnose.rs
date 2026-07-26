@@ -27,7 +27,7 @@ use crate::solver::spec::{TargetPal, TargetSpec};
 
 /// A structured reason the solver found no breeding path. Serialized internally
 /// tagged on `kind` (snake_case) for the frontend to discriminate.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum NoPathReason {
     /// A required passive that no pal in the scoped pool carries.
@@ -53,6 +53,13 @@ pub enum NoPathReason {
     /// None of the above proved: the pool + passive combination has no viable
     /// pairing under the current step cap.
     ExhaustedSearch {},
+    /// The search was aborted after hitting its wall-clock budget before
+    /// exploring the full space. This proves nothing about reachability: the
+    /// target may still be breedable. NOT emitted by [`diagnose_no_path`]
+    /// (which has no truncation knowledge) — the command layer injects it in
+    /// place of the static diagnosis when a budget-killed search returns no
+    /// plans.
+    SearchBudgetExhausted { budget_secs: f64 },
 }
 
 /// Species indices present in the owned pool.
@@ -401,6 +408,10 @@ mod tests {
                 r#"{"kind":"gender_bottleneck","species_name":"Wumpo"}"#,
             ),
             (NoPathReason::ExhaustedSearch {}, r#"{"kind":"exhausted_search"}"#),
+            (
+                NoPathReason::SearchBudgetExhausted { budget_secs: 120.0 },
+                r#"{"kind":"search_budget_exhausted","budget_secs":120.0}"#,
+            ),
         ];
         for (reason, want) in cases {
             assert_eq!(serde_json::to_string(&reason).unwrap(), want);

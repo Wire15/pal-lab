@@ -391,7 +391,6 @@ fn breed_pair(
     cfg: &SolverConfig,
     weights: &InheritanceWeights,
     ws: &WorkingSet,
-    step_index: u32,
     p1: &PalRef,
     p2: &PalRef,
 ) -> Vec<PalRef> {
@@ -430,12 +429,16 @@ fn breed_pair(
     let avail_optional: Vec<PassiveId> =
         spec.optional_passives.iter().filter(|id| pool_named.contains(*id)).cloned().collect();
 
-    let remaining = cfg.max_solver_iterations.saturating_sub(step_index + 1);
+    let child_steps = p1.num_breeding_steps() + p2.num_breeding_steps() + 1;
 
     for (child, r1, r2) in candidate_children(gd, p1, p2) {
-        // Reachability: skip children that cannot reach the target in time.
+        // Reachability budget: any final plan containing this child uses at
+        // least `child_steps + min_steps(child -> target)` breeding steps (the
+        // child's own subtree plus the breeding-graph-distance up-path to the
+        // target); if that exceeds `max_breeding_steps` the child can never
+        // appear in a result, so pruning it here is result-preserving.
         if let TargetPal::Species(t) = spec.pal {
-            if gd.min_steps(child, t) as u32 > remaining {
+            if gd.min_steps(child, t) as u32 + child_steps > cfg.max_breeding_steps {
                 continue;
             }
         }
@@ -485,6 +488,35 @@ fn breed_pair(
         }
     }
     out
+}
+
+/// Fold one bred chunk into the current step's reduction, in pair-lexicographic
+/// order: satisfied refs are recorded in `results`; every ref is offered to
+/// `step_best` (tie-keeps-incumbent). Folding chunk-by-chunk (rather than
+/// accumulating a step-wide candidate vec) bounds memory by the working-set key
+/// space instead of the candidate count — the insert order is identical to a
+/// single reduction over the concatenated chunks, so results are unchanged.
+fn fold_chunk(
+    part: Vec<PalRef>,
+    spec: &TargetSpec,
+    step_best: &mut WorkingSet,
+    results: &mut Vec<PalRef>,
+) {
+    for c in part {
+        if spec.is_satisfied_by(&c) {
+            results.push(c.clone());
+        }
+        step_best.insert(c);
+    }
+    // Results cap: a satisfied-heavy search can grow `results` without bound.
+    // Compact best-first to 1024 once past 4096. Determinism tradeoff:
+    // `prune_results` keeps best-first order and the same signature-collapse the
+    // final prune uses, so the returned top-N is unaffected except under a
+    // pathological >1024-way tie among distinct-signature best plans.
+    if results.len() > 4096 {
+        let compacted = crate::solver::pruning::prune_results(std::mem::take(results), 1024);
+        *results = compacted;
+    }
 }
 
 /// Every owned instance id reachable as a leaf of a reference tree (owned
@@ -546,7 +578,7 @@ pub fn solve_reporting(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
 ) -> (Vec<BreedingPlan>, bool) {
-    let (refs, pins_satisfied) =
+    let (refs, pins_satisfied, _truncated) =
         solve_core(gd, spec, owned, cfg, SolveMonitor::noop()).expect("noop monitor never cancels");
     (plans_of(gd, &refs, cfg.cake, cfg.cake.effective_iv_thresholds(spec)), pins_satisfied)
 }
@@ -562,7 +594,7 @@ fn solve_core(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
     monitor: SolveMonitor,
-) -> Result<(Vec<PalRef>, bool), SolveCancelled> {
+) -> Result<(Vec<PalRef>, bool, bool), SolveCancelled> {
     let mut spec = spec.clone();
     spec.normalize();
     // Mushroom/DeluxeVegetable cakes raise the egg's IV floor; model it by
@@ -613,24 +645,38 @@ fn solve_core(
     });
 
     // Incremental frontier: only breed pairs touching a ref added or improved in
-    // the PREVIOUS step. `breed_pair`'s only step-dependent behavior is the
-    // reachability prune (line ~433), which strictly tightens as `step` grows,
-    // and `WorkingSet` keeps the incumbent on ties — so a pair of two unchanged
-    // refs was already bred at an earlier step with a >= remaining budget and
-    // can yield nothing new. Skipping it is result-preserving. All seeded refs
-    // start on the frontier.
+    // the PREVIOUS step. `breed_pair` is now fully step-independent (its
+    // reachability prune is a function of the pair and the target, not the step)
+    // and deterministic, so a pair of two unchanged refs breeds identically to
+    // when it was last bred — its children are already in the working set
+    // (dominated on tie) and re-breeding yields nothing new. Skipping such pairs
+    // is result-preserving. All seeded refs start on the frontier.
     let mut frontier: HashSet<RefKey> = ws.iter().map(key_of).collect();
+
+    // Wall-clock search budget: bounds runaway searches (combinatorial pair
+    // growth) without touching the result set on searches that finish in time.
+    let start = std::time::Instant::now();
+    let over_budget = |start: &std::time::Instant| {
+        cfg.search_budget_secs > 0.0 && start.elapsed().as_secs_f64() > cfg.search_budget_secs
+    };
+    let mut truncated = false;
 
     for step in 0..cfg.max_solver_iterations {
         monitor.check()?;
+        // Budget check at the step boundary: stop expanding, finalize best-so-far.
+        if over_budget(&start) {
+            truncated = true;
+            break;
+        }
         let pals = ws.to_vec();
         let n = pals.len();
         let is_new: Vec<bool> = pals.iter().map(|r| frontier.contains(&key_of(r))).collect();
-        let pairs: Vec<(usize, usize)> = (0..n)
-            .flat_map(|i| (i + 1..n).map(move |j| (i, j)))
-            .filter(|&(i, j)| is_new[i] || is_new[j])
-            .collect();
-        let pairs_total = pairs.len() as u64;
+        let n_old = is_new.iter().filter(|&&b| !b).count();
+        // pairs_total = C(n,2) - C(n_old,2): all cross pairs minus the all-old
+        // pairs the `is_new[i] || is_new[j]` frontier filter drops. Computed
+        // arithmetically — the O(ws^2) pair vec is never materialized.
+        let c2 = |m: usize| (m as u64) * (m.saturating_sub(1) as u64) / 2;
+        let pairs_total = c2(n) - c2(n_old);
 
         // Step boundary (always emitted): batch sized, nothing bred yet.
         monitor.report(SolveProgress {
@@ -642,22 +688,55 @@ fn solve_core(
             working_set: ws.len(),
         });
 
-        // Breed the pair batch in fixed-size chunks. Each chunk is parallelized
-        // then appended in pair order, so `children` is byte-identical to a
-        // single `par_iter().collect()`; the boundary between chunks is where we
-        // poll cancellation and report intra-step progress.
-        let mut children: Vec<PalRef> = Vec::new();
-        let mut pairs_done: u64 = 0;
-        for chunk in pairs.chunks(PAIR_CHUNK) {
-            monitor.check()?;
-            let mut part: Vec<PalRef> = chunk
-                .par_iter()
+        // Breed lazily: stream pairs in pair-lexicographic (i, j) order into a
+        // buffer of at most PAIR_CHUNK, breed each full buffer in parallel, then
+        // fold it straight into `step_best` (per-chunk reduction). Per-chunk
+        // memory is bounded to ~PAIR_CHUNK pairs plus one chunk's candidates.
+        let breed = |buf: &[(usize, usize)]| -> Vec<PalRef> {
+            buf.par_iter()
                 .flat_map_iter(|&(i, j)| {
-                    breed_pair(gd, &spec, cfg, weights, &ws, step, &pals[i], &pals[j]).into_iter()
+                    breed_pair(gd, &spec, cfg, weights, &ws, &pals[i], &pals[j]).into_iter()
                 })
-                .collect();
-            children.append(&mut part);
-            pairs_done += chunk.len() as u64;
+                .collect()
+        };
+
+        let mut step_best = WorkingSet::new();
+        let mut pairs_done: u64 = 0;
+        let mut buf: Vec<(usize, usize)> = Vec::with_capacity(PAIR_CHUNK);
+        'chunks: for i in 0..n {
+            for j in (i + 1)..n {
+                if !(is_new[i] || is_new[j]) {
+                    continue;
+                }
+                buf.push((i, j));
+                if buf.len() == PAIR_CHUNK {
+                    monitor.check()?;
+                    let part = breed(&buf);
+                    pairs_done += buf.len() as u64;
+                    buf.clear();
+                    fold_chunk(part, &spec, &mut step_best, &mut results);
+                    monitor.report(SolveProgress {
+                        phase: SolvePhase::Step,
+                        step: step + 1,
+                        max_steps,
+                        pairs_done,
+                        pairs_total,
+                        working_set: ws.len(),
+                    });
+                    // Budget check at the chunk boundary.
+                    if over_budget(&start) {
+                        truncated = true;
+                        break 'chunks;
+                    }
+                }
+            }
+        }
+        // Trailing partial chunk (only when the budget did not already trip).
+        if !truncated && !buf.is_empty() {
+            monitor.check()?;
+            let part = breed(&buf);
+            pairs_done += buf.len() as u64;
+            fold_chunk(part, &spec, &mut step_best, &mut results);
             monitor.report(SolveProgress {
                 phase: SolvePhase::Step,
                 step: step + 1,
@@ -668,13 +747,10 @@ fn solve_core(
             });
         }
 
-        // Reduce to the best instance per key, then merge into the working set.
-        let mut step_best = WorkingSet::new();
-        for c in &children {
-            if spec.is_satisfied_by(c) {
-                results.push(c.clone());
-            }
-            step_best.insert(c.clone());
+        if truncated {
+            // Budget tripped mid-step: finalize with best-so-far results (already
+            // recorded during folding); no need to merge `step_best` into `ws`.
+            break;
         }
 
         // Merge, recording which keys were added/improved — next step's frontier.
@@ -711,7 +787,7 @@ fn solve_core(
     let pins_satisfied = spec.pinned_parents.is_empty() || !(had_results && results.is_empty());
 
     let pruned = crate::solver::pruning::prune_results(results, cfg.result_limit);
-    Ok((pruned, pins_satisfied))
+    Ok((pruned, pins_satisfied, truncated))
 }
 
 /// Catch policy for a wild-enabled solve (only consulted when
@@ -737,6 +813,10 @@ pub struct ModeResult {
     pub plans: Vec<BreedingPlan>,
     pub fallback_used: bool,
     pub pins_satisfied: bool,
+    /// Whether the search hit the wall-clock budget
+    /// ([`crate::solver::config::SolverConfig::search_budget_secs`]) and
+    /// finalized with best-so-far results instead of exhausting the frontier.
+    pub truncated: bool,
 }
 
 /// True for a bare wild ref — a "just catch the target" plan (ref-level mirror
@@ -765,7 +845,7 @@ pub fn solve_modes(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
     catching: Catching,
-) -> (Vec<PalRef>, bool, bool) {
+) -> (Vec<PalRef>, bool, bool, bool) {
     solve_modes_monitored(gd, spec, owned, cfg, catching, SolveMonitor::noop())
         .expect("noop monitor never cancels")
 }
@@ -780,21 +860,22 @@ pub fn solve_modes_monitored(
     cfg: &SolverConfig,
     catching: Catching,
     monitor: SolveMonitor,
-) -> Result<(Vec<PalRef>, bool, bool), SolveCancelled> {
+) -> Result<(Vec<PalRef>, bool, bool, bool), SolveCancelled> {
     if !cfg.include_wild {
-        let (refs, pins) = solve_core(gd, spec, owned, cfg, monitor)?;
-        return Ok((refs, false, pins));
+        let (refs, pins, trunc) = solve_core(gd, spec, owned, cfg, monitor)?;
+        return Ok((refs, false, pins, trunc));
     }
     match catching {
         Catching::Allowed => {
-            let (refs, pins) = solve_core(gd, spec, owned, cfg, monitor)?;
-            Ok((filter_trivial_wild_refs(refs), false, pins))
+            let (refs, pins, trunc) = solve_core(gd, spec, owned, cfg, monitor)?;
+            Ok((filter_trivial_wild_refs(refs), false, pins, trunc))
         }
         Catching::BreedingOnly => {
             let owned_cfg = SolverConfig { include_wild: false, ..cfg.clone() };
-            let (owned_refs, owned_pins) = solve_core(gd, spec, owned, &owned_cfg, monitor)?;
+            let (owned_refs, owned_pins, owned_trunc) =
+                solve_core(gd, spec, owned, &owned_cfg, monitor)?;
             if !owned_refs.is_empty() {
-                Ok((owned_refs, false, owned_pins))
+                Ok((owned_refs, false, owned_pins, owned_trunc))
             } else {
                 // No pure-owned path: re-run with catching allowed.
                 monitor.report(SolveProgress {
@@ -805,8 +886,8 @@ pub fn solve_modes_monitored(
                     pairs_total: 0,
                     working_set: 0,
                 });
-                let (wild_refs, wild_pins) = solve_core(gd, spec, owned, cfg, monitor)?;
-                Ok((filter_trivial_wild_refs(wild_refs), true, wild_pins))
+                let (wild_refs, wild_pins, wild_trunc) = solve_core(gd, spec, owned, cfg, monitor)?;
+                Ok((filter_trivial_wild_refs(wild_refs), true, wild_pins, wild_trunc))
             }
         }
     }
@@ -845,8 +926,8 @@ pub fn solve_with_catching_monitored(
     catching: Catching,
     monitor: SolveMonitor,
 ) -> Result<ModeResult, SolveCancelled> {
-    let (refs, fallback_used, pins_satisfied) =
+    let (refs, fallback_used, pins_satisfied, truncated) =
         solve_modes_monitored(gd, spec, owned, cfg, catching, monitor)?;
     let plans = plans_of(gd, &refs, cfg.cake, cfg.cake.effective_iv_thresholds(spec));
-    Ok(ModeResult { plans, fallback_used, pins_satisfied })
+    Ok(ModeResult { plans, fallback_used, pins_satisfied, truncated })
 }

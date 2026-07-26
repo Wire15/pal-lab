@@ -24,6 +24,8 @@ function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
       return `Every ${reason.species_name} you own shares one gender, so no pair can breed — add an opposite-gender ${reason.species_name} or include pals you don't own.`;
     case "exhausted_search":
       return `No viable pairing in your pool reaches the target within ${maxSteps} steps. Try raising Max steps, relaxing passives, or including pals you don't own.`;
+    case "search_budget_exhausted":
+      return `Search hit its ${reason.budget_secs}s budget before finishing — the target may still be reachable. Narrow the request (fewer passives, lower IV floors, fewer steps) and re-solve.`;
   }
 }
 

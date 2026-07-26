@@ -203,6 +203,7 @@ export default function IvLab() {
     plans,
     fallbackUsed,
     diagnosis,
+    searchTruncated,
     error,
     solving,
     progress,
@@ -693,6 +694,13 @@ export default function IvLab() {
         {plans && plans.length > 0 && (
           <>
             {banners}
+            {searchTruncated && (
+              <div className="border-b border-line-soft bg-abyss/40 px-4 py-1.5">
+                <span className="font-mono text-[11px] tabular-nums text-ink-faint">
+                  search truncated at time budget &mdash; plans shown may not be optimal
+                </span>
+              </div>
+            )}
             <div className="flex items-center gap-3 border-b border-line bg-panel px-4 py-2">
               <div
                 className="flex flex-wrap items-center gap-1"

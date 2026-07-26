@@ -208,6 +208,13 @@ pub struct SolverConfig {
     /// pinned by the oracle fixtures). `#[serde(default)]` for back-compat.
     #[serde(default)]
     pub iv_model: IvModel,
+    /// Wall-clock search budget in seconds. When the step/chunk loop's elapsed
+    /// time exceeds this, the search stops expanding and finalizes with the
+    /// best-so-far results ([`crate::solver::ModeResult::truncated`] = true).
+    /// `<= 0.0` disables the budget (unlimited). Default 120s.
+    /// `#[serde(default)]` keeps older payloads that omit it deserializing.
+    #[serde(default = "default_search_budget_secs")]
+    pub search_budget_secs: f64,
 }
 
 impl Default for SolverConfig {
@@ -223,8 +230,14 @@ impl Default for SolverConfig {
             cake: CakeKind::Normal,
             setup: BreedingSetup::default(),
             iv_model: IvModel::Empirical,
+            search_budget_secs: 120.0,
         }
     }
+}
+
+/// Serde default for [`SolverConfig::search_budget_secs`] (120s).
+fn default_search_budget_secs() -> f64 {
+    120.0
 }
 
 impl SolverConfig {

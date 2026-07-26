@@ -94,6 +94,10 @@ export interface UseSolve {
    *  (with empty `plans`) means pinning eliminated every otherwise-valid plan;
    *  defaults `true` (no pins, or a pinned plan survived). */
   pinsSatisfied: boolean;
+  /** Whether the last single solve was aborted at its wall-clock budget before
+   *  finishing. When true with non-empty `plans`, the ranked plans may not be
+   *  optimal; defaults `false`. */
+  searchTruncated: boolean;
   /** Last solve error string, or null. */
   error: string | null;
   /** True while a solve is in flight. */
@@ -167,6 +171,7 @@ export function useSolve(): UseSolve {
   const [lastRequest, setLastRequest] = useState<SolveRequest | null>(null);
   const [restoredFrom, setRestoredFrom] = useState<RestoredInfo | null>(null);
   const [pinsSatisfied, setPinsSatisfied] = useState(true);
+  const [searchTruncated, setSearchTruncated] = useState(false);
   const [queueResult, setQueueResult] = useState<QueueResponse | null>(null);
   const [queueSolving, setQueueSolving] = useState(false);
   const [queueError, setQueueError] = useState<string | null>(null);
@@ -200,6 +205,7 @@ export function useSolve(): UseSolve {
     setLastRequest(null);
     setRestoredFrom(null);
     setPinsSatisfied(true);
+    setSearchTruncated(false);
     setQueueResult(null);
     setQueueError(null);
   }
@@ -300,6 +306,7 @@ export function useSolve(): UseSolve {
     setDiagnosis([]);
     setRestoredFrom(null);
     setPinsSatisfied(true);
+    setSearchTruncated(false);
     // A single solve exits the queue view (they share the one results pane).
     setQueueResult(null);
     setQueueError(null);
@@ -328,6 +335,7 @@ export function useSolve(): UseSolve {
       setDiagnosis(resp.diagnosis ?? []);
       // Serde-defaults to `true` for responses predating the pin field.
       setPinsSatisfied(resp.pins_satisfied ?? true);
+      setSearchTruncated(resp.search_truncated ?? false);
       return { request: full, response: resp };
     } catch (e) {
       if (isCancelled(e)) setCancelled(true);
@@ -400,6 +408,7 @@ export function useSolve(): UseSolve {
     setFallbackUsed(saved.response.fallback_used);
     setDiagnosis(saved.response.diagnosis ?? []);
     setPinsSatisfied(saved.response.pins_satisfied ?? true);
+    setSearchTruncated(saved.response.search_truncated ?? false);
     // Loading a saved single plan leaves the queue view.
     setQueueResult(null);
     setQueueError(null);
@@ -428,6 +437,7 @@ export function useSolve(): UseSolve {
     setFallbackUsed(s.response.fallback_used);
     setDiagnosis(s.response.diagnosis ?? []);
     setPinsSatisfied(s.response.pins_satisfied ?? true);
+    setSearchTruncated(s.response.search_truncated ?? false);
     setQueueResult(null);
     setQueueError(null);
     setRestoredFrom(null);
@@ -442,6 +452,7 @@ export function useSolve(): UseSolve {
     fallbackUsed,
     diagnosis,
     pinsSatisfied,
+    searchTruncated,
     error,
     solving,
     progress,

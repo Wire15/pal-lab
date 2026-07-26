@@ -100,6 +100,13 @@ pub struct SolveResponse {
     /// Structured reasons the solve found no path. Empty when `plans` is
     /// non-empty; populated (priority order) only when zero plans were returned.
     pub diagnosis: Vec<NoPathReason>,
+    /// Whether the search was aborted at its wall-clock budget
+    /// (`SolverConfig::search_budget_secs`) before finishing. When true with
+    /// non-empty `plans`, the ranked plans may not be optimal; when true with
+    /// empty `plans`, `diagnosis` carries `SearchBudgetExhausted` instead of the
+    /// static no-path reasons (a budget-killed search proves nothing about
+    /// reachability).
+    pub search_truncated: bool,
 }
 
 /// An `{id, name}` pair (internal id + English display name) for autocomplete.
@@ -332,15 +339,27 @@ fn run_with_progress(
 
     let pool = scope_owned(&save.pals, req.player_uid);
     match solve_with_catching_monitored(gd, &spec, &pool, &cfg, catching, monitor) {
-        Ok(ModeResult { plans, fallback_used, pins_satisfied }) => {
-            // Diagnose only when the search returned nothing (cheap static
-            // preconditions over the same scoped pool + resolved spec/config).
-            let diagnosis = if plans.is_empty() {
-                diagnose_no_path(gd, &spec, &pool, &cfg)
-            } else {
+        Ok(ModeResult { plans, fallback_used, pins_satisfied, truncated }) => {
+            // Diagnosis is populated only when the search returned nothing. A
+            // budget-killed search proves nothing about reachability, so its
+            // diagnosis is the honest `SearchBudgetExhausted` rather than
+            // `diagnose_no_path`'s static preconditions (which would imply the
+            // target is unreachable). Otherwise run the cheap static checks over
+            // the same scoped pool + resolved spec/config.
+            let diagnosis = if !plans.is_empty() {
                 Vec::new()
+            } else if truncated {
+                vec![NoPathReason::SearchBudgetExhausted { budget_secs: cfg.search_budget_secs }]
+            } else {
+                diagnose_no_path(gd, &spec, &pool, &cfg)
             };
-            Ok(SolveResponse { plans, fallback_used, pins_satisfied, diagnosis })
+            Ok(SolveResponse {
+                plans,
+                fallback_used,
+                pins_satisfied,
+                diagnosis,
+                search_truncated: truncated,
+            })
         }
         Err(_) => Err("cancelled".into()),
     }
@@ -457,6 +476,10 @@ fn run_queue_with_progress(
         .items
         .into_iter()
         .zip(target_ids)
+        // `QueueItemResult` (pal_solver::solver::queue) discards the per-item
+        // truncation flag, so the queue path cannot surface search truncation;
+        // `QueueItemResponse` carries no `search_truncated` field. Only the
+        // single-solve `solve` command reports truncation.
         .map(|(item, target_species)| QueueItemResponse {
             target_species,
             plans: item.plans,

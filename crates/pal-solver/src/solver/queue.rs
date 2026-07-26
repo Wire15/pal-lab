@@ -102,7 +102,7 @@ pub fn solve_queue_monitored(
             cancel,
         );
 
-        let (refs, fallback_used, pins_satisfied) =
+        let (refs, fallback_used, pins_satisfied, _truncated) =
             solve_modes_monitored(gd, &item.spec, &pool, &item.cfg, item.catching, monitor)?;
         let iv_thresholds = item.cfg.cake.effective_iv_thresholds(&item.spec);
         let plans: Vec<BreedingPlan> = refs

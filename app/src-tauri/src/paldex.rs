@@ -740,6 +740,7 @@ mod tests {
             fallback_used: false,
             pins_satisfied: true,
             diagnosis: Vec::new(),
+            search_truncated: false,
         };
         let solve_json = serde_json::to_string_pretty(&response).unwrap();
         assert!(

@@ -704,6 +704,7 @@ export default function Solver() {
     fallbackUsed,
     diagnosis,
     pinsSatisfied,
+    searchTruncated,
     error,
     solving,
     progress,
@@ -1169,6 +1170,13 @@ export default function Solver() {
             {plans && plans.length > 0 && (
               <>
                 {banners}
+                {searchTruncated && (
+                  <div className="border-b border-line-soft bg-abyss/40 px-4 py-1.5">
+                    <span className="font-mono text-[11px] tabular-nums text-ink-faint">
+                      search truncated at time budget &mdash; plans shown may not be optimal
+                    </span>
+                  </div>
+                )}
                 <PlanResults
                   plans={plans}
                   fallbackUsed={fallbackUsed}

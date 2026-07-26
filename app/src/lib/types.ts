@@ -375,7 +375,12 @@ export type NoPathReason =
     }
   | { kind: "step_cap_too_low"; needed: number; cap: number }
   | { kind: "gender_bottleneck"; species_name: string }
-  | { kind: "exhausted_search" };
+  | { kind: "exhausted_search" }
+  /** The search hit its wall-clock budget before finishing. Reachability is
+   * unproven — the target may still be breedable; the command layer injects
+   * this in place of the static diagnosis when a budget-killed solve returns
+   * no plans. */
+  | { kind: "search_budget_exhausted"; budget_secs: number };
 
 /** Response from the `solve` command: the ranked breeding plans plus whether a
  * `"breeding_only"` request had to fall back to catch-assisted plans because no
@@ -392,6 +397,11 @@ export interface SolveResponse {
   /** Structured no-path reasons (priority order), populated only when `plans`
    * is empty. Absent on responses predating the field / legacy saved plans. */
   diagnosis?: NoPathReason[];
+  /** Whether the search was aborted at its wall-clock budget before finishing.
+   * When true with non-empty `plans`, the ranked plans may not be optimal;
+   * when true with empty `plans`, `diagnosis` carries `search_budget_exhausted`.
+   * Serde-defaults to `false` for responses predating the field. */
+  search_truncated?: boolean;
 }
 
 /** One request in a `solve_queue` batch — a `SolveRequest` solved in order,
