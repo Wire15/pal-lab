@@ -25,10 +25,10 @@ import { useAppState, useBreedingSetup } from "../state";
 
 /** localStorage keys for this panel's own UI inputs (the composed setup itself
  * lives in the shared store). */
-const SELECTED_KEY = "pal-calc.setup.boosters";
-const MANUAL_HATCH_KEY = "pal-calc.setup.manualHatch";
+const SELECTED_KEY = "pal-lab.setup.boosters";
+const MANUAL_HATCH_KEY = "pal-lab.setup.manualHatch";
 /** Map of lab-research line key -> researched rank (0 = not researched). */
-const RESEARCH_KEY = "pal-calc.setup.research";
+const RESEARCH_KEY = "pal-lab.setup.research";
 
 /** Farm-speed boosts shorten each breed attempt as `time / (1 + bonus)`, so a
  * `+bonus` fraction reduces breed time by this percentage (non-linear). */

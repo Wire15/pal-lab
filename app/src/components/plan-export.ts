@@ -5,7 +5,7 @@
 // just to survive canvas rasterization, the classic html-to-image trap), we
 // re-render the plan onto a fresh canvas from the SAME pure geometry the graph
 // view uses (`layoutPlan`). Zero dependencies, taint-free, deterministic, and it
-// bakes in the dark background + a PAL-CALC watermark and target header. The
+// bakes in the dark background + a PAL-LAB watermark and target header. The
 // exported frame therefore matches the graph's bracket layout exactly (fit to
 // the whole plan, no pan/zoom state).
 //
@@ -294,7 +294,7 @@ export interface RenderPlanOpts {
 
 /**
  * Render a breeding plan to a PNG Blob: a fit-to-frame re-render of the graph
- * bracket on a dark background, with a target-name header and PAL-CALC
+ * bracket on a dark background, with a target-name header and PAL-LAB
  * watermark baked in. Reuses `layoutPlan`, so geometry is identical to the live
  * graph. Awaits `document.fonts.ready` so the self-hosted faces are available.
  */
@@ -335,7 +335,7 @@ export async function renderPlanPng(
   ctx.fillRect(0, 0, W, H);
 
   // Header band: target name (display, amber) + a mono stats subline; the
-  // PAL-CALC watermark sits top-right. A hairline divides it from the bracket.
+  // PAL-LAB watermark sits top-right. A hairline divides it from the bracket.
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = C.amber;
@@ -356,7 +356,7 @@ export async function renderPlanPng(
   ctx.textAlign = "right";
   ctx.fillStyle = C.inkFaint;
   ctx.font = `600 11px ${FONT_MONO}`;
-  ctx.fillText("PAL-CALC", W - 20, 30);
+  ctx.fillText("PAL-LAB", W - 20, 30);
   ctx.font = `500 10px ${FONT_MONO}`;
   ctx.fillText("breeding plan", W - 20, 46);
 
@@ -409,7 +409,7 @@ export function downloadBlob(blob: Blob, filename: string): void {
 /** A filesystem-safe filename for a plan PNG. */
 export function planPngFilename(targetName: string): string {
   const slug = targetName.trim().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-  return `pal-calc-${slug || "plan"}.png`;
+  return `pal-lab-${slug || "plan"}.png`;
 }
 
 // --- Shareable plan code -----------------------------------------------------

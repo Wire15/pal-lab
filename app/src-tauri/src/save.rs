@@ -263,7 +263,7 @@ mod tests {
         static N: AtomicUsize = AtomicUsize::new(0);
         let n = N.fetch_add(1, Ordering::Relaxed);
         let dir = std::env::temp_dir().join(format!(
-            "pal-calc-watch-{}-{}-{}",
+            "pal-lab-watch-{}-{}-{}",
             tag,
             std::process::id(),
             n

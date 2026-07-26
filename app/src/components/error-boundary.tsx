@@ -39,7 +39,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   private details(): string {
     const { error, info } = this.state;
     return [
-      `Pal Calc — view crash report`,
+      `Pal Lab — view crash report`,
       `message: ${error?.message ?? "(unknown)"}`,
       ``,
       `stack:`,
@@ -82,7 +82,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               This view hit an error
             </h2>
             <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
-              The rest of Pal Calc is still running — your save is untouched
+              The rest of Pal Lab is still running — your save is untouched
               (nothing is ever written). Head back to the Save Inspector, or
               reload the app.
             </p>

@@ -32,7 +32,7 @@ import { hexGuid } from "./components/palbox/selectors";
 export type View = "save" | "solver" | "paldex" | "ivlab" | "worldmap";
 
 /** localStorage key for the last successfully loaded save folder. */
-const SAVE_DIR_KEY = "pal-calc.saveDir";
+const SAVE_DIR_KEY = "pal-lab.saveDir";
 
 function readLastSaveDir(): string {
   try {
@@ -49,13 +49,13 @@ function readLastSaveDir(): string {
  * else passes through unchanged. */
 function friendlySaveError(raw: string): string {
   if (raw.includes("CNK")) {
-    return "This looks like an Xbox / Game Pass save (CNK format), which Pal Calc can't read yet \u2014 convert it to a Steam save with a tool like palworld-save-pal, or point at a Steam / dedicated-server save.";
+    return "This looks like an Xbox / Game Pass save (CNK format), which Pal Lab can't read yet \u2014 convert it to a Steam save with a tool like palworld-save-pal, or point at a Steam / dedicated-server save.";
   }
   return raw;
 }
 
 /** localStorage key for the recent-saves profile list (contract #Profiles). */
-const RECENT_SAVES_KEY = "pal-calc.recentSaves";
+const RECENT_SAVES_KEY = "pal-lab.recentSaves";
 /** Max recent-save rows kept, most-recent first. */
 const MAX_RECENTS = 8;
 
@@ -104,7 +104,7 @@ function readRecentSaves(): RecentSave[] {
  * `canonDir -> scope` (a lowercase 32-char player uid hex, or `"all"`), so each
  * world remembers who you play it as. Keyed by the same {@link canonDir} canon
  * as the recent-saves list. */
-const PLAYER_SCOPE_KEY = "pal-calc.playerScope";
+const PLAYER_SCOPE_KEY = "pal-lab.playerScope";
 
 /** The persisted `canonDir -> scope` map (empty on any parse failure). */
 function readPlayerScopes(): Record<string, string> {
@@ -138,8 +138,8 @@ function writeScopeForDir(dir: string, scope: string): void {
  * The composed farm/incubation/egg fractions + world egg-hatch hours, and the
  * selected cake, survive reloads and view switches so the Solver and IV Lab
  * share one setup. */
-const BREEDING_SETUP_KEY = "pal-calc.breedingSetup";
-const CAKE_KEY = "pal-calc.cake";
+const BREEDING_SETUP_KEY = "pal-lab.breedingSetup";
+const CAKE_KEY = "pal-lab.cake";
 
 /** Neutral vanilla farm setup: no boosts, vanilla 72h hatch. */
 const DEFAULT_SETUP: BreedingSetup = {

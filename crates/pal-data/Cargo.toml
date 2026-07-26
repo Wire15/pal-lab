@@ -2,7 +2,7 @@
 name = "pal-data"
 version = "0.1.0"
 edition.workspace = true
-license.workspace = true
+license = "MIT"
 
 [dependencies]
 serde.workspace = true

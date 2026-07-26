@@ -1,4 +1,4 @@
-// A paldb-inspired pal info tooltip in the Pal Calc theme. Hand-rolled
+// A paldb-inspired pal info tooltip in the Pal Lab theme. Hand-rolled
 // positioning (fixed + measured, flips to stay in the viewport, no portal lib),
 // opens after a short hover, never captures the pointer, and closes on
 // leave/scroll. Wrap any single DOM-element trigger:

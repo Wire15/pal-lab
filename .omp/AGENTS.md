@@ -1,8 +1,10 @@
-# Pal Calc (Rust) — agent context
+# Pal Lab (Rust) — agent context
 
 Rust + Tauri/TypeScript successor to tylercamp/palcalc: a save-aware Palworld breeding
 solver with a paldb.cc-style reference layer. Read `DESIGN.md` first — it captures all
 research, settled decisions, and provenance-rated breeding mechanics.
+
+Published at https://github.com/Wire15/pal-lab — app GPL-3.0-or-later, crates (pal-data, pal-solver) MIT.
 
 ## Map
 | Path | What's there |

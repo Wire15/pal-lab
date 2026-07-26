@@ -3,10 +3,10 @@
 // renders the "Offline · v0.2" chip as its own trigger and owns the modal
 // state), so App.tsx only needs the one import + usage.
 //
-// The update check is deliberately unwired this wave: the Rust `check_update`
-// command reports "disabled" until a public release home exists (see
-// src-tauri/src/updater.rs). In plain-browser dev (`bun run dev`) there is no
-// backend, so we short-circuit to the same "disabled" shape rather than error.
+// The update check hits GitHub's releases/latest via the Rust `check_update`
+// command (see src-tauri/src/updater.rs); any failure degrades to a quiet
+// "couldn't check" line. In plain-browser dev (`bun run dev`) there is no
+// backend, so we short-circuit to the "disabled" shape rather than error.
 
 import { useCallback, useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
@@ -27,9 +27,14 @@ interface DataPackInfo {
   game_build: string;
 }
 
-/** Copy shown when the update endpoint is unwired (spec-mandated wording). */
+/** Repository home, opened from the About footer's GitHub link. */
+const REPO_URL = "https://github.com/Wire15/pal-lab";
+
+/** Neutral standing copy shown before any check runs and for the backend
+ *  "disabled" status (browser preview / fixture mode, where there is no
+ *  updater). */
 const DISABLED_MESSAGE =
-  "Update checks will be enabled once Pal Calc has a public release home";
+  "Compares your version against the latest GitHub release.";
 
 /** The clickable sidebar-footer chip + its About modal. Self-contained: owns
  *  its own open/close state so the mount site needs no extra wiring. */
@@ -39,11 +44,11 @@ export default function AboutButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        title="About Pal Calc"
+        title="About Pal Lab"
         className="mt-2.5 flex w-full items-center gap-2 rounded px-1 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-good" />
-        Offline &middot; v0.2
+        Pal Lab &middot; v1.0
       </button>
       {open && <AboutModal onClose={() => setOpen(false)} />}
     </>
@@ -132,7 +137,7 @@ function AboutModal({ onClose }: { onClose: () => void }) {
             id="about-modal-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
           >
-            Pal Calc
+            Pal Lab
           </h2>
           <div className="mt-1 font-mono text-[12px] text-ink-dim">
             v{version || "\u2026"}
@@ -177,25 +182,37 @@ function AboutModal({ onClose }: { onClose: () => void }) {
           <UpdateResult result={result} />
         </div>
 
-        <div className="flex items-center justify-between gap-3 px-5 py-3.5">
-          <p className="text-[11px] leading-relaxed text-ink-faint">
-            MIT licensed. Read-only &mdash; Pal Calc never modifies your saves.
+        <div className="px-5 py-3.5">
+          <div className="flex items-center justify-between gap-3">
+            <button
+              onClick={() => openUrl(REPO_URL).catch(() => {})}
+              className="font-mono text-[11px] text-ink-dim transition-colors hover:text-amber"
+            >
+              github.com/Wire15/pal-lab
+            </button>
+            <button
+              onClick={onClose}
+              className="shrink-0 rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
+            >
+              Close
+            </button>
+          </div>
+          <p className="mt-2 text-[11px] leading-relaxed text-ink-faint">
+            GPL-3.0 licensed. Read-only &mdash; Pal Lab never modifies your
+            saves.
           </p>
-          <button
-            onClick={onClose}
-            className="shrink-0 rounded-md px-3 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
-          >
-            Close
-          </button>
+          <p className="mt-1.5 text-[10px] leading-relaxed text-ink-faint/70">
+            Unofficial fan tool. Palworld is © Pocketpair, Inc. Not affiliated
+            with or endorsed by Pocketpair.
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-/** Renders the current update-check state. Idle (no result yet) shows the
- *  standing "disabled" explanation so the panel reads correctly before any
- *  click, matching the wave's actual (unwired) status. */
+/** Renders the current update-check state. Idle (no result yet) falls back to
+ *  the neutral standing copy so the panel reads correctly before any click. */
 function UpdateResult({ result }: { result: UpdateCheck | null }) {
   const status = result?.status ?? "disabled";
 

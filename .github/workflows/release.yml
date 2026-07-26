@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # NOTE: root Cargo.toml EXCLUDES app/src-tauri (it is a standalone crate
+      # with its own Cargo.lock), so `bun run tauri build` compiles into
+      # app/src-tauri/target -- not the repo-root ./target. Cache that dir.
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "app/src-tauri -> target"
+
+      - name: Install JS deps
+        working-directory: app
+        run: bun install
+
+      - name: Build Tauri app
+        working-directory: app
+        run: bun run tauri build
+
+      - name: Locate outputs and package portable
+        id: package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          # Version from the tag (strip leading v). Falls back to ref_name for dispatch.
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          Write-Host "Version: $version"
+
+          $targetDir = "app/src-tauri/target/release"
+
+          # NSIS installer: <target>/release/bundle/nsis/*-setup.exe
+          $setup = Get-ChildItem -Path "$targetDir/bundle/nsis" -Filter "*-setup.exe" -ErrorAction SilentlyContinue
+          if (-not $setup) {
+            Write-Host "ERROR: no NSIS setup exe found under $targetDir/bundle/nsis"
+            Get-ChildItem -Path "$targetDir/bundle" -Recurse -ErrorAction SilentlyContinue | Format-Table -AutoSize
+            exit 1
+          }
+          $setupPath = $setup[0].FullName
+          Write-Host "Installer: $setupPath"
+
+          # Raw self-contained exe: <target>/release/*.exe
+          $exe = Get-ChildItem -Path $targetDir -Filter "*.exe" -File -ErrorAction SilentlyContinue
+          if (-not $exe) {
+            Write-Host "ERROR: no app exe found under $targetDir"
+            Get-ChildItem -Path $targetDir -ErrorAction SilentlyContinue | Format-Table -AutoSize
+            exit 1
+          }
+          $exePath = $exe[0].FullName
+          Write-Host "Exe: $exePath"
+
+          # Portable zip: just the self-contained exe.
+          $zipName = "PalLab_${version}_portable_x64.zip"
+          Compress-Archive -Path $exePath -DestinationPath $zipName -Force
+          Write-Host "Portable: $zipName"
+
+          "version=$version"        >> $env:GITHUB_OUTPUT
+          "setup=$setupPath"        >> $env:GITHUB_OUTPUT
+          "portable=$zipName"       >> $env:GITHUB_OUTPUT
+
+      - name: Draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ${{ steps.package.outputs.setup }}
+            ${{ steps.package.outputs.portable }}
+          body: |
+            ## Pal Lab ${{ steps.package.outputs.version }}
+
+            **Windows SmartScreen:** this is an unsigned build. If SmartScreen
+            warns you, click **More info -> Run anyway**.
+
+            <!-- VirusTotal: paste scan link before publishing -->
+
+            ### Install
+            Download `Pal Lab_${{ steps.package.outputs.version }}_x64-setup.exe`
+            and run it, or grab the portable `.zip` and run the exe directly.
+
+            **Xbox/Game Pass saves:** convert with
+            [palworld-save-pal](https://github.com/oMaN-Rebirth/palworld-save-pal)
+            first.

@@ -436,7 +436,7 @@ function Shell() {
           </span>
           <div className="leading-tight">
             <div className="font-display text-[15px] font-bold tracking-[0.14em] text-ink">
-              PAL&middot;CALC
+              PAL&middot;LAB
             </div>
             <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
               Breeding lab

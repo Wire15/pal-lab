@@ -1,8 +1,9 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Pal Calc",
-  "version": "0.2.0",
-  "identifier": "dev.palcalc.app",
+  "productName": "Pal Lab",
+  "version": "1.0.0",
+  "identifier": "dev.pallab.app",
+  "mainBinaryName": "Pal Lab",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +13,7 @@
   "app": {
     "windows": [
       {
-        "title": "Pal Calc",
+        "title": "Pal Lab",
         "width": 1280,
         "height": 800,
         "minWidth": 1024,

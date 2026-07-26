@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
+license = "GPL-3.0-or-later"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -34,4 +35,8 @@ parking_lot = "0.12"
 # Grayscale-PNG encode + base64 for the map fog layers (get_map_state).
 png = "0.17"
 base64 = "0.22"
+# Blocking HTTP client for the once-per-launch update check (updater.rs).
+# Default features pull rustls (NOT native-tls/openssl) + gzip, keeping the
+# Windows build free of a system OpenSSL requirement.
+ureq = "2"
 

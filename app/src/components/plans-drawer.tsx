@@ -1,6 +1,6 @@
 // The PLANS drawer: a right-slide panel listing saved breeding plans, with
 // load / rename / delete / compare-two per row plus an import-code field. The
-// saved-plan localStorage layer (contract `pal-calc.savedPlans`, cap 50, LRU
+// saved-plan localStorage layer (contract `pal-lab.savedPlans`, cap 50, LRU
 // evict oldest-unnamed-first) lives here since the drawer owns the saved-plan
 // model; the Solver imports `saveNewPlan`/`defaultPlanName` for its header CTA.
 //
@@ -20,7 +20,7 @@ import { formatDuration, probBand } from "../lib/ui";
 import { PalIcon } from "./primitives";
 import { decodePlanCode, type DecodedPlanCode } from "./plan-export";
 
-const STORAGE_KEY = "pal-calc.savedPlans";
+const STORAGE_KEY = "pal-lab.savedPlans";
 const CAP = 50;
 
 /** A persisted breeding plan (frozen contract shape). */

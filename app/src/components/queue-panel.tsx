@@ -3,7 +3,7 @@
 // the current full solve spec (target / passives / max-steps / source pool /
 // catching / pins — exactly what a single solve would send, minus the shared
 // setup/cake, which inject at queue-solve time). The queue persists to
-// localStorage (`pal-calc.solverQueue`) and survives restarts; entries store
+// localStorage (`pal-lab.solverQueue`) and survives restarts; entries store
 // the REQUEST only, so "Solve queue" always re-solves honestly against the live
 // save rather than replaying a frozen result.
 
@@ -12,7 +12,7 @@ import type { SolveSpec } from "../lib/use-solve";
 import { PalIcon } from "./primitives";
 
 /** localStorage key for the persisted solver queue. */
-const STORAGE_KEY = "pal-calc.solverQueue";
+const STORAGE_KEY = "pal-lab.solverQueue";
 
 /** One queued target: a stable id (React key + reorder handle) plus the frozen
  *  solve spec it will be solved with. Setup/cake are deliberately absent — they
