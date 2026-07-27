@@ -29,6 +29,7 @@ import type {
   SolveRequest,
   SolveResponse,
 } from "./lib/types";
+import type { SolveSpec } from "./lib/use-solve";
 import { hexGuid } from "./components/palbox/selectors";
 
 export type View = "save" | "solver" | "paldex" | "ivlab" | "worldmap";
@@ -275,6 +276,16 @@ export interface AppState {
   requestMapSpawn: (speciesId: string) => void;
   /** The World Map clears the pending spawn target once it has consumed it. */
   clearMapSpawnTarget: () => void;
+  /** A pending batch of solve specs the Solver should load into its breeding
+   * queue and solve once, on its next render — the one-shot hand-off behind the
+   * Pal-dex "Breed missing" action. Null when nothing is pending. */
+  queueSeed: SolveSpec[] | null;
+  /** Jump to the Solver, replace its breeding queue with `specs`, and solve it.
+   * `specs` should already be ordered (the queue chains earlier results into
+   * later items, so callers order by ascending breeding steps). */
+  requestQueueSolve: (specs: SolveSpec[]) => void;
+  /** The Solver clears the pending queue seed once it has consumed it. */
+  clearQueueSeed: () => void;
   /** Shared breeding-farm setup: composed farm/incubation/egg fractions + world
    * egg-hatch hours. Consumed by the Solver (rides the solve request) and the IV
    * Lab. Persisted. */
@@ -316,6 +327,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
   const [mapSpawnTarget, setMapSpawnTarget] = useState<string | null>(null);
+  const [queueSeed, setQueueSeed] = useState<SolveSpec[] | null>(null);
   const [playerScope, setPlayerScopeState] = useState<string>("all");
   const [scopePromptOpen, setScopePromptOpen] = useState(false);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
@@ -577,6 +589,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const clearMapSpawnTarget = useCallback(() => setMapSpawnTarget(null), []);
 
+  const requestQueueSolve = useCallback((specs: SolveSpec[]) => {
+    setQueueSeed(specs);
+    setView("solver");
+  }, []);
+  const clearQueueSeed = useCallback(() => setQueueSeed(null), []);
+
   const value = useMemo<AppState>(
     () => ({
       saveDir,
@@ -607,6 +625,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       mapSpawnTarget,
       requestMapSpawn,
       clearMapSpawnTarget,
+      queueSeed,
+      requestQueueSolve,
+      clearQueueSeed,
       setup,
       cake,
       setSetup,
@@ -644,6 +665,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       mapSpawnTarget,
       requestMapSpawn,
       clearMapSpawnTarget,
+      queueSeed,
+      requestQueueSolve,
+      clearQueueSeed,
       setup,
       cake,
       setSetup,

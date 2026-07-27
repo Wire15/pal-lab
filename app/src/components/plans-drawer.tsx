@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   BreedingPlan,
+  OwnedPal,
   PlanNode,
   SolveRequest,
   SolveResponse,
@@ -19,6 +20,11 @@ import type {
 import { formatDuration, probBand } from "../lib/ui";
 import { PalIcon } from "./primitives";
 import { decodePlanCode, type DecodedPlanCode } from "./plan-export";
+import {
+  classifyPlan,
+  newTracking,
+  type PlanTracking,
+} from "../lib/plan-tracking";
 
 const STORAGE_KEY = "pal-lab.savedPlans";
 const CAP = 50;
@@ -33,6 +39,8 @@ export interface SavedPlan {
   request: SolveRequest;
   response: SolveResponse;
   activePlan: number;
+  /** Live-tracking state once the user hits Track (absent = not tracked). */
+  tracking?: PlanTracking;
 }
 
 /** Default plan name: "<Target> - <steps> steps - <time>". */
@@ -130,6 +138,20 @@ export function renameSavedPlan(id: string, name: string): void {
 /** Delete a saved plan. */
 export function deleteSavedPlan(id: string): void {
   writeAll(readAll().filter((p) => p.id !== id));
+}
+
+/** Set (or, with `undefined`, clear) a saved plan's tracking state in place,
+ *  through the same readAll/writeAll layer the cap/LRU policy uses. */
+export function setPlanTracking(
+  id: string,
+  tracking: PlanTracking | undefined,
+): void {
+  const list = readAll();
+  const hit = list.find((p) => p.id === id);
+  if (!hit) return;
+  if (tracking) hit.tracking = tracking;
+  else delete hit.tracking;
+  writeAll(list);
 }
 
 /** Compact relative-time label ("just now", "3h ago", "2w ago"). */
@@ -351,6 +373,9 @@ export interface PlansDrawerProps {
   onLoad: (saved: SavedPlan) => void;
   /** Import a decoded plan code (Solver re-solves it via the live path). */
   onImport: (decoded: DecodedPlanCode) => void;
+  /** The live roster (save summary pals) — baseline source for Track and the
+   *  per-row progress classification. */
+  currentPals: OwnedPal[];
 }
 
 export function PlansDrawer({
@@ -360,6 +385,7 @@ export function PlansDrawer({
   nameToId,
   onLoad,
   onImport,
+  currentPals,
 }: PlansDrawerProps) {
   const [plans, setPlans] = useState<SavedPlan[]>([]);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -543,6 +569,20 @@ export function PlansDrawer({
                   currentSaveDir.trim() !== "" && p.saveDir !== currentSaveDir;
                 const selected = compareIds.includes(p.id);
                 const compareDisabled = compareIds.length >= 2 && !selected;
+                const report =
+                  p.tracking && plan
+                    ? classifyPlan(
+                        plan,
+                        currentPals,
+                        p.tracking,
+                        p.request.ivs,
+                        nameToId,
+                      )
+                    : null;
+                const pct =
+                  report && report.totalSteps > 0
+                    ? Math.round((report.doneSteps / report.totalSteps) * 100)
+                    : 100;
                 return (
                   <li
                     key={p.id}
@@ -610,6 +650,23 @@ export function PlansDrawer({
                         )}
                         <span className="text-ink-faint">{relTime(p.created)}</span>
                       </div>
+                      {report && (
+                        <div className="mt-1 flex items-center gap-1.5 font-mono text-[10.5px]">
+                          <span className="text-good">
+                            {report.doneSteps}/{report.totalSteps} steps
+                          </span>
+                          <span className="text-ink-faint">&middot; {pct}%</span>
+                          {report.stale && (
+                            <span
+                              className="inline-flex items-center gap-1 text-amber"
+                              title="An owned parent is gone from your save with no substitute"
+                            >
+                              <WarnGlyph />
+                              <span className="uppercase tracking-wider">stale</span>
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <div className="mt-2 flex items-center gap-1.5">
                         <button
                           type="button"
@@ -617,6 +674,21 @@ export function PlansDrawer({
                           className="rounded-md bg-amber/10 border border-amber/40 px-2.5 py-1 text-[11px] font-medium text-amber transition-colors hover:bg-amber/20"
                         >
                           Load
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (p.tracking) setPlanTracking(p.id, undefined);
+                            else setPlanTracking(p.id, newTracking(currentPals));
+                            reload();
+                          }}
+                          className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                            p.tracking
+                              ? "border-good/40 bg-good/10 text-good hover:bg-good/20"
+                              : "border-line bg-raised text-ink-dim hover:bg-hover hover:text-ink"
+                          }`}
+                        >
+                          {p.tracking ? "Untrack" : "Track"}
                         </button>
                         <button
                           type="button"

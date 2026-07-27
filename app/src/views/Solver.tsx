@@ -36,6 +36,13 @@ import {
   type SolveHistoryEntry,
 } from "../components/history-drawer";
 import { NoPathPanel } from "../components/no-path-panel";
+import {
+  classifyPlan,
+  toggleManual,
+  type PlanTracking,
+  type TrackReport,
+} from "../lib/plan-tracking";
+import { listSavedPlans, setPlanTracking } from "../components/plans-drawer";
 
 /** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
 type CatchingMode = NonNullable<SolveRequest["catching"]>;
@@ -235,6 +242,14 @@ interface PlanResultsProps {
   /** Right-aligned toolbar slot (single-solve Save / PNG / Copy / Plans). Queue
    *  items omit it — their actions live at the queue level. */
   headerRight?: React.ReactNode;
+  /** Live-tracking bundle (single-solve, tracked plan only): the report drives
+   *  the banner + node badges, the callbacks toggle a step / stop tracking.
+   *  Absent for a live/session result or any queue item. */
+  tracking?: {
+    report: TrackReport;
+    onToggleManual: (nodePath: string) => void;
+    onUntrack: () => void;
+  };
 }
 
 /** The plan tabs + Graph|List toggle + required-catches callout + setup banner +
@@ -254,6 +269,7 @@ function PlanResults({
   viewMode,
   setViewMode,
   headerRight,
+  tracking,
 }: PlanResultsProps) {
   const { setup, cake } = useBreedingSetup();
 
@@ -414,6 +430,40 @@ function PlanResults({
         </div>
       )}
 
+      {tracking && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-good/25 bg-good/[0.05] px-4 py-1.5">
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-good">
+            Tracking
+          </span>
+          <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+            <span className="text-good">
+              {tracking.report.doneSteps}/{tracking.report.totalSteps}
+            </span>{" "}
+            steps &middot;{" "}
+            {tracking.report.totalSteps > 0
+              ? Math.round(
+                  (tracking.report.doneSteps / tracking.report.totalSteps) * 100,
+                )
+              : 100}
+            %
+          </span>
+          {tracking.report.stale && (
+            <span
+              className="font-mono text-[10px] uppercase tracking-wider text-amber"
+              title="An owned parent is gone from your save with no substitute"
+            >
+              &middot; stale
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={tracking.onUntrack}
+            className="ml-auto rounded-md border border-line bg-raised px-2.5 py-0.5 text-[11px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
+          >
+            Untrack
+          </button>
+        </div>
+      )}
       {viewMode === "graph" ? (
         <>
           {activePlanObj && (
@@ -453,6 +503,8 @@ function PlanResults({
                   nameToId={nameToId}
                   selectedId={selection?.nodeId ?? null}
                   onSelect={(data, nodeId) => setSelection({ nodeId, data })}
+                  statuses={tracking?.report.statuses}
+                  onToggleManual={tracking?.onToggleManual}
                 />
               )}
             </div>
@@ -686,6 +738,8 @@ export default function Solver() {
     playerScope,
     solveSession,
     setSolveSession,
+    queueSeed,
+    clearQueueSeed,
   } = useAppState();
   const [species, setSpecies] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
@@ -727,6 +781,49 @@ export default function Solver() {
     reset,
   } = useSolve();
 
+  // --- Live plan tracking ---------------------------------------------------
+  // The roster the classifier reads (silently refreshed on the save-changed
+  // watcher event, so the memos below re-run for free when the save reloads).
+  const pals = useMemo(() => saveSummary?.pals ?? [], [saveSummary]);
+  // The saved plan the current result was loaded from (null for live/session
+  // results); its id is the stable tracking identity.
+  const trackedId = restoredFrom?.id ?? null;
+  const [tracking, setTracking] = useState<PlanTracking | null>(null);
+  // Seed local tracking from the loaded saved plan. Keyed on the restoredFrom
+  // object (rehydrate mints a fresh one per Load) so a re-load picks up tracking
+  // just enabled in the drawer; a live / session restore clears restoredFrom,
+  // which drops the banner.
+  useEffect(() => {
+    if (!restoredFrom) {
+      setTracking(null);
+      return;
+    }
+    const saved = listSavedPlans().find((p) => p.id === restoredFrom.id);
+    setTracking(saved?.tracking ?? null);
+  }, [restoredFrom]);
+  // Classify the displayed plan against the live roster — a plain useMemo over
+  // [plan, pals, tracking] gives live updates as the watcher refreshes pals.
+  const trackReport = useMemo<TrackReport | null>(() => {
+    const planObj =
+      plans && plans.length > 0 ? (plans[activePlan] ?? plans[0]) : null;
+    if (!tracking || !planObj) return null;
+    return classifyPlan(planObj, pals, tracking, lastRequest?.ivs, nameToId);
+  }, [tracking, plans, activePlan, pals, lastRequest, nameToId]);
+  // Toggle a bred step's manual-done flag from a node badge, persisting it.
+  function toggleTrackNode(nodePath: string) {
+    if (!tracking || !trackedId || !trackReport) return;
+    const done = trackReport.statuses.get(nodePath)?.kind === "bred-done";
+    const next = toggleManual(tracking, nodePath, !done);
+    setTracking(next);
+    setPlanTracking(trackedId, next);
+  }
+  // Stop tracking the loaded plan (banner Untrack).
+  function untrackPlan() {
+    if (!trackedId) return;
+    setPlanTracking(trackedId, undefined);
+    setTracking(null);
+  }
+
   // Pre-fill the target when the Pal-dex jumps here via "Solve for this pal".
   useEffect(() => {
     if (solveTarget !== null) {
@@ -734,6 +831,18 @@ export default function Solver() {
       clearSolveTarget();
     }
   }, [solveTarget, clearSolveTarget]);
+
+  // Consume a one-shot queue seed (Pal-dex "Breed missing"): replace the
+  // breeding queue with the seeded specs and solve it immediately. The specs
+  // arrive pre-ordered by ascending breeding steps, so the queue's chaining
+  // (earlier bred results seed later items' owned pool) resolves the cheapest
+  // targets first and later, deeper targets can reuse them.
+  useEffect(() => {
+    if (queueSeed === null) return;
+    setQueue(queueSeed.map((spec) => ({ id: crypto.randomUUID(), spec })));
+    clearQueueSeed();
+    void solveQueue(queueSeed);
+  }, [queueSeed, clearQueueSeed, solveQueue]);
 
   // Persist the queue so it survives restarts (entries store the request only).
   useEffect(() => {
@@ -897,6 +1006,7 @@ export default function Solver() {
     rehydrate,
     solve,
     applyRequestToForm,
+    currentPals: pals,
   });
 
   const canSolve = saveDir.trim() !== "" && species.trim() !== "" && !solving;
@@ -1189,6 +1299,15 @@ export default function Solver() {
                   viewMode={viewMode}
                   setViewMode={setViewMode}
                   headerRight={headerButtons}
+                  tracking={
+                    trackReport
+                      ? {
+                          report: trackReport,
+                          onToggleManual: toggleTrackNode,
+                          onUntrack: untrackPlan,
+                        }
+                      : undefined
+                  }
                 />
               </>
             )}

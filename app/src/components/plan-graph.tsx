@@ -37,6 +37,7 @@ import { BreedHoverCard } from "./breed-hover";
 import { BredHoverCard } from "./bred-hover";
 import { usePalByInstance } from "../lib/owned-lookup";
 import { Tag } from "./primitives";
+import { walkPlan, type NodeStatus } from "../lib/plan-tracking";
 
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 2.5;
@@ -68,12 +69,18 @@ function PalCircle({
   selected,
   onSelect,
   resolvePal,
+  status,
+  onToggleManual,
 }: {
   laid: LaidNode;
   iconId: string | null;
   selected: boolean;
   onSelect: () => void;
   resolvePal: (id?: Guid | null) => OwnedPal | undefined;
+  /** Live-tracking status for this node (absent = plan not tracked). */
+  status?: NodeStatus | null;
+  /** Toggle this bred step's manual-done flag (bred nodes only). */
+  onToggleManual?: () => void;
 }) {
   const { node } = laid;
   const g = genderView(node.gender);
@@ -155,6 +162,63 @@ function PalCircle({
           {g.glyph}
         </span>
       )}
+      {status &&
+        (isBred ? (
+          <button
+            type="button"
+            aria-label={
+              status.kind === "bred-done"
+                ? "Unmark this breeding step"
+                : "Mark this breeding step bred"
+            }
+            aria-pressed={status.kind === "bred-done"}
+            title={
+              status.kind === "bred-done"
+                ? "Bred \u2014 click to unmark"
+                : "Not bred yet \u2014 click to mark done"
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleManual?.();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleManual?.();
+              }
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            style={{ width: gBadge, height: gBadge, fontSize: gFont }}
+            className={`absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full border leading-none outline-none transition-colors focus-visible:ring-2 focus-visible:ring-amber ${
+              status.kind === "bred-done"
+                ? "border-abyss bg-good font-bold text-abyss"
+                : "border-dashed border-ink-faint bg-abyss/80 text-ink-faint hover:border-good hover:text-good"
+            }`}
+          >
+            {status.kind === "bred-done" ? "\u2713" : ""}
+          </button>
+        ) : status.kind === "ready" ? (
+          <span
+            title="Owned \u2014 ready to breed"
+            style={{ width: gBadge, height: gBadge, fontSize: gFont }}
+            className="absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full border border-abyss bg-good font-bold leading-none text-abyss"
+          >
+            {"\u2713"}
+          </span>
+        ) : status.kind === "gone" ? (
+          <span
+            title={
+              status.substitute
+                ? "Original parent gone \u2014 a substitute is available"
+                : "Owned parent gone from your save"
+            }
+            style={{ width: gBadge, height: gBadge, fontSize: gFont }}
+            className="absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full border border-abyss bg-amber font-bold leading-none text-abyss"
+          >
+            {"!"}
+          </span>
+        ) : null)}
     </div>
   );
 
@@ -269,17 +333,29 @@ export function PlanGraph({
   nameToId,
   selectedId,
   onSelect,
+  statuses,
+  onToggleManual,
 }: {
   plan: BreedingPlan;
   planIndex: number;
   nameToId: Map<string, string>;
   selectedId: string | null;
   onSelect: (sel: PlanNodeSelection, nodeId: string) => void;
+  /** Live-tracking statuses keyed by Contract node path (absent = untracked). */
+  statuses?: Map<string, NodeStatus>;
+  /** Toggle a bred node's manual-done flag by node path. */
+  onToggleManual?: (nodePath: string) => void;
 }) {
   const layout = useMemo<PlanLayout>(() => layoutPlan(plan.root), [plan.root]);
   // One shared instance resolver for every owned leaf's hover card (memoized
   // Map over the loaded save's roster; rebuilt only when the save reloads).
   const palByInstance = usePalByInstance();
+  // Map each plan node to its Contract node path (root "r", children in stored
+  // order) via the shared walker, so tracking statuses key correctly.
+  const pathByNode = useMemo(
+    () => new Map(walkPlan(plan).map((e) => [e.node, e.path])),
+    [plan],
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<ViewTransform>({ k: 1, tx: 0, ty: 0 });
@@ -425,6 +501,8 @@ export function PlanGraph({
 
         {layout.nodes.map((laid) => {
           const iconId = nameToId.get(laid.node.species_name) ?? null;
+          const nodePath = pathByNode.get(laid.node) ?? null;
+          const status = nodePath ? (statuses?.get(nodePath) ?? null) : null;
           return (
             <PalCircle
               key={laid.id}
@@ -447,6 +525,12 @@ export function PlanGraph({
                 )
               }
               resolvePal={palByInstance}
+              status={status}
+              onToggleManual={
+                onToggleManual && nodePath && laid.node.source === "Bred"
+                  ? () => onToggleManual(nodePath)
+                  : undefined
+              }
             />
           );
         })}

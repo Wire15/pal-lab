@@ -149,7 +149,9 @@ function dedupeResearch(entries: LabResearchEntry[]): ResearchLine[] {
 export function BreedingSetupPanel() {
   const { saveDir, saveSummary } = useAppState();
   const { setup, cake, setSetup, setCake } = useBreedingSetup();
-  const pals = saveSummary?.pals ?? [];
+  // Memoized: a fresh `[]` every render (saveSummary null) destabilizes the
+  // boosters memo + save-switch revalidation effect into an update loop.
+  const pals = useMemo(() => saveSummary?.pals ?? [], [saveSummary]);
 
   const [boosts, setBoosts] = useState<BreedingBoostEntry[]>([]);
   const [boostsLoaded, setBoostsLoaded] = useState(false);

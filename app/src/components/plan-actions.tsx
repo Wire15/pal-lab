@@ -13,7 +13,7 @@
 // naming bar so the next solve starts clean.
 
 import { useRef, useState, type ReactNode } from "react";
-import type { BreedingPlan, SolveRequest } from "../lib/types";
+import type { BreedingPlan, OwnedPal, SolveRequest } from "../lib/types";
 import type { RestoredInfo, RestoredPlan, SolveOutcome, SolveSpec } from "../lib/use-solve";
 import {
   downloadBlob,
@@ -50,6 +50,9 @@ export interface UsePlanActionsInput {
   solve: (spec: SolveSpec) => Promise<SolveOutcome | null>;
   /** Apply a loaded / imported request back onto the view's own briefing form. */
   applyRequestToForm: (r: SolveRequest) => void;
+  /** Live roster (save summary pals) for saved-plan tracking baselines +
+   *  per-row progress. Optional: views without a roster (IV Lab) omit it. */
+  currentPals?: OwnedPal[];
 }
 
 export interface PlanActions {
@@ -74,6 +77,7 @@ export function usePlanActions({
   rehydrate,
   solve,
   applyRequestToForm,
+  currentPals,
 }: UsePlanActionsInput): PlanActions {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [naming, setNaming] = useState(false);
@@ -248,6 +252,7 @@ export function usePlanActions({
       nameToId={nameToId}
       onLoad={loadSaved}
       onImport={importPlanCode}
+      currentPals={currentPals ?? []}
     />
   );
 

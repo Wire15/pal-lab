@@ -6,7 +6,7 @@
 //! `pal_save::read_save_dir` on each call — cheap relative to the solver and
 //! keeps the command stateless.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
 use pal_data::gamedata::{ItemDrop, ParentGender, PalSpecies};
@@ -437,6 +437,124 @@ pub fn roster_counts(save_dir: String) -> Result<HashMap<String, RosterCount>, S
     Ok(counts)
 }
 
+/// One dex row annotated with breed-reachability from an owned species set.
+/// `owned` is true when the species is already in the roster (`steps == 0`);
+/// `steps` is the minimum number of breeding generations to obtain it starting
+/// from the owned set (`None` = not producible by breeding alone from that
+/// set); `witness` is one canonical parent pair (internal names) proving the
+/// final breeding step, `None` for owned or unreachable species.
+#[derive(Debug, Clone, Serialize)]
+pub struct DexReachEntry {
+    pub internal_name: String,
+    pub owned: bool,
+    pub steps: Option<u16>,
+    pub witness: Option<(String, String)>,
+}
+
+/// Breed-reachability for every dex species from an owned species set.
+#[derive(Debug, Clone, Serialize)]
+pub struct DexReach {
+    pub species: Vec<DexReachEntry>,
+}
+
+/// Child species of an unordered pair under *any* gender assignment. Breeding is
+/// gender-independent for the combi-rank majority; for the gender-pinned unique
+/// combos we are species-level optimistic — the pair is producible if ANY of the
+/// four Male/Female assignments yields a child (the player can arrange genders).
+fn child_any_gender(gd: &GameData, a: u16, b: u16) -> Option<u16> {
+    for &ga in &[Gender::Male, Gender::Female] {
+        for &gb in &[Gender::Male, Gender::Female] {
+            if let Some(c) = gd.child_of(a, ga, b, gb) {
+                return Some(c);
+            }
+        }
+    }
+    None
+}
+
+/// Species-level breeding BFS. Seed species are generation 0; each generation
+/// forms every not-yet-tried unordered pair (self-pairs included) of species
+/// reachable so far and records first-discovered children at generation+1.
+/// Returns per-index `(steps, witness_pair)` where `steps[i]` is `Some(gen)` for
+/// a reachable species and `None` otherwise, and `witness_pair[i]` is the
+/// `(parent_a, parent_b)` index pair that first produced it (`None` for seed /
+/// unreachable). Pairs are deduped via a `HashSet<(min, max)>`, so the loop runs
+/// in `O(generations · n²)` and always terminates.
+fn breed_reachability(gd: &GameData, seed: &[u16]) -> (Vec<Option<u16>>, Vec<Option<(u16, u16)>>) {
+    let n = gd.species_count();
+    let mut steps: Vec<Option<u16>> = vec![None; n];
+    let mut witness: Vec<Option<(u16, u16)>> = vec![None; n];
+    let mut reachable: Vec<u16> = Vec::new();
+    for &s in seed {
+        if (s as usize) < n && steps[s as usize].is_none() {
+            steps[s as usize] = Some(0);
+            reachable.push(s);
+        }
+    }
+    let mut tried: HashSet<(u16, u16)> = HashSet::new();
+    let mut gen: u16 = 0;
+    loop {
+        // Snapshot count: children are appended only after the sweep, so the
+        // range is stable across the inner loops.
+        let len = reachable.len();
+        let mut discovered: Vec<(u16, (u16, u16))> = Vec::new();
+        for i in 0..len {
+            for j in i..len {
+                let a = reachable[i];
+                let b = reachable[j];
+                let key = (a.min(b), a.max(b));
+                if !tried.insert(key) {
+                    continue;
+                }
+                if let Some(c) = child_any_gender(gd, key.0, key.1) {
+                    if steps[c as usize].is_none() {
+                        discovered.push((c, key));
+                    }
+                }
+            }
+        }
+        if discovered.is_empty() {
+            break;
+        }
+        gen += 1;
+        for (c, pair) in discovered {
+            if steps[c as usize].is_none() {
+                steps[c as usize] = Some(gen);
+                witness[c as usize] = Some(pair);
+                reachable.push(c);
+            }
+        }
+    }
+    (steps, witness)
+}
+
+/// Breed-reachability for the whole dex from an owned species set. Unknown
+/// `owned_species` names are silently skipped (the roster may carry ids absent
+/// from this pack); the rest seed a species-level breeding BFS. Returns one
+/// [`DexReachEntry`] per species in interned-index order (matching
+/// [`paldex_species`]).
+#[tauri::command]
+pub fn dex_reachability(owned_species: Vec<String>) -> Result<DexReach, String> {
+    let gd = GameData::get();
+    let seed: Vec<u16> = owned_species
+        .iter()
+        .filter_map(|name| gd.species_index(name))
+        .collect();
+    let (steps, witness) = breed_reachability(gd, &seed);
+    let name = |i: u16| gd.species_at(i).map(|s| s.internal_name.clone()).unwrap_or_default();
+    let species: Vec<DexReachEntry> = (0..gd.species_count() as u16)
+        .filter_map(|i| {
+            gd.species_at(i).map(|sp| DexReachEntry {
+                internal_name: sp.internal_name.clone(),
+                owned: steps[i as usize] == Some(0),
+                steps: steps[i as usize],
+                witness: witness[i as usize].map(|(a, b)| (name(a), name(b))),
+            })
+        })
+        .collect();
+    Ok(DexReach { species })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -817,5 +935,94 @@ mod tests {
             }
         }
         write("breeding-child.json", serde_json::to_string(&child_map).unwrap());
+    }
+
+    /// (a) An owned species reports steps=0 / owned=true and no witness.
+    #[test]
+    fn dex_reachability_owned_is_zero() {
+        let reach = dex_reachability(vec!["Anubis".into()]).expect("ok");
+        let e = reach
+            .species
+            .iter()
+            .find(|e| e.internal_name == "Anubis")
+            .expect("Anubis in dex");
+        assert!(e.owned, "owned species flagged owned");
+        assert_eq!(e.steps, Some(0), "owned species is 0 steps");
+        assert!(e.witness.is_none(), "owned species has no witness");
+    }
+
+    /// (b) A known 1-step child of two owned parents reports steps=1 with a
+    /// witness that is a real parent pair (breeds the target forward).
+    #[test]
+    fn dex_reachability_one_step_child() {
+        let gd = GameData::get();
+        let anubis = gd.species_index("Anubis").expect("Anubis exists");
+        // A gender-independent (rank) parent pair, so any-gender optimism is moot.
+        let pair = gd
+            .reverse_breeding(anubis)
+            .into_iter()
+            .find(|p| !p.unique)
+            .expect("Anubis has a rank parent pair");
+        let p1 = gd.species_at(pair.parent1).unwrap().internal_name.clone();
+        let p2 = gd.species_at(pair.parent2).unwrap().internal_name.clone();
+        let reach = dex_reachability(vec![p1, p2]).expect("ok");
+        let e = reach
+            .species
+            .iter()
+            .find(|e| e.internal_name == "Anubis")
+            .expect("Anubis in dex");
+        assert!(!e.owned, "bred species not owned");
+        assert_eq!(e.steps, Some(1), "direct child of two owned parents is 1 step");
+        let (wa, wb) = e.witness.as_ref().expect("bred species carries a witness");
+        let ia = gd.species_index(wa).expect("witness parent a exists");
+        let ib = gd.species_index(wb).expect("witness parent b exists");
+        assert_eq!(
+            child_any_gender(gd, ia, ib),
+            Some(anubis),
+            "witness pair {wa} x {wb} must breed Anubis"
+        );
+    }
+
+    /// (c) A species not reachable by breeding from the owned set reports
+    /// steps=None with no witness. Combi-rank breeding makes every species
+    /// globally producible (no species has empty `parents_of`), so the real
+    /// `None` case is "unreachable from this seed": two seed species that breed
+    /// new offspring still cannot cover the whole dex.
+    #[test]
+    fn dex_reachability_unreachable_is_none() {
+        let gd = GameData::get();
+        let anubis = gd.species_index("Anubis").expect("Anubis exists");
+        let pair = gd
+            .reverse_breeding(anubis)
+            .into_iter()
+            .find(|p| !p.unique)
+            .expect("Anubis has a rank parent pair");
+        let p1 = gd.species_at(pair.parent1).unwrap().internal_name.clone();
+        let p2 = gd.species_at(pair.parent2).unwrap().internal_name.clone();
+        let reach = dex_reachability(vec![p1, p2]).expect("ok");
+        // BFS actually expanded past the seed...
+        let bred = reach.species.iter().filter(|e| matches!(e.steps, Some(s) if s > 0)).count();
+        assert!(bred > 0, "BFS should breed at least one new species");
+        // ...yet some species remain unreachable from this small seed.
+        let none = reach
+            .species
+            .iter()
+            .find(|e| e.steps.is_none())
+            .expect("some species unreachable from a two-species seed");
+        assert!(!none.owned, "unreachable species not owned");
+        assert!(none.witness.is_none(), "unreachable species has no witness");
+    }
+
+    /// (d) Unknown / empty input names are silently skipped, never panic; the
+    /// result still lists every dex species (all None with an empty seed).
+    #[test]
+    fn dex_reachability_unknown_names_ok() {
+        let gd = GameData::get();
+        let reach = dex_reachability(vec!["NotARealPal".into(), "".into()]).expect("ok");
+        assert_eq!(reach.species.len(), gd.species_count(), "one row per species");
+        assert!(
+            reach.species.iter().all(|e| e.steps.is_none() && !e.owned),
+            "empty effective seed yields no reachable species"
+        );
     }
 }

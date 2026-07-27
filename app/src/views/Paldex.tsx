@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
-import type { OwnedPal, SpeciesEntry } from "../lib/types";
+import type { DexReach, OwnedPal, SpeciesEntry } from "../lib/types";
 import { useAppState } from "../state";
 import { hexGuid } from "../components/palbox/selectors";
 import type { DexTab } from "../components/dex-tabs";
@@ -20,8 +20,15 @@ import MovesIndex from "./paldex/moves-view";
  * the Save Inspector rather than the dex index.
  */
 export default function Paldex() {
-  const { roster, saveSummary, dexTarget, dexInstance, clearDexTarget, setView } =
-    useAppState();
+  const {
+    roster,
+    saveSummary,
+    dexTarget,
+    dexInstance,
+    clearDexTarget,
+    setView,
+    requestQueueSolve,
+  } = useAppState();
   const [species, setSpecies] = useState<SpeciesEntry[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [instanceHex, setInstanceHex] = useState<string | null>(null);
@@ -34,6 +41,43 @@ export default function Paldex() {
   useEffect(() => {
     invoke<SpeciesEntry[]>("paldex_species").then(setSpecies).catch(() => {});
   }, []);
+
+  // Breed-reachability annotation for the collection (COMPLETE MY COLLECTION):
+  // which missing species are obtainable by breeding from the current owned
+  // roster, and in how many steps. Keyed on the owned-species set so the
+  // watcher-driven roster refresh (save-changed) refetches only when the set of
+  // owned species actually changes; an identical set replays from the cache.
+  const ownedKey = useMemo(
+    () => (roster ? Object.keys(roster).sort().join(",") : ""),
+    [roster],
+  );
+  const [reach, setReach] = useState<DexReach | null>(null);
+  const reachCache = useRef<Map<string, DexReach>>(new Map());
+
+  useEffect(() => {
+    if (!roster) {
+      setReach(null);
+      return;
+    }
+    const cached = reachCache.current.get(ownedKey);
+    if (cached) {
+      setReach(cached);
+      return;
+    }
+    let live = true;
+    invoke<DexReach>("dex_reachability", { ownedSpecies: Object.keys(roster) })
+      .then((r) => {
+        if (!live) return;
+        reachCache.current.set(ownedKey, r);
+        setReach(r);
+      })
+      .catch(() => {
+        if (live) setReach(null);
+      });
+    return () => {
+      live = false;
+    };
+  }, [ownedKey, roster]);
 
   // Consume a one-shot dex target (species click in the dex, or an owned
   // instance from the Save Inspector): always lands on a species, so snap back
@@ -120,7 +164,9 @@ export default function Paldex() {
     <PaldexIndex
       species={species}
       roster={roster}
+      reach={reach}
       onSelect={setSelectedId}
+      onBreedMissing={requestQueueSolve}
       tab={tab}
       onTab={setTab}
     />

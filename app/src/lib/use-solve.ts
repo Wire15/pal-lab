@@ -54,6 +54,9 @@ function hexToGuid(hex: string): number[] {
 /** Saved-plan metadata surfaced after a rehydrate, driving the "roster may have
  *  changed" staleness banner. Null while the result came from a live solve. */
 export interface RestoredInfo {
+  /** Id of the saved plan this result was restored from (identity for live
+   *  plan tracking — survives rename, unlike name+created). */
+  id: string;
   name: string;
   /** Epoch-ms the plan was saved (rendered as the banner's SAVED date). */
   created: number;
@@ -413,6 +416,7 @@ export function useSolve(): UseSolve {
     setQueueResult(null);
     setQueueError(null);
     setRestoredFrom({
+      id: saved.id,
       name: saved.name,
       created: saved.created,
       saveDir: saved.saveDir,

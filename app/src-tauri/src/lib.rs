@@ -30,6 +30,7 @@ pub fn run() {
             paldex::breeding_parents,
             paldex::reverse_breeding,
             paldex::roster_counts,
+            paldex::dex_reachability,
             updater::check_update,
             updater::data_pack_info,
             mapstate::get_map_state

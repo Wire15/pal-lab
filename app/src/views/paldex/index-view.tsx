@@ -1,5 +1,11 @@
-import { memo, useMemo, useState } from "react";
-import type { RosterCounts, SpeciesEntry } from "../../lib/types";
+import { memo, useEffect, useMemo, useState } from "react";
+import type {
+  DexReach,
+  DexReachEntry,
+  RosterCounts,
+  SpeciesEntry,
+} from "../../lib/types";
+import type { SolveSpec } from "../../lib/use-solve";
 import { PalHoverCard } from "../../components/pal-hover-card";
 import { ElementBadges, ElementIcon } from "../../components/element";
 import { palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
@@ -15,6 +21,23 @@ import {
 
 type SortKey = "paldex" | "name" | "rank";
 type SortDir = "asc" | "desc";
+
+/** Above this many missing-breedable targets, "Breed missing" asks for an inline
+ *  confirm before enqueueing — a long queue solves for a while. */
+const BREED_MISSING_CAP = 20;
+
+/** A bare species-only solve spec for the "Breed missing" queue: no passives, no
+ *  IV floors, wildcard gender, default step limit — identical in shape to the
+ *  Solver's single-solve payload (see Solver `buildSpec`), minus any pins. */
+function bareTargetSpec(name: string): SolveSpec {
+  return {
+    target_species: name,
+    required_passives: [],
+    max_steps: 5,
+    include_wild: false,
+    catching: "breeding_only",
+  };
+}
 
 const SORTS: { key: SortKey; label: string }[] = [
   { key: "paldex", label: "Dex #" },
@@ -84,12 +107,16 @@ const DexTile = memo(function DexTile({
   state,
   male,
   female,
+  reach,
   onSelect,
 }: {
   s: SpeciesEntry;
   state: "owned" | "unowned" | "neutral";
   male: number;
   female: number;
+  /** Breed-reachability for this species from the owned roster, when a save is
+   *  loaded; drives the missing-species chip. */
+  reach?: DexReachEntry | null;
   onSelect: (id: string) => void;
 }) {
   const total = male + female;
@@ -127,6 +154,18 @@ const DexTile = memo(function DexTile({
               )}
             </div>
           )}
+          {state === "unowned" &&
+            reach &&
+            (reach.steps !== null ? (
+              <span className="mt-0.5 rounded-sm bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] leading-none tabular-nums text-amber/90">
+                {"\u2248"}
+                {reach.steps} step{reach.steps === 1 ? "" : "s"}
+              </span>
+            ) : (
+              <span className="mt-0.5 rounded-sm bg-raised px-1.5 py-0.5 font-mono text-[10px] leading-none text-ink-faint">
+                catch only
+              </span>
+            ))}
         </div>
       </button>
     </PalHoverCard>
@@ -136,13 +175,21 @@ const DexTile = memo(function DexTile({
 export default function PaldexIndex({
   species,
   roster,
+  reach,
   onSelect,
+  onBreedMissing,
   tab,
   onTab,
 }: {
   species: SpeciesEntry[];
   roster: RosterCounts | null;
+  /** Breed-reachability for every species from the owned roster, or null before
+   *  a save loads / while the fetch is in flight. */
+  reach: DexReach | null;
   onSelect: (id: string) => void;
+  /** Enqueue and solve a batch of bare species targets (the "Breed missing"
+   *  action); specs are ordered by ascending breeding steps by the caller. */
+  onBreedMissing: (specs: SolveSpec[]) => void;
   tab: DexTab;
   onTab: (t: DexTab) => void;
 }) {
@@ -153,6 +200,11 @@ export default function PaldexIndex({
   const [hideVariants, setHideVariants] = useState(false);
   const [elements, setElements] = useState<Set<string>>(() => new Set());
   const [filters, setFilters] = useState<DexFilterState>(EMPTY_DEX_FILTERS);
+  // COMPLETE MY COLLECTION filters/action (collection context, save loaded).
+  const [missingOnly, setMissingOnly] = useState(false);
+  // Two-stage inline confirm for a large "Breed missing" batch (no modal): the
+  // first click arms, the second enqueues; any other interaction disarms it.
+  const [breedArmed, setBreedArmed] = useState(false);
 
   function toggleElement(kind: string) {
     setElements((prev) => {
@@ -177,6 +229,28 @@ export default function PaldexIndex({
     [roster],
   );
 
+  // Reachability keyed by species internal name, for per-tile chips + the
+  // missing filter + the breed-missing target set.
+  const reachMap = useMemo(
+    () => new Map((reach?.species ?? []).map((e) => [e.internal_name, e])),
+    [reach],
+  );
+
+  // Collection tally for the header summary: owned / breedable-missing (steps
+  // Some) / catch-only-missing (steps None), over the reachability set.
+  const summary = useMemo(() => {
+    if (!reach) return null;
+    let owned = 0;
+    let breedable = 0;
+    let catchOnly = 0;
+    for (const e of reach.species) {
+      if (e.owned) owned += 1;
+      else if (e.steps !== null) breedable += 1;
+      else catchOnly += 1;
+    }
+    return { owned, total: reach.species.length, breedable, catchOnly };
+  }, [reach]);
+
   // Filter options for the guaranteed-passive picker: every guaranteed passive
   // present across the dataset (unique by name), strongest rank first.
   const passiveOptions = useMemo<PassiveOption[]>(() => {
@@ -189,13 +263,15 @@ export default function PaldexIndex({
 
   const deepCount = dexFilterCount(filters);
   const anyOtherFilter = deepCount > 0 || elements.size > 0 || hideVariants;
-  const anyFilterActive = anyOtherFilter || ownedOnly;
+  const anyFilterActive = anyOtherFilter || ownedOnly || missingOnly;
 
   function clearAllFilters() {
     setElements(new Set());
     setOwnedOnly(false);
+    setMissingOnly(false);
     setHideVariants(false);
     setFilters(EMPTY_DEX_FILTERS);
+    setBreedArmed(false);
   }
 
   const rows = useMemo(() => {
@@ -203,6 +279,7 @@ export default function PaldexIndex({
     let list = species.filter((s) => {
       if (hideVariants && s.is_variant) return false;
       if (ownedOnly && !(roster?.[s.id] && roster[s.id].male + roster[s.id].female > 0)) return false;
+      if (missingOnly && roster?.[s.id] && roster[s.id].male + roster[s.id].female > 0) return false;
       if (elements.size > 0 && !s.elements.some((e) => elements.has(e))) return false;
       if (deepCount > 0 && !matchesDexFilters(s, filters)) return false;
       if (!q) return true;
@@ -222,7 +299,39 @@ export default function PaldexIndex({
     });
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [species, roster, query, sortKey, sortDir, ownedOnly, hideVariants, elements, filters, deepCount]);
+  }, [species, roster, query, sortKey, sortDir, ownedOnly, missingOnly, hideVariants, elements, filters, deepCount]);
+
+  // Missing-but-breedable species in current view order, re-sorted ascending by
+  // breeding steps for the queue: the queue chains earlier bred results into
+  // later items, so solving the cheapest targets first lets deeper targets reuse
+  // them. The active filters double as the selection (default: every missing
+  // breedable species; narrow the dex to breed a subset).
+  const breedMissing = useMemo<string[]>(() => {
+    if (!reach) return [];
+    return rows
+      .map((s) => ({ s, e: reachMap.get(s.id) }))
+      .filter(
+        (x): x is { s: SpeciesEntry; e: DexReachEntry } =>
+          !!x.e && !x.e.owned && x.e.steps !== null,
+      )
+      .sort((a, b) => (a.e.steps as number) - (b.e.steps as number))
+      .map((x) => x.s.name);
+  }, [rows, reachMap, reach]);
+
+  // Disarm the large-batch confirm whenever the target set changes.
+  useEffect(() => {
+    setBreedArmed(false);
+  }, [breedMissing.length]);
+
+  function runBreedMissing() {
+    if (breedMissing.length === 0) return;
+    if (breedMissing.length > BREED_MISSING_CAP && !breedArmed) {
+      setBreedArmed(true);
+      return;
+    }
+    setBreedArmed(false);
+    onBreedMissing(breedMissing.map(bareTargetSpec));
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -249,6 +358,40 @@ export default function PaldexIndex({
             )}
           </div>
         </div>
+
+        {/* COMPLETE MY COLLECTION — breed-reachability summary + breed action */}
+        {summary && (
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="font-mono text-[11px] tabular-nums text-ink-dim">
+              owned{" "}
+              <span className="text-amber">
+                {summary.owned}/{summary.total}
+              </span>
+              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>
+              breedable <span className="text-ink">+{summary.breedable}</span>
+              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>
+              catch only <span className="text-ink-faint">{summary.catchOnly}</span>
+            </span>
+            {breedMissing.length > 0 && (
+              <div className="ml-auto flex items-center gap-2">
+                {breedArmed && (
+                  <span className="text-[11px] text-ink-faint">
+                    queues {breedMissing.length} solves; click again to run
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={runBreedMissing}
+                  className="select-none rounded-md border border-amber/60 bg-amber/10 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-amber transition-colors hover:bg-amber/20"
+                >
+                  {breedArmed
+                    ? `Breed ${breedMissing.length} missing \u2014 confirm`
+                    : `Breed missing (${breedMissing.length})`}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Search + sort + filters */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -293,6 +436,23 @@ export default function PaldexIndex({
               onChange={(e) => setOwnedOnly(e.currentTarget.checked)}
             />
             Owned only
+          </label>
+          <label
+            className={`flex select-none items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[12px] transition-colors ${
+              roster
+                ? "cursor-pointer border-line bg-panel text-ink-dim hover:text-ink"
+                : "cursor-not-allowed border-line-soft bg-panel/50 text-ink-faint"
+            }`}
+            title={roster ? undefined : "Load a save to filter by missing pals"}
+          >
+            <input
+              type="checkbox"
+              className="h-3.5 w-3.5 accent-[var(--color-amber)]"
+              checked={missingOnly}
+              disabled={!roster}
+              onChange={(e) => setMissingOnly(e.currentTarget.checked)}
+            />
+            Missing
           </label>
           <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-md border border-line bg-panel px-2.5 py-1.5 text-[12px] text-ink-dim transition-colors hover:text-ink">
             <input
@@ -398,6 +558,7 @@ export default function PaldexIndex({
                   state={state}
                   male={owned?.male ?? 0}
                   female={owned?.female ?? 0}
+                  reach={reachMap.get(s.id) ?? null}
                   onSelect={onSelect}
                 />
               );

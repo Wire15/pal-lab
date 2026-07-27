@@ -662,3 +662,23 @@ export interface MapState {
   players: MapPlayerState[];
   bases?: { x: number; y: number }[] | null;
 }
+
+/** One dex row annotated with breed-reachability from an owned species set,
+ * from `dex_reachability(ownedSpecies)`. `owned` is true when the species is
+ * already in the roster (`steps === 0`); `steps` is the minimum number of
+ * breeding generations to obtain it from the owned set, or `null` when it is
+ * not producible by breeding alone from that set; `witness` is one canonical
+ * parent pair (internal names) proving the final breeding step, or `null` for
+ * an owned or unreachable species. */
+export interface DexReachEntry {
+  internal_name: string;
+  owned: boolean;
+  steps: number | null;
+  witness: [string, string] | null;
+}
+
+/** Response from `dex_reachability(ownedSpecies)`: one [`DexReachEntry`] per
+ * dex species in interned-index order (matching `paldex_species`). */
+export interface DexReach {
+  species: DexReachEntry[];
+}
