@@ -215,39 +215,6 @@ function AboutModal({ onClose }: { onClose: () => void }) {
               </p>
             </>
           )}
-          {caps.updater ? (
-            <>
-              <div className="mb-2.5 flex items-center justify-between gap-3">
-                <div className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                  Updates
-                </div>
-                <button
-                  onClick={check}
-                  disabled={checking}
-                  className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {checking ? "Checking\u2026" : "Check for updates"}
-                </button>
-              </div>
-              <UpdateResult result={result} />
-            </>
-          ) : (
-            <>
-              <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                Desktop app
-              </div>
-              <p className="text-[12px] leading-relaxed text-ink-faint">
-                {caps.isWeb ? "Web version" : "Preview build"} &mdash;{" "}
-                <button
-                  onClick={() => openExternal(RELEASES_URL)}
-                  className="text-amber transition-colors hover:text-amber-bright"
-                >
-                  get the desktop app
-                </button>{" "}
-                for live tracking.
-              </p>
-            </>
-          )}
         </div>
 
         <div className="px-5 py-3.5">

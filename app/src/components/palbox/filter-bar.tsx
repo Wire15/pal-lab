@@ -5,6 +5,7 @@
 // "Expedition Power" sort is omitted deliberately (spec: not honestly derivable).
 
 import { ElementIcon } from "../element";
+import { PassivePicker } from "../passive-picker";
 import {
   ELEMENT_ORDER,
   type GenderFilter,
@@ -168,15 +169,25 @@ export function FilterBar({
         Alpha
       </button>
 
-      {/* Passive text filter */}
-      <input
-        type="search"
-        value={query.passive}
-        onChange={(e) => onChange({ passive: e.currentTarget.value })}
-        placeholder="Passive..."
-        aria-label="Filter by passive"
-        className="w-32 rounded-md border border-line bg-abyss px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-      />
+      {/* Passive multi-select filter (shared PassivePicker; AND across selected) */}
+      <div className="w-56">
+        <PassivePicker
+          selected={query.passives}
+          valueMode="id"
+          label=""
+          placeholder={"Passive\u2026"}
+          onAdd={(id) =>
+            onChange({
+              passives: query.passives.includes(id)
+                ? query.passives
+                : [...query.passives, id],
+            })
+          }
+          onRemove={(id) =>
+            onChange({ passives: query.passives.filter((x) => x !== id) })
+          }
+        />
+      </div>
     </div>
   );
 }

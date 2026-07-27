@@ -1,13 +1,14 @@
-// The Pal-dex section switcher: a segmented [Pals | Passives | Moves] control
-// shared by the reference browsers (species grid, passive-skill grid, active-
-// skill/moves reference). Matches the sort-control treatment (§6): active =
-// amber on `raised`, muted otherwise.
+// The Pal-dex section switcher: a segmented [Pals | Passives | Partner | Moves]
+// control shared by the reference browsers (species grid, passive-skill grid,
+// partner-skill grid, active-skill/moves reference). Matches the sort-control
+// treatment (§6): active = amber on `raised`, muted otherwise.
 
-export type DexTab = "pals" | "passives" | "moves";
+export type DexTab = "pals" | "passives" | "partner" | "moves";
 
 const TABS: { key: DexTab; label: string }[] = [
   { key: "pals", label: "Pals" },
   { key: "passives", label: "Passives" },
+  { key: "partner", label: "Partner" },
   { key: "moves", label: "Moves" },
 ];
 

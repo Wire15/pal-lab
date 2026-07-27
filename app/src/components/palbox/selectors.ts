@@ -51,8 +51,8 @@ export interface PalboxQuery {
   elements: string[];
   gender: GenderFilter;
   alphaOnly: boolean;
-  /** Free-text passive query; matches passive display ids, contains. */
-  passive: string;
+  /** Required passive IDs; a pal must carry ALL of them (AND). Empty = no filter. */
+  passives: string[];
 }
 
 export const DEFAULT_QUERY: PalboxQuery = {
@@ -62,7 +62,7 @@ export const DEFAULT_QUERY: PalboxQuery = {
   elements: [],
   gender: "any",
   alphaOnly: false,
-  passive: "",
+  passives: [],
 };
 
 /** True when the query would reorder or hide anything vs. physical slot order. */
@@ -73,7 +73,7 @@ export function isQueryActive(q: PalboxQuery): boolean {
     q.elements.length > 0 ||
     q.gender !== "any" ||
     q.alphaOnly ||
-    q.passive.trim() !== ""
+    q.passives.length > 0
   );
 }
 
@@ -168,10 +168,9 @@ export function matchesQuery(
 
   if (q.alphaOnly && !isAlpha(pal)) return false;
 
-  const pq = q.passive.trim().toLowerCase();
-  if (pq) {
-    const has = pal.passives.some((p) => p.toLowerCase().includes(pq));
-    if (!has) return false;
+  if (q.passives.length > 0) {
+    const owned = new Set(pal.passives);
+    if (!q.passives.every((id) => owned.has(id))) return false;
   }
 
   return true;

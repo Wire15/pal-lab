@@ -67,7 +67,7 @@ pub struct OwnedPal {
     pub is_human: bool,
     pub gender: Option<Gender>,
     pub level: u32,
-    /// Condensation rank (0 = base).
+    /// Condensation stars, 0-4 (normalized from the save's 1-based Rank).
     pub rank: u32,
     pub passives: Vec<PassiveId>,
     /// Equipped active skills (waza), internal ids with the `EPalWazaID::`

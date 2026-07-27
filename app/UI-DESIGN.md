@@ -1485,6 +1485,42 @@ a brief **amber ring** (`ring-1 ring-amber`, ~2s). The scroll is deferred past
 layout (keyed on the async move-list load) so a link armed before the list
 resolves still lands.
 
+## Wave — Pal-dex PARTNER reference (`views/paldex/partner-view.tsx`)
+
+A fourth Pal-dex browser beside the species grid, passive grid, and moves grid:
+the paldb-style **partner-skill reference**. Composes existing primitives end to
+end — the `PartnerIcon` glyph (§12), the `PartnerSkillDescription` per-level
+tokens (§14) — with **no new Rust**: every partner field already rides on the
+`paldex_species → SpeciesEntry` list rows (name, desc, template, values, icon),
+so the tab reads the list `Paldex.tsx` already fetches (fixture mode included).
+
+### Section switcher (extends §12 `components/dex-tabs.tsx`)
+
+`DexTabs` grows a fourth tab so the control reads `[Pals | Passives | Partner |
+Moves]` (PARTNER sits **between** PASSIVES and MOVES), same segmented treatment
+(active = amber on `raised`). `views/Paldex.tsx` routes `tab === "partner"` to
+`PartnerIndex`; PALS stays the default. Selecting a species (the card's
+name/`#NNN` cross-link) drops into the shared detail via the same in-dex
+`navigate`, and the one-shot `dexTarget` consume still snaps back to PALS.
+
+### Partner index
+
+Mirrors the passive-browse layout (§12) verbatim: `Pal-dex` eyebrow + **Partner
+skills** title beside the tabs, a right-aligned mono count reading `N partner
+skills / M species` (`X / N partner skills / M species` while filtering), a
+name/species/effect **search** with a **Reset**, and the centered
+`mx-auto max-w-[1160px]` up-to-3-column card grid (`grid-cols-1 md:grid-cols-2
+xl:grid-cols-3`). One card per species **carrying a partner skill** (the pack
+ships one for all 299 in the current data; the templateless/DLC species would
+drop out otherwise), sorted by paldex number then name. Each card is the
+`PassiveCard` idiom: a header with the `PartnerIcon` (26px, generic bond-glyph
+fallback), the skill **name** (`amber-bright font-display`), and the species
+**name + mono amber `#NNN`** cross-link; the body renders the per-rank
+description via `PartnerSkillDescription` (Lv 1 value as a water-tinted token,
+hover/focus reveals the full Lv 1..Lv N progression) or the plain resolved
+`partner_skill_desc` for the ~130 templateless species. Empty/loading/no-match
+states per §8 (a `Clear`-style Reset escape when a query is active).
+
 ## Wave — App-wide player scoping (`state.tsx`, `App.tsx`, `lib/use-solve.ts`, `solver.rs`)
 
 A shared save can hold several players' pals (the real save: 1669 pals across 4

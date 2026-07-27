@@ -7,6 +7,7 @@ import type { DexTab } from "../components/dex-tabs";
 import PaldexIndex from "./paldex/index-view";
 import PaldexDetail from "./paldex/detail-view";
 import PassivesIndex from "./paldex/passives-view";
+import PartnerIndex from "./paldex/partner-view";
 import MovesIndex from "./paldex/moves-view";
 
 /**
@@ -145,6 +146,17 @@ export default function Paldex() {
 
   if (tab === "passives") {
     return <PassivesIndex tab={tab} onTab={setTab} />;
+  }
+
+  if (tab === "partner") {
+    return (
+      <PartnerIndex
+        species={species}
+        tab={tab}
+        onTab={setTab}
+        onSelectPal={navigate}
+      />
+    );
   }
 
   if (tab === "moves") {

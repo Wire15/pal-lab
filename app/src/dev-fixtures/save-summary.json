@@ -1178,7 +1178,7 @@
       "is_human": false,
       "gender": "Male",
       "level": 13,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "CraftSpeed_up2",
         "Deffence_up2_2"
@@ -1488,7 +1488,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 21,
-      "rank": 2,
+      "rank": 1,
       "passives": [
         "Rare",
         "TrainerMining_up1"
@@ -1568,7 +1568,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 39,
-      "rank": 2,
+      "rank": 1,
       "passives": [
         "PAL_rude",
         "Rare"
@@ -2602,7 +2602,7 @@
       "is_human": false,
       "gender": "Male",
       "level": 48,
-      "rank": 2,
+      "rank": 1,
       "passives": [
         "Rare",
         "PAL_FullStomach_Down_1",
@@ -2998,7 +2998,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 7,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "PAL_FullStomach_Up_2"
       ],
@@ -3076,7 +3076,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 3,
-      "rank": 1,
+      "rank": 0,
       "passives": [],
       "active_skills": [
         "Unique_ChickenPal_ChickenPeck"
@@ -3151,7 +3151,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 6,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "SalePrice_Up_2"
       ],
@@ -3228,7 +3228,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 6,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "Deffence_down1"
       ],
@@ -3305,7 +3305,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 3,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "Deffence_up2_2",
         "CoolTimeReduction_Up_1"
@@ -3383,7 +3383,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 3,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "WorkSuitabilityAddRank_MonsterFarm_1"
       ],
@@ -3460,7 +3460,7 @@
       "is_human": false,
       "gender": "Male",
       "level": 8,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "CraftSpeed_down1"
       ],
@@ -3538,7 +3538,7 @@
       "is_human": false,
       "gender": "Male",
       "level": 13,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "TrainerWorkSpeed_UP_1"
       ],
@@ -3616,7 +3616,7 @@
       "is_human": false,
       "gender": "Male",
       "level": 9,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "Deffence_up1"
       ],
@@ -3695,7 +3695,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 6,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "ElementBoost_Fire_1_PAL"
       ],
@@ -3772,7 +3772,7 @@
       "is_human": false,
       "gender": "Female",
       "level": 7,
-      "rank": 1,
+      "rank": 0,
       "passives": [
         "PAL_rude"
       ],

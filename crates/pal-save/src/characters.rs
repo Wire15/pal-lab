@@ -221,10 +221,14 @@ fn build_pal(param: &[(String, Value)], instance_id: Guid) -> Result<OwnedPal, S
         .and_then(Value::as_i32)
         .unwrap_or(1)
         .max(0) as u32;
+    // Palworld's `Rank` is 1-based condensation (absent/0/1 = base 0 stars,
+    // 2 = 1 star, ... 5 = 4 stars). Normalize to 0-based stars here so every
+    // downstream `values_per_rank` vector indexes directly; absent and Rank<=1
+    // both collapse to 0.
     let rank = find(param, "Rank")
         .and_then(Value::as_i32)
-        .unwrap_or(0)
-        .max(0) as u32;
+        .map(|r| (r - 1).max(0))
+        .unwrap_or(0) as u32;
     // Lucky/bred-alpha instance flag; omitted (default false) for normal pals.
     let is_lucky = find(param, "IsRarePal")
         .and_then(Value::as_bool)
@@ -749,5 +753,24 @@ mod tests {
         assert!(cages.contains(&cage_guid));
         assert_eq!(global.len(), 1);
         assert!(global.contains(&global_guid));
+    }
+
+    /// Condensation `Rank` in the save is 1-based (absent/0/1 = base 0 stars,
+    /// 2 = 1 star, ... 5 = 4 stars). `build_pal` normalizes to 0-based stars so
+    /// downstream `values_per_rank` vectors index directly.
+    #[test]
+    fn rank_normalized_to_zero_based_stars() {
+        fn stars(rank: Option<i32>) -> u32 {
+            let mut param = vec![("CharacterID".to_string(), Value::Str("SheepBall".into()))];
+            if let Some(r) = rank {
+                param.push(("Rank".to_string(), Value::Int(r)));
+            }
+            build_pal(&param, Guid::default()).unwrap().rank
+        }
+        assert_eq!(stars(None), 0, "absent Rank -> 0 stars");
+        assert_eq!(stars(Some(0)), 0, "Rank 0 -> 0 stars");
+        assert_eq!(stars(Some(1)), 0, "Rank 1 -> 0 stars");
+        assert_eq!(stars(Some(2)), 1, "Rank 2 -> 1 star");
+        assert_eq!(stars(Some(5)), 4, "Rank 5 -> 4 stars");
     }
 }

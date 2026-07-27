@@ -5,9 +5,11 @@
 // selected chips (compact band pill + remove ×). The popover is portaled to
 // <body> so the Solver form column's overflow never clips it.
 //
-// The selected value is a `string[]` of passive NAMES (frozen: runSolve sends
-// it straight through as `required_passives`); the picker maps names↔entries
-// off the `list_passives` payload for coloring.
+// The selected value is a `string[]` keyed by `valueMode`: passive NAMES
+// (default — the Solver/IV Lab freeze it and send it straight through as
+// `required_passives`) or passive IDs (`valueMode="id"`, the Palbox filter,
+// which AND-matches ids against a pal's `passives`). Either way the picker maps
+// value↔entry off the `list_passives` payload for coloring.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -51,31 +53,33 @@ function effectSummary(p: PassiveRow): string {
  *  ×. Same tint tokens + rank cluster as the strip, sized for a chip row. */
 function PassiveChipRemovable({
   row,
-  name,
+  value,
   onRemove,
 }: {
   row: PassiveRow | undefined;
-  name: string;
-  onRemove: (name: string) => void;
+  /** The selected key (name or id, per the picker's valueMode). */
+  value: string;
+  onRemove: (value: string) => void;
 }) {
   const rank = row?.rank ?? 1;
   const band = stripBand(rank, row?.tier);
   const tint = stripTint(band);
+  const label = row?.name ?? value;
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-sm border py-0.5 pl-2 pr-1 text-[11px] font-semibold leading-tight"
       style={{ ...tint.banner, color: tint.nameColor, borderLeftWidth: 2 }}
-      title={row?.id ?? name}
+      title={row?.id ?? value}
     >
-      <span className="max-w-[13rem] truncate">{name}</span>
+      <span className="max-w-[13rem] truncate">{label}</span>
       <span style={{ color: tint.accent }}>
         <RankCluster rank={rank} band={band} size="sm" />
       </span>
       <button
         type="button"
         className="ml-0.5 grid h-4 w-4 place-items-center rounded-sm text-current opacity-60 transition-opacity hover:opacity-100"
-        onClick={() => onRemove(name)}
-        aria-label={`Remove ${name}`}
+        onClick={() => onRemove(value)}
+        aria-label={`Remove ${label}`}
       >
         &times;
       </button>
@@ -95,11 +99,19 @@ export function PassivePicker({
   selected,
   onAdd,
   onRemove,
+  label = "Required passives",
+  placeholder = "Search passives\u2026",
+  valueMode = "name",
 }: {
-  /** Currently-required passive NAMES (the frozen `string[]`). */
+  /** Currently-selected passive keys (NAMES by default, IDs when valueMode="id"). */
   selected: string[];
-  onAdd: (name: string) => void;
-  onRemove: (name: string) => void;
+  onAdd: (value: string) => void;
+  onRemove: (value: string) => void;
+  /** Field caption; falsy hides it (the Palbox toolbar wants no stacked label). */
+  label?: string;
+  placeholder?: string;
+  /** What each selected value is keyed on: "name" (Solver contract) or "id". */
+  valueMode?: "name" | "id";
 }) {
   const [entries, setEntries] = useState<PassiveRow[]>([]);
   const [query, setQuery] = useState("");
@@ -116,8 +128,11 @@ export function PassivePicker({
     invoke<PassiveRow[]>("list_passives").then(setEntries).catch(() => {});
   }, []);
 
-  // name → entry, for coloring the selected chips.
-  const byName = useMemo(() => new Map(entries.map((e) => [e.name, e])), [entries]);
+  // value key → entry, for coloring the selected chips.
+  const byKey = useMemo(
+    () => new Map(entries.map((e) => [valueMode === "id" ? e.id : e.name, e])),
+    [entries, valueMode],
+  );
 
   // Pal-facing only, tier/high-rank first, then alphabetical. Base list is
   // stable; query + selected filter it per keystroke.
@@ -134,9 +149,11 @@ export function PassivePicker({
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     return palFacing.filter(
-      (p) => !selectedSet.has(p.name) && (!q || p.name.toLowerCase().includes(q)),
+      (p) =>
+        !selectedSet.has(valueMode === "id" ? p.id : p.name) &&
+        (!q || p.name.toLowerCase().includes(q)),
     );
-  }, [palFacing, selectedSet, query]);
+  }, [palFacing, selectedSet, query, valueMode]);
 
   // Keep the highlight in-bounds as the list shrinks/grows.
   useEffect(() => {
@@ -187,8 +204,8 @@ export function PassivePicker({
     rowRefs.current[highlight]?.scrollIntoView({ block: "nearest" });
   }, [highlight, open]);
 
-  function add(name: string) {
-    onAdd(name);
+  function add(p: PassiveRow) {
+    onAdd(valueMode === "id" ? p.id : p.name);
     setQuery("");
     inputRef.current?.focus();
   }
@@ -207,7 +224,7 @@ export function PassivePicker({
     } else if (e.key === "Enter") {
       e.preventDefault();
       const pick = rows[highlight];
-      if (pick) add(pick.name);
+      if (pick) add(pick);
     } else if (e.key === "Escape") {
       if (open) {
         e.preventDefault();
@@ -218,15 +235,17 @@ export function PassivePicker({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-        Required passives
-      </span>
+      {label && (
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+          {label}
+        </span>
+      )}
 
       <div ref={anchorRef} className="relative">
         <input
           ref={inputRef}
           className="w-full min-w-0 rounded-md border border-line bg-abyss px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-          placeholder={"Search passives\u2026"}
+          placeholder={placeholder}
           value={query}
           role="combobox"
           aria-expanded={open}
@@ -282,7 +301,7 @@ export function PassivePicker({
                     i === highlight ? "bg-hover" : "hover:bg-hover/60"
                   }`}
                   onMouseEnter={() => setHighlight(i)}
-                  onClick={() => add(p.name)}
+                  onClick={() => add(p)}
                 >
                   <PassiveStrip id={p.id} size="sm" />
                   {effectSummary(p) && (
@@ -299,11 +318,11 @@ export function PassivePicker({
 
       {selected.length > 0 && (
         <div className="mt-1 flex flex-wrap gap-1.5">
-          {selected.map((name) => (
+          {selected.map((value) => (
             <PassiveChipRemovable
-              key={name}
-              name={name}
-              row={byName.get(name)}
+              key={value}
+              value={value}
+              row={byKey.get(value)}
               onRemove={onRemove}
             />
           ))}

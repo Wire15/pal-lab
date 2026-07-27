@@ -403,7 +403,7 @@ export default function SaveInspector() {
         elements: [],
         gender: "any",
         alphaOnly: false,
-        passive: "",
+        passives: [],
       }),
     [patchQuery],
   );
