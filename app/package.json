@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:web": "vite --mode web",
     "build": "tsc && vite build",
-    "build:wasm": "wasm-pack build ../crates/pal-web --target web --out-dir ../app/src/wasm-pkg",
+    "build:wasm": "wasm-pack build ../crates/pal-web --target web --out-dir ../../app/src/wasm-pkg",
     "build:web": "bun run build:wasm && tsc && vite build --mode web",
     "preview": "vite preview",
     "tauri": "tauri"
