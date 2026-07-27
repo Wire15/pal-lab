@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Generated wasm-pack output of crates/pal-web (built via `bun run build:wasm`);
+# regenerated from Rust source, never committed.
+src/wasm-pkg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

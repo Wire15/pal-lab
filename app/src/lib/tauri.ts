@@ -12,16 +12,15 @@
 
 import { invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { InvokeArgs } from "@tauri-apps/api/core";
+import { isTauri, isWeb } from "./caps";
 import type {
   ChildResult,
   ParentsResult,
   ReversePair,
+  SaveSummary,
   SpeciesDetail,
   SpeciesEntry,
 } from "./types";
-
-/** Tauri v2 injects this global into the webview; absent in a plain browser. */
-const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
 interface DevFixtures {
   /** Command name -> whole fixture, for commands with no argument keying. */
@@ -113,30 +112,32 @@ function arg(args: InvokeArgs | undefined, key: string): string {
 // progress panel reviewable in `bun run dev`, fixture mode synthesizes a
 // realistic event sequence (seeding -> steps 1..3 -> finalizing) over ~3s and
 // delays the fixture resolve until it finishes. `use-solve` subscribes via
-// `devListenProgress` (mirroring the Tauri `listen("solve-progress")` it uses
+// `listenProgress` (mirroring the Tauri `listen("solve-progress")` it uses
 // in real mode); `cancel_solve` interrupts the sequence with a "cancelled"
 // throw, matching the backend's `Err("cancelled")` resolution.
 // ------------------------------------------------------------------ */
 
-/** A subscriber to simulated `solve-progress` payloads (fixture mode only). */
-type DevProgressListener = (payload: Record<string, unknown>) => void;
+/** A subscriber to `solve-progress` payloads on the non-Tauri progress bus (fed
+ *  by the fixture simulator below and, in web mode, by the wasm worker). */
+type ProgressListener = (payload: Record<string, unknown>) => void;
 
-const devProgressListeners = new Set<DevProgressListener>();
+const progressListeners = new Set<ProgressListener>();
 const devCancelled = new Set<number>();
 
-/** True in a plain browser (`bun run dev`): no Tauri backend, fixtures serve.
- *  Gates the dev-only progress simulator so real mode is never affected. */
-export function isFixtureMode(): boolean {
-  return !isTauri;
+/** Subscribe to progress on the non-Tauri bus — the browser analogue of
+ *  `listen("solve-progress", …)`. Both fixture mode (the simulator) and web mode
+ *  (the worker) push here, so `use-solve` takes one path for both. Returns an
+ *  unlisten fn. */
+export function listenProgress(cb: ProgressListener): () => void {
+  progressListeners.add(cb);
+  return () => {
+    progressListeners.delete(cb);
+  };
 }
 
-/** Subscribe to simulated progress in fixture mode — the fixture-mode analogue
- *  of `listen("solve-progress", …)`. Returns an unlisten fn. */
-export function devListenProgress(cb: DevProgressListener): () => void {
-  devProgressListeners.add(cb);
-  return () => {
-    devProgressListeners.delete(cb);
-  };
+/** Fan a progress payload out to every subscriber. */
+function emitProgress(payload: Record<string, unknown>): void {
+  for (const cb of progressListeners) cb(payload);
 }
 
 const devSleep = (ms: number): Promise<void> => {
@@ -175,7 +176,7 @@ async function devSimulateProgress(
       elapsed_ms: Math.round(performance.now() - start),
       ...fields,
     };
-    for (const cb of devProgressListeners) cb(payload);
+    emitProgress(payload);
   };
 
   emit({ phase: "seeding", step: 0, pairs_done: 0, pairs_total: 0, working_set: 0 });
@@ -287,14 +288,104 @@ async function invokeDev<T>(cmd: string, args?: InvokeArgs): Promise<T> {
   );
 }
 
+// ---------------- Web mode: wasm-worker RPC client ----------------- *
+// In the static browser build (VITE_BACKEND=web) every command runs in a Web
+// Worker hosting the pal-web wasm (./worker.ts). Requests are correlated by a
+// monotonic id; solve progress arrives out-of-band as `{ progress }` and is
+// fanned onto the shared non-Tauri bus (emitProgress), so use-solve's browser
+// progress path serves web and fixture alike.
+
+interface WorkerResponseOk {
+  id: number;
+  ok: true;
+  value: unknown;
+}
+interface WorkerResponseErr {
+  id: number;
+  ok: false;
+  error: string;
+}
+interface WorkerProgressMsg {
+  progress: Record<string, unknown>;
+}
+type WorkerMessage = WorkerResponseOk | WorkerResponseErr | WorkerProgressMsg;
+
+interface PendingRequest {
+  resolve: (value: unknown) => void;
+  reject: (error: Error) => void;
+}
+
+let worker: Worker | null = null;
+let nextReqId = 1;
+const pending = new Map<number, PendingRequest>();
+
+/** Lazily spawn the singleton worker. Built as its own chunk (via `new URL`),
+ *  so the wasm stays out of the desktop entry bundle — fetched only on first
+ *  call, which never happens outside web mode. */
+function getWorker(): Worker {
+  if (worker) return worker;
+  const w = new Worker(new URL("./worker.ts", import.meta.url), {
+    type: "module",
+  });
+  w.onmessage = (e: MessageEvent<WorkerMessage>) => {
+    const msg = e.data;
+    if ("progress" in msg) {
+      emitProgress(msg.progress);
+      return;
+    }
+    const req = pending.get(msg.id);
+    if (!req) return;
+    pending.delete(msg.id);
+    if (msg.ok) req.resolve(msg.value);
+    else req.reject(new Error(msg.error));
+  };
+  w.onerror = (e) => {
+    // A worker-level failure (e.g. wasm instantiation) would otherwise hang every
+    // in-flight request forever; reject them all so callers surface the error.
+    const err = new Error(e.message || "worker error");
+    for (const req of pending.values()) req.reject(err);
+    pending.clear();
+  };
+  worker = w;
+  return w;
+}
+
+/** Post an RPC to the worker and resolve with its response value. */
+function postToWorker<T>(
+  cmd: string,
+  args: unknown,
+  transfer?: Transferable[],
+): Promise<T> {
+  const id = nextReqId++;
+  const { promise, resolve, reject } = Promise.withResolvers<unknown>();
+  pending.set(id, { resolve, reject });
+  getWorker().postMessage({ id, cmd, args }, transfer ?? []);
+  return promise as Promise<T>;
+}
+
+/** Serve a command from the wasm worker (web mode). */
+function invokeWeb<T>(cmd: string, args?: InvokeArgs): Promise<T> {
+  return postToWorker<T>(cmd, args ?? {});
+}
+
+/** Web mode only: hand the freshly-read save bundle to the worker (the byte
+ *  buffers move via transfer) to cache + summarize it. Returns the SaveSummary,
+ *  identical in shape to the native `load_save`. */
+export function loadSaveBundle(
+  paths: string[],
+  buffers: ArrayBuffer[],
+): Promise<SaveSummary> {
+  return postToWorker<SaveSummary>("__load_bundle", { paths, buffers }, buffers);
+}
+
 /**
- * Invoke a Tauri command. Delegates to the real IPC inside Tauri; serves a
- * static fixture in a plain browser. Throws for commands without a fixture so
- * dev gaps are obvious rather than silently wrong.
+ * Invoke a Tauri command. Three backends by mode: the real IPC inside Tauri,
+ * the wasm worker in the web build (VITE_BACKEND=web), and static fixtures in a
+ * plain browser. Fixture mode throws for commands without a fixture so dev gaps
+ * are obvious rather than silently wrong.
  */
 export function invoke<T>(cmd: string, args?: InvokeArgs): Promise<T> {
-  if (isTauri) {
-    return tauriInvoke<T>(cmd, args);
-  }
+  if (isTauri) return tauriInvoke<T>(cmd, args);
+  if (isWeb) return invokeWeb<T>(cmd, args);
   return invokeDev<T>(cmd, args);
 }

@@ -9,6 +9,9 @@ import { AppStateProvider, useAppState } from "./state";
 import { hexGuid } from "./components/palbox/selectors";
 import ErrorBoundary from "./components/error-boundary";
 import AboutButton from "./components/about-panel";
+import WebDropZone, { rereadWebSave } from "./components/web-drop-zone";
+import { canReread } from "./lib/save-drop";
+import { caps } from "./lib/caps";
 import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
@@ -403,8 +406,10 @@ function Shell() {
     playerScope,
     scopePromptOpen,
     setScopePromptOpen,
+    clearSave,
   } = useAppState();
   const [modalOpen, setModalOpen] = useState(false);
+  const [rereading, setRereading] = useState(false);
   // Human-readable label for the active scope pill: the player's name, or "All".
   const scopeLabel =
     playerScope === "all"
@@ -417,11 +422,10 @@ function Shell() {
     if (saveSummary) setModalOpen(false);
   }, [saveSummary]);
 
-  // Boot resolved with no save (fresh install, "Skip for now", or a failed
-  // auto-load whose error rides `saveError`) — open the startup modal. These
-  // deps change only once per boot, so dismissing the modal never re-triggers it.
+  // Boot resolved with no save — open the startup modal (desktop/fixture). Web
+  // shows the full-pane WebDropZone instead, so the modal stays closed there.
   useEffect(() => {
-    if (!booting && !saveSummary) setModalOpen(true);
+    if (!booting && !saveSummary && !caps.isWeb) setModalOpen(true);
   }, [booting, saveSummary]);
 
   return (
@@ -502,7 +506,7 @@ function Shell() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => (caps.isWeb ? clearSave() : setModalOpen(true))}
                   title="Switch save"
                   aria-label="Switch save"
                   className="shrink-0 rounded-md border border-line bg-raised p-1.5 text-ink-faint transition-colors hover:bg-hover hover:text-ink"
@@ -520,8 +524,21 @@ function Shell() {
                   <span className="truncate text-amber">{scopeLabel}</span>
                 </button>
               )}
+              {caps.isWeb && canReread() && (
+                <button
+                  onClick={() => {
+                    setRereading(true);
+                    rereadWebSave().finally(() => setRereading(false));
+                  }}
+                  disabled={rereading}
+                  title="Re-read the save folder"
+                  className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-line bg-abyss/60 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {rereading ? "Re-reading\u2026" : "Re-read folder"}
+                </button>
+              )}
             </div>
-          ) : (
+          ) : caps.isWeb ? null : (
             <button
               onClick={() => setModalOpen(true)}
               className="flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-2 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink"
@@ -535,15 +552,19 @@ function Shell() {
       </nav>
 
       <main className="flex-1 overflow-hidden">
-        <ErrorBoundary key={view} onReset={() => setView("save")}>
-          {view === "save" && <SaveInspector />}
-          {view === "solver" && <Solver />}
-          {view === "ivlab" && <IvLab />}
-          {view === "paldex" && <Paldex />}
-          {view === "worldmap" && <MapView />}
-        </ErrorBoundary>
+        {caps.isWeb && !saveSummary ? (
+          <WebDropZone />
+        ) : (
+          <ErrorBoundary key={view} onReset={() => setView("save")}>
+            {view === "save" && <SaveInspector />}
+            {view === "solver" && <Solver />}
+            {view === "ivlab" && <IvLab />}
+            {view === "paldex" && <Paldex />}
+            {view === "worldmap" && <MapView />}
+          </ErrorBoundary>
+        )}
       </main>
-      {modalOpen && <SaveModal onClose={() => setModalOpen(false)} />}
+      {modalOpen && !caps.isWeb && <SaveModal onClose={() => setModalOpen(false)} />}
       {scopePromptOpen && (
         <ScopeModal onClose={() => setScopePromptOpen(false)} />
       )}

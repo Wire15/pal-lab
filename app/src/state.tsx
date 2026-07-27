@@ -21,6 +21,7 @@ import {
   useState,
 } from "react";
 import { invoke } from "./lib/tauri";
+import { caps } from "./lib/caps";
 import type {
   BreedingSetup,
   CakeToken,
@@ -435,8 +436,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         // Ignore storage failures (private mode, quota) — non-fatal.
       }
       // Auto-arm the live watcher so external saves trigger a silent reload.
-      // No-op in plain-browser dev (no such command) — swallow the error.
-      invoke("watch_save", { saveDir: trimmed }).catch(() => {});
+      // Tauri only — web mode refreshes via the "Re-read folder" button, and
+      // fixture dev has no backend command.
+      if (caps.watchSave) invoke("watch_save", { saveDir: trimmed }).catch(() => {});
     } catch (e) {
       setSaveError(friendlySaveError(String(e)));
       setSaveSummary(null);
@@ -468,7 +470,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveError(null);
     setPlayerScopeState("all");
     setScopePromptOpen(false);
-    invoke("unwatch_save").catch(() => {});
+    if (caps.watchSave) invoke("unwatch_save").catch(() => {});
   }, []);
 
   // Auto-dismiss the transient toast after 3s (re-arms per `nonce`).
@@ -478,14 +480,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(t);
   }, [toast]);
 
-  // Subscribe once to the backend `save-changed` event -> silent reload. In the
-  // Tauri webview this is the real IPC event bus; in plain-browser dev we listen
-  // for a window event of the same name, so a reload can be simulated with
+  // Subscribe once to the `save-changed` event -> silent reload. In the Tauri
+  // webview this is the real IPC event bus (the filesystem watcher); the browser
+  // builds (web + fixture dev) instead listen for a window event of the same
+  // name, which the web "Re-read folder" button and dev tooling dispatch via
   //   window.dispatchEvent(new Event("save-changed"))
   useEffect(() => {
-    const isTauri =
-      typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
-    if (isTauri) {
+    if (caps.watchSave) {
       let unlisten: (() => void) | undefined;
       let cancelled = false;
       import("@tauri-apps/api/event").then(({ listen }) => {
@@ -515,6 +516,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (bootedRef.current) return;
     bootedRef.current = true;
+    if (caps.isWeb) {
+      // Web has no filesystem path to silently re-open on boot; the drop zone
+      // loads a save on demand instead.
+      setBooting(false);
+      return;
+    }
     const dir = readLastSaveDir();
     if (!dir) {
       setBooting(false);

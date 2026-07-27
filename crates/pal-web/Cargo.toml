@@ -1,0 +1,23 @@
+[package]
+name = "pal-web"
+version = "0.1.0"
+edition.workspace = true
+license = "MIT"
+description = "wasm-bindgen bridge exposing the Pal Lab Tauri command surface to a browser Web Worker."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+serde.workspace = true
+serde_json.workspace = true
+pal-data = { path = "../pal-data" }
+pal-save = { path = "../pal-save" }
+pal-solver = { path = "../pal-solver" }
+# Grayscale-PNG encode + base64 for the map fog layers (get_map_state), matching
+# the native `app/src-tauri/src/mapstate.rs` glue. Both are pure-Rust and build
+# for wasm32-unknown-unknown.
+png = "0.17"
+base64 = "0.22"

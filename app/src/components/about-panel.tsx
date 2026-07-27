@@ -11,7 +11,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { invoke, isFixtureMode } from "../lib/tauri";
+import { invoke } from "../lib/tauri";
+import { caps } from "../lib/caps";
 
 /** Mirror of `updater::UpdateCheck`. `status` drives every rendered branch. */
 interface UpdateCheck {
@@ -29,6 +30,15 @@ interface DataPackInfo {
 
 /** Repository home, opened from the About footer's GitHub link. */
 const REPO_URL = "https://github.com/Wire15/pal-lab";
+/** Releases page, offered to web users who want the live-tracking desktop app. */
+const RELEASES_URL = "https://github.com/Wire15/pal-lab/releases";
+
+/** Open an external URL: the Tauri opener in the desktop app, a new tab in the
+ *  browser builds (where the opener plugin isn't available). */
+function openExternal(url: string): void {
+  if (caps.isTauri) openUrl(url).catch(() => {});
+  else window.open(url, "_blank", "noopener");
+}
 
 /** Neutral standing copy shown before any check runs and for the backend
  *  "disabled" status (browser preview / fixture mode, where there is no
@@ -69,13 +79,13 @@ function AboutModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // App version + data-pack identity. Both degrade gracefully in browser dev
-  // (no Tauri backend): version falls back to "dev", pack row is hidden.
+  // App version + data-pack identity. Both degrade gracefully in the browser
+  // builds (no Tauri backend): version shows the mode, the pack row is hidden.
   useEffect(() => {
     let alive = true;
     (async () => {
-      if (isFixtureMode()) {
-        if (alive) setVersion("dev");
+      if (!caps.isTauri) {
+        if (alive) setVersion(caps.isWeb ? "web" : "dev");
       } else {
         try {
           const v = await getVersion();
@@ -100,10 +110,6 @@ function AboutModal({ onClose }: { onClose: () => void }) {
     setChecking(true);
     setResult(null);
     try {
-      if (isFixtureMode()) {
-        setResult({ status: "disabled" });
-        return;
-      }
       const current = version || (await getVersion().catch(() => "0.0.0"));
       const r = await invoke<UpdateCheck>("check_update", {
         currentVersion: current,
@@ -167,25 +173,45 @@ function AboutModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="border-b border-line px-5 py-4">
-          <div className="mb-2.5 flex items-center justify-between gap-3">
-            <div className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Updates
-            </div>
-            <button
-              onClick={check}
-              disabled={checking}
-              className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {checking ? "Checking\u2026" : "Check for updates"}
-            </button>
-          </div>
-          <UpdateResult result={result} />
+          {caps.updater ? (
+            <>
+              <div className="mb-2.5 flex items-center justify-between gap-3">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                  Updates
+                </div>
+                <button
+                  onClick={check}
+                  disabled={checking}
+                  className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {checking ? "Checking\u2026" : "Check for updates"}
+                </button>
+              </div>
+              <UpdateResult result={result} />
+            </>
+          ) : (
+            <>
+              <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                Desktop app
+              </div>
+              <p className="text-[12px] leading-relaxed text-ink-faint">
+                {caps.isWeb ? "Web version" : "Preview build"} &mdash;{" "}
+                <button
+                  onClick={() => openExternal(RELEASES_URL)}
+                  className="text-amber transition-colors hover:text-amber-bright"
+                >
+                  get the desktop app
+                </button>{" "}
+                for live tracking.
+              </p>
+            </>
+          )}
         </div>
 
         <div className="px-5 py-3.5">
           <div className="flex items-center justify-between gap-3">
             <button
-              onClick={() => openUrl(REPO_URL).catch(() => {})}
+              onClick={() => openExternal(REPO_URL)}
               className="font-mono text-[11px] text-ink-dim transition-colors hover:text-amber"
             >
               github.com/Wire15/pal-lab

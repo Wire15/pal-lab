@@ -18,7 +18,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
 import type { UnlistenFn } from "@tauri-apps/api/event";
-import { invoke, isFixtureMode, devListenProgress } from "./tauri";
+import { invoke, listenProgress } from "./tauri";
+import { caps } from "./caps";
 import type {
   BreedingPlan,
   NamedEntry,
@@ -269,14 +270,15 @@ export function useSolve(): UseSolve {
   }
 
   /** Subscribe to `solve-progress` for `token`, dropping stale-generation
-   *  events. Real mode listens on the Tauri event; fixture mode taps the dev
-   *  simulator. Returns an unlisten fn to call on settle. */
+   *  events. Tauri listens on the native event bus; the browser builds (web
+   *  worker and fixture simulator) both push onto the shared progress bus.
+   *  Returns an unlisten fn to call on settle. */
   async function subscribeProgress(
     token: number,
     onEvent: (e: SolveProgressEvent) => void,
   ): Promise<() => void> {
-    if (isFixtureMode()) {
-      return devListenProgress((p) => {
+    if (!caps.isTauri) {
+      return listenProgress((p) => {
         const ev = p as unknown as SolveProgressEvent;
         if (ev.token === token) onEvent(ev);
       });

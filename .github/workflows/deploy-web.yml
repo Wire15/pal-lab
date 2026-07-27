@@ -1,0 +1,53 @@
+name: Deploy Web
+
+# Web deploys are decoupled from desktop releases: push a `web-v*` tag (or run
+# manually) to ship the current commit to Cloudflare Pages. Requires two repo
+# secrets: CLOUDFLARE_API_TOKEN (Pages:Edit) and CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    tags:
+      - "web-v*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+
+      - name: Install wasm-pack
+        uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+
+      - name: Build wasm pkg
+        run: wasm-pack build crates/pal-web --target web --out-dir ../../app/src/wasm-pkg
+
+      - name: Install JS deps
+        working-directory: app
+        run: bun install
+
+      - name: Build web bundle
+        working-directory: app
+        run: bun run build:web
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy app/dist --project-name=pal-lab --branch=main

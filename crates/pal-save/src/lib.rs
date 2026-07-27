@@ -78,9 +78,56 @@ pub struct SaveData {
 /// which container each pal lives in.
 pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
     let dir = dir.as_ref();
+
+    let level_sav = std::fs::read(dir.join("Level.sav"))?;
+
+    // Split the `Players/` directory into regular per-player saves (party /
+    // palbox) and `*_dps.sav` dimensional-storage files, reading each as raw
+    // (still-compressed) bytes; `read_save_from_parts` decompresses + parses.
+    let mut player_saves: Vec<(String, Vec<u8>)> = Vec::new();
+    let mut dps_saves: Vec<(String, Vec<u8>)> = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(dir.join("Players")) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.extension().and_then(|s| s.to_str()) != Some("sav") {
+                continue;
+            }
+            let Ok(bytes) = std::fs::read(&path) else { continue };
+            let label = path.display().to_string();
+            if path
+                .file_name()
+                .and_then(|s| s.to_str())
+                .is_some_and(|n| n.ends_with("_dps.sav"))
+            {
+                dps_saves.push((label, bytes));
+            } else {
+                player_saves.push((label, bytes));
+            }
+        }
+    }
+
+    let level_meta_sav = std::fs::read(dir.join("LevelMeta.sav")).ok();
+
+    read_save_from_parts(&level_sav, level_meta_sav.as_deref(), &player_saves, &dps_saves)
+}
+
+/// Build a [`SaveData`] from in-memory raw (still PlZ/PlM-compressed) `.sav`
+/// bytes instead of a directory — the byte-oriented core of [`read_save_dir`],
+/// for non-filesystem callers (e.g. the wasm/browser build). `level_sav` is the
+/// required `Level.sav`; `level_meta_sav` the optional `LevelMeta.sav` (world
+/// name); `player_saves` the regular per-player saves (party/palbox) and
+/// `dps_saves` the `*_dps.sav` dimensional-storage files. Each `(label, bytes)`
+/// label appears only in warning messages. [`read_save_dir`] reads the directory
+/// then delegates here so both share one parsing path.
+pub fn read_save_from_parts(
+    level_sav: &[u8],
+    level_meta_sav: Option<&[u8]>,
+    player_saves: &[(String, Vec<u8>)],
+    dps_saves: &[(String, Vec<u8>)],
+) -> Result<SaveData, SaveError> {
     let mut warnings = Vec::new();
 
-    let level_blob = read_and_decompress(&dir.join("Level.sav"))?;
+    let level_blob = compress::decompress_sav(level_sav)?;
     let mut parsed = characters::parse_level(&level_blob, &mut warnings)?;
 
     // Player saves tell us which container guids are the party / palbox;
@@ -89,29 +136,13 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
     // (`parsed.cage_containers` / `parsed.global_containers`).
     let mut party: HashSet<Guid> = HashSet::new();
     let mut palbox: HashSet<Guid> = HashSet::new();
-    let mut dps_paths: Vec<std::path::PathBuf> = Vec::new();
-    let players_dir = dir.join("Players");
-    if let Ok(entries) = std::fs::read_dir(&players_dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.extension().and_then(|s| s.to_str()) != Some("sav") {
-                continue;
+    for (label, bytes) in player_saves {
+        match compress::decompress_sav(bytes).and_then(|b| characters::parse_player_save(&b)) {
+            Ok(pc) => {
+                party.extend(pc.party);
+                palbox.extend(pc.palbox);
             }
-            if path
-                .file_name()
-                .and_then(|s| s.to_str())
-                .is_some_and(|n| n.ends_with("_dps.sav"))
-            {
-                dps_paths.push(path);
-                continue;
-            }
-            match read_and_decompress(&path).and_then(|b| characters::parse_player_save(&b)) {
-                Ok(pc) => {
-                    party.extend(pc.party);
-                    palbox.extend(pc.palbox);
-                }
-                Err(e) => warnings.push(format!("player save {}: {e}", path.display())),
-            }
+            Err(e) => warnings.push(format!("player save {label}: {e}")),
         }
     }
 
@@ -131,8 +162,8 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
     // Merge dimensional-storage pals (self-contained in the dps files), tagged
     // `DimensionalPalStorage`, deduped by instance id against the level roster.
     let mut seen: HashSet<Guid> = parsed.pals.iter().map(|p| p.instance_id).collect();
-    for path in &dps_paths {
-        match read_and_decompress(path)
+    for (label, bytes) in dps_saves {
+        match compress::decompress_sav(bytes)
             .and_then(|b| characters::parse_dimensional_storage(&b, &mut warnings))
         {
             Ok(dps_pals) => {
@@ -142,13 +173,16 @@ pub fn read_save_dir(dir: impl AsRef<Path>) -> Result<SaveData, SaveError> {
                     }
                 }
             }
-            Err(e) => warnings.push(format!("dimensional storage {}: {e}", path.display())),
+            Err(e) => warnings.push(format!("dimensional storage {label}: {e}")),
         }
     }
 
-    let world_name = match read_and_decompress(&dir.join("LevelMeta.sav")) {
-        Ok(blob) => characters::parse_world_name(&blob).unwrap_or(None),
-        Err(_) => None,
+    let world_name = match level_meta_sav {
+        Some(bytes) => match compress::decompress_sav(bytes) {
+            Ok(blob) => characters::parse_world_name(&blob).unwrap_or(None),
+            Err(_) => None,
+        },
+        None => None,
     };
 
     let bases = build_bases(

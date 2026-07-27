@@ -14,7 +14,12 @@ use std::collections::{HashMap, HashSet};
 
 use pal_data::types::{Gender, Guid, PassiveId};
 use pal_data::{GameData, InheritanceWeights, OwnedPal};
+#[cfg(not(target_arch = "wasm32"))]
 use rayon::prelude::*;
+#[cfg(not(target_arch = "wasm32"))]
+use std::time::Instant;
+#[cfg(target_arch = "wasm32")]
+use web_time::Instant;
 
 use crate::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
@@ -655,8 +660,8 @@ fn solve_core(
 
     // Wall-clock search budget: bounds runaway searches (combinatorial pair
     // growth) without touching the result set on searches that finish in time.
-    let start = std::time::Instant::now();
-    let over_budget = |start: &std::time::Instant| {
+    let start = Instant::now();
+    let over_budget = |start: &Instant| {
         cfg.search_budget_secs > 0.0 && start.elapsed().as_secs_f64() > cfg.search_budget_secs
     };
     let mut truncated = false;
@@ -693,11 +698,20 @@ fn solve_core(
         // fold it straight into `step_best` (per-chunk reduction). Per-chunk
         // memory is bounded to ~PAIR_CHUNK pairs plus one chunk's candidates.
         let breed = |buf: &[(usize, usize)]| -> Vec<PalRef> {
-            buf.par_iter()
-                .flat_map_iter(|&(i, j)| {
-                    breed_pair(gd, &spec, cfg, weights, &ws, &pals[i], &pals[j]).into_iter()
-                })
-                .collect()
+            let expand = |&(i, j): &(usize, usize)| {
+                breed_pair(gd, &spec, cfg, weights, &ws, &pals[i], &pals[j]).into_iter()
+            };
+            // wasm32 is single-threaded this wave: same chunk, serial iterator.
+            // Order (pair-lexicographic) is identical, so results stay
+            // byte-identical across both paths.
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                buf.par_iter().flat_map_iter(expand).collect()
+            }
+            #[cfg(target_arch = "wasm32")]
+            {
+                buf.iter().flat_map(expand).collect()
+            }
         };
 
         let mut step_best = WorkingSet::new();

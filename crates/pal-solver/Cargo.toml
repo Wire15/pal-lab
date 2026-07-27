@@ -7,9 +7,18 @@ license = "MIT"
 [dependencies]
 pal-data = { path = "../pal-data" }
 pal-save = { path = "../pal-save" }
-rayon = "1.10"
 serde.workspace = true
 thiserror.workspace = true
+
+# Native-only: wasm32 (single-threaded this wave) uses the serial breed path.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rayon = "1.10"
+
+# wasm32-only: std::time::Instant panics on wasm32-unknown-unknown; web-time
+# is a drop-in backed by performance.now().
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-time = "1"
+
 
 [dev-dependencies]
 serde_json.workspace = true

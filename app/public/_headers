@@ -1,0 +1,8 @@
+# Cloudflare Pages response headers.
+# COOP/COEP enable cross-origin isolation, the prerequisite for
+# SharedArrayBuffer -> wasm threads (planned v1.3.x). All assets are
+# self-hosted, so require-corp costs nothing today. Ignored by the
+# desktop (Tauri) build, which serves this dir from its own webview.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
