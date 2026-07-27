@@ -9,9 +9,17 @@ const host = process.env.TAURI_DEV_HOST;
 /** Absolute path to the inert wasm stub used outside the web build. */
 const wasmStub = fileURLToPath(new URL("./src/wasm-stub.ts", import.meta.url));
 
+/** Single version source for browser builds: package.json. The desktop app
+ *  reports its own tauri.conf version at runtime instead. */
+import pkg from "./package.json" with { type: "json" };
+
 // https://vite.dev/config/
 export default defineConfig(async ({ mode }) => ({
   plugins: [react(), tailwindcss()],
+
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
 
   // Outside the web build the pal-web wasm is never loaded. Alias its import
   // (from lib/worker.ts) to an inert stub so the ~2 MB pkg is neither required

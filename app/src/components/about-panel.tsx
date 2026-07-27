@@ -46,10 +46,30 @@ function openExternal(url: string): void {
 const DISABLED_MESSAGE =
   "Compares your version against the latest GitHub release.";
 
+/** App version: browser builds read the compile-time package.json version
+ *  (__APP_VERSION__ define); the desktop app asks Tauri for its installed
+ *  version at runtime. Empty string while the async desktop read is in flight. */
+function useAppVersion(): string {
+  const [v, setV] = useState<string>(caps.isTauri ? "" : __APP_VERSION__);
+  useEffect(() => {
+    if (!caps.isTauri) return;
+    let alive = true;
+    getVersion()
+      .then((x) => alive && setV(x))
+      .catch(() => alive && setV("unknown"));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return v;
+}
+
 /** The clickable sidebar-footer chip + its About modal. Self-contained: owns
  *  its own open/close state so the mount site needs no extra wiring. */
 export default function AboutButton() {
   const [open, setOpen] = useState(false);
+  const version = useAppVersion();
+  const short = version ? `v${version.split(".").slice(0, 2).join(".")}` : "";
   return (
     <>
       <button
@@ -58,7 +78,7 @@ export default function AboutButton() {
         className="mt-2.5 flex w-full items-center gap-2 rounded px-1 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-good" />
-        Pal Lab &middot; v1.0
+        Pal Lab {short && <>&middot; {short}</>}
       </button>
       {open && <AboutModal onClose={() => setOpen(false)} />}
     </>
@@ -66,7 +86,7 @@ export default function AboutButton() {
 }
 
 function AboutModal({ onClose }: { onClose: () => void }) {
-  const [version, setVersion] = useState<string>("");
+  const version = useAppVersion();
   const [pack, setPack] = useState<DataPackInfo | null>(null);
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<UpdateCheck | null>(null);
@@ -79,21 +99,10 @@ function AboutModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // App version + data-pack identity. Both degrade gracefully in the browser
-  // builds (no Tauri backend): version shows the mode, the pack row is hidden.
+  // Data-pack identity; degrades gracefully in the browser builds (row hidden).
   useEffect(() => {
     let alive = true;
     (async () => {
-      if (!caps.isTauri) {
-        if (alive) setVersion(caps.isWeb ? "web" : "dev");
-      } else {
-        try {
-          const v = await getVersion();
-          if (alive) setVersion(v);
-        } catch {
-          if (alive) setVersion("unknown");
-        }
-      }
       try {
         const p = await invoke<DataPackInfo>("data_pack_info");
         if (alive) setPack(p);
@@ -206,6 +215,39 @@ function AboutModal({ onClose }: { onClose: () => void }) {
               </p>
             </>
           )}
+          {caps.updater ? (
+            <>
+              <div className="mb-2.5 flex items-center justify-between gap-3">
+                <div className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                  Updates
+                </div>
+                <button
+                  onClick={check}
+                  disabled={checking}
+                  className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {checking ? "Checking\u2026" : "Check for updates"}
+                </button>
+              </div>
+              <UpdateResult result={result} />
+            </>
+          ) : (
+            <>
+              <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                Desktop app
+              </div>
+              <p className="text-[12px] leading-relaxed text-ink-faint">
+                {caps.isWeb ? "Web version" : "Preview build"} &mdash;{" "}
+                <button
+                  onClick={() => openExternal(RELEASES_URL)}
+                  className="text-amber transition-colors hover:text-amber-bright"
+                >
+                  get the desktop app
+                </button>{" "}
+                for live tracking.
+              </p>
+            </>
+          )}
         </div>
 
         <div className="px-5 py-3.5">
@@ -224,7 +266,7 @@ function AboutModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
           <p className="mt-2 text-[11px] leading-relaxed text-ink-faint">
-            MIT licensed. Read-only &mdash; Pal Lab never modifies your
+            MITMIT licensed. Read-only &mdash; Pal Lab never modifies your
             saves.
           </p>
           <p className="mt-1.5 text-[10px] leading-relaxed text-ink-faint/70">
