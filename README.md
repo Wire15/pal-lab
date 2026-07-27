@@ -76,19 +76,19 @@ bun run tauri build
 
 ## License
 
-- The **Pal Lab desktop app** is licensed under **GPL-3.0-or-later** (it links
-  the GPL-licensed `ooz` Kraken decompressor; see
-  [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md)). See [`LICENSE`](LICENSE).
-- The **`pal-data`** and **`pal-solver`** crates are additionally available under
-  the **MIT License** for reuse (see each crate's `LICENSE`).
+- Pal Lab is licensed under the **MIT License** — see [`LICENSE`](LICENSE).
+- The **`pal-data`** and **`pal-solver`** crates each also carry their own MIT
+  `LICENSE` for standalone reuse. Full third-party attribution is in
+  [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
 
 ## Credits
 
 - **[tylercamp/palcalc](https://github.com/tylercamp/palcalc)** — pioneered the
   save-aware Palworld breeding-planner niche, and provides the MIT-licensed
   breeding data files and probability test oracles Pal Lab builds on.
-- **[powzix/ooz](https://github.com/powzix/ooz)** — the Kraken decompressor that
-  reads compressed save payloads.
+- **[oozextract](https://github.com/lvlvllvlvllvlvl/oozextract)** — the
+  MIT-licensed pure-Rust Oodle Kraken decompressor that reads compressed save
+  payloads.
 - **[cheahjs/palworld-save-tools](https://github.com/cheahjs/palworld-save-tools)**
   — the reference documentation for the GVAS / `Level.sav` binary format.
 - **[Pocketpair, Inc.](https://www.pocketpair.jp/)** — for Palworld.

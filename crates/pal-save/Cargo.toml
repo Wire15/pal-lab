@@ -2,16 +2,14 @@
 name = "pal-save"
 version = "0.1.0"
 edition.workspace = true
-license = "GPL-3.0-or-later"
+license = "MIT"
 
 [dependencies]
 pal-data = { path = "../pal-data" }
 serde.workspace = true
 thiserror.workspace = true
 flate2 = "1"
-
-[build-dependencies]
-cc = "1"
+oozextract = "0.5"
 
 [[bin]]
 name = "dump"

@@ -14,6 +14,7 @@
 use std::io::Read;
 
 use flate2::read::ZlibDecoder;
+use oozextract::Extractor;
 
 use crate::SaveError;
 
@@ -115,43 +116,20 @@ fn decompress_oodle(
     oodle_decompress(payload, uncompressed_len)
 }
 
-extern "C" {
-    /// Vendored powzix/ooz entrypoint (see `vendor/ooz/kraken.cpp`). Returns the
-    /// number of decompressed bytes, or a negative value on failure. May write
-    /// up to `SAFE_SPACE` bytes past `dst_len` as scratch.
-    fn ooz_kraken_decompress(
-        src: *const u8,
-        src_len: usize,
-        dst: *mut u8,
-        dst_len: usize,
-    ) -> i32;
-}
-
-/// Safe wrapper over the vendored Kraken decompressor. Allocates the
-/// destination (plus scratch pad) and validates that the decoder produced
-/// exactly `expected_len` bytes.
+/// Decode the Oodle Kraken payload with the pure-Rust `oozextract` crate. The
+/// destination is sized to exactly `expected_len`; unlike the former C++ ooz
+/// path, oozextract is memory-safe and requires no over-allocated scratch pad.
+/// Validates that the decoder produced exactly `expected_len` bytes.
 fn oodle_decompress(src: &[u8], expected_len: usize) -> Result<Vec<u8>, SaveError> {
-    /// The decompressor writes past the target buffer; see kraken.cpp.
-    const SAFE_SPACE: usize = 64;
-
-    let mut out = vec![0u8; expected_len + SAFE_SPACE];
-    // SAFETY: `src`/`out` are valid slices; `dst_len` is `expected_len`, and the
-    // buffer carries `SAFE_SPACE` extra bytes to absorb the decoder's overrun.
-    let written = unsafe {
-        ooz_kraken_decompress(src.as_ptr(), src.len(), out.as_mut_ptr(), expected_len)
-    };
-    if written < 0 {
-        return Err(SaveError::Compression(
-            "Oodle Kraken decompress failed".into(),
-        ));
-    }
-    let written = written as usize;
+    let mut out = vec![0u8; expected_len];
+    let written = Extractor::new()
+        .read_from_slice(src, &mut out)
+        .map_err(|_| SaveError::Compression("Oodle Kraken decompress failed".into()))?;
     if written != expected_len {
         return Err(SaveError::Compression(format!(
             "Oodle decompressed {written} bytes, header expected {expected_len}"
         )));
     }
-    out.truncate(written);
     Ok(out)
 }
 

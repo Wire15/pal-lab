@@ -88,7 +88,7 @@ outcomes stubbed), active-skill solving, save editing (read-only always).
 ## Implementation findings (2026-07-21, Foundations phase)
 
 - 1.0-era server saves are **Oodle-compressed throughout** (`PlM1` header, Kraken streams) — Level.sav, Players/*.sav, LevelMeta.sav alike. zlib (`PlZ*`) kept for older saves.
-- Oodle decompression: vendored powzix/ooz C++ via `cc` (`ooz_kraken_decompress` wrapper). **LICENSE FLAG:** ooz files carry GPL-3.0 headers — fine for private use, incompatible with MIT distribution. Before publishing: relicense repo GPL-3 or dynamically load the game's `oo2core` DLL. See `crates/pal-save/vendor/ooz/README.md`.
+- Oodle decompression: pure-Rust `oozextract` crate (MIT, lvlvllvlvllvlvl/oozextract; a Rust port of powzix/ooz). **LICENSE FLAG RESOLVED (2026-07-26):** the vendored GPL-3.0 powzix/ooz C++ was removed and replaced by oozextract; the repo is relicensed MIT throughout. oozextract byte-matches the old C++ decode on all real Oodle (`PlM1`) save blocks in the corpus.
 - Dimensional Pal Storage is NOT in Level.sav: each player has a self-contained `Players/<uid>_dps.sav` (9600-slot SaveParameterArray); zero instance-id overlap with Level.sav — merge, don't cross-reference.
 - Base-camp workers classify via `BaseCampSaveData` → WorkerDirector RawData container id (offset 98: id16 + FTransform 80 + 2 bytes).
 - Save fields: `SlotId` (not `SlotID`); gender enum `EPalGenderType_*`; absent property = default value (Level absent = 1).

@@ -5,11 +5,11 @@ material, its origin, and its license. It supplements — and does not replace �
 the per-directory `NOTICE`/`README.md` files vendored alongside the code and
 data (referenced below); consult those for the fuller, file-level detail.
 
-The distributed Pal Lab desktop binary combines these components. Because one of
-them (powzix/ooz, below) is licensed under the GNU GPL v3, the combined binary
-is distributed under **GPL-3.0-or-later** (see the root `LICENSE`). The
-`pal-data` and `pal-solver` crates are separately available under the MIT
-License (see each crate's `LICENSE`) for reuse outside the combined binary.
+The distributed Pal Lab desktop binary combines these components. Every one of
+them — including the `oozextract` Oodle decompressor (below) — is permissively
+licensed, so Pal Lab is distributed under the **MIT License** (see the root
+`LICENSE`). The `pal-data` and `pal-solver` crates additionally carry their own
+MIT `LICENSE` for reuse outside the combined binary.
 
 ---
 
@@ -63,38 +63,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-## 2. powzix/ooz — GPL-3.0-or-later
+## 2. lvlvllvlvllvlvl/oozextract — MIT
 
-- Upstream: https://github.com/powzix/ooz (`master`; the repo has no
-  tags/releases)
-- License: GPL-3.0-or-later (declared via in-file headers; upstream has no
-  separate `LICENSE` file)
-- What we use: an Oodle **Kraken** decompressor reimplementation, vendored at
-  [`crates/pal-save/vendor/ooz`](crates/pal-save/vendor/ooz)
-  (`kraken.cpp`, `lzna.cpp`, `bitknit.cpp`, plus MSVC support headers).
+- Upstream: https://github.com/lvlvllvlvllvlvl/oozextract
+- License: MIT
+- What we use: the crate's Oodle **Kraken** decompressor — a pure-Rust port of
+  powzix/ooz — consumed as an ordinary Cargo dependency of `pal-save`.
   `pal-save` uses **decompression only** to read Palworld `Level.sav` payloads
-  (saves are read-only for us). `kraken.cpp` was modified for library linkage
-  (CLI `main`/DLL-loader removed, a small `extern "C"` entry point added); see
-  [`crates/pal-save/vendor/ooz/README.md`](crates/pal-save/vendor/ooz/README.md)
-  for the exact modifications.
+  (saves are read-only for us). Nothing is vendored and there is no C/C++
+  toolchain dependency.
 
-**This is why the combined Pal Lab binary ships under GPL-3.0-or-later.** ooz is
-strong copyleft: statically linking it into `pal-save`, and thence into the
-desktop app, makes the combined work subject to GPL-3.0-or-later. The root
-`LICENSE` and the `pal-save` / `app` crate license fields reflect this.
-
-Per-file header (verbatim from the vendored sources):
-
-```
-Copyright (C) 2016, Powzix
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-```
-
-The full GPL-3.0 text is in the root [`LICENSE`](LICENSE).
+Because oozextract is MIT-licensed, linking it into `pal-save` and thence into
+the desktop app imposes no copyleft obligation: the combined Pal Lab binary
+ships under the MIT License.
 
 ---
 

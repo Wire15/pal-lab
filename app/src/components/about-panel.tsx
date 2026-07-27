@@ -198,7 +198,7 @@ function AboutModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
           <p className="mt-2 text-[11px] leading-relaxed text-ink-faint">
-            GPL-3.0 licensed. Read-only &mdash; Pal Lab never modifies your
+            MIT licensed. Read-only &mdash; Pal Lab never modifies your
             saves.
           </p>
           <p className="mt-1.5 text-[10px] leading-relaxed text-ink-faint/70">
