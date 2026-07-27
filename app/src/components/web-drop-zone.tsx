@@ -10,6 +10,16 @@
 // exported `rereadWebSave` powers the sidebar "Re-read folder" button: it
 // re-reads the stored directory handle and fires the shared `save-changed` seam
 // so the reload path (state.reloadSave) refreshes the roster + plan tracking.
+//
+// Two remembrance tiers let a returning visitor reload without re-dropping:
+//   1. Live handle (Chromium only) — a persisted FileSystemDirectoryHandle
+//      (lib/idb-handles.ts) re-reads the folder in place, picking up new
+//      progress; needs a permission gesture, so it renders a "Reload" button.
+//   2. Byte snapshot as-of-load (every browser) — the exact bundle bytes are
+//      stashed in IndexedDB (lib/idb-snapshot.ts) at load time, so Firefox /
+//      Safari / permissionless Chromium get a "Restore" button that replays the
+//      last-loaded copy (stale until re-dropped). The handle is preferred where
+//      available; the snapshot is the universal fallback.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppState } from "../state";
@@ -18,6 +28,7 @@ import {
   acceptDrop,
   acceptHandle,
   acceptInput,
+  acceptSnapshot,
   currentHandle,
   currentLabel,
   isFsAccessSupported,
@@ -30,6 +41,12 @@ import {
   saveDirHandle,
   type StoredDirHandle,
 } from "../lib/idb-handles";
+import {
+  clearSnapshot,
+  loadSnapshot,
+  saveSnapshot,
+  type StoredSnapshot,
+} from "../lib/idb-snapshot";
 
 /** Re-read the currently loaded save from its stored File System Access handle
  *  and refresh state through the existing `save-changed` seam. Only meaningful
@@ -62,6 +79,23 @@ function DropGlyph() {
       <path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
     </svg>
   );
+}
+
+/** Coarse relative age ("just now" / "3h ago" / "5d ago") for a snapshot's
+ *  savedAt timestamp — enough to gauge staleness at a glance. */
+function snapshotAge(savedAt: number): string {
+  const secs = Math.max(0, Math.round((Date.now() - savedAt) / 1000));
+  if (secs < 60) return "just now";
+  const mins = Math.round(secs / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.round(hrs / 24)}d ago`;
+}
+
+/** Snapshot size as MB, one decimal, for the faint UI suffix. */
+function snapshotSize(bytes: number): string {
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 /** Extract the dropped folder's live directory handle so it can be remembered.
@@ -97,6 +131,10 @@ export default function WebDropZone() {
   // Non-null renders the "Reload <folder>" affordance; re-granting read
   // permission needs a user gesture, so we never auto-load it.
   const [stored, setStored] = useState<StoredDirHandle | null>(null);
+  // The last-loaded save's bytes, stashed in IndexedDB at load time (all
+  // browsers). When no live handle is remembered, non-null renders the
+  // "Restore <folder>" affordance — a stale-but-replayable copy.
+  const [snap, setSnap] = useState<StoredSnapshot | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -113,6 +151,14 @@ export default function WebDropZone() {
     });
   }, []);
 
+  useEffect(() => {
+    // Surface the universal snapshot fallback. Only shown when no live handle
+    // is remembered (see JSX), but always loaded so it's ready on handle-gone.
+    void loadSnapshot().then((s) => {
+      if (s) setSnap(s);
+    });
+  }, []);
+
   // Remember a picked/dropped directory handle for next visit.
   const persistHandle = useCallback((handle: FileSystemDirectoryHandle) => {
     void saveDirHandle(handle);
@@ -123,13 +169,33 @@ export default function WebDropZone() {
   // shared state load path. `acquire` returns the world label, or null on a
   // cancelled picker.
   const runLoad = useCallback(
-    async (acquire: () => Promise<string | null>) => {
+    async (
+      acquire: () => Promise<string | null>,
+      opts: { snapshot?: boolean } = {},
+    ) => {
+      const { snapshot = true } = opts;
       setError(null);
       setBusy(true);
       try {
         const label = await acquire();
         if (label === null) return; // picker cancelled — leave the zone as-is
         const bundle = await readBundle();
+        // Stash the exact bytes for the universal restore path BEFORE handing
+        // them to the worker: loadSaveBundle TRANSFERS the ArrayBuffers to the
+        // worker (detaching them), and IndexedDB's structured clone happens at
+        // put() time — after saveSnapshot's async DB open — so the write must
+        // COMPLETE first (awaited; saveSnapshot never throws, so this cannot
+        // break the load). State is then rehydrated from the IDB copy, whose
+        // buffers are fresh clones — the local `bundle.buffers` are about to be
+        // detached and must not be kept. currentLabel() is only correct now
+        // that acquire() has resolved the source. Skipped on the restore path
+        // itself — re-writing identical bytes is pointless.
+        if (snapshot) {
+          await saveSnapshot(currentLabel(), bundle.paths, bundle.buffers);
+          void loadSnapshot().then((s) => {
+            if (s) setSnap(s);
+          });
+        }
         await loadSaveBundle(bundle.paths, bundle.buffers);
         // load_save via the worker re-summarizes the just-cached bundle; the
         // dropped folder name is the saveDir label.
@@ -189,21 +255,41 @@ export default function WebDropZone() {
         return await acceptHandle(handle);
       } catch (e) {
         if (e instanceof DOMException && e.name === "NotFoundError") {
+          // The live handle is gone, but the byte snapshot (if any) can still
+          // replay the last-loaded copy. Clearing only the handle reveals the
+          // Restore affordance (setStored(null) → the `snap` branch renders),
+          // so keep `snap` and point the user at it.
           void clearDirHandle();
           setStored(null);
           throw new Error(
-            `"${name}" isn't at that location anymore — pick your SaveGames folder again.`,
+            `"${name}" isn't at that location anymore — pick your SaveGames folder again.${
+              snap ? " — or Restore the last-loaded copy below." : ""
+            }`,
           );
         }
         throw e;
       }
     });
-  }, [stored, runLoad]);
+  }, [stored, runLoad, snap]);
 
+  // "Forget this save" clears BOTH remembrance tiers — one concept, regardless
+  // of which affordance was showing.
   const forgetStored = useCallback(() => {
     void clearDirHandle();
+    void clearSnapshot();
     setStored(null);
+    setSnap(null);
   }, []);
+
+  // Restore path: replay the stashed bytes with no permission prompt (that's the
+  // point of the snapshot). Skip re-snapshotting — the bytes are already stored.
+  const restoreSnap = useCallback(() => {
+    if (!snap) return;
+    const { paths, buffers, label } = snap;
+    void runLoad(async () => acceptSnapshot(paths, buffers, label), {
+      snapshot: false,
+    });
+  }, [snap, runLoad]);
 
   const working = busy || saveLoading;
   const shownError = error ?? saveError;
@@ -269,21 +355,23 @@ export default function WebDropZone() {
                 if (files && files.length) void runLoad(() => acceptInput(files));
               }}
             />
-            {stored && (
+            {stored ? (
               <div className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
                 <span>remembered</span>
                 <button
                   onClick={reloadStored}
                   disabled={working}
-                  className="rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                  title={`Reload ${stored.name}`}
+                  className="flex items-center gap-1 rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Reload {stored.name}
+                  Reload
+                  <span className="max-w-[16ch] truncate">{stored.name}</span>
                 </button>
                 <button
                   onClick={forgetStored}
                   disabled={working}
                   aria-label={`Forget ${stored.name}`}
-                  title="Forget this folder"
+                  title="Forget this save"
                   className="rounded-md p-1 text-ink-faint transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <svg
@@ -302,7 +390,50 @@ export default function WebDropZone() {
                   </svg>
                 </button>
               </div>
-            )}
+            ) : snap ? (
+              <div className="mt-2 flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
+                  <span>remembered</span>
+                  <button
+                    onClick={restoreSnap}
+                    disabled={working}
+                    title={`Restore ${snap.label}`}
+                    className="flex items-center gap-1 rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Restore
+                    <span className="max-w-[16ch] truncate">{snap.label}</span>
+                  </button>
+                  <span className="whitespace-nowrap text-ink-faint/70">
+                    saved {snapshotAge(snap.savedAt)} · {snapshotSize(snap.bytes)}
+                  </span>
+                  <button
+                    onClick={forgetStored}
+                    disabled={working}
+                    aria-label={`Forget ${snap.label}`}
+                    title="Forget this save"
+                    className="rounded-md p-1 text-ink-faint transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M18 6 6 18" />
+                      <path d="m6 6 12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <span className="font-mono text-[10px] text-ink-faint/70">
+                  as of last load — re-drop to pick up new progress
+                </span>
+              </div>
+            ) : null}
           </div>
 
           {shownError && (

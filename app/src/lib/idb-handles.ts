@@ -5,13 +5,16 @@
 // read permission needs a user gesture, so we never auto-load — the dropzone just
 // renders the affordance (lib is consumed by components/web-drop-zone.tsx).
 //
-// No external deps: a thin promise wrapper over the callback-based IndexedDB API.
-// The `factory` parameter defaults to the ambient `indexedDB` but is injectable so
-// the unit test can pass an in-memory fake (bun has no `indexedDB` global). When
-// no factory exists (Firefox/Safari never persist a handle; bun/tests without one)
-// the calls degrade to no-op / null so behavior is byte-identical to today.
+// No external deps: the shared ./idb module provides the promise-wrapped open
+// (opening the one "pal-lab" DB at the current version so the snapshot store can
+// coexist) and the `wrap` helper. The `factory` parameter defaults to the ambient
+// `indexedDB` but is injectable so the unit test can pass an in-memory fake (bun
+// has no `indexedDB` global). When no factory exists (Firefox/Safari never persist
+// a handle; bun/tests without one) the calls degrade to no-op / null so behavior
+// is byte-identical to today.
 
-const DB_NAME = "pal-lab";
+import { openDb, wrap } from "./idb";
+
 const STORE = "handles";
 const KEY = "saveDir";
 
@@ -20,27 +23,6 @@ export interface StoredDirHandle {
   handle: FileSystemDirectoryHandle;
   name: string;
   savedAt: number;
-}
-
-/** Resolve an IDBRequest's success/error callbacks into a promise. */
-function wrap<T>(req: IDBRequest<T>): Promise<T> {
-  const { promise, resolve, reject } = Promise.withResolvers<T>();
-  req.onsuccess = () => resolve(req.result);
-  req.onerror = () => reject(req.error);
-  return promise;
-}
-
-/** Open (creating the object store on first use) the handles DB. */
-function openDb(factory: IDBFactory): Promise<IDBDatabase> {
-  const { promise, resolve, reject } = Promise.withResolvers<IDBDatabase>();
-  const req = factory.open(DB_NAME, 1);
-  req.onupgradeneeded = () => {
-    const db = req.result;
-    if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
-  };
-  req.onsuccess = () => resolve(req.result);
-  req.onerror = () => reject(req.error);
-  return promise;
 }
 
 /** Persist the picked/dropped save directory. No-op when IndexedDB is absent. */

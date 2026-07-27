@@ -144,6 +144,27 @@ export async function acceptInput(list: FileList): Promise<string> {
   return selection.label;
 }
 
+/** Install a byte snapshot (restored from IndexedDB — see lib/idb-snapshot.ts) as
+ *  the active source. Powers the universal "Restore <folder>" path on browsers
+ *  without a re-readable directory handle. `paths` are already folder-relative to
+ *  the save dir, so we rebuild a `path -> File` map (naming each File by its base
+ *  name) and let `select()` re-derive the identical selection at read time.
+ *  Returns the label. */
+export function acceptSnapshot(
+  paths: string[],
+  buffers: ArrayBuffer[],
+  label: string,
+): string {
+  const files = new Map<string, File>();
+  for (let i = 0; i < paths.length; i++) {
+    const path = paths[i]!;
+    const base = path.split("/").pop() || path;
+    files.set(path, new File([buffers[i]!], base));
+  }
+  source = { kind: "files", files, rootLabel: label };
+  return label;
+}
+
 // ------------------------------------------------------------------ read */
 
 /** Materialize the current source into the wasm bundle. For a handle source this
