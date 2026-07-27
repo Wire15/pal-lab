@@ -102,7 +102,14 @@ function snapshotSize(bytes: number): string {
  *  Chromium exposes `getAsFileSystemHandle`; Firefox/Safari don't, so those drops
  *  return null and simply aren't persisted. Must run synchronously in the drop
  *  handler (DataTransferItems expire after it), so the getAsFileSystemHandle()
- *  calls fire before the first await. */
+ *  calls fire before the first await.
+ *
+ *  Chromium's File System Access blocklist refuses handles inside "sensitive"
+ *  directories — which includes the ENTIRE AppData tree, i.e. the real Palworld
+ *  save location. Those rejections must degrade to "no handle" (per-promise
+ *  catch), never fail the drop: the classic entry-reading path (acceptDrop /
+ *  webkitGetAsEntry) has no blocklist and still loads the bytes, and the IDB
+ *  byte snapshot still provides remembrance. */
 async function dirHandleFromDrop(
   dt: DataTransfer,
 ): Promise<FileSystemDirectoryHandle | null> {
@@ -114,7 +121,9 @@ async function dirHandleFromDrop(
   }
   const pending: Promise<FileSystemHandle | null>[] = [];
   for (const item of Array.from(dt.items)) {
-    if (item.kind === "file") pending.push(item.getAsFileSystemHandle());
+    if (item.kind === "file") {
+      pending.push(item.getAsFileSystemHandle().catch(() => null));
+    }
   }
   for (const handle of await Promise.all(pending)) {
     if (handle?.kind === "directory") return handle as FileSystemDirectoryHandle;
@@ -355,6 +364,23 @@ export default function WebDropZone() {
                 if (files && files.length) void runLoad(() => acceptInput(files));
               }}
             />
+            {isFsAccessSupported() && (
+              // Chromium's File System Access blocklist refuses picks inside
+              // AppData ("contains system files") — where Palworld saves live.
+              // The classic <input webkitdirectory> dialog has no blocklist, so
+              // surface it as an explicit escape hatch (no live handle, but the
+              // byte snapshot still remembers the save).
+              <div className="font-mono text-[11px] text-ink-faint">
+                Chrome refusing the folder?{" "}
+                <button
+                  onClick={() => inputRef.current?.click()}
+                  disabled={working}
+                  className="underline decoration-line underline-offset-2 transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  use the classic dialog
+                </button>
+              </div>
+            )}
             {stored ? (
               <div className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
                 <span>remembered</span>

@@ -77,11 +77,22 @@ export function currentLabel(): string {
 
 /** Prompt the OS directory picker, validate it holds a save, and store the
  *  handle for later re-reads. Returns the world label, or null if the user
- *  cancelled. Throws with friendly copy when the folder holds no `Level.sav`. */
+ *  cancelled. Throws with friendly copy when the folder holds no `Level.sav`.
+ *
+ *  The `id` makes Chromium remember the last-picked location for this picker
+ *  (per-origin), so repeat visits reopen where the user left off — the closest
+ *  the web platform allows to defaulting into the save directory (arbitrary
+ *  `startIn` paths are deliberately unsupported). Note Chromium's blocklist
+ *  refuses picks inside AppData outright ("contains system files"); the
+ *  dropzone offers the classic <input webkitdirectory> dialog as the escape
+ *  hatch for that. */
 export async function pickDirectory(): Promise<string | null> {
   let handle: FileSystemDirectoryHandle;
   try {
-    handle = await window.showDirectoryPicker({ mode: "read" });
+    handle = await window.showDirectoryPicker({
+      mode: "read",
+      id: "palworld-save",
+    });
   } catch {
     // AbortError on cancel (and SecurityError outside a user gesture) — treat as
     // "nothing picked" rather than an error surface.
