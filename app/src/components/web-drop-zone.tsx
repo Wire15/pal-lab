@@ -344,8 +344,10 @@ export default function WebDropZone() {
               {working ? "Reading save\u2026" : "Drop your SaveGames folder"}
             </div>
             <div className="font-mono text-[11px] text-ink-faint">
-              the world folder that contains{" "}
-              <span className="text-ink-dim">Level.sav</span>
+              usually at{" "}
+              <span className="text-ink-dim">
+                AppData\Local\Pal\Saved\SaveGames
+              </span>
             </div>
             <button
               onClick={browse}
