@@ -22,7 +22,7 @@ use pal_data::types::Gender;
 use pal_data::{GameData, OwnedPal};
 use serde::{Deserialize, Serialize};
 
-use crate::solver::config::SolverConfig;
+use crate::solver::config::{SolverConfig, SurgeryConfig};
 use crate::solver::spec::{TargetPal, TargetSpec};
 
 /// A structured reason the solver found no breeding path. Serialized internally
@@ -38,6 +38,12 @@ pub enum NoPathReason {
         passive_id: String,
         passive_name: String,
         wild_sourcing_enabled: bool,
+        /// `true` when the Surgery table is OFF and enabling it could implant this
+        /// passive — the UI surfaces an "enable Surgery table" remedy. Skipped
+        /// when `false` (surgery already on, or already accounted for) so
+        /// pre-surgery payloads stay byte-identical.
+        #[serde(default, skip_serializing_if = "is_false")]
+        surgery_off: bool,
     },
     /// The target species is not producible from the scoped pool at all.
     /// `min_steps` is the minimum breeding steps to the target from ANY species
@@ -60,6 +66,11 @@ pub enum NoPathReason {
     /// place of the static diagnosis when a budget-killed search returns no
     /// plans.
     SearchBudgetExhausted { budget_secs: f64 },
+}
+
+/// serde `skip_serializing_if` predicate for a `false` bool.
+fn is_false(b: &bool) -> bool {
+    !*b
 }
 
 /// Species indices present in the owned pool.
@@ -100,7 +111,17 @@ pub fn diagnose_no_path(
     // catchable species, so those are still reported when unowned sourcing is
     // on. All missing-carrier reasons are returned together — each is an
     // independent, concrete blocker.
-    let mut missing: Vec<NoPathReason> = Vec::new();
+    // Surgery implants can cover up to `max_implants` missing REQUIRED passives.
+    // When surgery covers every missing carrier, this is not a blocker — fall
+    // through to the reachability/gender checks so diagnosis matches the engine's
+    // surgery-aware satisfaction. Special lottery-tier passives (Rainbow/
+    // WorldTree) are refused by the in-game table: they are never coverable, and
+    // `surgery_off` stays false for them so the UI never suggests a dead remedy.
+    let max_implants = cfg.surgery.as_ref().map(SurgeryConfig::implants).unwrap_or(0);
+    let surgery_is_off = cfg.surgery.is_none();
+    let implantable =
+        |pid: &String| gd.passive_by_id(pid).is_none_or(|ps| ps.tier.is_none());
+    let mut missing_pids: Vec<&String> = Vec::new();
     for pid in &spec.required_passives {
         if owned.iter().any(|p| p.passives.contains(pid)) {
             continue;
@@ -112,15 +133,27 @@ pub fn diagnose_no_path(
         if wild_can_supply {
             continue;
         }
-        let passive_name =
-            gd.passive_by_id(pid).map(|p| p.name.clone()).unwrap_or_else(|| pid.clone());
-        missing.push(NoPathReason::MissingPassiveCarrier {
-            passive_id: pid.clone(),
-            passive_name,
-            wild_sourcing_enabled: cfg.include_wild,
-        });
+        missing_pids.push(pid);
     }
-    if !missing.is_empty() {
+    // Surgery (when on) covers the gap entirely: not a carrier blocker. Any
+    // unimplantable missing passive keeps the blocker regardless of implants.
+    let all_coverable = missing_pids.iter().all(|pid| implantable(pid));
+    if !(all_coverable && max_implants as usize >= missing_pids.len() && max_implants > 0)
+        && !missing_pids.is_empty()
+    {
+        let missing: Vec<NoPathReason> = missing_pids
+            .iter()
+            .map(|pid| {
+                let passive_name =
+                    gd.passive_by_id(pid).map(|p| p.name.clone()).unwrap_or_else(|| (*pid).clone());
+                NoPathReason::MissingPassiveCarrier {
+                    passive_id: (*pid).clone(),
+                    passive_name,
+                    wild_sourcing_enabled: cfg.include_wild,
+                    surgery_off: surgery_is_off && implantable(pid),
+                }
+            })
+            .collect();
         return missing;
     }
 
@@ -256,6 +289,7 @@ mod tests {
                 passive_id: swift,
                 passive_name: name,
                 wild_sourcing_enabled: false,
+                surgery_off: true,
             }]
         );
     }
@@ -388,6 +422,7 @@ mod tests {
                     passive_id: "Swift".into(),
                     passive_name: "Swift".into(),
                     wild_sourcing_enabled: true,
+                    surgery_off: false,
                 },
                 r#"{"kind":"missing_passive_carrier","passive_id":"Swift","passive_name":"Swift","wild_sourcing_enabled":true}"#,
             ),

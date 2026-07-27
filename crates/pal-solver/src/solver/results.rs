@@ -1,7 +1,7 @@
 //! Serializable breeding-plan tree returned to callers (a Tauri command wraps
 //! this next phase, so every node is `Serialize`/`Deserialize`).
 
-use pal_data::types::{Gender, Guid};
+use pal_data::types::{Gender, Guid, PassiveId};
 use pal_data::GameData;
 use serde::{Deserialize, Serialize};
 
@@ -59,6 +59,11 @@ pub struct PlanNode {
     /// on owned/wild.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iv_targets: Option<[u8; 3]>,
+    /// Set on a PARENT node that a gender reverser flipped to make its pairing
+    /// viable (see `SolverConfig::gender_reverser`). Skipped when `false` so
+    /// plans without a reverser are byte-identical to pre-reverser output.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub gender_reversed: bool,
 }
 
 /// A full plan, best-first orderable by `total_time_secs`.
@@ -74,6 +79,53 @@ pub struct BreedingPlan {
     /// breeding attempt). `0` for [`CakeKind::Normal`]. Lets the UI show
     /// "needs ~N cakes".
     pub cake_count: u32,
+    /// Surgery-table implants applied to the FINAL pal (empty = no surgery). Each
+    /// step is one required passive covered from the surgery table, with its
+    /// time-cost estimate. The implanted passives also appear in `root.passives`
+    /// (they are on the delivered pal); this list marks their provenance.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub surgery: Vec<SurgeryStep>,
+}
+
+/// One surgery-table implant on a plan's final pal: a required passive the bred
+/// (or owned) pal lacked, covered from the surgery table for `cost_secs` (the
+/// caller's time-cost estimate).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SurgeryStep {
+    pub passive_id: String,
+    pub passive_name: String,
+    pub cost_secs: f64,
+}
+
+/// serde `skip_serializing_if` predicate for a `false` bool.
+fn is_false(b: &bool) -> bool {
+    !*b
+}
+
+/// A target-satisfying reference plus its terminal surgery relaxation. `implants`
+/// lists the REQUIRED passives covered by surgery-table implants on the final pal
+/// (empty = exact satisfaction); each costs `surgery_cost_each` seconds. Ranking
+/// uses [`Self::effort`] (the reference effort plus total implant cost), so a
+/// cheaper exact plan keeps priority over a surgery plan.
+#[derive(Debug, Clone)]
+pub struct SolvedRef {
+    pub reference: PalRef,
+    pub implants: Vec<PassiveId>,
+    pub surgery_cost_each: f64,
+}
+
+impl SolvedRef {
+    /// An exactly-satisfying reference (no surgery).
+    #[inline]
+    pub fn exact(reference: PalRef) -> SolvedRef {
+        SolvedRef { reference, implants: Vec::new(), surgery_cost_each: 0.0 }
+    }
+
+    /// Ranking effort: the reference's own effort plus every implant's cost.
+    #[inline]
+    pub fn effort(&self) -> f64 {
+        self.reference.total_effort() + self.implants.len() as f64 * self.surgery_cost_each
+    }
 }
 
 fn gender_opt(g: RefGender) -> Option<Gender> {
@@ -131,10 +183,16 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
                 (
                     PlanSource::Bred,
                     b.passives_prob * b.ivs_prob,
-                    vec![
-                        node_of(gd, &b.parent1, iv_thresholds),
-                        node_of(gd, &b.parent2, iv_thresholds),
-                    ],
+                    {
+                        let mut c1 = node_of(gd, &b.parent1, iv_thresholds);
+                        let mut c2 = node_of(gd, &b.parent2, iv_thresholds);
+                        match b.reversed_parent {
+                            1 => c1.gender_reversed = true,
+                            2 => c2.gender_reversed = true,
+                            _ => {}
+                        }
+                        vec![c1, c2]
+                    },
                     Some(b.passives_prob),
                     Some(b.ivs_prob),
                     Some(b.avg_required_breedings),
@@ -155,6 +213,7 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
         prob_ivs,
         expected_eggs,
         iv_targets,
+        gender_reversed: false,
     }
 }
 
@@ -178,7 +237,43 @@ impl BreedingPlan {
             total_wild_pals: r.num_wild_pals(),
             cake,
             cake_count,
+            surgery: Vec::new(),
         }
+    }
+
+    /// Build a plan from a [`SolvedRef`]: the exact-satisfaction plan for its
+    /// reference, plus any surgery-table implants folded in. Implanted passives
+    /// are appended to the root's passive slots (they are on the delivered pal),
+    /// their summed cost is added to `total_time_secs`, and the `surgery` list
+    /// records their provenance. Probability math is untouched — surgery is a
+    /// terminal step, not an inheritance event.
+    pub fn from_solved(
+        gd: &GameData,
+        sr: &SolvedRef,
+        cake: CakeKind,
+        iv_thresholds: [u8; 3],
+    ) -> BreedingPlan {
+        let mut plan = BreedingPlan::from_ref(gd, &sr.reference, cake, iv_thresholds);
+        if !sr.implants.is_empty() {
+            let steps: Vec<SurgeryStep> = sr
+                .implants
+                .iter()
+                .map(|pid| SurgeryStep {
+                    passive_id: pid.clone(),
+                    passive_name: gd
+                        .passive_by_id(pid)
+                        .map(|p| p.name.clone())
+                        .unwrap_or_else(|| pid.clone()),
+                    cost_secs: sr.surgery_cost_each,
+                })
+                .collect();
+            for pid in &sr.implants {
+                plan.root.passives.push(pid.clone());
+            }
+            plan.total_time_secs += sr.implants.len() as f64 * sr.surgery_cost_each;
+            plan.surgery = steps;
+        }
+        plan
     }
 }
 

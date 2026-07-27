@@ -25,6 +25,12 @@ interface FileSystemDirectoryHandle {
   ): Promise<PermissionState>;
 }
 
+interface DataTransferItem {
+  // Chromium-only: yields a live handle for a dropped folder (kind
+  // "directory") so it can be persisted for re-reads. Absent in Firefox/Safari.
+  getAsFileSystemHandle(): Promise<FileSystemHandle | null>;
+}
+
 interface Window {
   showDirectoryPicker(
     options?: DirectoryPickerOptions,

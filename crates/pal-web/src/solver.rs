@@ -25,9 +25,9 @@ use pal_data::types::{Guid, OwnedPal};
 use pal_data::{ActiveSkill, GameData, LabResearch};
 use pal_solver::solver::{
     diagnose_no_path, resolve_passive, resolve_species, solve_queue_monitored,
-    solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel,
-    ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase, SolveProgress, SolverConfig,
-    TargetPal, TargetSpec,
+    solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching,
+    GenderReverserConfig, IvModel, ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase,
+    SolveProgress, SolverConfig, SurgeryConfig, TargetPal, TargetSpec,
 };
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsValue;
@@ -62,6 +62,14 @@ pub struct SolveRequest {
     pub progress_token: Option<u64>,
     #[serde(default)]
     pub player_uid: Option<Guid>,
+    /// Surgery-table implants as a terminal cost option. Maps to
+    /// `SolverConfig::surgery`.
+    #[serde(default)]
+    pub surgery: Option<SurgeryConfig>,
+    /// Gender-reverser pairing relaxation. Maps to
+    /// `SolverConfig::gender_reverser`.
+    #[serde(default)]
+    pub gender_reverser: Option<GenderReverserConfig>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -315,6 +323,8 @@ fn build_request(
     if let Some(setup) = req.setup {
         cfg.setup = setup;
     }
+    cfg.surgery = req.surgery;
+    cfg.gender_reverser = req.gender_reverser;
 
     let mut spec = TargetSpec::new(TargetPal::Species(target_species));
     spec.required_passives = required_passives;

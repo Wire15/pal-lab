@@ -18,9 +18,9 @@ use pal_data::types::{Guid, OwnedPal};
 use pal_data::{ActiveSkill, GameData, LabResearch};
 use pal_solver::solver::{
     diagnose_no_path, resolve_passive, resolve_species, solve_queue_monitored,
-    solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching, IvModel,
-    ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase, SolveProgress, SolverConfig,
-    TargetPal, TargetSpec,
+    solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching,
+    GenderReverserConfig, IvModel, ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase,
+    SolveProgress, SolverConfig, SurgeryConfig, TargetPal, TargetSpec,
 };
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
@@ -73,6 +73,15 @@ pub struct SolveRequest {
     /// 16-byte array. Absent => all players' pals (today's behavior).
     #[serde(default)]
     pub player_uid: Option<Guid>,
+    /// Surgery-table relaxation: `{ max_implants, cost_secs }`. Absent => off (no
+    /// implants; byte-identical to today's behavior). Maps to
+    /// `SolverConfig::surgery`.
+    #[serde(default)]
+    pub surgery: Option<SurgeryConfig>,
+    /// Gender-reverser relaxation: `{ cost_secs }`. Absent => off (a same-gender
+    /// pairing stays unbreedable). Maps to `SolverConfig::gender_reverser`.
+    #[serde(default)]
+    pub gender_reverser: Option<GenderReverserConfig>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -268,6 +277,10 @@ fn build_request(
     if let Some(setup) = req.setup {
         cfg.setup = setup;
     }
+    // Surgery-table / gender-reverser relaxations pass straight through as the
+    // shared serde shapes (`max_implants` is clamped 0..=4 inside the solver).
+    cfg.surgery = req.surgery;
+    cfg.gender_reverser = req.gender_reverser;
 
     let mut spec = TargetSpec::new(TargetPal::Species(target_species));
     spec.required_passives = required_passives;
@@ -706,6 +719,8 @@ mod tests {
             pinned_parents: vec![],
             progress_token: None,
             player_uid: None,
+            surgery: None,
+            gender_reverser: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -746,6 +761,8 @@ mod tests {
             pinned_parents: vec![],
             progress_token: None,
             player_uid: None,
+            surgery: None,
+            gender_reverser: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -783,6 +800,8 @@ mod tests {
             pinned_parents: vec![],
             progress_token: None,
             player_uid: None,
+            surgery: None,
+            gender_reverser: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
         assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
@@ -835,6 +854,8 @@ mod tests {
             pinned_parents: vec![],
             progress_token: None,
             player_uid: None,
+            surgery: None,
+            gender_reverser: None,
         };
         let resp = run_queue(&dir, vec![mk("Anubis"), mk("Anubis")], false)
             .expect("queue solve should succeed");

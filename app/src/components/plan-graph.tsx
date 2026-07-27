@@ -20,7 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { BreedingPlan, Guid, OwnedPal } from "../lib/types";
+import type { BreedingPlan, Guid, OwnedPal, SurgeryStep } from "../lib/types";
 import type { PlanNodeSelection } from "./plan-node-panel";
 import {
   COL_W,
@@ -71,6 +71,7 @@ function PalCircle({
   resolvePal,
   status,
   onToggleManual,
+  surgery,
 }: {
   laid: LaidNode;
   iconId: string | null;
@@ -81,6 +82,9 @@ function PalCircle({
   status?: NodeStatus | null;
   /** Toggle this bred step's manual-done flag (bred nodes only). */
   onToggleManual?: () => void;
+  /** Surgery-table implants delivered on this node — set ONLY on the plan root
+   * (the final pal), empty/absent elsewhere. */
+  surgery?: SurgeryStep[];
 }) {
   const { node } = laid;
   const g = genderView(node.gender);
@@ -273,6 +277,27 @@ function PalCircle({
         ) : isBred ? (
           <Tag tone="amber">Bred</Tag>
         ) : null}
+        {node.gender_reversed && (
+          <span
+            className="rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
+            title="This parent's gender was reversed with a gender reverser to make the pairing viable"
+          >
+            {"\u21c4"} reversed
+          </span>
+        )}
+        {surgery && surgery.length > 0 && (
+          <span
+            className="max-w-full truncate rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
+            title={`Surgery-table implants (your time-cost estimate): ${surgery
+              .map((s) => s.passive_name)
+              .join(", ")} \u00b7 ${formatDuration(
+              surgery.reduce((sum, s) => sum + s.cost_secs, 0),
+            )}`}
+          >
+            Implant: {surgery.map((s) => s.passive_name).join(", ")} {"\u00b7"}{" "}
+            {formatDuration(surgery.reduce((sum, s) => sum + s.cost_secs, 0))}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -503,6 +528,8 @@ export function PlanGraph({
           const iconId = nameToId.get(laid.node.species_name) ?? null;
           const nodePath = pathByNode.get(laid.node) ?? null;
           const status = nodePath ? (statuses?.get(nodePath) ?? null) : null;
+          // Surgery implants land on the final pal (the plan root) only.
+          const surgery = laid.node === plan.root ? plan.surgery : undefined;
           return (
             <PalCircle
               key={laid.id}
@@ -520,6 +547,8 @@ export function PlanGraph({
                     passives: laid.node.passives,
                     probability: laid.node.probability,
                     estTimeSecs: laid.node.est_time_secs,
+                    genderReversed: laid.node.gender_reversed ?? false,
+                    surgery,
                   },
                   laid.id,
                 )
@@ -531,6 +560,7 @@ export function PlanGraph({
                   ? () => onToggleManual(nodePath)
                   : undefined
               }
+              surgery={surgery}
             />
           );
         })}

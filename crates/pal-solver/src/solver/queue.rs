@@ -107,7 +107,7 @@ pub fn solve_queue_monitored(
         let iv_thresholds = item.cfg.cake.effective_iv_thresholds(&item.spec);
         let plans: Vec<BreedingPlan> = refs
             .iter()
-            .map(|r| BreedingPlan::from_ref(gd, r, item.cfg.cake, iv_thresholds))
+            .map(|r| BreedingPlan::from_solved(gd, r, item.cfg.cake, iv_thresholds))
             .collect();
 
         let failed = plans.is_empty();
@@ -116,7 +116,7 @@ pub fn solve_queue_monitored(
             // Materialize the best plan's bred pals into the pool for the next
             // item ("you bred these already", zero further effort).
             let mut bred: Vec<&PalRef> = Vec::new();
-            collect_bred(best_ref, &mut bred);
+            collect_bred(&best_ref.reference, &mut bred);
             for r in bred {
                 for pal in synth_owned(gd, r, &mut counter) {
                     pool.push(pal);

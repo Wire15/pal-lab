@@ -322,6 +322,16 @@ pub struct BredPalRef {
     /// World egg-hatch time in hours driving the massive-egg incubation base
     /// (`egg_hatch_hours * 3600`). Default [`DEFAULT_EGG_HATCH_HOURS`] (72).
     pub egg_hatch_hours: f64,
+    /// Gender-reverser step cost (seconds) added to [`Self::total_effort`] when a
+    /// parent of this pairing was gender-reversed to make it viable. `0.0` = no
+    /// reverser used (default).
+    #[serde(default)]
+    pub reverser_cost: f64,
+    /// Which parent (if any) a gender reverser flipped to make this pairing
+    /// viable: `0` = none, `1` = [`Self::parent1`], `2` = [`Self::parent2`]. The
+    /// flagged parent's plan node carries `gender_reversed = true`.
+    #[serde(default)]
+    pub reversed_parent: u8,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -463,6 +473,22 @@ impl PalRef {
             PalRef::Bred(b) => Some(PalRef::Bred(Box::new(b.with_gender(gd, gender)))),
         }
     }
+
+    /// Force this ref to a concrete `gender` for a gender-reverser step. Unlike
+    /// [`Self::with_gender`], a concrete owned pal IS re-gendered (the reverser
+    /// physically flips it), deterministically — no probability re-roll. Only
+    /// ever called on concrete-gender owned refs (the sole same-gender pairing
+    /// the reverser unblocks); wild/bred wildcards keep the ordinary resolution.
+    pub fn force_gender(&self, gd: &GameData, gender: RefGender) -> Option<PalRef> {
+        if gender == self.gender() {
+            return Some(self.clone());
+        }
+        match self {
+            PalRef::Owned(o) => Some(PalRef::Owned(o.force_gender(gender))),
+            PalRef::Wild(w) => Some(PalRef::Wild(w.with_gender(gd, gender))),
+            PalRef::Bred(b) => Some(PalRef::Bred(Box::new(b.with_gender(gd, gender)))),
+        }
+    }
 }
 
 fn split_effective(passives: &[EffPassive]) -> (Vec<PassiveId>, u32) {
@@ -524,6 +550,19 @@ impl OwnedPalRef {
         }
         // Concrete owned pal cannot be re-gendered without a reverser.
         None
+    }
+
+    /// Flip a concrete owned instance to `gender` for a gender reverser (keeps the
+    /// same physical instance, passives, and IVs). A composite (wildcard) never
+    /// reaches this — it already resolves to either gender via [`Self::with_gender`].
+    fn force_gender(&self, gender: RefGender) -> OwnedPalRef {
+        let mut r = self.clone();
+        r.gender = gender;
+        if let Some(g) = gender.concrete() {
+            r.primary.gender = g;
+        }
+        r.alt = None;
+        r
     }
 }
 
@@ -606,6 +645,8 @@ impl BredPalRef {
             farm_speed_bonus: setup.farm_speed_bonus,
             incubation_reduction: setup.incubation_reduction,
             egg_hatch_hours: setup.egg_hatch_hours,
+            reverser_cost: 0.0,
+            reversed_parent: 0,
         };
         r.recompute_effort(gd);
         r
@@ -642,7 +683,7 @@ impl BredPalRef {
             }
         };
         self.self_effort = self_effort;
-        self.total_effort = self_effort + self.parent_effort();
+        self.total_effort = self_effort + self.parent_effort() + self.reverser_cost;
         self.num_breeding_steps = 1 + self.parent1.num_breeding_steps() + self.parent2.num_breeding_steps();
         self.num_wild_pals = self.parent1.num_wild_pals() + self.parent2.num_wild_pals();
         let parent_eggs = self.parent1.num_eggs() + self.parent2.num_eggs();
@@ -664,6 +705,17 @@ impl BredPalRef {
         let mut r = BredPalRef { gender, avg_required_breedings: avg, ..self.clone() };
         r.recompute_effort(gd);
         r
+    }
+
+    /// Tag this bred child as the product of a gender-reverser step: `side`
+    /// (`1` = parent1, `2` = parent2) records which parent was flipped, and
+    /// `cost` is added to the step's effort. Recomputes effort so the reverser
+    /// cost propagates into [`Self::total_effort`].
+    pub fn with_reverser(mut self, gd: &GameData, cost: f64, side: u8) -> BredPalRef {
+        self.reverser_cost = cost;
+        self.reversed_parent = side;
+        self.recompute_effort(gd);
+        self
     }
 
     /// Estimated breeding *attempts* (cycles) for this step: eggs-to-success

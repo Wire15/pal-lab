@@ -14,7 +14,9 @@ pub mod results;
 pub mod spec;
 pub mod working_set;
 
-pub use config::{BreedingSetup, CakeKind, IvModel, SolverConfig};
+pub use config::{
+    BreedingSetup, CakeKind, GenderReverserConfig, IvModel, SolverConfig, SurgeryConfig,
+};
 pub use diagnose::{diagnose_no_path, NoPathReason};
 pub use engine::{
     build_initial_content, solve, solve_modes, solve_modes_monitored, solve_reporting,
@@ -26,7 +28,10 @@ pub use refs::{
     WildPalRef,
 };
 pub use resolve::{resolve_passive, resolve_species};
-pub use results::{filter_trivial_wild, is_trivial_wild_plan, BreedingPlan, PlanNode, PlanSource};
+pub use results::{
+    filter_trivial_wild, is_trivial_wild_plan, BreedingPlan, PlanNode, PlanSource, SolvedRef,
+    SurgeryStep,
+};
 pub use queue::{solve_queue, solve_queue_monitored, QueueItem, QueueItemResult, QueueResult};
 pub use spec::{TargetPal, TargetSpec};
 pub use working_set::{key_of, RefKey, WorkingSet};

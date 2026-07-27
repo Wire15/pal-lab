@@ -25,12 +25,12 @@ use crate::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
     prob_inherited_target_passives_forced,
 };
-use crate::solver::config::{IvModel, SolverConfig};
+use crate::solver::config::{IvModel, SolverConfig, SurgeryConfig};
 use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
 };
-use crate::solver::results::BreedingPlan;
+use crate::solver::results::{BreedingPlan, SolvedRef};
 use crate::solver::spec::{TargetPal, TargetSpec};
 use crate::solver::working_set::{key_of, RefKey, WorkingSet};
 use crate::solver::progress::{SolveCancelled, SolveMonitor, SolvePhase, SolveProgress};
@@ -305,23 +305,59 @@ fn gender_options(p1: &PalRef, p2: &PalRef) -> Vec<(RefGender, RefGender)> {
 
 /// For a parent pair, produce the distinct child species with the cheapest valid
 /// gender-resolved parents for each.
-fn candidate_children(gd: &GameData, p1: &PalRef, p2: &PalRef) -> Vec<(u16, PalRef, PalRef)> {
-    let mut best: HashMap<u16, (f64, PalRef, PalRef)> = HashMap::new();
-    for (g1, g2) in gender_options(p1, p2) {
-        let (Some(r1), Some(r2)) = (p1.with_gender(gd, g1), p2.with_gender(gd, g2)) else {
+fn candidate_children(
+    gd: &GameData,
+    cfg: &SolverConfig,
+    p1: &PalRef,
+    p2: &PalRef,
+) -> Vec<(u16, PalRef, PalRef, Option<(f64, u8)>)> {
+    let opts = gender_options(p1, p2);
+    // Normal (gender-viable) path: no reverser, fourth tuple slot `None`.
+    if !opts.is_empty() {
+        let mut best: HashMap<u16, (f64, PalRef, PalRef)> = HashMap::new();
+        for (g1, g2) in opts {
+            let (Some(r1), Some(r2)) = (p1.with_gender(gd, g1), p2.with_gender(gd, g2)) else {
+                continue;
+            };
+            let (Some(cg1), Some(cg2)) = (g1.concrete(), g2.concrete()) else { continue };
+            let Some(child) = gd.child_of(r1.species(), cg1, r2.species(), cg2) else { continue };
+            let effort = combined_effort(&r1, &r2);
+            match best.get(&child) {
+                Some((e, _, _)) if *e <= effort => {}
+                _ => {
+                    best.insert(child, (effort, r1, r2));
+                }
+            }
+        }
+        return best.into_iter().map(|(child, (_, r1, r2))| (child, r1, r2, None)).collect();
+    }
+
+    // Gender-blocked (both parents the same concrete gender). Only the gender
+    // reverser can unblock it, and only when enabled: flip ONE parent, pay
+    // `cost_secs`, resolve deterministically. Same-species pairs the game forbids
+    // outright still yield no `child_of`, so they stay forbidden.
+    let Some(rev) = cfg.gender_reverser else { return Vec::new() };
+    let cost = rev.cost_secs;
+    let g = p1.gender();
+    let opp = g.opposite();
+    // `side` 1 reverses p1, 2 reverses p2 (the cheaper legal order wins on tie).
+    let mut best: HashMap<u16, (f64, PalRef, PalRef, u8)> = HashMap::new();
+    for side in [1u8, 2u8] {
+        let (gr1, gr2) = if side == 1 { (opp, g) } else { (g, opp) };
+        let (Some(r1), Some(r2)) = (p1.force_gender(gd, gr1), p2.force_gender(gd, gr2)) else {
             continue;
         };
-        let (Some(cg1), Some(cg2)) = (g1.concrete(), g2.concrete()) else { continue };
+        let (Some(cg1), Some(cg2)) = (gr1.concrete(), gr2.concrete()) else { continue };
         let Some(child) = gd.child_of(r1.species(), cg1, r2.species(), cg2) else { continue };
-        let effort = combined_effort(&r1, &r2);
+        let effort = combined_effort(&r1, &r2) + cost;
         match best.get(&child) {
-            Some((e, _, _)) if *e <= effort => {}
+            Some((e, _, _, _)) if *e <= effort => {}
             _ => {
-                best.insert(child, (effort, r1, r2));
+                best.insert(child, (effort, r1, r2, side));
             }
         }
     }
-    best.into_iter().map(|(child, (_, r1, r2))| (child, r1, r2)).collect()
+    best.into_iter().map(|(child, (_, r1, r2, side))| (child, r1, r2, Some((cost, side)))).collect()
 }
 
 /// IV probability inputs: relevant categories, and those relevant on only one parent.
@@ -401,7 +437,9 @@ fn breed_pair(
 ) -> Vec<PalRef> {
     let mut out = Vec::new();
 
-    if !p1.gender().compatible_with(p2.gender()) {
+    // A same-gender pairing is only breedable through the gender reverser; skip
+    // it outright when the reverser is off (identical to pre-reverser behavior).
+    if !p1.gender().compatible_with(p2.gender()) && cfg.gender_reverser.is_none() {
         return out;
     }
     if p1.num_wild_pals() + p2.num_wild_pals() > cfg.effective_max_wild() {
@@ -436,7 +474,7 @@ fn breed_pair(
 
     let child_steps = p1.num_breeding_steps() + p2.num_breeding_steps() + 1;
 
-    for (child, r1, r2) in candidate_children(gd, p1, p2) {
+    for (child, r1, r2, reverser) in candidate_children(gd, cfg, p1, p2) {
         // Reachability budget: any final plan containing this child uses at
         // least `child_steps + min_steps(child -> target)` breeding steps (the
         // child's own subtree plus the breeding-graph-distance up-path to the
@@ -483,6 +521,12 @@ fn breed_pair(
                     &cfg.setup,
                     egg_mult,
                 );
+                // Gender-reverser pairings carry the item cost + reversed-parent
+                // flag; recomputes effort so ranking sees the added cost.
+                let bred = match reverser {
+                    Some((cost, side)) => bred.with_reverser(gd, cost, side),
+                    None => bred,
+                };
                 let bred = PalRef::Bred(Box::new(bred));
                 if bred.total_effort() <= cfg.max_effort_secs
                     && (spec.is_satisfied_by(&bred) || ws.is_optimal(&bred))
@@ -504,12 +548,23 @@ fn breed_pair(
 fn fold_chunk(
     part: Vec<PalRef>,
     spec: &TargetSpec,
+    max_implants: u8,
+    surgery_cost: f64,
+    unimplantable: &HashSet<PassiveId>,
     step_best: &mut WorkingSet,
-    results: &mut Vec<PalRef>,
+    results: &mut Vec<SolvedRef>,
 ) {
     for c in part {
-        if spec.is_satisfied_by(&c) {
-            results.push(c.clone());
+        // Surgery-aware terminal satisfaction: a candidate missing up to
+        // `max_implants` REQUIRED passives is recorded as a result carrying those
+        // implants (`max_implants == 0` => exact `is_satisfied_by`). The working
+        // set below is untouched by surgery — dominance stays exact.
+        if let Some(implants) = spec.satisfied_with_surgery(&c, max_implants, unimplantable) {
+            results.push(SolvedRef {
+                reference: c.clone(),
+                implants,
+                surgery_cost_each: surgery_cost,
+            });
         }
         step_best.insert(c);
     }
@@ -552,16 +607,18 @@ fn ref_contains_all_pins(r: &PalRef, pins: &[Guid]) -> bool {
     pins.iter().all(|p| ids.contains(p))
 }
 
-/// Map best-first references to serializable plans, tagged with `cake`.
-/// `iv_thresholds` are the cake-effective spec IV floors for bred `iv_targets`.
+/// Map best-first solved references to serializable plans, tagged with `cake`.
+/// `iv_thresholds` are the cake-effective spec IV floors for bred `iv_targets`;
+/// each [`SolvedRef`]'s surgery relaxation is folded in via
+/// [`BreedingPlan::from_solved`].
 #[inline]
 fn plans_of(
     gd: &GameData,
-    refs: &[PalRef],
+    refs: &[SolvedRef],
     cake: crate::solver::config::CakeKind,
     iv_thresholds: [u8; 3],
 ) -> Vec<BreedingPlan> {
-    refs.iter().map(|r| BreedingPlan::from_ref(gd, r, cake, iv_thresholds)).collect()
+    refs.iter().map(|r| BreedingPlan::from_solved(gd, r, cake, iv_thresholds)).collect()
 }
 
 /// Run the solver, returning up to `cfg.result_limit` breeding plans, best-first.
@@ -599,7 +656,7 @@ fn solve_core(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
     monitor: SolveMonitor,
-) -> Result<(Vec<PalRef>, bool, bool), SolveCancelled> {
+) -> Result<(Vec<SolvedRef>, bool, bool), SolveCancelled> {
     let mut spec = spec.clone();
     spec.normalize();
     // Mushroom/DeluxeVegetable cakes raise the egg's IV floor; model it by
@@ -627,13 +684,34 @@ fn solve_core(
         }
     };
 
+    // Surgery-table relaxation (terminal): implants may cover up to
+    // `max_implants` missing REQUIRED passives on any result, each costing
+    // `surgery_cost`. `0`/`0.0` = off (exact satisfaction, unchanged behavior).
+    // Special lottery-tier passives (Rainbow/WorldTree) are refused by the
+    // in-game surgery table, so they can never be covered by implants.
+    let max_implants = cfg.surgery.as_ref().map(SurgeryConfig::implants).unwrap_or(0);
+    let surgery_cost = cfg.surgery.as_ref().map(|s| s.cost_secs).unwrap_or(0.0);
+    let unimplantable: HashSet<PassiveId> = spec
+        .required_passives
+        .iter()
+        .filter(|p| gd.passive_by_id(p).is_some_and(|ps| ps.tier.is_some()))
+        .cloned()
+        .collect();
+
     let initial = build_initial_content(gd, &spec, owned, cfg);
 
     let mut ws = WorkingSet::new();
-    let mut results: Vec<PalRef> = Vec::new();
+    let mut results: Vec<SolvedRef> = Vec::new();
     for r in &initial {
-        if spec.is_satisfied_by(r) {
-            results.push(r.clone());
+        // Zero-step owned/wild seeds can satisfy directly — surgery-aware, so an
+        // owned pal missing a few required passives is a valid 0-breeding-step
+        // result covered by implants.
+        if let Some(implants) = spec.satisfied_with_surgery(r, max_implants, &unimplantable) {
+            results.push(SolvedRef {
+                reference: r.clone(),
+                implants,
+                surgery_cost_each: surgery_cost,
+            });
         }
         ws.insert(r.clone());
     }
@@ -728,7 +806,7 @@ fn solve_core(
                     let part = breed(&buf);
                     pairs_done += buf.len() as u64;
                     buf.clear();
-                    fold_chunk(part, &spec, &mut step_best, &mut results);
+                    fold_chunk(part, &spec, max_implants, surgery_cost, &unimplantable, &mut step_best, &mut results);
                     monitor.report(SolveProgress {
                         phase: SolvePhase::Step,
                         step: step + 1,
@@ -750,7 +828,7 @@ fn solve_core(
             monitor.check()?;
             let part = breed(&buf);
             pairs_done += buf.len() as u64;
-            fold_chunk(part, &spec, &mut step_best, &mut results);
+            fold_chunk(part, &spec, max_implants, surgery_cost, &unimplantable, &mut step_best, &mut results);
             monitor.report(SolveProgress {
                 phase: SolvePhase::Step,
                 step: step + 1,
@@ -796,7 +874,7 @@ fn solve_core(
     // real result" (false) from "target unreachable anyway" (true).
     let had_results = !results.is_empty();
     if !spec.pinned_parents.is_empty() {
-        results.retain(|r| ref_contains_all_pins(r, &spec.pinned_parents));
+        results.retain(|r| ref_contains_all_pins(&r.reference, &spec.pinned_parents));
     }
     let pins_satisfied = spec.pinned_parents.is_empty() || !(had_results && results.is_empty());
 
@@ -835,13 +913,13 @@ pub struct ModeResult {
 
 /// True for a bare wild ref — a "just catch the target" plan (ref-level mirror
 /// of [`crate::solver::results::is_trivial_wild_plan`]).
-fn is_trivial_wild_ref(r: &PalRef) -> bool {
-    matches!(r, PalRef::Wild(_))
+fn is_trivial_wild_ref(r: &SolvedRef) -> bool {
+    matches!(r.reference, PalRef::Wild(_))
 }
 
 /// Drop trivial catch-the-target refs whenever any non-trivial ref survives;
 /// otherwise return unchanged (ref-level mirror of [`filter_trivial_wild`]).
-fn filter_trivial_wild_refs(refs: Vec<PalRef>) -> Vec<PalRef> {
+fn filter_trivial_wild_refs(refs: Vec<SolvedRef>) -> Vec<SolvedRef> {
     if refs.iter().any(|r| !is_trivial_wild_ref(r)) {
         refs.into_iter().filter(|r| !is_trivial_wild_ref(r)).collect()
     } else {
@@ -859,7 +937,7 @@ pub fn solve_modes(
     owned: &[OwnedPal],
     cfg: &SolverConfig,
     catching: Catching,
-) -> (Vec<PalRef>, bool, bool, bool) {
+) -> (Vec<SolvedRef>, bool, bool, bool) {
     solve_modes_monitored(gd, spec, owned, cfg, catching, SolveMonitor::noop())
         .expect("noop monitor never cancels")
 }
@@ -874,7 +952,7 @@ pub fn solve_modes_monitored(
     cfg: &SolverConfig,
     catching: Catching,
     monitor: SolveMonitor,
-) -> Result<(Vec<PalRef>, bool, bool, bool), SolveCancelled> {
+) -> Result<(Vec<SolvedRef>, bool, bool, bool), SolveCancelled> {
     if !cfg.include_wild {
         let (refs, pins, trunc) = solve_core(gd, spec, owned, cfg, monitor)?;
         return Ok((refs, false, pins, trunc));

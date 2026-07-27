@@ -13,7 +13,9 @@ import type { NoPathReason } from "../lib/types";
 function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
   switch (reason.kind) {
     case "missing_passive_carrier":
-      return `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
+      return reason.surgery_off
+        ? `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier, or enable Surgery table in Breeding setup, then re-solve.`
+        : `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
     case "target_species_unreachable":
       return reason.min_steps == null
         ? `Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.`

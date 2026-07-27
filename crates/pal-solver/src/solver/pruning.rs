@@ -29,6 +29,7 @@
 use std::collections::HashMap;
 
 use crate::solver::refs::PalRef;
+use crate::solver::results::SolvedRef;
 
 /// Accumulate species-occurrence counts across a reference's whole tree
 /// (palcalc `AllReferences()` grouped by pal).
@@ -40,25 +41,29 @@ fn species_occurrences(r: &PalRef, out: &mut HashMap<u16, u32>) {
     }
 }
 
-/// Best-first order + duplicate collapse + limit. See module docs.
-pub fn prune_results(mut results: Vec<PalRef>, limit: usize) -> Vec<PalRef> {
+/// Best-first order + duplicate collapse + limit. See module docs. Ranks on the
+/// surgery-aware [`SolvedRef::effort`] (reference effort plus implant cost), so a
+/// cheaper exact plan keeps priority over a surgery plan; equal-effort ties break
+/// toward fewer implants (exact wins), then fewer steps / wild pals / species.
+pub fn prune_results(mut results: Vec<SolvedRef>, limit: usize) -> Vec<SolvedRef> {
     results.sort_by(|a, b| {
-        a.total_effort()
-            .partial_cmp(&b.total_effort())
+        a.effort()
+            .partial_cmp(&b.effort())
             .unwrap_or(std::cmp::Ordering::Equal)
-            .then(a.num_breeding_steps().cmp(&b.num_breeding_steps()))
-            .then(a.num_wild_pals().cmp(&b.num_wild_pals()))
-            .then(a.species().cmp(&b.species()))
+            .then(a.implants.len().cmp(&b.implants.len()))
+            .then(a.reference.num_breeding_steps().cmp(&b.reference.num_breeding_steps()))
+            .then(a.reference.num_wild_pals().cmp(&b.reference.num_wild_pals()))
+            .then(a.reference.species().cmp(&b.reference.species()))
     });
 
-    let mut kept: Vec<PalRef> = Vec::new();
+    let mut kept: Vec<SolvedRef> = Vec::new();
     let mut kept_sigs: Vec<HashMap<u16, u32>> = Vec::new();
     for r in results {
         if kept.len() >= limit {
             break;
         }
         let mut sig = HashMap::new();
-        species_occurrences(&r, &mut sig);
+        species_occurrences(&r.reference, &mut sig);
         if kept_sigs.iter().any(|s| *s == sig) {
             continue; // identical species multiset to a kept (better-or-equal) plan
         }

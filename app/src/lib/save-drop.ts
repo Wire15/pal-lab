@@ -62,6 +62,12 @@ export function canReread(): boolean {
   return source?.kind === "handle";
 }
 
+/** The live directory handle when the current source is a re-readable pick (or a
+ *  restored handle), else null. Lets the web dropzone persist it across visits. */
+export function currentHandle(): FileSystemDirectoryHandle | null {
+  return source?.kind === "handle" ? source.handle : null;
+}
+
 /** Human label for the loaded save (world folder name), or "" when none. */
 export function currentLabel(): string {
   return source?.rootLabel ?? "";
@@ -81,6 +87,15 @@ export async function pickDirectory(): Promise<string | null> {
     // "nothing picked" rather than an error surface.
     return null;
   }
+  return acceptHandle(handle);
+}
+
+/** Install a previously-stored (or freshly-picked) directory handle as the active
+ *  source, walking it to confirm it still holds a Level.sav. Returns the world
+ *  label. Read permission must already be granted by the caller. */
+export async function acceptHandle(
+  handle: FileSystemDirectoryHandle,
+): Promise<string> {
   const files = new Map<string, File>();
   await walkHandle(handle, "", files);
   const selection = select(files, handle.name);

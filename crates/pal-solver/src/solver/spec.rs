@@ -115,4 +115,59 @@ impl TargetSpec {
         }
         true
     }
+
+    /// Surgery-aware satisfaction. Surgery only implants PASSIVES, so species,
+    /// gender, and IV floors must all match exactly (same as [`is_satisfied_by`]);
+    /// the only relaxation is that up to `max_implants` REQUIRED passives may be
+    /// missing and covered by table implants. `unimplantable` holds required
+    /// passive ids the surgery table refuses (special lottery tiers:
+    /// Rainbow/WorldTree) — a missing passive in that set can never be covered.
+    /// Returns:
+    /// - `Some(vec![])` — exact satisfaction (no implants needed),
+    /// - `Some(missing)` — satisfiable with the listed implants (`0 < len <= max_implants`),
+    /// - `None` — cannot satisfy even with `max_implants` implants (or a
+    ///   non-passive constraint fails).
+    ///
+    /// The returned ids are ordered as in [`Self::required_passives`] for stable
+    /// plan output. With `max_implants == 0` this is exactly [`is_satisfied_by`].
+    pub fn satisfied_with_surgery(
+        &self,
+        r: &PalRef,
+        max_implants: u8,
+        unimplantable: &HashSet<PassiveId>,
+    ) -> Option<Vec<PassiveId>> {
+        if let TargetPal::Species(idx) = self.pal {
+            if r.species() != idx {
+                return None;
+            }
+        }
+
+        if let Some(g) = self.required_gender {
+            match r.gender() {
+                RefGender::Wildcard => {}
+                RefGender::Male if g == Gender::Male => {}
+                RefGender::Female if g == Gender::Female => {}
+                _ => return None,
+            }
+        }
+
+        let ivs = r.ivs();
+        let stats = [ivs.hp, ivs.attack, ivs.defense];
+        for (target, iv) in self.iv_targets().into_iter().zip(stats) {
+            if target > 0 && !iv.satisfies(target) {
+                return None;
+            }
+        }
+
+        let held: HashSet<&PassiveId> =
+            r.effective_passives().iter().filter_map(EffPassive::desired).collect();
+        let missing: Vec<PassiveId> =
+            self.required_passives.iter().filter(|p| !held.contains(p)).cloned().collect();
+        if missing.len() as u32 > max_implants as u32
+            || missing.iter().any(|p| unimplantable.contains(p))
+        {
+            return None;
+        }
+        Some(missing)
+    }
 }

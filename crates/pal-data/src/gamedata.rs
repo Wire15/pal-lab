@@ -275,8 +275,9 @@ pub struct PassiveSkill {
     /// pal-only passive browse filter.
     pub pal_facing: bool,
     /// Special lottery-pool tier (mutation ⇒ Rainbow, world-tree ⇒ WorldTree),
-    /// `None` for ordinary passives. Additive display metadata; the solver
-    /// ignores it.
+    /// `None` for ordinary passives. Display metadata AND a solver input: the
+    /// surgery table refuses special-tier passives, so surgery relaxation never
+    /// covers a required passive with `tier.is_some()`.
     pub tier: Option<PassiveTier>,
 }
 

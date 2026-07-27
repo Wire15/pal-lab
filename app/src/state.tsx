@@ -25,10 +25,12 @@ import { caps } from "./lib/caps";
 import type {
   BreedingSetup,
   CakeToken,
+  GenderReverserOption,
   RosterCounts,
   SaveSummary,
   SolveRequest,
   SolveResponse,
+  SurgeryOption,
 } from "./lib/types";
 import type { SolveSpec } from "./lib/use-solve";
 import { hexGuid } from "./components/palbox/selectors";
@@ -144,6 +146,10 @@ function writeScopeForDir(dir: string, scope: string): void {
  * share one setup. */
 const BREEDING_SETUP_KEY = "pal-lab.breedingSetup";
 const CAKE_KEY = "pal-lab.cake";
+/** Advanced-station toggles (surgery table / gender reverser). Each key holds
+ * the option object while ON, or is absent while OFF. */
+const SURGERY_KEY = "pal-lab.surgery";
+const GENDER_REVERSER_KEY = "pal-lab.genderReverser";
 
 /** Neutral vanilla farm setup: no boosts, vanilla 72h hatch. */
 const DEFAULT_SETUP: BreedingSetup = {
@@ -182,6 +188,30 @@ function readCake(): CakeToken {
     return valid.includes(raw as CakeToken) ? (raw as CakeToken) : "normal";
   } catch {
     return "normal";
+  }
+}
+
+function readSurgery(): SurgeryOption | null {
+  try {
+    const raw = localStorage.getItem(SURGERY_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as Partial<SurgeryOption>;
+    const max = Math.min(4, Math.max(1, Math.round(Number(p.max_implants) || 1)));
+    const cost = Math.max(0, Number(p.cost_secs) || 0);
+    return { max_implants: max, cost_secs: cost };
+  } catch {
+    return null;
+  }
+}
+
+function readGenderReverser(): GenderReverserOption | null {
+  try {
+    const raw = localStorage.getItem(GENDER_REVERSER_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as Partial<GenderReverserOption>;
+    return { cost_secs: Math.max(0, Number(p.cost_secs) || 0) };
+  } catch {
+    return null;
   }
 }
 
@@ -297,6 +327,16 @@ export interface AppState {
   setSetup: (setup: BreedingSetup) => void;
   /** Set the selected breeding cake. */
   setCake: (cake: CakeToken) => void;
+  /** Surgery-table advanced station (null = OFF). Rides the solve request as
+   * `SolveRequest.surgery`. Persisted. */
+  surgery: SurgeryOption | null;
+  /** Gender-reverser advanced station (null = OFF). Rides the solve request as
+   * `SolveRequest.gender_reverser`. Persisted. */
+  genderReverser: GenderReverserOption | null;
+  /** Toggle/replace the surgery table (null disables it). */
+  setSurgery: (surgery: SurgeryOption | null) => void;
+  /** Toggle/replace the gender reverser (null disables it). */
+  setGenderReverser: (reverser: GenderReverserOption | null) => void;
   /** The current Solver result session (request + plans + active tab), lifted
    * here so it survives view switches. Null before the first solve / after a
    * Solver RESET. The Solver restores from it on mount and writes to it on
@@ -333,6 +373,9 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [scopePromptOpen, setScopePromptOpen] = useState(false);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
   const [cake, setCakeState] = useState<CakeToken>(readCake);
+  const [surgery, setSurgeryState] = useState<SurgeryOption | null>(readSurgery);
+  const [genderReverser, setGenderReverserState] =
+    useState<GenderReverserOption | null>(readGenderReverser);
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
   // Lifted Solver result session (survives view switches; see AppState.solveSession).
   const [solveSession, setSolveSession] = useState<SolveSession | null>(null);
@@ -365,6 +408,26 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setCakeState(next);
     try {
       localStorage.setItem(CAKE_KEY, next);
+    } catch {
+      // Ignore storage failures (private mode, quota) — non-fatal.
+    }
+  }, []);
+
+  const setSurgery = useCallback((next: SurgeryOption | null) => {
+    setSurgeryState(next);
+    try {
+      if (next) localStorage.setItem(SURGERY_KEY, JSON.stringify(next));
+      else localStorage.removeItem(SURGERY_KEY);
+    } catch {
+      // Ignore storage failures (private mode, quota) — non-fatal.
+    }
+  }, []);
+
+  const setGenderReverser = useCallback((next: GenderReverserOption | null) => {
+    setGenderReverserState(next);
+    try {
+      if (next) localStorage.setItem(GENDER_REVERSER_KEY, JSON.stringify(next));
+      else localStorage.removeItem(GENDER_REVERSER_KEY);
     } catch {
       // Ignore storage failures (private mode, quota) — non-fatal.
     }
@@ -639,6 +702,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       cake,
       setSetup,
       setCake,
+      surgery,
+      genderReverser,
+      setSurgery,
+      setGenderReverser,
       solveSession,
       setSolveSession,
       ivLabSession,
@@ -679,6 +746,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       cake,
       setSetup,
       setCake,
+      surgery,
+      genderReverser,
+      setSurgery,
+      setGenderReverser,
       solveSession,
       ivLabSession,
     ],
@@ -703,9 +774,23 @@ export interface BreedingSetupState {
   cake: CakeToken;
   setSetup: (setup: BreedingSetup) => void;
   setCake: (cake: CakeToken) => void;
+  surgery: SurgeryOption | null;
+  genderReverser: GenderReverserOption | null;
+  setSurgery: (surgery: SurgeryOption | null) => void;
+  setGenderReverser: (reverser: GenderReverserOption | null) => void;
 }
 
 export function useBreedingSetup(): BreedingSetupState {
-  const { setup, cake, setSetup, setCake } = useAppState();
-  return { setup, cake, setSetup, setCake };
+  const { setup, cake, setSetup, setCake, surgery, genderReverser, setSurgery, setGenderReverser } =
+    useAppState();
+  return {
+    setup,
+    cake,
+    setSetup,
+    setCake,
+    surgery,
+    genderReverser,
+    setSurgery,
+    setGenderReverser,
+  };
 }

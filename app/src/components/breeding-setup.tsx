@@ -21,6 +21,7 @@ import type {
   WorldOptionsResponse,
 } from "../lib/types";
 import { PalIcon } from "./primitives";
+import { formatDuration } from "../lib/ui";
 import { useAppState, useBreedingSetup } from "../state";
 
 /** localStorage keys for this panel's own UI inputs (the composed setup itself
@@ -148,7 +149,16 @@ function dedupeResearch(entries: LabResearchEntry[]): ResearchLine[] {
 
 export function BreedingSetupPanel() {
   const { saveDir, saveSummary } = useAppState();
-  const { setup, cake, setSetup, setCake } = useBreedingSetup();
+  const {
+    setup,
+    cake,
+    setSetup,
+    setCake,
+    surgery,
+    genderReverser,
+    setSurgery,
+    setGenderReverser,
+  } = useBreedingSetup();
   // Memoized: a fresh `[]` every render (saveSummary null) destabilizes the
   // boosters memo + save-switch revalidation effect into an update loop.
   const pals = useMemo(() => saveSummary?.pals ?? [], [saveSummary]);
@@ -684,6 +694,183 @@ export function BreedingSetupPanel() {
         <p className="text-[11px] leading-relaxed text-ink-faint">
           {CAKES.find((c) => c.token === cake)?.note}
         </p>
+      </div>
+
+      {/* ADVANCED STATIONS */}
+      <div className="flex flex-col gap-1.5">
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+          Advanced stations
+        </span>
+
+        {/* Surgery table */}
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={surgery !== null}
+            onClick={() => setSurgery(surgery ? null : { max_implants: 1, cost_secs: 600 })}
+            className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
+              surgery ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
+            }`}
+          >
+            <span
+              className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border border-amber/40 bg-amber/10 text-[14px] leading-none text-amber"
+              aria-hidden
+            >
+              &#9877;
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[13px] font-medium text-ink">Surgery table</span>
+              <span className="font-mono text-[11px] text-ink-faint">
+                Implant missing passives onto the final pal
+              </span>
+            </span>
+            <span
+              className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
+                surgery ? "text-amber" : "text-ink-faint"
+              }`}
+            >
+              {surgery ? "on" : "off"}
+            </span>
+          </button>
+          {surgery && (
+            <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2 py-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+                  Max implants
+                </span>
+                <div
+                  className="flex overflow-hidden rounded-md border border-line"
+                  role="radiogroup"
+                  aria-label="Maximum surgery-table implants"
+                >
+                  {[1, 2, 3, 4].map((n) => {
+                    const active = surgery.max_implants === n;
+                    return (
+                      <button
+                        key={n}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        aria-label={`${n} implants`}
+                        onClick={() => setSurgery({ max_implants: n, cost_secs: surgery.cost_secs })}
+                        className={`w-7 border-r border-line py-1 font-mono text-[11px] tabular-nums transition-colors last:border-r-0 ${
+                          active
+                            ? "bg-raised text-amber"
+                            : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                        }`}
+                      >
+                        {n}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <label className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2.5 py-1.5 focus-within:border-amber/60">
+                <input
+                  type="number"
+                  min={0}
+                  step={30}
+                  className="w-16 bg-transparent text-center font-mono text-[13px] text-ink focus:outline-none"
+                  value={surgery.cost_secs}
+                  onChange={(e) =>
+                    setSurgery({
+                      max_implants: surgery.max_implants,
+                      cost_secs: Math.max(0, Number(e.currentTarget.value) || 0),
+                    })
+                  }
+                />
+                <span className="text-[11px] text-ink-faint">
+                  sec per implant ({formatDuration(surgery.cost_secs)})
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* Gender reverser */}
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={genderReverser !== null}
+            onClick={() => setGenderReverser(genderReverser ? null : { cost_secs: 300 })}
+            className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
+              genderReverser ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
+            }`}
+          >
+            <span
+              className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border border-amber/40 bg-amber/10 text-[14px] leading-none text-amber"
+              aria-hidden
+            >
+              &#8644;
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[13px] font-medium text-ink">Gender reverser</span>
+              <span className="font-mono text-[11px] text-ink-faint">
+                Breed a same-gender-only pairing by reversing one parent
+              </span>
+            </span>
+            <span
+              className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
+                genderReverser ? "text-amber" : "text-ink-faint"
+              }`}
+            >
+              {genderReverser ? "on" : "off"}
+            </span>
+          </button>
+          {genderReverser && (
+            <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2 py-2">
+              <label className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2.5 py-1.5 focus-within:border-amber/60">
+                <input
+                  type="number"
+                  min={0}
+                  step={30}
+                  className="w-16 bg-transparent text-center font-mono text-[13px] text-ink focus:outline-none"
+                  value={genderReverser.cost_secs}
+                  onChange={(e) =>
+                    setGenderReverser({
+                      cost_secs: Math.max(0, Number(e.currentTarget.value) || 0),
+                    })
+                  }
+                />
+                <span className="text-[11px] text-ink-faint">
+                  sec per reverse ({formatDuration(genderReverser.cost_secs)})
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        <p className="text-[11px] leading-relaxed text-ink-faint">
+          Costs are your own time-cost estimates &mdash; what a station&rsquo;s step is
+          worth to you in seconds. The solver adds them to a plan&rsquo;s ranking effort,
+          so a cheaper pure-breeding plan still wins.
+        </p>
+      </div>
+
+      {/* MUTATIONS — honest card: rate is code-verified, outcomes are not */}
+      <div className="flex flex-col gap-1.5">
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+          Mutations
+        </span>
+        <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2.5 py-2">
+          <div className="flex items-center gap-2">
+            <span className="rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">
+              ~1% / egg
+            </span>
+            <span className="text-[11px] text-ink-faint">
+              +2pp with Deluxe cake
+            </span>
+          </div>
+          <p className="text-[11px] leading-relaxed text-ink-faint">
+            Any breeding step can yield a <span className="text-ink">Mutated Egg</span> that
+            hatches a different, stronger species than the pair&rsquo;s normal child. The
+            rate is verified from the game&rsquo;s data; <span className="text-ink">which</span>{" "}
+            species it becomes hasn&rsquo;t been publicly decoded &mdash; so Pal Lab treats
+            mutations as a bonus and never builds plans that depend on one.
+          </p>
+        </div>
       </div>
     </section>
   );

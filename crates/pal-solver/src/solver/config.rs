@@ -164,6 +164,37 @@ impl Default for BreedingSetup {
     }
 }
 
+/// Surgery-table relaxation. When set, the solver may satisfy up to
+/// `max_implants` REQUIRED passives that a candidate pal is missing by implanting
+/// them from the surgery table on the final pal — a terminal step that competes
+/// purely on effort: each implant adds `cost_secs` (the caller's time-cost
+/// estimate) to the plan's ranking effort, so a cheaper exact-breeding plan still
+/// wins. `max_implants` is clamped to `0..=4` (a pal has four passive slots).
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct SurgeryConfig {
+    pub max_implants: u8,
+    pub cost_secs: f64,
+}
+
+impl SurgeryConfig {
+    /// `max_implants` clamped to a pal's `0..=4` passive slots.
+    #[inline]
+    pub fn implants(&self) -> u8 {
+        self.max_implants.min(4)
+    }
+}
+
+/// Gender-reverser relaxation. When set, a pairing blocked ONLY because both
+/// parents share a concrete gender may be made viable by reversing one parent's
+/// gender: one parent is flagged reversed, that step's effort gains `cost_secs`
+/// (the caller's time-cost estimate), and the gender resolution is deterministic
+/// (no re-roll penalty). Same-species pairs the game forbids outright stay
+/// forbidden.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct GenderReverserConfig {
+    pub cost_secs: f64,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SolverConfig {
     /// Max total breeding steps in any single plan tree (palcalc `MaxBreedingSteps`, default 10).
@@ -215,6 +246,16 @@ pub struct SolverConfig {
     /// `#[serde(default)]` keeps older payloads that omit it deserializing.
     #[serde(default = "default_search_budget_secs")]
     pub search_budget_secs: f64,
+    /// Surgery-table relaxation (terminal, result-layer). Absent = off (no
+    /// implants; byte-identical to pre-surgery behavior). `#[serde(default)]`
+    /// keeps older payloads deserializing.
+    #[serde(default)]
+    pub surgery: Option<SurgeryConfig>,
+    /// Gender-reverser relaxation (pair-viability layer). Absent = off (a
+    /// same-gender pairing stays unbreedable). `#[serde(default)]` keeps older
+    /// payloads deserializing.
+    #[serde(default)]
+    pub gender_reverser: Option<GenderReverserConfig>,
 }
 
 impl Default for SolverConfig {
@@ -231,6 +272,8 @@ impl Default for SolverConfig {
             setup: BreedingSetup::default(),
             iv_model: IvModel::Empirical,
             search_budget_secs: 120.0,
+            surgery: None,
+            gender_reverser: None,
         }
     }
 }

@@ -131,6 +131,16 @@ export interface SolveRequest {
    * player's pals). Same serde shape as `OwnedPal.owner_player_uid` — a 16-byte
    * array. Absent => all players (no scope). */
   player_uid?: Guid;
+  /** Surgery-table relaxation. When set, the solver may cover up to
+   * `max_implants` (1-4) missing REQUIRED passives with surgery-table implants
+   * on the final pal, each adding `cost_secs` to the plan's ranking effort.
+   * Absent => off. Mirrors `SolverConfig::surgery`. */
+  surgery?: SurgeryOption;
+  /** Gender-reverser relaxation. When set, a pairing blocked only because both
+   * parents share a gender becomes viable by reversing one parent, adding
+   * `cost_secs` to that step. Absent => off. Mirrors
+   * `SolverConfig::gender_reverser`. */
+  gender_reverser?: GenderReverserOption;
 }
 
 /** Payload of the throttled `solve-progress` Tauri event (snake_case, emitted
@@ -332,6 +342,9 @@ export interface PlanNode {
    * stats still relevant here, `0` on unconstrained stats. Absent on owned/wild
    * nodes and on legacy plans. */
   iv_targets?: [number, number, number];
+  /** Set on a PARENT node a gender reverser flipped to make its pairing viable.
+   * Absent/false => not reversed (skipped in serde when false). */
+  gender_reversed?: boolean;
 }
 
 /** serde unit enum -> plain string. */
@@ -351,6 +364,32 @@ export interface BreedingPlan {
   cake: CakeKind;
   /** Estimated cakes consumed across all steps (0 for Normal). */
   cake_count: number;
+  /** Surgery-table implants on the final pal (empty/absent = none). Each entry
+   * is one required passive covered from the surgery table, with its time-cost
+   * estimate. The implanted passives also appear in `root.passives`. */
+  surgery?: SurgeryStep[];
+}
+
+/** One surgery-table implant on a plan's final pal (`BreedingPlan.surgery`):
+ * a required passive the pal lacked, covered for `cost_secs`. Mirrors the Rust
+ * `SurgeryStep`. */
+export interface SurgeryStep {
+  passive_id: string;
+  passive_name: string;
+  cost_secs: number;
+}
+
+/** Surgery-table option on a `SolveRequest` (`surgery`). `max_implants` is the
+ * 1-4 slot budget; `cost_secs` is YOUR time-cost estimate per implant. */
+export interface SurgeryOption {
+  max_implants: number;
+  cost_secs: number;
+}
+
+/** Gender-reverser option on a `SolveRequest` (`gender_reverser`). `cost_secs`
+ * is YOUR time-cost estimate for one gender-reverse step. */
+export interface GenderReverserOption {
+  cost_secs: number;
 }
 
 /** A structured reason the solver found no path, computed only when a solve
@@ -365,6 +404,10 @@ export type NoPathReason =
        * cannot introduce this passive (it is not a species-innate guaranteed
        * passive on any catchable species). */
       wild_sourcing_enabled: boolean;
+      /** True when the Surgery table was OFF and enabling it could implant this
+       * passive — the UI offers an "enable Surgery table" remedy. Absent/false
+       * otherwise (surgery already on, or it cannot cover the gap). */
+      surgery_off?: boolean;
     }
   | {
       kind: "target_species_unreachable";

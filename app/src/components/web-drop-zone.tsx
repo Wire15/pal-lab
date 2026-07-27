@@ -16,12 +16,20 @@ import { useAppState } from "../state";
 import { loadSaveBundle } from "../lib/tauri";
 import {
   acceptDrop,
+  acceptHandle,
   acceptInput,
+  currentHandle,
   currentLabel,
   isFsAccessSupported,
   pickDirectory,
   readBundle,
 } from "../lib/save-drop";
+import {
+  clearDirHandle,
+  loadDirHandle,
+  saveDirHandle,
+  type StoredDirHandle,
+} from "../lib/idb-handles";
 
 /** Re-read the currently loaded save from its stored File System Access handle
  *  and refresh state through the existing `save-changed` seam. Only meaningful
@@ -56,17 +64,59 @@ function DropGlyph() {
   );
 }
 
+/** Extract the dropped folder's live directory handle so it can be remembered.
+ *  Chromium exposes `getAsFileSystemHandle`; Firefox/Safari don't, so those drops
+ *  return null and simply aren't persisted. Must run synchronously in the drop
+ *  handler (DataTransferItems expire after it), so the getAsFileSystemHandle()
+ *  calls fire before the first await. */
+async function dirHandleFromDrop(
+  dt: DataTransfer,
+): Promise<FileSystemDirectoryHandle | null> {
+  if (
+    typeof DataTransferItem === "undefined" ||
+    !("getAsFileSystemHandle" in DataTransferItem.prototype)
+  ) {
+    return null;
+  }
+  const pending: Promise<FileSystemHandle | null>[] = [];
+  for (const item of Array.from(dt.items)) {
+    if (item.kind === "file") pending.push(item.getAsFileSystemHandle());
+  }
+  for (const handle of await Promise.all(pending)) {
+    if (handle?.kind === "directory") return handle as FileSystemDirectoryHandle;
+  }
+  return null;
+}
+
 export default function WebDropZone() {
   const { loadSave, saveError, saveLoading } = useAppState();
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // A directory the user picked/dropped on a previous visit (Chromium only).
+  // Non-null renders the "Reload <folder>" affordance; re-granting read
+  // permission needs a user gesture, so we never auto-load it.
+  const [stored, setStored] = useState<StoredDirHandle | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // `webkitdirectory` isn't in React's input typings; set it imperatively so
     // the fallback <input> picks a whole folder rather than a single file.
     inputRef.current?.setAttribute("webkitdirectory", "");
+  }, []);
+
+  useEffect(() => {
+    // Restore a remembered folder (no gesture yet — just surface the Reload
+    // affordance). Absent/unsupported → null → dropzone is byte-identical.
+    void loadDirHandle().then((rec) => {
+      if (rec) setStored(rec);
+    });
+  }, []);
+
+  // Remember a picked/dropped directory handle for next visit.
+  const persistHandle = useCallback((handle: FileSystemDirectoryHandle) => {
+    void saveDirHandle(handle);
+    setStored({ handle, name: handle.name, savedAt: Date.now() });
   }, []);
 
   // Acquire a save source, read it fully, cache it in the worker, then feed the
@@ -84,30 +134,76 @@ export default function WebDropZone() {
         // load_save via the worker re-summarizes the just-cached bundle; the
         // dropped folder name is the saveDir label.
         await loadSave(currentLabel());
+        // A pick / reload leaves a re-readable handle as the source — remember
+        // it. Plain drops (kind "files") return null here and persist in onDrop.
+        const handle = currentHandle();
+        if (handle) persistHandle(handle);
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
       } finally {
         setBusy(false);
       }
     },
-    [loadSave],
+    [loadSave, persistHandle],
   );
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setDragging(false);
-      // acceptDrop reads the DataTransfer entries synchronously before awaiting,
-      // so it's safe to hand off inside runLoad.
-      void runLoad(() => acceptDrop(e.dataTransfer));
+      const dt = e.dataTransfer;
+      // Grab a persistable directory handle synchronously (Chromium only), before
+      // acceptDrop — both read `dt` while it's still live in the drop handler.
+      const handlePromise = dirHandleFromDrop(dt);
+      void runLoad(async () => {
+        const label = await acceptDrop(dt);
+        const handle = await handlePromise;
+        if (handle) persistHandle(handle);
+        return label;
+      });
     },
-    [runLoad],
+    [runLoad, persistHandle],
   );
 
   const browse = useCallback(() => {
     if (isFsAccessSupported()) void runLoad(() => pickDirectory());
     else inputRef.current?.click();
   }, [runLoad]);
+
+  // Restore path: on a user gesture, re-grant read permission and feed the
+  // remembered folder through the same load path a fresh pick uses. A denied
+  // prompt keeps the affordance; a stale/moved folder (NotFoundError) forgets it.
+  const reloadStored = useCallback(() => {
+    if (!stored) return;
+    const { handle, name } = stored;
+    void runLoad(async () => {
+      const opts = { mode: "read" } as const;
+      const state =
+        (await handle.queryPermission(opts)) === "granted"
+          ? "granted"
+          : await handle.requestPermission(opts);
+      if (state !== "granted") {
+        throw new Error("Permission to read the save folder was denied.");
+      }
+      try {
+        return await acceptHandle(handle);
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "NotFoundError") {
+          void clearDirHandle();
+          setStored(null);
+          throw new Error(
+            `"${name}" isn't at that location anymore — pick your SaveGames folder again.`,
+          );
+        }
+        throw e;
+      }
+    });
+  }, [stored, runLoad]);
+
+  const forgetStored = useCallback(() => {
+    void clearDirHandle();
+    setStored(null);
+  }, []);
 
   const working = busy || saveLoading;
   const shownError = error ?? saveError;
@@ -173,6 +269,40 @@ export default function WebDropZone() {
                 if (files && files.length) void runLoad(() => acceptInput(files));
               }}
             />
+            {stored && (
+              <div className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
+                <span>remembered</span>
+                <button
+                  onClick={reloadStored}
+                  disabled={working}
+                  className="rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Reload {stored.name}
+                </button>
+                <button
+                  onClick={forgetStored}
+                  disabled={working}
+                  aria-label={`Forget ${stored.name}`}
+                  title="Forget this folder"
+                  className="rounded-md p-1 text-ink-faint transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
 
           {shownError && (

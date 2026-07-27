@@ -13,7 +13,7 @@
 // the selection type; it never touches Solver.tsx or plan-graph.tsx.
 
 import { useEffect, useRef } from "react";
-import type { Gender, PlanSource } from "../lib/types";
+import type { Gender, PlanSource, SurgeryStep } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "./primitives";
 import { PassiveStrip } from "./passive-strip";
@@ -39,6 +39,10 @@ export type PlanNodeSelection = {
   passives: string[];
   probability: number;
   estTimeSecs: number;
+  /** True on a parent node a gender reverser flipped to make its pairing viable. */
+  genderReversed: boolean;
+  /** Surgery-table implants on the FINAL pal — set only on the root selection. */
+  surgery?: SurgeryStep[];
 };
 
 /** Narrow the externally-tagged source to its variant payloads. */
@@ -125,6 +129,8 @@ export function PlanNodePanel({
   const closeRef = useRef<HTMLButtonElement>(null);
   const { species, speciesName, gender, planIndex, passives, probability, estTimeSecs } =
     selection;
+  const { genderReversed, surgery } = selection;
+  const surgeryCost = (surgery ?? []).reduce((sum, s) => sum + s.cost_secs, 0);
   const src = readSource(selection.source);
   const g = genderView(gender);
   const prob = probBand(probability);
@@ -210,7 +216,17 @@ export function PlanNodePanel({
                 {g.glyph}
               </span>
             </div>
-            <div className="mt-1 flex items-center gap-2">{kindChip}</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              {kindChip}
+              {genderReversed && (
+                <span
+                  className="rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
+                  title="This parent's gender was reversed with a gender reverser to make the pairing viable"
+                >
+                  {"\u21c4"} reversed
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -296,6 +312,31 @@ export function PlanNodePanel({
             </p>
           )}
         </Section>
+
+        {/* surgery-table implants — root selection only */}
+        {surgery && surgery.length > 0 && (
+          <Section
+            eyebrow="Surgery implants"
+            right={
+              <span
+                className="rounded-sm border border-el-ice/40 bg-el-ice/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-ice"
+                title="Your time-cost estimate for the implants"
+              >
+                {formatDuration(surgeryCost)}
+              </span>
+            }
+          >
+            <div className="flex flex-col gap-1.5">
+              {surgery.map((s, i) => (
+                <PassiveStrip key={`${s.passive_id}-${i}`} id={s.passive_id} size="sm" />
+              ))}
+            </div>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
+              Implanted from the surgery table onto the final pal — not bred in. Cost
+              is your time-cost estimate.
+            </p>
+          </Section>
+        )}
 
         {/* dex action — only when the species id resolved */}
         {species && (
