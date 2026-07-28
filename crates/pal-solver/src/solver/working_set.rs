@@ -17,6 +17,11 @@ pub struct RefKey {
     pub desired_passives: Vec<PassiveId>,
     pub random_passives: u8,
     pub iv_relevance: (bool, bool, bool),
+    /// Whether the ref carries the solve's threaded active-skill move. A carrier
+    /// and non-carrier of the same (species, gender, passives, IVs) are distinct
+    /// working-set entries so the threaded move survives reduction. Always
+    /// `false` when no move is threaded (axis collapses; byte-identical keys).
+    pub carries_move: bool,
 }
 
 pub fn key_of(r: &PalRef) -> RefKey {
@@ -27,6 +32,7 @@ pub fn key_of(r: &PalRef) -> RefKey {
         desired_passives: desired,
         random_passives: random,
         iv_relevance: r.ivs().relevance(),
+        carries_move: r.carries_move(),
     }
 }
 

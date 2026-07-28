@@ -22,6 +22,7 @@ import {
   renderPlanPng,
   type DecodedPlanCode,
 } from "./plan-export";
+import { planUrl } from "../lib/plan-link";
 import {
   PlansDrawer,
   defaultPlanName,
@@ -64,6 +65,10 @@ export interface PlanActions {
   drawer: ReactNode;
   /** Close the naming bar — call from a view RESET so a re-solve starts clean. */
   closeNaming: () => void;
+  /** Import a decoded plan code via the live re-solve path — the SAME code the
+   *  PLANS drawer's "Import plan code" panel drives. Exposed so a boot-time
+   *  shared `#plan=` link can replay through the identical path. */
+  importPlanCode: (decoded: DecodedPlanCode) => void;
 }
 
 export function usePlanActions({
@@ -158,6 +163,20 @@ export function usePlanActions({
     }
   }
 
+  // Copy a SHAREABLE LINK (vs. Copy code's bare payload): the same encoded code,
+  // wrapped as a `#plan=` URL so a recipient opens it straight into the Solver.
+  async function copyLink() {
+    if (!lastRequest) return;
+    try {
+      await navigator.clipboard.writeText(
+        planUrl(encodePlanCode(lastRequest, activePlan)),
+      );
+      showFlash("Plan link copied");
+    } catch {
+      showFlash("Clipboard blocked");
+    }
+  }
+
   const headerButtons = (
     <>
       {flash && (
@@ -186,6 +205,14 @@ export function usePlanActions({
         className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
       >
         Copy code
+      </button>
+      <button
+        type="button"
+        onClick={copyLink}
+        disabled={!lastRequest}
+        className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Copy link
       </button>
       <button
         type="button"
@@ -256,5 +283,11 @@ export function usePlanActions({
     />
   );
 
-  return { headerButtons, banners, drawer, closeNaming: () => setNaming(false) };
+  return {
+    headerButtons,
+    banners,
+    drawer,
+    closeNaming: () => setNaming(false),
+    importPlanCode,
+  };
 }

@@ -158,6 +158,8 @@ export function BreedingSetupPanel() {
     genderReverser,
     setSurgery,
     setGenderReverser,
+    skillFruit,
+    setSkillFruit,
   } = useBreedingSetup();
   // Memoized: a fresh `[]` every render (saveSummary null) destabilizes the
   // boosters memo + save-switch revalidation effect into an update loop.
@@ -836,6 +838,60 @@ export function BreedingSetupPanel() {
                 />
                 <span className="text-[11px] text-ink-faint">
                   sec per reverse ({formatDuration(genderReverser.cost_secs)})
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* Skill Fruits */}
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={skillFruit !== null}
+            onClick={() => setSkillFruit(skillFruit ? null : { cost_secs: 300 })}
+            className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
+              skillFruit ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
+            }`}
+          >
+            <span
+              className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border border-amber/40 bg-amber/10 text-[14px] leading-none text-amber"
+              aria-hidden
+            >
+              &#10048;
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[13px] font-medium text-ink">Skill Fruits</span>
+              <span className="font-mono text-[11px] text-ink-faint">
+                Teach extra required moves to the final pal
+              </span>
+            </span>
+            <span
+              className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
+                skillFruit ? "text-amber" : "text-ink-faint"
+              }`}
+            >
+              {skillFruit ? "on" : "off"}
+            </span>
+          </button>
+          {skillFruit && (
+            <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2 py-2">
+              <label className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2.5 py-1.5 focus-within:border-amber/60">
+                <input
+                  type="number"
+                  min={0}
+                  step={30}
+                  className="w-16 bg-transparent text-center font-mono text-[13px] text-ink focus:outline-none"
+                  value={skillFruit.cost_secs}
+                  onChange={(e) =>
+                    setSkillFruit({
+                      cost_secs: Math.max(0, Number(e.currentTarget.value) || 0),
+                    })
+                  }
+                />
+                <span className="text-[11px] text-ink-faint">
+                  sec per fruit ({formatDuration(skillFruit.cost_secs)})
                 </span>
               </label>
             </div>

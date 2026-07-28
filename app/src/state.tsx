@@ -22,6 +22,7 @@ import {
 } from "react";
 import { invoke } from "./lib/tauri";
 import { caps } from "./lib/caps";
+import { readPlanLink } from "./lib/plan-link";
 import type {
   BreedingSetup,
   CakeToken,
@@ -30,6 +31,7 @@ import type {
   SaveSummary,
   SolveRequest,
   SolveResponse,
+  SkillFruitConfig,
   SurgeryOption,
 } from "./lib/types";
 import type { SolveSpec } from "./lib/use-solve";
@@ -146,10 +148,11 @@ function writeScopeForDir(dir: string, scope: string): void {
  * share one setup. */
 const BREEDING_SETUP_KEY = "pal-lab.breedingSetup";
 const CAKE_KEY = "pal-lab.cake";
-/** Advanced-station toggles (surgery table / gender reverser). Each key holds
- * the option object while ON, or is absent while OFF. */
+/** Advanced-station toggles (surgery table / gender reverser / skill fruits).
+ * Each key holds the option object while ON, or is absent while OFF. */
 const SURGERY_KEY = "pal-lab.surgery";
 const GENDER_REVERSER_KEY = "pal-lab.genderReverser";
+const SKILL_FRUIT_KEY = "pal-lab.skillFruit";
 
 /** Neutral vanilla farm setup: no boosts, vanilla 72h hatch. */
 const DEFAULT_SETUP: BreedingSetup = {
@@ -209,6 +212,17 @@ function readGenderReverser(): GenderReverserOption | null {
     const raw = localStorage.getItem(GENDER_REVERSER_KEY);
     if (!raw) return null;
     const p = JSON.parse(raw) as Partial<GenderReverserOption>;
+    return { cost_secs: Math.max(0, Number(p.cost_secs) || 0) };
+  } catch {
+    return null;
+  }
+}
+
+function readSkillFruit(): SkillFruitConfig | null {
+  try {
+    const raw = localStorage.getItem(SKILL_FRUIT_KEY);
+    if (!raw) return null;
+    const p = JSON.parse(raw) as Partial<SkillFruitConfig>;
     return { cost_secs: Math.max(0, Number(p.cost_secs) || 0) };
   } catch {
     return null;
@@ -317,6 +331,13 @@ export interface AppState {
   requestQueueSolve: (specs: SolveSpec[]) => void;
   /** The Solver clears the pending queue seed once it has consumed it. */
   clearQueueSeed: () => void;
+  /** A plan code parsed from a shared `#plan=` URL fragment on first boot, or
+   * null. The Solver consumes it once a save is loaded — replaying it through
+   * the live import path (re-solved against the user's roster, never trusted as
+   * a static tree) — then clears it. Always null under Tauri (no URL entry). */
+  pendingPlanCode: string | null;
+  /** The Solver clears the pending shared plan code once it has imported it. */
+  clearPendingPlanCode: () => void;
   /** Shared breeding-farm setup: composed farm/incubation/egg fractions + world
    * egg-hatch hours. Consumed by the Solver (rides the solve request) and the IV
    * Lab. Persisted. */
@@ -333,10 +354,15 @@ export interface AppState {
   /** Gender-reverser advanced station (null = OFF). Rides the solve request as
    * `SolveRequest.gender_reverser`. Persisted. */
   genderReverser: GenderReverserOption | null;
+  /** Skill-Fruit advanced station (null = OFF). Rides the solve request as
+   * `SolveRequest.skill_fruit`. Persisted. */
+  skillFruit: SkillFruitConfig | null;
   /** Toggle/replace the surgery table (null disables it). */
   setSurgery: (surgery: SurgeryOption | null) => void;
   /** Toggle/replace the gender reverser (null disables it). */
   setGenderReverser: (reverser: GenderReverserOption | null) => void;
+  /** Toggle/replace the skill-fruit station (null disables it). */
+  setSkillFruit: (fruit: SkillFruitConfig | null) => void;
   /** The current Solver result session (request + plans + active tab), lifted
    * here so it survives view switches. Null before the first solve / after a
    * Solver RESET. The Solver restores from it on mount and writes to it on
@@ -369,6 +395,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [dexInstance, setDexInstance] = useState<string | null>(null);
   const [mapSpawnTarget, setMapSpawnTarget] = useState<string | null>(null);
   const [queueSeed, setQueueSeed] = useState<SolveSpec[] | null>(null);
+  // Shared plan link (`#plan=<code>`): read the fragment ONCE at mount (lazy
+  // initializer, so it's captured before any later in-app hash change), then let
+  // the Solver consume it. Null under Tauri (no address bar) and for a plain
+  // boot, so this is a no-op in every case but a genuine shared-link open.
+  const [pendingPlanCode, setPendingPlanCode] = useState<string | null>(
+    readPlanLink,
+  );
   const [playerScope, setPlayerScopeState] = useState<string>("all");
   const [scopePromptOpen, setScopePromptOpen] = useState(false);
   const [setup, setSetupState] = useState<BreedingSetup>(readBreedingSetup);
@@ -376,6 +409,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [surgery, setSurgeryState] = useState<SurgeryOption | null>(readSurgery);
   const [genderReverser, setGenderReverserState] =
     useState<GenderReverserOption | null>(readGenderReverser);
+  const [skillFruit, setSkillFruitState] =
+    useState<SkillFruitConfig | null>(readSkillFruit);
   const [recentSaves, setRecentSaves] = useState<RecentSave[]>(readRecentSaves);
   // Lifted Solver result session (survives view switches; see AppState.solveSession).
   const [solveSession, setSolveSession] = useState<SolveSession | null>(null);
@@ -428,6 +463,16 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     try {
       if (next) localStorage.setItem(GENDER_REVERSER_KEY, JSON.stringify(next));
       else localStorage.removeItem(GENDER_REVERSER_KEY);
+    } catch {
+      // Ignore storage failures (private mode, quota) — non-fatal.
+    }
+  }, []);
+
+  const setSkillFruit = useCallback((next: SkillFruitConfig | null) => {
+    setSkillFruitState(next);
+    try {
+      if (next) localStorage.setItem(SKILL_FRUIT_KEY, JSON.stringify(next));
+      else localStorage.removeItem(SKILL_FRUIT_KEY);
     } catch {
       // Ignore storage failures (private mode, quota) — non-fatal.
     }
@@ -542,6 +587,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const t = setTimeout(() => setToast(null), 3000);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // A shared plan link (`#plan=<code>`) can only be consumed by the Solver
+  // view, and views mount conditionally — a fresh boot lands on Save Inspector,
+  // so the pending code would sit unconsumed until the user happened to open
+  // the Solver. Route there the moment a save is loaded while a pending code
+  // exists; the Solver's boot-import effect then fires on mount.
+  useEffect(() => {
+    if (pendingPlanCode !== null && saveSummary !== null) setView("solver");
+  }, [pendingPlanCode, saveSummary]);
 
   // Subscribe once to the `save-changed` event -> silent reload. In the Tauri
   // webview this is the real IPC event bus (the filesystem watcher); the browser
@@ -664,6 +718,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setView("solver");
   }, []);
   const clearQueueSeed = useCallback(() => setQueueSeed(null), []);
+  const clearPendingPlanCode = useCallback(() => setPendingPlanCode(null), []);
 
   const value = useMemo<AppState>(
     () => ({
@@ -698,6 +753,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       queueSeed,
       requestQueueSolve,
       clearQueueSeed,
+      pendingPlanCode,
+      clearPendingPlanCode,
       setup,
       cake,
       setSetup,
@@ -706,6 +763,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       genderReverser,
       setSurgery,
       setGenderReverser,
+      skillFruit,
+      setSkillFruit,
       solveSession,
       setSolveSession,
       ivLabSession,
@@ -742,6 +801,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       queueSeed,
       requestQueueSolve,
       clearQueueSeed,
+      pendingPlanCode,
+      clearPendingPlanCode,
       setup,
       cake,
       setSetup,
@@ -750,6 +811,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       genderReverser,
       setSurgery,
       setGenderReverser,
+      skillFruit,
+      setSkillFruit,
       solveSession,
       ivLabSession,
     ],
@@ -776,13 +839,25 @@ export interface BreedingSetupState {
   setCake: (cake: CakeToken) => void;
   surgery: SurgeryOption | null;
   genderReverser: GenderReverserOption | null;
+  skillFruit: SkillFruitConfig | null;
   setSurgery: (surgery: SurgeryOption | null) => void;
   setGenderReverser: (reverser: GenderReverserOption | null) => void;
+  setSkillFruit: (fruit: SkillFruitConfig | null) => void;
 }
 
 export function useBreedingSetup(): BreedingSetupState {
-  const { setup, cake, setSetup, setCake, surgery, genderReverser, setSurgery, setGenderReverser } =
-    useAppState();
+  const {
+    setup,
+    cake,
+    setSetup,
+    setCake,
+    surgery,
+    genderReverser,
+    skillFruit,
+    setSurgery,
+    setGenderReverser,
+    setSkillFruit,
+  } = useAppState();
   return {
     setup,
     cake,
@@ -790,7 +865,9 @@ export function useBreedingSetup(): BreedingSetupState {
     setCake,
     surgery,
     genderReverser,
+    skillFruit,
     setSurgery,
     setGenderReverser,
+    setSkillFruit,
   };
 }

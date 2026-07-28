@@ -51,6 +51,7 @@ pub fn prune_results(mut results: Vec<SolvedRef>, limit: usize) -> Vec<SolvedRef
             .partial_cmp(&b.effort())
             .unwrap_or(std::cmp::Ordering::Equal)
             .then(a.implants.len().cmp(&b.implants.len()))
+            .then(a.fruits.len().cmp(&b.fruits.len()))
             .then(a.reference.num_breeding_steps().cmp(&b.reference.num_breeding_steps()))
             .then(a.reference.num_wild_pals().cmp(&b.reference.num_wild_pals()))
             .then(a.reference.species().cmp(&b.reference.species()))

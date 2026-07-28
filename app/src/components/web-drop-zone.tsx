@@ -132,7 +132,7 @@ async function dirHandleFromDrop(
 }
 
 export default function WebDropZone() {
-  const { loadSave, saveError, saveLoading } = useAppState();
+  const { loadSave, saveError, saveLoading, pendingPlanCode } = useAppState();
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -463,6 +463,12 @@ export default function WebDropZone() {
               </div>
             ) : null}
           </div>
+
+          {pendingPlanCode && (
+            <p className="mt-4 rounded-md border border-line bg-raised/40 px-3 py-2 font-mono text-[11px] text-ink-faint">
+              Breeding plan link detected &mdash; load your save to import it.
+            </p>
+          )}
 
           {shownError && (
             <div className="mt-4 rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-[12px] text-bad">

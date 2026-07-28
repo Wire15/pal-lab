@@ -98,6 +98,13 @@ export interface SaveSummary {
 export interface SolveRequest {
   target_species: string;
   required_passives: string[];
+  /** Required active-skill (move) ids on the final pal, stripped waza ids
+   * (e.g. "AirCanon", "Unique_SheepBall_Roll"; joins `list_active_skills`).
+   * Normalized server-side: unknown id => request error; moves in the target
+   * species' own learnset move to `BreedingPlan.levelup_moves` (levelable, no
+   * breeding); the rest are breeding-required (≤1 threads through breeding, any
+   * remainder needs Skill Fruits). Absent/empty => no move constraint. */
+  required_moves?: string[];
   max_steps?: number;
   /** "Include pals I don't own": seed the search with wild-catchable species as
    * CATCH steps so same-species-only legendaries (Jetragon, …) get plans. */
@@ -141,6 +148,11 @@ export interface SolveRequest {
    * `cost_secs` to that step. Absent => off. Mirrors
    * `SolverConfig::gender_reverser`. */
   gender_reverser?: GenderReverserOption;
+  /** Skill-Fruit relaxation. When set, breeding-required moves beyond the one
+   * that threads through breeding may be taught via Skill Fruit on the final
+   * pal (only moves with `has_skill_fruit`), each adding `cost_secs` to the
+   * plan's ranking effort. Absent => off. Mirrors `SolverConfig::skill_fruit`. */
+  skill_fruit?: SkillFruitConfig | null;
 }
 
 /** Payload of the throttled `solve-progress` Tauri event (snake_case, emitted
@@ -294,6 +306,12 @@ export interface ActiveSkill {
   power: number | null;
   cool_time: number | null;
   description: string | null;
+  /** Whether this move can pass down to a child via breeding inheritance. The
+   * inherit RATE (~50% per egg) is COMMUNITY-MEASURED, not code-verified; this
+   * flag (whether a move is inheritable at all) is from the pack. */
+  can_inherit: boolean;
+  /** Whether a Skill Fruit exists to teach this move directly. */
+  has_skill_fruit: boolean;
 }
 
 /** Active-skill definitions keyed by save-side waza id
@@ -345,6 +363,11 @@ export interface PlanNode {
   /** Set on a PARENT node a gender reverser flipped to make its pairing viable.
    * Absent/false => not reversed (skipped in serde when false). */
   gender_reversed?: boolean;
+  /** Bred nodes only: display name of the one active-skill (move) threaded
+   * through breeding that passes at THIS node. Absent when no move threads here
+   * (or on owned/wild + legacy plans). Inherit rate ~50%/egg is
+   * community-measured; folded into the node's outcome probability. */
+  inherited_move?: string | null;
 }
 
 /** serde unit enum -> plain string. */
@@ -368,6 +391,13 @@ export interface BreedingPlan {
    * is one required passive covered from the surgery table, with its time-cost
    * estimate. The implanted passives also appear in `root.passives`. */
   surgery?: SurgeryStep[];
+  /** Skill-Fruit teaches on the final pal (empty/absent = none). Each entry is
+   * one breeding-required move (beyond the one threaded through breeding) taught
+   * via Skill Fruit, with its time-cost estimate. */
+  fruits?: FruitStep[];
+  /** Required moves satisfied by the TARGET species' own level-up learnset
+   * (display names): levelable, needs no breeding. Empty/absent = none. */
+  levelup_moves?: string[];
 }
 
 /** One surgery-table implant on a plan's final pal (`BreedingPlan.surgery`):
@@ -376,6 +406,21 @@ export interface BreedingPlan {
 export interface SurgeryStep {
   passive_id: string;
   passive_name: string;
+  cost_secs: number;
+}
+
+/** One Skill-Fruit teach on a plan's final pal (`BreedingPlan.fruits`): a
+ * breeding-required move covered by Skill Fruit, with its time-cost estimate.
+ * Mirrors the Rust `FruitStep`. */
+export interface FruitStep {
+  move_id: string;
+  move_name: string;
+  cost_secs: number;
+}
+
+/** Skill-Fruit option on a `SolveRequest` (`skill_fruit`). `cost_secs` is YOUR
+ * time-cost estimate per taught move. Mirrors the Rust `SkillFruitConfig`. */
+export interface SkillFruitConfig {
   cost_secs: number;
 }
 
@@ -408,6 +453,20 @@ export type NoPathReason =
        * passive — the UI offers an "enable Surgery table" remedy. Absent/false
        * otherwise (surgery already on, or it cannot cover the gap). */
       surgery_off?: boolean;
+    }
+  | {
+      kind: "missing_move_carrier";
+      move_id: string;
+      move_name: string;
+      /** Whether the move can be inherited via breeding at all (`can_inherit`).
+       * False => exclusive/unteachable: never breedable and no Skill Fruit. */
+      inheritable: boolean;
+      /** Whether a Skill Fruit exists for this move (`has_skill_fruit`). */
+      fruit_available: boolean;
+      /** True when Skill Fruits were OFF and enabling them (with
+       * `fruit_available`) could teach this move — the UI offers the "enable
+       * Skill Fruits" remedy. */
+      fruit_off: boolean;
     }
   | {
       kind: "target_species_unreachable";

@@ -2,6 +2,37 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.5.0] - 2026-07-27
+
+### Added
+- **Attack-skill inheritance solving** — the first tool anywhere to plan for
+  active skills. Add **Required moves** to a solver target and Pal Lab plans
+  breeding paths that carry the move from a pal you own: it reads which pals
+  have the move *equipped* (the post-1.0 rule — inherited skills come from the
+  parents' equipped slots, per the official 1.0 patch notes), prices the
+  inheritance roll into every egg estimate (~50%/egg, community-measured — and
+  labeled as such), and threads the move through intermediate breeding steps
+  (`INHERIT` chips on the plan tree). Moves the target species learns by
+  level-up are auto-satisfied and say so. Per-move `IgnoreRandomInherit`
+  eligibility is datamined (species-exclusive moves are correctly refused).
+- **Skill Fruits as a solver cost option.** A required move nobody carries can
+  be taught post-hatch when a Skill Fruit exists for it — toggle it under
+  Advanced stations with your own time cost, and extra required moves beyond
+  the one-inherit-per-line cap become `FRUIT` steps on the final pal.
+- **Pal-dex move flags** — every active skill now shows INHERIT / FRUIT chips.
+- **Shareable plan links.** *Copy link* (next to Copy code) wraps a plan code
+  in a URL; opening it boots straight into the Solver and re-solves the plan
+  against *your* save. The code rides the `#` fragment, so it never reaches
+  server logs. Desktop copies link to the web app.
+- **Pal Lab is now an installable PWA.** The web app registers a service
+  worker (hand-rolled, dependency-free): instant repeat loads, offline app
+  shell, and Install-to-desktop/home-screen from the browser menu.
+
+### Fixed
+- A shared plan link opened on a fresh boot now routes to the Solver
+  automatically once the save loads (previously the import waited until you
+  happened to open the Solver view).
+
 ## [1.4.1] - 2026-07-27
 
 ### Added

@@ -219,6 +219,7 @@ fn both_off_serialization_is_byte_identical() {
             ivs: SolverIvSet::RANDOM,
         },
         alt: None,
+        carries_move: false,
     });
     let wild = PalRef::Wild(WildPalRef::new(gd, 2, vec![], 1));
     let bred = PalRef::Bred(Box::new(BredPalRef::new(

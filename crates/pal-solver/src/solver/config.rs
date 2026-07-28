@@ -11,6 +11,18 @@ pub const TALENT_BONUS_MIN: u8 = 1;
 /// TalentBonusMax from `DA_BreedingItemEffectData`: the maximum IV bump.
 pub const TALENT_BONUS_MAX: u8 = 5;
 
+/// Per-egg probability that a bred child inherits ONE active skill (move) from
+/// the deduped union of its parents' equipped inheritable moves.
+///
+/// PROVENANCE — read before touching: the *rate* (~50%) is COMMUNITY-MEASURED,
+/// NOT code-verified. No datamined constant for the active-skill inherit chance
+/// has been recovered; 0.5 is the widely-reported community estimate and is
+/// parameterized here so a verified value can replace it in one place. The
+/// equipped-slot POOL rule this feeds (a child draws from the parents' equipped
+/// moves) IS code-verified from the official 1.0 patch notes (2026-07-10). Any
+/// user-facing or doc mention of the RATE must say "community-measured".
+pub const ACTIVE_INHERIT_RATE: f64 = 0.5;
+
 /// A breeding cake fed at the farm, altering inheritance for that egg.
 ///
 /// Effects are code-verified from `DA_BreedingItemEffectData` (datamined in
@@ -195,6 +207,26 @@ pub struct GenderReverserConfig {
     pub cost_secs: f64,
 }
 
+/// Skill-Fruit relaxation. When set, the solver may teach REQUIRED active-skill
+/// moves that the bred (or owned) final pal does not carry from breeding, one
+/// Skill Fruit per move, as a terminal step that competes purely on effort: each
+/// fruit adds `cost_secs` (the caller's time-cost estimate) to the plan's ranking
+/// effort. Only moves with a Skill Fruit in-game (`ActiveSkill::has_skill_fruit`)
+/// are coverable. Mirrors [`SurgeryConfig`] for passives — absent = off (a
+/// required non-learnset, non-threaded move is unobtainable). See
+/// [`ACTIVE_INHERIT_RATE`] for the breeding-channel side.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct SkillFruitConfig {
+    pub cost_secs: f64,
+}
+
+impl Default for SkillFruitConfig {
+    fn default() -> Self {
+        SkillFruitConfig { cost_secs: 300.0 }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SolverConfig {
     /// Max total breeding steps in any single plan tree (palcalc `MaxBreedingSteps`, default 10).
@@ -256,6 +288,12 @@ pub struct SolverConfig {
     /// payloads deserializing.
     #[serde(default)]
     pub gender_reverser: Option<GenderReverserConfig>,
+    /// Skill-Fruit relaxation (terminal, result-layer) for required active-skill
+    /// moves. Absent = off (required non-learnset, non-threaded moves are
+    /// unobtainable; byte-identical to pre-moves behavior). `#[serde(default)]`
+    /// keeps older payloads deserializing.
+    #[serde(default)]
+    pub skill_fruit: Option<SkillFruitConfig>,
 }
 
 impl Default for SolverConfig {
@@ -274,6 +312,7 @@ impl Default for SolverConfig {
             search_budget_secs: 120.0,
             surgery: None,
             gender_reverser: None,
+            skill_fruit: None,
         }
     }
 }

@@ -6,8 +6,14 @@ palcalc project:
 
   db.json        - pal species, passives, active skills, elements, gender probabilities
   breeding.json  - full breeding table + minimum-breeding-steps matrix
+  attacks.csv    - per-move (waza) metadata; pal-calc consumes only the
+                   CanInherit + HasSkillFruit columns (breeding-inheritance
+                   flags). CanInherit is palcalc's negation of the game's
+                   IgnoreRandomInherit field on DT_WazaDataTable; HasSkillFruit
+                   is true iff a Skill Fruit item teaches the move. From
+                   PalCalc.GenDB/out-csv/attacks.csv.
 
-Source:  https://github.com/tylercamp/palcalc  (PalCalc.Model/)
+Source:  https://github.com/tylercamp/palcalc  (PalCalc.Model/, PalCalc.GenDB/out-csv/)
 Author:  Tyler Camp and palcalc contributors
 License: MIT
 

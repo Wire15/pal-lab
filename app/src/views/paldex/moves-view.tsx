@@ -397,7 +397,7 @@ const MoveRow = memo(function MoveRow({
         highlighted ? "ring-1 ring-amber ring-offset-2 ring-offset-abyss" : ""
       }`}
     >
-      <ActiveSkillRow id={id} skill={skill} />
+      <ActiveSkillRow id={id} skill={skill} showMoveTags />
       {learners.length > 0 && (
         <>
           <button

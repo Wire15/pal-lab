@@ -281,6 +281,74 @@ fn parse_gender(s: &str) -> ParentGender {
 fn crate_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
+/// Splits one CSV record into fields, honoring RFC-4180 double-quoted fields
+/// (so a value may contain commas or escaped `""`). `attacks.csv` currently has
+/// no quoted fields, but this stays correct if palcalc ever adds one.
+fn split_csv_line(line: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    let mut field = String::new();
+    let mut in_quotes = false;
+    let mut chars = line.chars().peekable();
+    while let Some(c) = chars.next() {
+        match c {
+            '"' if in_quotes => {
+                if chars.peek() == Some(&'"') {
+                    field.push('"');
+                    chars.next();
+                } else {
+                    in_quotes = false;
+                }
+            }
+            '"' => in_quotes = true,
+            ',' if !in_quotes => out.push(std::mem::take(&mut field)),
+            _ => field.push(c),
+        }
+    }
+    out.push(field);
+    out
+}
+
+/// Parses palcalc's vendored `attacks.csv` into per-move inheritance flags,
+/// keyed by `CodeName` (the enum-prefix-stripped waza id, matching our pack's
+/// active-skill ids). Returns `(can_inherit, has_skill_fruit)`.
+///
+/// `CanInherit` is palcalc's negation of the game's `IgnoreRandomInherit` field
+/// on `DT_WazaDataTable` (CODE-VERIFIED); `HasSkillFruit` is true iff a Skill
+/// Fruit item teaches the move. Source: github.com/tylercamp/palcalc (MIT),
+/// `PalCalc.GenDB/out-csv/attacks.csv`.
+fn parse_attacks_csv(text: &str) -> Result<HashMap<String, (bool, bool)>, Box<dyn std::error::Error>> {
+    let mut lines = text.lines();
+    let header = lines.next().ok_or("attacks.csv is empty")?;
+    let cols = split_csv_line(header);
+    let idx = |name: &str| {
+        cols.iter()
+            .position(|c| c == name)
+            .ok_or_else(|| format!("attacks.csv missing column {name}"))
+    };
+    let (i_code, i_inherit, i_fruit) = (idx("CodeName")?, idx("CanInherit")?, idx("HasSkillFruit")?);
+    let mut out = HashMap::new();
+    for line in lines {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let f = split_csv_line(line);
+        let code = f
+            .get(i_code)
+            .ok_or_else(|| format!("attacks.csv row missing CodeName: {line}"))?
+            .clone();
+        // Palworld booleans are the literal `True`/`False`; anything else is a
+        // parse error rather than a silent `false`.
+        let parse_bool = |s: &str| match s {
+            "True" => Ok(true),
+            "False" => Ok(false),
+            other => Err(format!("attacks.csv bad bool {other:?} in row: {line}")),
+        };
+        let can_inherit = parse_bool(f.get(i_inherit).map(String::as_str).unwrap_or(""))?;
+        let has_skill_fruit = parse_bool(f.get(i_fruit).map(String::as_str).unwrap_or(""))?;
+        out.insert(code, (can_inherit, has_skill_fruit));
+    }
+    Ok(out)
+}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dir = crate_dir();
@@ -296,6 +364,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // DESIGN.md). Replaces the former elements.json element source.
     let extract_bytes = std::fs::read(vendor.join("extracted-game-data.json"))?;
     let extract: RawExtract = serde_json::from_slice(&extract_bytes)?;
+    // Per-move breeding-inheritance flags, joined by CodeName (== our stripped
+    // waza id) onto the extracted active skills below. See parse_attacks_csv.
+    let attacks_text = std::fs::read_to_string(vendor.join("attacks.csv"))?;
+    let attacks = parse_attacks_csv(&attacks_text)?;
     // Case-insensitive join on InternalName (our db.json ids match exactly, but
     // extraction casing may drift across builds).
     let extract_ci: HashMap<String, &RawExtractSpecies> = extract
@@ -594,10 +666,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eprintln!("passive db-not-in-extraction ids ({}): {db_not_in_extract:?}", db_not_in_extract.len());
 
     // Active skills: sorted `(id, ActiveSkill)` pairs for deterministic pack bytes.
+    // Inheritance flags come from attacks.csv, joined by id == CodeName. A move
+    // present in our pack but absent from attacks.csv (a few Unique_*/NPC wazas)
+    // gets `false`/`false` and is reported; if the match rate falls below 90%
+    // (id-format drift), the build fails rather than shipping silently-wrong flags.
+    let mut attacks_unmatched: Vec<&str> = Vec::new();
     let mut active_skills: Vec<(String, ActiveSkill)> = extract
         .active_skills
         .iter()
         .map(|(id, a)| {
+            let (can_inherit, has_skill_fruit) = match attacks.get(id) {
+                Some(&flags) => flags,
+                None => {
+                    attacks_unmatched.push(id.as_str());
+                    (false, false)
+                }
+            };
             (
                 id.clone(),
                 ActiveSkill {
@@ -606,11 +690,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     power: a.power,
                     cool_time: a.cool_time,
                     description: a.description.clone(),
+                    can_inherit,
+                    has_skill_fruit,
                 },
             )
         })
         .collect();
     active_skills.sort_by(|a, b| a.0.cmp(&b.0));
+    attacks_unmatched.sort_unstable();
+    let total = active_skills.len();
+    let matched = total - attacks_unmatched.len();
+    let match_rate = matched as f64 / total as f64;
+    let can_inherit_count = active_skills.iter().filter(|(_, s)| s.can_inherit).count();
+    let has_fruit_count = active_skills.iter().filter(|(_, s)| s.has_skill_fruit).count();
+    println!(
+        "active-skill flags: attacks.csv={} matched={matched}/{total} ({:.1}%) | can_inherit={can_inherit_count} has_skill_fruit={has_fruit_count}",
+        attacks.len(),
+        match_rate * 100.0,
+    );
+    if !attacks_unmatched.is_empty() {
+        eprintln!(
+            "warning: {} pack moves absent from attacks.csv (flags default false): {attacks_unmatched:?}",
+            attacks_unmatched.len(),
+        );
+    }
+    if match_rate < 0.90 {
+        return Err(format!(
+            "attacks.csv join too low: {matched}/{total} ({:.1}%) < 90% — id-format drift, refusing to ship",
+            match_rate * 100.0
+        )
+        .into());
+    }
     let tier_count = passives.iter().filter(|p| p.tier.is_some()).count();
     let rainbow = passives.iter().filter(|p| p.tier == Some(PassiveTier::Rainbow)).count();
     let worldtree = passives.iter().filter(|p| p.tier == Some(PassiveTier::WorldTree)).count();

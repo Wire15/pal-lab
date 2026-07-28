@@ -16,6 +16,12 @@ function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
       return reason.surgery_off
         ? `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier, or enable Surgery table in Breeding setup, then re-solve.`
         : `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
+    case "missing_move_carrier":
+      if (!reason.inheritable)
+        return `${reason.move_name} is exclusive and can't be inherited or taught.`;
+      return reason.fruit_off && reason.fruit_available
+        ? `No owned pal carries ${reason.move_name} equipped — enable Skill Fruits in Breeding setup or equip ${reason.move_name} on a parent.`
+        : `No owned pal has ${reason.move_name} equipped — equip it on a potential parent and re-read your save.`;
     case "target_species_unreachable":
       return reason.min_steps == null
         ? `Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.`

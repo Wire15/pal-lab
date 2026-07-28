@@ -406,6 +406,38 @@ fn active_skills_resolve() {
 }
 
 #[test]
+fn active_skill_inheritance_flags() {
+    let gd = GameData::get();
+    let skills = gd.active_skills();
+    let get = |id: &str| {
+        skills
+            .iter()
+            .find(|(k, _)| k == id)
+            .map(|(_, s)| s)
+            .unwrap_or_else(|| panic!("{id} present in active_skills"))
+    };
+
+    // Known-truth rows from vendored attacks.csv (CanInherit / HasSkillFruit):
+    // Meteor Rain (id CommetRain) is inheritable but has no Skill Fruit.
+    let meteor = get("CommetRain");
+    assert!(meteor.can_inherit, "CommetRain (Meteor Rain) is inheritable");
+    assert!(!meteor.has_skill_fruit, "CommetRain has no Skill Fruit");
+    // A pal-exclusive Unique_* waza is NOT inheritable.
+    assert!(
+        !get("Unique_Alpaca_Tackle").can_inherit,
+        "Unique_Alpaca_Tackle (exclusive) is not inheritable",
+    );
+    // AcidRain is taught by a Skill Fruit.
+    assert!(get("AcidRain").has_skill_fruit, "AcidRain has a Skill Fruit");
+
+    // Aggregate sanity: a silently-failed join (all-false) is caught here.
+    let can_inherit = skills.iter().filter(|(_, s)| s.can_inherit).count();
+    let has_fruit = skills.iter().filter(|(_, s)| s.has_skill_fruit).count();
+    assert!(can_inherit > 100, "expected >100 inheritable moves, got {can_inherit}");
+    assert!(has_fruit > 50, "expected >50 skill-fruit moves, got {has_fruit}");
+}
+
+#[test]
 fn passive_tiers_classify_special_pools() {
     use pal_data::gamedata::PassiveTier;
     let gd = GameData::get();

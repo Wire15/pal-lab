@@ -272,6 +272,13 @@ pub struct OwnedPalRef {
     pub primary: OwnedInstance,
     /// The opposite-gender member when this is a composite (wildcard) ref.
     pub alt: Option<OwnedInstance>,
+    /// Whether this owned pal has the solve's THREADED move equipped (an
+    /// inheritable move present in [`OwnedPal::active_skills`]). Sole move axis
+    /// carried through the lift (see `engine::build_initial_content`) — the full
+    /// moveset is intentionally dropped. `false` when no move is threaded.
+    /// `#[serde(default)]` keeps older payloads deserializing.
+    #[serde(default)]
+    pub carries_move: bool,
 }
 
 /// A wild (to-be-caught) reference. Effort = catch time / random-passive prob,
@@ -302,7 +309,9 @@ pub struct BredPalRef {
     pub passives_prob: f64,
     /// P(inherit all required IVs).
     pub ivs_prob: f64,
-    /// `ceil(1 / (passives_prob * ivs_prob))`, gender-penalty applied.
+    /// `ceil(1 / (passives_prob * ivs_prob * move_prob))`, gender-penalty applied.
+    /// `move_prob` is the threaded-move per-egg pass probability folded in at
+    /// construction ([`BredPalRef::with_threaded`]); `1.0` (no threaded move).
     pub avg_required_breedings: u32,
     pub self_effort: f64,
     pub total_effort: f64,
@@ -332,6 +341,12 @@ pub struct BredPalRef {
     /// flagged parent's plan node carries `gender_reversed = true`.
     #[serde(default)]
     pub reversed_parent: u8,
+    /// Whether this bred child carries the solve's THREADED move (it passed the
+    /// per-egg inheritance roll from a carrying parent). Working-set axis; set
+    /// via [`BredPalRef::with_threaded`]. `false` = ordinary child (no move
+    /// threaded, or the roll excluded). `#[serde(default)]` for back-compat.
+    #[serde(default)]
+    pub carries_move: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -428,6 +443,19 @@ impl PalRef {
         matches!(self, PalRef::Bred(_))
     }
 
+    /// Whether this reference carries the solve's THREADED active-skill move.
+    /// Owned pals set it from their equipped moves; bred children inherit it via
+    /// the per-egg roll; wild catches NEVER carry a move (they have no owner
+    /// moveset to draw from). `false` when no move is threaded.
+    #[inline]
+    pub fn carries_move(&self) -> bool {
+        match self {
+            PalRef::Owned(o) => o.carries_move,
+            PalRef::Wild(_) => false,
+            PalRef::Bred(b) => b.carries_move,
+        }
+    }
+
     /// The deduplicated parent-pool contribution: named passive ids + random
     /// count. Uses ACTUAL passives (palcalc note): owned pals expose their real
     /// passive names so shared irrelevants dedupe, whereas bred/wild pals expose
@@ -520,6 +548,7 @@ impl OwnedPalRef {
         male_effective: Vec<EffPassive>,
         female: OwnedInstance,
         female_effective: Vec<EffPassive>,
+        carries_move: bool,
     ) -> OwnedPalRef {
         let effective_passives = if male_effective.len() >= female_effective.len() {
             male_effective
@@ -527,7 +556,15 @@ impl OwnedPalRef {
             female_effective
         };
         let ivs = SolverIvSet::propagate(&male.ivs, &female.ivs);
-        OwnedPalRef { species, gender: RefGender::Wildcard, effective_passives, ivs, primary: male, alt: Some(female) }
+        OwnedPalRef {
+            species,
+            gender: RefGender::Wildcard,
+            effective_passives,
+            ivs,
+            primary: male,
+            alt: Some(female),
+            carries_move,
+        }
     }
 
     fn with_gender(&self, gender: RefGender) -> Option<OwnedPalRef> {
@@ -543,6 +580,7 @@ impl OwnedPalRef {
                         ivs: inst.ivs,
                         primary: inst.clone(),
                         alt: None,
+                        carries_move: self.carries_move,
                     });
                 }
             }
@@ -647,6 +685,7 @@ impl BredPalRef {
             egg_hatch_hours: setup.egg_hatch_hours,
             reverser_cost: 0.0,
             reversed_parent: 0,
+            carries_move: false,
         };
         r.recompute_effort(gd);
         r
@@ -714,6 +753,23 @@ impl BredPalRef {
     pub fn with_reverser(mut self, gd: &GameData, cost: f64, side: u8) -> BredPalRef {
         self.reverser_cost = cost;
         self.reversed_parent = side;
+        self.recompute_effort(gd);
+        self
+    }
+
+    /// Fold the THREADED move's per-egg inheritance into this child: mark it as
+    /// carrying the move and multiply `move_prob` (the pass probability
+    /// `ACTIVE_INHERIT_RATE / |U|` for this pairing) into the success rate, which
+    /// raises `avg_required_breedings` (an extra independent roll → more eggs).
+    /// Recomputed exactly from the stored `passives_prob * ivs_prob * move_prob`
+    /// so it composes correctly with a later [`Self::with_gender`]. `carries` is
+    /// stored on the ref (working-set axis). Only ever called on a
+    /// freshly-`new`'d, un-gendered child (before gender resolution).
+    pub fn with_threaded(mut self, gd: &GameData, move_prob: f64, carries: bool) -> BredPalRef {
+        self.carries_move = carries;
+        let combined = self.passives_prob * self.ivs_prob * move_prob;
+        self.avg_required_breedings =
+            if combined <= 0.0 { u32::MAX } else { (1.0 / combined).ceil() as u32 };
         self.recompute_effort(gd);
         self
     }

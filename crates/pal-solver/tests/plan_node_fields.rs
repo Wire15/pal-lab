@@ -24,6 +24,7 @@ fn owned_ref(species: u16, gender: Gender) -> PalRef {
             ivs: SolverIvSet::RANDOM,
         },
         alt: None,
+        carries_move: false,
     })
 }
 

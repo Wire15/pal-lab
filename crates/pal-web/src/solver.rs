@@ -27,7 +27,7 @@ use pal_solver::solver::{
     diagnose_no_path, resolve_passive, resolve_species, solve_queue_monitored,
     solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching,
     GenderReverserConfig, IvModel, ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase,
-    SolveProgress, SolverConfig, SurgeryConfig, TargetPal, TargetSpec,
+    SolveProgress, SolverConfig, SkillFruitConfig, SurgeryConfig, TargetPal, TargetSpec,
 };
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsValue;
@@ -70,6 +70,15 @@ pub struct SolveRequest {
     /// `SolverConfig::gender_reverser`.
     #[serde(default)]
     pub gender_reverser: Option<GenderReverserConfig>,
+    /// Required active-skill (waza) ids the child must carry (stripped waza ids,
+    /// e.g. `AirCanon`). Maps to `TargetSpec::required_moves`. Absent/empty =>
+    /// no move constraint.
+    #[serde(default)]
+    pub required_moves: Vec<String>,
+    /// Skill-fruit remedy for required moves outside the single breeding-thread
+    /// slot. Absent => off. Maps to `SolverConfig::skill_fruit`.
+    #[serde(default)]
+    pub skill_fruit: Option<SkillFruitConfig>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -325,6 +334,7 @@ fn build_request(
     }
     cfg.surgery = req.surgery;
     cfg.gender_reverser = req.gender_reverser;
+    cfg.skill_fruit = req.skill_fruit;
 
     let mut spec = TargetSpec::new(TargetPal::Species(target_species));
     spec.required_passives = required_passives;
@@ -337,6 +347,7 @@ fn build_request(
         spec.iv_defense = ivs.defense;
     }
     spec.pinned_parents = req.pinned_parents.clone();
+    spec.required_moves = req.required_moves.clone();
     Ok((spec, cfg, req.catching))
 }
 
@@ -526,4 +537,21 @@ pub fn list_active_skills() -> HashMap<String, ActiveSkill> {
         .iter()
         .map(|(id, s)| (id.clone(), s.clone()))
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::SolveRequest;
+
+    // Old frontend payloads (pre active-skill wave) omit `required_moves` and
+    // `skill_fruit`; serde defaults must keep them deserializing (empty / off).
+    #[test]
+    fn old_payload_defaults_move_fields() {
+        let req: SolveRequest = serde_json::from_str(
+            r#"{"target_species":"Anubis","required_passives":["Runner"]}"#,
+        )
+        .expect("legacy payload must still deserialize");
+        assert!(req.required_moves.is_empty(), "required_moves defaults empty");
+        assert!(req.skill_fruit.is_none(), "skill_fruit defaults off");
+    }
 }

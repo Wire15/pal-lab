@@ -25,12 +25,13 @@ use crate::probabilities::{
     prob_inherited_target_ivs, prob_inherited_target_passives,
     prob_inherited_target_passives_forced,
 };
-use crate::solver::config::{IvModel, SolverConfig, SurgeryConfig};
+use crate::solver::config::{IvModel, SolverConfig, SurgeryConfig, ACTIVE_INHERIT_RATE};
 use crate::solver::refs::{
     BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
     WildPalRef, MULTIPLE_BREEDING_FARMS,
 };
 use crate::solver::results::{BreedingPlan, SolvedRef};
+use crate::solver::diagnose::{resolve_moves, MovePlan};
 use crate::solver::spec::{TargetPal, TargetSpec};
 use crate::solver::working_set::{key_of, RefKey, WorkingSet};
 use crate::solver::progress::{SolveCancelled, SolveMonitor, SolvePhase, SolveProgress};
@@ -42,6 +43,65 @@ const MAX_TOTAL_PASSIVES: usize = 4;
 /// `par_iter`), while cancellation is polled and progress reported between
 /// chunks — bounding cancel latency to one chunk's wall time even mid-step.
 const PAIR_CHUNK: usize = 8192;
+
+/// Threaded-move context for a solve: the move threaded through breeding, the
+/// community-measured per-egg inherit rate, and the per-species equipped-move
+/// estimate base. `None` when no move is threaded (all move logic skipped —
+/// byte-identical to pre-moves behavior).
+struct MoveCtx {
+    /// The threaded move's stripped waza id.
+    threaded: String,
+    /// Per-egg inherit rate (see [`ACTIVE_INHERIT_RATE`]; COMMUNITY-MEASURED).
+    rate: f64,
+    /// Per-species equipped estimate: the first 3 level-1 learnset moves that are
+    /// `can_inherit`. A parent's equipped-can-inherit pool is estimated from this
+    /// base (plus the threaded move when the parent carries it) to size |U|.
+    base_by_species: HashMap<u16, Vec<String>>,
+}
+
+impl MoveCtx {
+    /// A parent's estimated equipped `can_inherit` move ids: the species base
+    /// plus the threaded move iff this ref carries it.
+    fn equipped(&self, r: &PalRef) -> Vec<String> {
+        let mut v = self.base_by_species.get(&r.species()).cloned().unwrap_or_default();
+        if r.carries_move() && !v.iter().any(|m| m == &self.threaded) {
+            v.push(self.threaded.clone());
+        }
+        v
+    }
+
+    /// Per-egg probability the threaded move passes from this pairing:
+    /// `rate / |U|`, U = deduped union of both parents' equipped can_inherit
+    /// moves. `0.0` when neither parent carries it (M ∉ U — cannot pass).
+    fn pass_prob(&self, p1: &PalRef, p2: &PalRef) -> f64 {
+        if !p1.carries_move() && !p2.carries_move() {
+            return 0.0;
+        }
+        let mut union: HashSet<String> = self.equipped(p1).into_iter().collect();
+        union.extend(self.equipped(p2));
+        self.rate / union.len().max(1) as f64
+    }
+}
+
+/// Per-species equipped-move estimate base: the first 3 level-1 learnset moves
+/// that are `can_inherit`. One-time precompute, only when a move is threaded.
+fn move_estimate_base(gd: &GameData) -> HashMap<u16, Vec<String>> {
+    let mut map = HashMap::new();
+    for s in 0..gd.species_count() as u16 {
+        let base: Vec<String> = gd
+            .learnset(s)
+            .iter()
+            .filter(|lm| lm.level <= 1)
+            .filter(|lm| gd.active_skill(&lm.waza_id).is_some_and(|a| a.can_inherit))
+            .map(|lm| lm.waza_id.clone())
+            .take(3)
+            .collect();
+        if !base.is_empty() {
+            map.insert(s, base);
+        }
+    }
+    map
+}
 
 /// palcalc `PreferredLocationPruning` ordering (palbox first, then base, party…).
 fn location_order(c: pal_data::types::ContainerKind) -> u8 {
@@ -79,6 +139,9 @@ struct OwnedCandidate {
     ivs: SolverIvSet,
     instance: OwnedInstance,
     actual_count: usize,
+    /// Whether this pal carries the solve's threaded move (grouping axis so a
+    /// carrier and non-carrier are never collapsed or composited together).
+    carries_move: bool,
 }
 
 /// Step (1): build the reduced initial working-set content from owned pals
@@ -89,8 +152,13 @@ pub fn build_initial_content(
     spec: &TargetSpec,
     owned: &[OwnedPal],
     cfg: &SolverConfig,
+    threaded_move: Option<&str>,
 ) -> Vec<PalRef> {
     let desired = spec.desired_set();
+    // Whether an owned pal carries the solve's THREADED move (the sole move axis
+    // lifted from `OwnedPal.active_skills` — the full moveset is dropped);
+    // always `false` when no move is threaded (axis collapses).
+    let carries = |p: &OwnedPal| threaded_move.is_some_and(|m| p.active_skills.iter().any(|s| s == m));
     let within_steps = |species: u16| match spec.pal {
         TargetPal::Species(t) => gd.min_steps(species, t) as u32 <= cfg.max_breeding_steps,
         TargetPal::Any => true,
@@ -127,6 +195,7 @@ pub fn build_initial_content(
                 ivs,
             },
             alt: None,
+            carries_move: carries(p),
         }));
     }
     let pinned_keys: HashSet<RefKey> = pinned_refs.iter().map(key_of).collect();
@@ -167,15 +236,16 @@ pub fn build_initial_content(
                 ivs,
             },
             actual_count: p.passives.len(),
+            carries_move: carries(p),
         });
     }
 
     // Group by (species, relevant_desired, iv_relevance, gender); keep the best:
     // fewest actual passives, then preferred location, then highest IVs.
-    type GroupKey = (u16, Vec<PassiveId>, (bool, bool, bool), Gender);
+    type GroupKey = (u16, Vec<PassiveId>, (bool, bool, bool), Gender, bool);
     let mut groups: HashMap<GroupKey, OwnedCandidate> = HashMap::new();
     for c in candidates {
-        let key = (c.species, c.relevant_desired.clone(), c.iv_relevance, c.gender);
+        let key = (c.species, c.relevant_desired.clone(), c.iv_relevance, c.gender, c.carries_move);
         match groups.get(&key) {
             Some(existing) if !better_owned(&c, existing) => {}
             _ => {
@@ -185,11 +255,11 @@ pub fn build_initial_content(
     }
 
     // Regroup ignoring gender to form composites.
-    type NoGenderKey = (u16, Vec<PassiveId>, (bool, bool, bool));
+    type NoGenderKey = (u16, Vec<PassiveId>, (bool, bool, bool), bool);
     let mut by_no_gender: HashMap<NoGenderKey, Vec<OwnedCandidate>> = HashMap::new();
     for (_, c) in groups {
         by_no_gender
-            .entry((c.species, c.relevant_desired.clone(), c.iv_relevance))
+            .entry((c.species, c.relevant_desired.clone(), c.iv_relevance, c.carries_move))
             .or_default()
             .push(c);
     }
@@ -206,6 +276,7 @@ pub fn build_initial_content(
                 ivs: c.ivs,
                 primary: c.instance.clone(),
                 alt: None,
+                carries_move: c.carries_move,
             });
             if pinned_keys.contains(&key_of(&r)) {
                 continue;
@@ -223,6 +294,7 @@ pub fn build_initial_content(
                     m.effective_passives.clone(),
                     f.instance.clone(),
                     f.effective_passives.clone(),
+                    m.carries_move,
                 )));
             }
         }
@@ -434,6 +506,7 @@ fn breed_pair(
     ws: &WorkingSet,
     p1: &PalRef,
     p2: &PalRef,
+    move_ctx: Option<&MoveCtx>,
 ) -> Vec<PalRef> {
     let mut out = Vec::new();
 
@@ -473,6 +546,10 @@ fn breed_pair(
         spec.optional_passives.iter().filter(|id| pool_named.contains(*id)).cloned().collect();
 
     let child_steps = p1.num_breeding_steps() + p2.num_breeding_steps() + 1;
+    // Per-egg pass probability of the threaded move for this pairing (0.0 when no
+    // move is threaded or neither parent carries it). Gender-invariant, so it is
+    // computed once from the original parents and reused for every child.
+    let move_prob = move_ctx.map(|c| c.pass_prob(p1, p2)).unwrap_or(0.0);
 
     for (child, r1, r2, reverser) in candidate_children(gd, cfg, p1, p2) {
         // Reachability budget: any final plan containing this child uses at
@@ -527,6 +604,20 @@ fn breed_pair(
                     Some((cost, side)) => bred.with_reverser(gd, cost, side),
                     None => bred,
                 };
+                // WITH-move variant: an independent per-egg roll (prob move_prob)
+                // folds into the success rate, raising the egg count. Emitted only
+                // when a parent carries the threaded move; competes on effort with
+                // the ordinary (without-move) child below. No move threaded =>
+                // move_prob 0.0 => this block is skipped (byte-identical path).
+                if move_prob > 0.0 {
+                    let with_move =
+                        PalRef::Bred(Box::new(bred.clone().with_threaded(gd, move_prob, true)));
+                    if with_move.total_effort() <= cfg.max_effort_secs
+                        && (spec.is_satisfied_by(&with_move) || ws.is_optimal(&with_move))
+                    {
+                        out.push(with_move);
+                    }
+                }
                 let bred = PalRef::Bred(Box::new(bred));
                 if bred.total_effort() <= cfg.max_effort_secs
                     && (spec.is_satisfied_by(&bred) || ws.is_optimal(&bred))
@@ -539,32 +630,63 @@ fn breed_pair(
     out
 }
 
+/// Build a [`SolvedRef`] for `c` when it satisfies the spec under BOTH the
+/// surgery (passive-implant) and Skill-Fruit (move) terminal relaxations, else
+/// `None`. The two relaxations are orthogonal: surgery covers missing REQUIRED
+/// passives, fruit covers REQUIRED moves not delivered by breeding.
+#[allow(clippy::too_many_arguments)]
+fn try_solved(
+    gd: &GameData,
+    spec: &TargetSpec,
+    c: &PalRef,
+    max_implants: u8,
+    surgery_cost: f64,
+    unimplantable: &HashSet<PassiveId>,
+    move_plan: &MovePlan,
+    fruit_cost: f64,
+) -> Option<SolvedRef> {
+    let implants = spec.satisfied_with_surgery(c, max_implants, unimplantable)?;
+    let fruits = move_plan.satisfied_fruits(gd, c)?;
+    Some(SolvedRef {
+        reference: c.clone(),
+        implants,
+        surgery_cost_each: surgery_cost,
+        fruits,
+        fruit_cost_each: fruit_cost,
+        threaded_move_name: move_plan.threaded_move_name.clone(),
+        levelup_moves: move_plan.levelup_moves.clone(),
+    })
+}
+
 /// Fold one bred chunk into the current step's reduction, in pair-lexicographic
 /// order: satisfied refs are recorded in `results`; every ref is offered to
 /// `step_best` (tie-keeps-incumbent). Folding chunk-by-chunk (rather than
 /// accumulating a step-wide candidate vec) bounds memory by the working-set key
 /// space instead of the candidate count — the insert order is identical to a
 /// single reduction over the concatenated chunks, so results are unchanged.
+#[allow(clippy::too_many_arguments)]
 fn fold_chunk(
+    gd: &GameData,
     part: Vec<PalRef>,
     spec: &TargetSpec,
     max_implants: u8,
     surgery_cost: f64,
     unimplantable: &HashSet<PassiveId>,
+    move_plan: &MovePlan,
+    fruit_cost: f64,
     step_best: &mut WorkingSet,
     results: &mut Vec<SolvedRef>,
 ) {
     for c in part {
-        // Surgery-aware terminal satisfaction: a candidate missing up to
-        // `max_implants` REQUIRED passives is recorded as a result carrying those
-        // implants (`max_implants == 0` => exact `is_satisfied_by`). The working
-        // set below is untouched by surgery — dominance stays exact.
-        if let Some(implants) = spec.satisfied_with_surgery(&c, max_implants, unimplantable) {
-            results.push(SolvedRef {
-                reference: c.clone(),
-                implants,
-                surgery_cost_each: surgery_cost,
-            });
+        // Surgery-aware (passives) + Skill-Fruit-aware (moves) terminal
+        // satisfaction: a candidate missing up to `max_implants` REQUIRED
+        // passives and/or lacking fruitable REQUIRED moves is recorded as a
+        // result carrying those relaxations. The working set below is untouched
+        // by either relaxation — dominance stays exact.
+        if let Some(sr) =
+            try_solved(gd, spec, &c, max_implants, surgery_cost, unimplantable, move_plan, fruit_cost)
+        {
+            results.push(sr);
         }
         step_best.insert(c);
     }
@@ -698,20 +820,35 @@ fn solve_core(
         .cloned()
         .collect();
 
-    let initial = build_initial_content(gd, &spec, owned, cfg);
+    // Active-skill move resolution: learnset moves auto-satisfy (surfaced as
+    // `levelup_moves`), AT MOST ONE move threads through breeding (a working-set
+    // axis + per-egg probability), and remaining required moves need Skill Fruit
+    // (a terminal result-layer step, like surgery). Unsatisfiable move
+    // requirements short-circuit to no plans; `diagnose_no_path` reports why.
+    let move_plan = resolve_moves(gd, &spec, owned, cfg);
+    if move_plan.blocked() {
+        return Ok((Vec::new(), true, false));
+    }
+    let fruit_cost = cfg.skill_fruit.as_ref().map(|f| f.cost_secs).unwrap_or(0.0);
+    let move_ctx = move_plan.threaded_move.as_ref().map(|m| MoveCtx {
+        threaded: m.clone(),
+        rate: ACTIVE_INHERIT_RATE,
+        base_by_species: move_estimate_base(gd),
+    });
+
+    let initial = build_initial_content(gd, &spec, owned, cfg, move_plan.threaded_move.as_deref());
 
     let mut ws = WorkingSet::new();
     let mut results: Vec<SolvedRef> = Vec::new();
     for r in &initial {
-        // Zero-step owned/wild seeds can satisfy directly — surgery-aware, so an
-        // owned pal missing a few required passives is a valid 0-breeding-step
-        // result covered by implants.
-        if let Some(implants) = spec.satisfied_with_surgery(r, max_implants, &unimplantable) {
-            results.push(SolvedRef {
-                reference: r.clone(),
-                implants,
-                surgery_cost_each: surgery_cost,
-            });
+        // Zero-step owned/wild seeds can satisfy directly — surgery-aware
+        // (passives) AND fruit-aware (moves): an owned target-species pal missing
+        // a few required passives, and/or carrying the threaded move / needing a
+        // fruit step, is a valid 0-breeding-step result.
+        if let Some(sr) =
+            try_solved(gd, &spec, r, max_implants, surgery_cost, &unimplantable, &move_plan, fruit_cost)
+        {
+            results.push(sr);
         }
         ws.insert(r.clone());
     }
@@ -777,7 +914,7 @@ fn solve_core(
         // memory is bounded to ~PAIR_CHUNK pairs plus one chunk's candidates.
         let breed = |buf: &[(usize, usize)]| -> Vec<PalRef> {
             let expand = |&(i, j): &(usize, usize)| {
-                breed_pair(gd, &spec, cfg, weights, &ws, &pals[i], &pals[j]).into_iter()
+                breed_pair(gd, &spec, cfg, weights, &ws, &pals[i], &pals[j], move_ctx.as_ref()).into_iter()
             };
             // wasm32 is single-threaded this wave: same chunk, serial iterator.
             // Order (pair-lexicographic) is identical, so results stay
@@ -806,7 +943,7 @@ fn solve_core(
                     let part = breed(&buf);
                     pairs_done += buf.len() as u64;
                     buf.clear();
-                    fold_chunk(part, &spec, max_implants, surgery_cost, &unimplantable, &mut step_best, &mut results);
+                    fold_chunk(gd, part, &spec, max_implants, surgery_cost, &unimplantable, &move_plan, fruit_cost, &mut step_best, &mut results);
                     monitor.report(SolveProgress {
                         phase: SolvePhase::Step,
                         step: step + 1,
@@ -828,7 +965,7 @@ fn solve_core(
             monitor.check()?;
             let part = breed(&buf);
             pairs_done += buf.len() as u64;
-            fold_chunk(part, &spec, max_implants, surgery_cost, &unimplantable, &mut step_best, &mut results);
+            fold_chunk(gd, part, &spec, max_implants, surgery_cost, &unimplantable, &move_plan, fruit_cost, &mut step_best, &mut results);
             monitor.report(SolveProgress {
                 phase: SolvePhase::Step,
                 step: step + 1,

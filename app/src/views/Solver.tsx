@@ -11,6 +11,7 @@ import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
 import { PassivePicker } from "../components/passive-picker";
+import { MovePicker } from "../components/move-picker";
 import { PinPicker, MAX_PINS } from "../components/pin-picker";
 import {
   QueuePanel,
@@ -30,6 +31,8 @@ import { PlanGraph } from "../components/plan-graph";
 import { PlanNodePanel } from "../components/plan-node-panel";
 import { SolveProgress } from "../components/solve-progress";
 import { usePlanActions } from "../components/plan-actions";
+import { decodePlanCode } from "../components/plan-export";
+import { clearPlanLink } from "../lib/plan-link";
 import {
   HistoryDrawer,
   pushHistoryEntry,
@@ -43,6 +46,10 @@ import {
   type TrackReport,
 } from "../lib/plan-tracking";
 import { listSavedPlans, setPlanTracking } from "../components/plans-drawer";
+import { loadActiveSkills, type ActiveSkills } from "../lib/active-skills";
+import { classifyMoveWarnings } from "../lib/move-warnings";
+import { invoke } from "../lib/tauri";
+import type { SpeciesDetail } from "../lib/types";
 
 /** Catch policy for a solve; mirrors the contract's SolveRequest["catching"]. */
 type CatchingMode = NonNullable<SolveRequest["catching"]>;
@@ -740,9 +747,12 @@ export default function Solver() {
     setSolveSession,
     queueSeed,
     clearQueueSeed,
+    pendingPlanCode,
+    clearPendingPlanCode,
   } = useAppState();
   const [species, setSpecies] = useState("");
   const [passives, setPassives] = useState<string[]>([]);
+  const [moves, setMoves] = useState<string[]>([]);
   const [maxSteps, setMaxSteps] = useState<number>(5);
   const [includeWild, setIncludeWild] = useState(false);
   const [catching, setCatching] = useState<CatchingMode>("breeding_only");
@@ -857,8 +867,45 @@ export default function Solver() {
   // "Add current target" and pinning need a save loaded and a target chosen.
   const canAdd = saveDir.trim() !== "" && species.trim() !== "";
 
+  // Active-skill flags (can_inherit / has_skill_fruit) + the target's own
+  // level-up learnset drive the client-side ADVISORY move warnings. Both are
+  // cheap: `loadActiveSkills` is cached module-wide; the learnset fetch keys on
+  // the resolved target id (cleared while no valid target is chosen).
+  const [activeMap, setActiveMap] = useState<ActiveSkills>({});
+  const [targetLearnset, setTargetLearnset] = useState<Set<string>>(
+    () => new Set(),
+  );
+  useEffect(() => {
+    loadActiveSkills().then(setActiveMap).catch(() => {});
+  }, []);
+  useEffect(() => {
+    if (!targetId) {
+      setTargetLearnset(new Set());
+      return;
+    }
+    let live = true;
+    invoke<SpeciesDetail>("paldex_species_detail", { id: targetId })
+      .then((d) => {
+        if (live) setTargetLearnset(new Set(d.learnset.map((m) => m.id)));
+      })
+      .catch(() => {
+        if (live) setTargetLearnset(new Set());
+      });
+    return () => {
+      live = false;
+    };
+  }, [targetId]);
+  const moveWarnings = useMemo(
+    () => classifyMoveWarnings(moves, activeMap, targetLearnset),
+    [moves, activeMap, targetLearnset],
+  );
+
   function removePassive(name: string) {
     setPassives((p) => p.filter((x) => x !== name));
+  }
+
+  function removeMove(id: string) {
+    setMoves((m) => m.filter((x) => x !== id));
   }
 
   // The current briefing assembled as a solve spec — exactly what a single solve
@@ -868,6 +915,7 @@ export default function Solver() {
     return {
       target_species: species,
       required_passives: passives,
+      ...(moves.length > 0 ? { required_moves: moves } : {}),
       max_steps: maxSteps,
       include_wild: includeWild,
       catching,
@@ -907,6 +955,7 @@ export default function Solver() {
   function resetForm() {
     setSpecies("");
     setPassives([]);
+    setMoves([]);
     setPins([]);
     setMaxSteps(5);
     setIncludeWild(false);
@@ -944,6 +993,7 @@ export default function Solver() {
   function applyRequestToForm(r: SolveRequest) {
     setSpecies(r.target_species);
     setPassives(r.required_passives ?? []);
+    setMoves(r.required_moves ?? []);
     setMaxSteps(r.max_steps ?? 5);
     setIncludeWild(!!r.include_wild);
     setCatching(r.catching ?? "breeding_only");
@@ -960,6 +1010,7 @@ export default function Solver() {
     sessionRestored.current = true;
     if (
       solveTarget === null &&
+      pendingPlanCode === null &&
       solveSession &&
       solveSession.saveDir === saveDir &&
       !plans &&
@@ -995,7 +1046,8 @@ export default function Solver() {
     });
   }
 
-  const { headerButtons, banners, drawer, closeNaming } = usePlanActions({
+  const { headerButtons, banners, drawer, closeNaming, importPlanCode } =
+    usePlanActions({
     plans,
     fallbackUsed,
     activePlan,
@@ -1008,6 +1060,25 @@ export default function Solver() {
     applyRequestToForm,
     currentPals: pals,
   });
+
+  // SHARED PLAN LINK boot import. A `#plan=<code>` fragment was parsed into
+  // `pendingPlanCode` at mount; consume it here through the SAME path the PLANS
+  // drawer's "Import plan code" panel uses (decode -> live re-solve against the
+  // user's roster), so a shared link stays honest and never ships a static tree.
+  // Gated on a loaded save: on web the user drops their save first, and this
+  // effect re-fires when `saveSummary` flips non-null. A malformed/stale code is
+  // still cleared so it can't wedge the app or re-import on the next hash change.
+  useEffect(() => {
+    if (pendingPlanCode === null) return;
+    if (!saveSummary) return;
+    try {
+      importPlanCode(decodePlanCode(pendingPlanCode));
+    } catch {
+      // A bad code just boots normally — nothing to import.
+    }
+    clearPendingPlanCode();
+    clearPlanLink();
+  }, [pendingPlanCode, saveSummary, importPlanCode, clearPendingPlanCode]);
 
   const canSolve = saveDir.trim() !== "" && species.trim() !== "" && !solving;
 
@@ -1070,6 +1141,26 @@ export default function Solver() {
           onAdd={(name) => setPassives((p) => (p.includes(name) ? p : [...p, name]))}
           onRemove={removePassive}
         />
+
+        <div className="flex flex-col gap-1.5">
+          <MovePicker
+            selected={moves}
+            onAdd={(id) => setMoves((m) => (m.includes(id) ? m : [...m, id]))}
+            onRemove={removeMove}
+          />
+          <p className="text-[11px] leading-relaxed text-ink-faint">
+            &le;50% per egg (community-measured); inherited from the parents&rsquo;
+            equipped slots (1.0 rule)
+          </p>
+          {moveWarnings.map((w, i) => (
+            <p
+              key={`${w.kind}-${i}`}
+              className="text-[11px] leading-relaxed text-amber/80"
+            >
+              <span className="font-medium">{w.moves.join(", ")}</span> {w.text}
+            </p>
+          ))}
+        </div>
 
         {saveSummary && species.trim() !== "" && (
           <PinPicker

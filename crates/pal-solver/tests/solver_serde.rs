@@ -27,6 +27,7 @@ fn plan_serializes_and_roundtrips() {
             ivs: SolverIvSet::RANDOM,
         },
         alt: None,
+        carries_move: false,
     });
     let wild = PalRef::Wild(WildPalRef::new(gd, 2, vec![], 1));
 

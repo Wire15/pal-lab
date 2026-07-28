@@ -30,6 +30,7 @@ fn bred(gd: &GameData, species: u16, prob: f64) -> PalRef {
             ivs: SolverIvSet::RANDOM,
             primary: OwnedInstance { gender: g, ..owned_instance() },
             alt: None,
+            carries_move: false,
         })
     };
     PalRef::Bred(Box::new(BredPalRef::new(
@@ -54,6 +55,7 @@ fn owned_with(species: u16, gender: Gender, effective: Vec<EffPassive>, ivs: Sol
         ivs,
         primary: OwnedInstance { gender, ..owned_instance() },
         alt: None,
+        carries_move: false,
     })
 }
 

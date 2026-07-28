@@ -27,6 +27,7 @@ export function ActiveSkillRow({
   skill,
   level,
   onOpenMove,
+  showMoveTags = false,
 }: {
   id: string;
   skill: ActiveSkill | null;
@@ -39,6 +40,10 @@ export function ActiveSkillRow({
    *  caret stays its own toggle so both coexist without nesting buttons. Call
    *  sites that omit it render the row exactly as before. */
   onOpenMove?: (id: string) => void;
+  /** When true, render faint INHERIT / FRUIT chips (from `skill.can_inherit` /
+   *  `skill.has_skill_fruit`) in the right cluster. Used by the pal-dex MOVES
+   *  tab; other call sites omit it so their rows are unchanged. */
+  showMoveTags?: boolean;
 }) {
   const name = skill?.name ?? humanizeWaza(id);
   const key = skill ? elementTokenKey(skill.element) : null;
@@ -66,6 +71,16 @@ export function ActiveSkillRow({
   // plain row and the linked (onOpenMove) row, so it is shared.
   const rightCluster = (
     <span className="flex shrink-0 items-center gap-1.5">
+      {showMoveTags && skill?.can_inherit && (
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
+          Inherit
+        </span>
+      )}
+      {showMoveTags && skill?.has_skill_fruit && (
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
+          Fruit
+        </span>
+      )}
       {hasCt && (
         <span className="rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">
           CT {cool_time}s

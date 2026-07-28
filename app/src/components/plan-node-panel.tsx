@@ -13,7 +13,7 @@
 // the selection type; it never touches Solver.tsx or plan-graph.tsx.
 
 import { useEffect, useRef } from "react";
-import type { Gender, PlanSource, SurgeryStep } from "../lib/types";
+import type { FruitStep, Gender, PlanSource, SurgeryStep } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
 import { PalIcon, Tag } from "./primitives";
 import { PassiveStrip } from "./passive-strip";
@@ -43,6 +43,11 @@ export type PlanNodeSelection = {
   genderReversed: boolean;
   /** Surgery-table implants on the FINAL pal — set only on the root selection. */
   surgery?: SurgeryStep[];
+  /** Skill-Fruit teaches on the FINAL pal — set only on the root selection. */
+  fruits?: FruitStep[];
+  /** Display name of the one inherited move threaded through breeding at THIS
+   * node (bred nodes only). ~50%/egg pass rate is community-measured. */
+  inheritedMove?: string | null;
 };
 
 /** Narrow the externally-tagged source to its variant payloads. */
@@ -129,8 +134,9 @@ export function PlanNodePanel({
   const closeRef = useRef<HTMLButtonElement>(null);
   const { species, speciesName, gender, planIndex, passives, probability, estTimeSecs } =
     selection;
-  const { genderReversed, surgery } = selection;
+  const { genderReversed, surgery, fruits, inheritedMove } = selection;
   const surgeryCost = (surgery ?? []).reduce((sum, s) => sum + s.cost_secs, 0);
+  const fruitCost = (fruits ?? []).reduce((sum, f) => sum + f.cost_secs, 0);
   const src = readSource(selection.source);
   const g = genderView(gender);
   const prob = probBand(probability);
@@ -334,6 +340,50 @@ export function PlanNodePanel({
             <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
               Implanted from the surgery table onto the final pal — not bred in. Cost
               is your time-cost estimate.
+            </p>
+          </Section>
+        )}
+
+        {/* inherited move threaded through breeding at this node */}
+        {inheritedMove && (
+          <Section eyebrow="Inherited move">
+            <span className="inline-flex max-w-full items-center rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-amber">
+              {inheritedMove}
+            </span>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
+              One move can pass down per breeding line, from the parents&rsquo;
+              equipped slots. The inherit rate (&le;50% per egg) is
+              community-measured, not code-verified.
+            </p>
+          </Section>
+        )}
+
+        {/* skill-fruit teaches — root selection only */}
+        {fruits && fruits.length > 0 && (
+          <Section
+            eyebrow="Skill Fruits"
+            right={
+              <span
+                className="rounded-sm border border-el-leaf/40 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
+                title="Your time-cost estimate for the Skill Fruit teaches"
+              >
+                {formatDuration(fruitCost)}
+              </span>
+            }
+          >
+            <div className="flex flex-col gap-1.5">
+              {fruits.map((f, i) => (
+                <span
+                  key={`${f.move_id}-${i}`}
+                  className="rounded-sm border border-line bg-raised px-2 py-1 text-[12px] text-ink"
+                >
+                  {f.move_name}
+                </span>
+              ))}
+            </div>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
+              Taught to the final pal with a Skill Fruit — not bred in. Cost is your
+              time-cost estimate.
             </p>
           </Section>
         )}

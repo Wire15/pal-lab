@@ -20,7 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { BreedingPlan, Guid, OwnedPal, SurgeryStep } from "../lib/types";
+import type { BreedingPlan, FruitStep, Guid, OwnedPal, SurgeryStep } from "../lib/types";
 import type { PlanNodeSelection } from "./plan-node-panel";
 import {
   COL_W,
@@ -72,6 +72,8 @@ function PalCircle({
   status,
   onToggleManual,
   surgery,
+  fruits,
+  levelupMoves,
 }: {
   laid: LaidNode;
   iconId: string | null;
@@ -85,6 +87,12 @@ function PalCircle({
   /** Surgery-table implants delivered on this node — set ONLY on the plan root
    * (the final pal), empty/absent elsewhere. */
   surgery?: SurgeryStep[];
+  /** Skill-Fruit teaches delivered on this node — set ONLY on the plan root
+   * (the final pal), empty/absent elsewhere. */
+  fruits?: FruitStep[];
+  /** Required moves satisfied by the target's own level-up learnset (display
+   * names) — set ONLY on the plan root; a note, needs no breeding. */
+  levelupMoves?: string[];
 }) {
   const { node } = laid;
   const g = genderView(node.gender);
@@ -296,6 +304,33 @@ function PalCircle({
           >
             Implant: {surgery.map((s) => s.passive_name).join(", ")} {"\u00b7"}{" "}
             {formatDuration(surgery.reduce((sum, s) => sum + s.cost_secs, 0))}
+          </span>
+        )}
+        {node.inherited_move && (
+          <span
+            className="max-w-full truncate rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
+            title={`Inherited move (\u226450% per egg, community-measured; from the parents\u2019 equipped slots): ${node.inherited_move}`}
+          >
+            Inherit: {node.inherited_move}
+          </span>
+        )}
+        {fruits && fruits.length > 0 && (
+          <span
+            className="max-w-full truncate rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
+            title={`Skill Fruit teaches (your time-cost estimate): ${fruits
+              .map((f) => f.move_name)
+              .join(", ")} \u00b7 ${formatDuration(
+              fruits.reduce((sum, f) => sum + f.cost_secs, 0),
+            )}`}
+          >
+            Fruit: {fruits.map((f) => f.move_name).join(", ")} {"\u00b7"}{" "}
+            {formatDuration(fruits.reduce((sum, f) => sum + f.cost_secs, 0))}
+          </span>
+        )}
+        {levelupMoves && levelupMoves.length > 0 && (
+          <span className="max-w-full text-[10px] leading-tight text-ink-faint">
+            learns {levelupMoves.join(", ")} by level-up {"\u2014"} no breeding
+            needed
           </span>
         )}
       </div>
@@ -530,6 +565,10 @@ export function PlanGraph({
           const status = nodePath ? (statuses?.get(nodePath) ?? null) : null;
           // Surgery implants land on the final pal (the plan root) only.
           const surgery = laid.node === plan.root ? plan.surgery : undefined;
+          // Skill-Fruit teaches land on the final pal (the plan root) only.
+          const fruits = laid.node === plan.root ? plan.fruits : undefined;
+          const levelupMoves =
+            laid.node === plan.root ? plan.levelup_moves : undefined;
           return (
             <PalCircle
               key={laid.id}
@@ -549,6 +588,8 @@ export function PlanGraph({
                     estTimeSecs: laid.node.est_time_secs,
                     genderReversed: laid.node.gender_reversed ?? false,
                     surgery,
+                    fruits,
+                    inheritedMove: laid.node.inherited_move ?? null,
                   },
                   laid.id,
                 )
@@ -561,6 +602,8 @@ export function PlanGraph({
                   : undefined
               }
               surgery={surgery}
+              fruits={fruits}
+              levelupMoves={levelupMoves}
             />
           );
         })}

@@ -31,6 +31,7 @@ fn owned_ref(species: u16, gender: Gender) -> PalRef {
         ivs: SolverIvSet::RANDOM,
         primary: owned_instance(gender),
         alt: None,
+        carries_move: false,
     })
 }
 
@@ -158,7 +159,7 @@ fn composite_gender_resolution_is_free_and_selects_member() {
     let male = owned_instance(Gender::Male);
     let mut female = owned_instance(Gender::Female);
     female.instance_id = [7u8; 16];
-    let composite = PalRef::Owned(OwnedPalRef::composite(5, male, vec![], female, vec![]));
+    let composite = PalRef::Owned(OwnedPalRef::composite(5, male, vec![], female, vec![], false));
     assert_eq!(composite.gender(), RefGender::Wildcard);
 
     let gd = GameData::get();
@@ -207,7 +208,7 @@ fn min_steps_budget_gates_initial_content() {
         max_breeding_steps: dist,
         ..Default::default()
     };
-    let content_ok = build_initial_content(gd, &spec, &owned, &cfg_ok);
+    let content_ok = build_initial_content(gd, &spec, &owned, &cfg_ok, None);
     assert!(
         content_ok.iter().any(|r| r.species() == source),
         "source within budget should be kept"
@@ -218,7 +219,7 @@ fn min_steps_budget_gates_initial_content() {
         max_breeding_steps: dist - 1,
         ..Default::default()
     };
-    let content_no = build_initial_content(gd, &spec, &owned, &cfg_no);
+    let content_no = build_initial_content(gd, &spec, &owned, &cfg_no, None);
     assert!(
         !content_no.iter().any(|r| r.species() == source),
         "source beyond budget should be filtered out"

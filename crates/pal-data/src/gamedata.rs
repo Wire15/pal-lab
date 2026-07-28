@@ -402,6 +402,22 @@ pub struct ActiveSkill {
     pub cool_time: Option<i32>,
     /// Cleaned English description; `None` when the game has none.
     pub description: Option<String>,
+    /// Whether this move can pass to offspring via breeding. From palcalc's
+    /// datamined `attacks.csv` (`CanInherit`), which encodes the game's
+    /// `IgnoreRandomInherit` field on `DT_WazaDataTable` (CODE-VERIFIED):
+    /// `IgnoreRandomInherit == true` ⇒ NOT inheritable, so `can_inherit` is its
+    /// negation. Moves absent from `attacks.csv` (a few `Unique_*`/NPC wazas)
+    /// default to `false`. Source: github.com/tylercamp/palcalc (MIT),
+    /// `PalCalc.GenDB/out-csv/attacks.csv`.
+    #[serde(default)]
+    pub can_inherit: bool,
+    /// Whether a Skill Fruit item exists in the game that teaches this move.
+    /// From palcalc's `attacks.csv` (`HasSkillFruit`): true iff a Skill Fruit
+    /// grants this waza. Moves absent from `attacks.csv` default to `false`.
+    /// Source: github.com/tylercamp/palcalc (MIT),
+    /// `PalCalc.GenDB/out-csv/attacks.csv`.
+    #[serde(default)]
+    pub has_skill_fruit: bool,
 }
 
 /// One level-up learnable active skill (waza) for a species, from the game's
@@ -696,6 +712,18 @@ impl GameData {
     /// (sorted by id). See [`Pack::active_skills`].
     pub fn active_skills(&self) -> &[(String, ActiveSkill)] {
         &self.pack.active_skills
+    }
+
+    /// Active-skill (waza) definition by its save-side id (e.g. `"AirCanon"`),
+    /// or `None` when absent. Binary search over the id-sorted
+    /// [`Pack::active_skills`]. Thin accessor for the solver's move-inheritance
+    /// model (`can_inherit` / `has_skill_fruit` lookups).
+    pub fn active_skill(&self, id: &str) -> Option<&ActiveSkill> {
+        self.pack
+            .active_skills
+            .binary_search_by(|(k, _)| k.as_str().cmp(id))
+            .ok()
+            .map(|i| &self.pack.active_skills[i].1)
     }
 
     /// The full breeding table (species interned to indices).

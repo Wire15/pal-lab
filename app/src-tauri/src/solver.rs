@@ -20,7 +20,7 @@ use pal_solver::solver::{
     diagnose_no_path, resolve_passive, resolve_species, solve_queue_monitored,
     solve_with_catching_monitored, BreedingPlan, BreedingSetup, CakeKind, Catching,
     GenderReverserConfig, IvModel, ModeResult, NoPathReason, QueueItem, SolveMonitor, SolvePhase,
-    SolveProgress, SolverConfig, SurgeryConfig, TargetPal, TargetSpec,
+    SolveProgress, SolverConfig, SkillFruitConfig, SurgeryConfig, TargetPal, TargetSpec,
 };
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
@@ -82,6 +82,15 @@ pub struct SolveRequest {
     /// pairing stays unbreedable). Maps to `SolverConfig::gender_reverser`.
     #[serde(default)]
     pub gender_reverser: Option<GenderReverserConfig>,
+    /// Required active-skill (waza) ids the child must carry (stripped waza ids,
+    /// e.g. `AirCanon`). Absent/empty => no move constraint. Maps to
+    /// `TargetSpec::required_moves`.
+    #[serde(default)]
+    pub required_moves: Vec<String>,
+    /// Skill-fruit remedy for required moves outside the single breeding-thread
+    /// slot: `{ cost_secs }`. Absent => off. Maps to `SolverConfig::skill_fruit`.
+    #[serde(default)]
+    pub skill_fruit: Option<SkillFruitConfig>,
 }
 
 /// IV floor thresholds from the Solver view (`ivs` on [`SolveRequest`]). Each
@@ -281,6 +290,7 @@ fn build_request(
     // shared serde shapes (`max_implants` is clamped 0..=4 inside the solver).
     cfg.surgery = req.surgery;
     cfg.gender_reverser = req.gender_reverser;
+    cfg.skill_fruit = req.skill_fruit;
 
     let mut spec = TargetSpec::new(TargetPal::Species(target_species));
     spec.required_passives = required_passives;
@@ -293,6 +303,7 @@ fn build_request(
         spec.iv_defense = ivs.defense;
     }
     spec.pinned_parents = req.pinned_parents.clone();
+    spec.required_moves = req.required_moves.clone();
     Ok((spec, cfg, req.catching))
 }
 
@@ -703,6 +714,18 @@ mod tests {
             .into_owned()
     }
 
+    // Old frontend payloads (pre active-skill wave) omit `required_moves` and
+    // `skill_fruit`; serde defaults must keep them deserializing (empty / off).
+    #[test]
+    fn old_payload_defaults_move_fields() {
+        let req: SolveRequest = serde_json::from_str(
+            r#"{"target_species":"Anubis","required_passives":["Runner"]}"#,
+        )
+        .expect("legacy payload must still deserialize");
+        assert!(req.required_moves.is_empty(), "required_moves defaults empty");
+        assert!(req.skill_fruit.is_none(), "skill_fruit defaults off");
+    }
+
     #[test]
     fn solves_anubis_from_testdata() {
         let req = SolveRequest {
@@ -721,6 +744,8 @@ mod tests {
             player_uid: None,
             surgery: None,
             gender_reverser: None,
+            required_moves: vec![],
+            skill_fruit: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected >=1 plan");
@@ -763,6 +788,8 @@ mod tests {
             player_uid: None,
             surgery: None,
             gender_reverser: None,
+            required_moves: vec![],
+            skill_fruit: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve should succeed");
         assert!(!resp.plans.is_empty(), "expected an owned-breeding plan for Anubis");
@@ -802,6 +829,8 @@ mod tests {
             player_uid: None,
             surgery: None,
             gender_reverser: None,
+            required_moves: vec![],
+            skill_fruit: None,
         };
         let resp = run(&testdata_dir(), req).expect("solve with ivs+cake should succeed");
         assert!(!resp.plans.is_empty(), "expected a plan with modest IVs + mushroom cake");
@@ -856,6 +885,8 @@ mod tests {
             player_uid: None,
             surgery: None,
             gender_reverser: None,
+            required_moves: vec![],
+            skill_fruit: None,
         };
         let resp = run_queue(&dir, vec![mk("Anubis"), mk("Anubis")], false)
             .expect("queue solve should succeed");

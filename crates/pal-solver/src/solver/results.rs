@@ -64,6 +64,12 @@ pub struct PlanNode {
     /// plans without a reverser are byte-identical to pre-reverser output.
     #[serde(default, skip_serializing_if = "is_false")]
     pub gender_reversed: bool,
+    /// Set on the bred node where the THREADED active-skill move is first
+    /// inherited from a carrying parent (the deepest node in the threading
+    /// chain). Display name of the move. Skipped when absent so plans without a
+    /// threaded move are byte-identical to pre-moves output.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inherited_move: Option<String>,
 }
 
 /// A full plan, best-first orderable by `total_time_secs`.
@@ -85,6 +91,18 @@ pub struct BreedingPlan {
     /// (they are on the delivered pal); this list marks their provenance.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub surgery: Vec<SurgeryStep>,
+    /// Skill-Fruit steps applied to the FINAL pal (empty = none). Each teaches
+    /// one REQUIRED active-skill move that breeding did not thread, with its
+    /// time-cost estimate. Mirrors `surgery` for moves. `#[serde(default,
+    /// skip_serializing_if)]` keeps move-free plans byte-identical.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub fruits: Vec<FruitStep>,
+    /// REQUIRED moves satisfied by the TARGET species' own learnset — obtained
+    /// by leveling, no breeding or fruit needed. Display names. Empty when no
+    /// such move was requested. `#[serde(default, skip_serializing_if)]` keeps
+    /// move-free plans byte-identical.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub levelup_moves: Vec<String>,
 }
 
 /// One surgery-table implant on a plan's final pal: a required passive the bred
@@ -97,34 +115,64 @@ pub struct SurgeryStep {
     pub cost_secs: f64,
 }
 
+/// One Skill-Fruit step on a plan's final pal: a required active-skill move the
+/// bred (or owned) pal did not carry from breeding, taught via a Skill Fruit for
+/// `cost_secs` (the caller's time-cost estimate). Mirrors [`SurgeryStep`].
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct FruitStep {
+    pub move_id: String,
+    pub move_name: String,
+    pub cost_secs: f64,
+}
+
 /// serde `skip_serializing_if` predicate for a `false` bool.
 fn is_false(b: &bool) -> bool {
     !*b
 }
 
-/// A target-satisfying reference plus its terminal surgery relaxation. `implants`
-/// lists the REQUIRED passives covered by surgery-table implants on the final pal
-/// (empty = exact satisfaction); each costs `surgery_cost_each` seconds. Ranking
-/// uses [`Self::effort`] (the reference effort plus total implant cost), so a
-/// cheaper exact plan keeps priority over a surgery plan.
+/// A target-satisfying reference plus its terminal relaxations. `implants` lists
+/// the REQUIRED passives covered by surgery-table implants (each costing
+/// `surgery_cost_each`); `fruits` lists the REQUIRED active-skill moves covered
+/// by Skill Fruit (each costing `fruit_cost_each`) — both empty = exact
+/// satisfaction. Ranking uses [`Self::effort`] (reference effort plus implant and
+/// fruit costs), so a cheaper exact/threaded plan keeps priority. `levelup_moves`
+/// and `threaded_move_name` are solve-level move context carried through so
+/// [`BreedingPlan::from_solved`] can populate the plan (not serialized here).
 #[derive(Debug, Clone)]
 pub struct SolvedRef {
     pub reference: PalRef,
     pub implants: Vec<PassiveId>,
     pub surgery_cost_each: f64,
+    /// Required moves covered by Skill Fruit on the final pal: (move_id, move_name).
+    pub fruits: Vec<(String, String)>,
+    pub fruit_cost_each: f64,
+    /// Display name of the move threaded through breeding (for `inherited_move`).
+    pub threaded_move_name: Option<String>,
+    /// Required moves satisfied by the target's own learnset (display names).
+    pub levelup_moves: Vec<String>,
 }
 
 impl SolvedRef {
-    /// An exactly-satisfying reference (no surgery).
+    /// An exactly-satisfying reference (no surgery, no fruit, no threaded move).
     #[inline]
     pub fn exact(reference: PalRef) -> SolvedRef {
-        SolvedRef { reference, implants: Vec::new(), surgery_cost_each: 0.0 }
+        SolvedRef {
+            reference,
+            implants: Vec::new(),
+            surgery_cost_each: 0.0,
+            fruits: Vec::new(),
+            fruit_cost_each: 0.0,
+            threaded_move_name: None,
+            levelup_moves: Vec::new(),
+        }
     }
 
-    /// Ranking effort: the reference's own effort plus every implant's cost.
+    /// Ranking effort: the reference's own effort plus every implant and fruit cost.
     #[inline]
     pub fn effort(&self) -> f64 {
-        self.reference.total_effort() + self.implants.len() as f64 * self.surgery_cost_each
+        self.reference.total_effort()
+            + self.implants.len() as f64 * self.surgery_cost_each
+            + self.fruits.len() as f64 * self.fruit_cost_each
     }
 }
 
@@ -142,7 +190,7 @@ fn passive_labels(passives: &[EffPassive]) -> Vec<String> {
         .collect()
 }
 
-fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
+fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3], threaded_name: Option<&str>) -> PlanNode {
     let species = r.species();
     let species_name = gd
         .species_at(species)
@@ -184,8 +232,8 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
                     PlanSource::Bred,
                     b.passives_prob * b.ivs_prob,
                     {
-                        let mut c1 = node_of(gd, &b.parent1, iv_thresholds);
-                        let mut c2 = node_of(gd, &b.parent2, iv_thresholds);
+                        let mut c1 = node_of(gd, &b.parent1, iv_thresholds, threaded_name);
+                        let mut c2 = node_of(gd, &b.parent2, iv_thresholds, threaded_name);
                         match b.reversed_parent {
                             1 => c1.gender_reversed = true,
                             2 => c2.gender_reversed = true,
@@ -200,6 +248,16 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
                 )
             }
         };
+    // The threaded move is first inherited at the DEEPEST bred node carrying it
+    // (no bred child carries it — its carrying parent is the owned source).
+    let inherited_move = match r {
+        PalRef::Bred(b) => threaded_name.and_then(|name| {
+            let child_bred_carries = (b.parent1.is_bred() && b.parent1.carries_move())
+                || (b.parent2.is_bred() && b.parent2.carries_move());
+            (b.carries_move && !child_bred_carries).then(|| name.to_string())
+        }),
+        _ => None,
+    };
     PlanNode {
         species,
         species_name,
@@ -214,6 +272,7 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3]) -> PlanNode {
         expected_eggs,
         iv_targets,
         gender_reversed: false,
+        inherited_move,
     }
 }
 
@@ -229,31 +288,48 @@ impl BreedingPlan {
         cake: CakeKind,
         iv_thresholds: [u8; 3],
     ) -> BreedingPlan {
+        BreedingPlan::skeleton(gd, r, cake, iv_thresholds, None)
+    }
+
+    /// Shared plan skeleton: node tree (tagging `inherited_move` for
+    /// `threaded_name`) plus the base totals. No relaxations folded in.
+    fn skeleton(
+        gd: &GameData,
+        r: &PalRef,
+        cake: CakeKind,
+        iv_thresholds: [u8; 3],
+        threaded_name: Option<&str>,
+    ) -> BreedingPlan {
         let cake_count = if cake.consumes_cakes() { cake_attempts(r) } else { 0 };
         BreedingPlan {
-            root: node_of(gd, r, iv_thresholds),
+            root: node_of(gd, r, iv_thresholds, threaded_name),
             total_time_secs: r.total_effort(),
             total_steps: r.num_breeding_steps(),
             total_wild_pals: r.num_wild_pals(),
             cake,
             cake_count,
             surgery: Vec::new(),
+            fruits: Vec::new(),
+            levelup_moves: Vec::new(),
         }
     }
 
     /// Build a plan from a [`SolvedRef`]: the exact-satisfaction plan for its
-    /// reference, plus any surgery-table implants folded in. Implanted passives
-    /// are appended to the root's passive slots (they are on the delivered pal),
-    /// their summed cost is added to `total_time_secs`, and the `surgery` list
-    /// records their provenance. Probability math is untouched — surgery is a
-    /// terminal step, not an inheritance event.
+    /// reference, plus surgery-table implants AND Skill-Fruit moves folded in.
+    /// Implanted passives are appended to the root's passive slots; each
+    /// relaxation's summed cost is added to `total_time_secs`; `surgery` /
+    /// `fruits` record provenance; `levelup_moves` lists learnset-satisfied
+    /// moves. Probability math is untouched — both are terminal steps, not
+    /// inheritance events. The threaded move (if any) is already reflected on the
+    /// bred nodes (`inherited_move`) and in the reference effort.
     pub fn from_solved(
         gd: &GameData,
         sr: &SolvedRef,
         cake: CakeKind,
         iv_thresholds: [u8; 3],
     ) -> BreedingPlan {
-        let mut plan = BreedingPlan::from_ref(gd, &sr.reference, cake, iv_thresholds);
+        let mut plan =
+            BreedingPlan::skeleton(gd, &sr.reference, cake, iv_thresholds, sr.threaded_move_name.as_deref());
         if !sr.implants.is_empty() {
             let steps: Vec<SurgeryStep> = sr
                 .implants
@@ -273,6 +349,19 @@ impl BreedingPlan {
             plan.total_time_secs += sr.implants.len() as f64 * sr.surgery_cost_each;
             plan.surgery = steps;
         }
+        if !sr.fruits.is_empty() {
+            plan.fruits = sr
+                .fruits
+                .iter()
+                .map(|(id, name)| FruitStep {
+                    move_id: id.clone(),
+                    move_name: name.clone(),
+                    cost_secs: sr.fruit_cost_each,
+                })
+                .collect();
+            plan.total_time_secs += sr.fruits.len() as f64 * sr.fruit_cost_each;
+        }
+        plan.levelup_moves = sr.levelup_moves.clone();
         plan
     }
 }

@@ -33,12 +33,12 @@ import { useAppState, useBreedingSetup } from "../state";
 import type { PlanNodeSelection } from "../components/plan-node-panel";
 
 /** A caller-supplied solve spec: everything except the shared `setup`/`cake`
- * and the advanced stations (`surgery`/`gender_reverser`), which the hook
- * injects from `useBreedingSetup`. The Solver passes `include_wild`/`catching`;
- * the IV Lab passes `ivs`/`iv_model`. */
+ * and the advanced stations (`surgery`/`gender_reverser`/`skill_fruit`), which
+ * the hook injects from `useBreedingSetup`. The Solver passes
+ * `include_wild`/`catching`/`required_moves`; the IV Lab passes `ivs`/`iv_model`. */
 export type SolveSpec = Omit<
   SolveRequest,
-  "setup" | "cake" | "surgery" | "gender_reverser"
+  "setup" | "cake" | "surgery" | "gender_reverser" | "skill_fruit"
 >;
 
 /** A selected plan-graph node (id + panel payload), or none. */
@@ -166,7 +166,7 @@ export interface UseSolve {
 
 export function useSolve(): UseSolve {
   const { saveDir, playerScope } = useAppState();
-  const { setup, cake, surgery, genderReverser } = useBreedingSetup();
+  const { setup, cake, surgery, genderReverser, skillFruit } = useBreedingSetup();
 
   const [speciesList, setSpeciesList] = useState<NamedEntry[]>([]);
   const [plans, setPlans] = useState<BreedingPlan[] | null>(null);
@@ -334,6 +334,7 @@ export function useSolve(): UseSolve {
         cake,
         ...(surgery ? { surgery } : {}),
         ...(genderReverser ? { gender_reverser: genderReverser } : {}),
+        ...(skillFruit ? { skill_fruit: skillFruit } : {}),
         ...(playerScope !== "all" ? { player_uid: hexToGuid(playerScope) } : {}),
       };
       setLastRequest(full);
@@ -385,6 +386,7 @@ export function useSolve(): UseSolve {
         cake,
         ...(surgery ? { surgery } : {}),
         ...(genderReverser ? { gender_reverser: genderReverser } : {}),
+        ...(skillFruit ? { skill_fruit: skillFruit } : {}),
         ...(playerScope !== "all" ? { player_uid: hexToGuid(playerScope) } : {}),
       }));
       const resp = await invoke<QueueResponse>("solve_queue", {
