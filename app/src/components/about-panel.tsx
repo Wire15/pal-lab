@@ -1,7 +1,7 @@
 // About panel: app version, data-pack identity, a manual update check, and the
 // license note. Mounted from the sidebar footer via <AboutButton /> (which
-// renders the "Offline · v0.2" chip as its own trigger and owns the modal
-// state), so App.tsx only needs the one import + usage.
+// renders the "Pal Lab · v{version}" chip as its own trigger and owns the
+// modal state), so App.tsx only needs the one import + usage.
 //
 // The update check hits GitHub's releases/latest via the Rust `check_update`
 // command (see src-tauri/src/updater.rs); any failure degrades to a quiet

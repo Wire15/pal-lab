@@ -203,6 +203,13 @@ fn decode_utf16(bytes: &[u8]) -> String {
 // containers.index
 // ---------------------------------------------------------------------------
 
+/// Smallest possible on-disk size of one `containers.index` entry: three
+/// UTF-16 strings at their empty-string minimum (u32 length each = 12) + seq u8
+/// + flag u32 + 16B GUID + mtime u64 + reserved u64 + size u64 = 57 bytes. Used
+/// only to cap `Vec::with_capacity` against a crafted `count`; the read loop is
+/// the real bound.
+const MIN_INDEX_ENTRY_BYTES: usize = 57;
+
 struct IndexEntry {
     name: String,
     seq: u8,
@@ -230,7 +237,13 @@ fn parse_index(buf: &[u8]) -> Result<Vec<IndexEntry>, SaveError> {
     let _index_uuid = r.utf16_str()?;
     let _reserved = r.u64()?;
 
-    let mut entries = Vec::with_capacity(count as usize);
+    // Cap the presize against what the remaining buffer could possibly hold: a
+    // crafted count (e.g. 0xFFFFFFFF) must not pre-allocate gigabytes and abort
+    // the allocator / trap the wasm worker before the read loop even runs. Each
+    // entry is at least MIN_INDEX_ENTRY_BYTES; the loop below still bounds the
+    // real iteration and errors on a short buffer.
+    let remaining = buf.len().saturating_sub(r.pos);
+    let mut entries = Vec::with_capacity((count as usize).min(remaining / MIN_INDEX_ENTRY_BYTES));
     for _ in 0..count {
         let name = r.utf16_str()?;
         let _name_repeat = r.utf16_str()?;
@@ -256,6 +269,10 @@ fn parse_index(buf: &[u8]) -> Result<Vec<IndexEntry>, SaveError> {
 // container.<seq>
 // ---------------------------------------------------------------------------
 
+/// Exact on-disk size of one `container.<seq>` record: 128B UTF-16 name +
+/// 2×16B GUIDs. Used to cap `Vec::with_capacity` against a crafted `file_count`.
+const CONTAINER_FILE_RECORD_BYTES: usize = 160;
+
 struct FileRecord {
     cloud_guid: [u8; 16],
     file_guid: [u8; 16],
@@ -270,7 +287,12 @@ fn parse_container_file(buf: &[u8]) -> Result<Vec<FileRecord>, SaveError> {
         )));
     }
     let file_count = r.u32()?;
-    let mut recs = Vec::with_capacity(file_count as usize);
+    // Cap the presize against the remaining buffer: a crafted file_count must not
+    // pre-allocate gigabytes and abort before the read loop runs. Records are
+    // exactly CONTAINER_FILE_RECORD_BYTES each; the loop below is the real bound.
+    let remaining = buf.len().saturating_sub(r.pos);
+    let mut recs =
+        Vec::with_capacity((file_count as usize).min(remaining / CONTAINER_FILE_RECORD_BYTES));
     for _ in 0..file_count {
         let _name = decode_utf16(r.take(128)?); // 64 UTF-16 units, always "Data"
         let cloud_guid = r.guid()?;
@@ -648,5 +670,34 @@ mod tests {
             Some(FileKey::PlayerDps("ABCD".into()))
         );
         assert_eq!(suffix_to_key("Bogus"), None);
+    }
+
+    /// A `containers.index` declaring count=0xFFFFFFFF with only a handful of
+    /// trailing bytes must return `Err` (short buffer), NOT abort the allocator
+    /// with a capacity-overflow via `Vec::with_capacity(count)`.
+    #[test]
+    fn parse_index_huge_count_does_not_oom() {
+        let mut buf = Vec::new();
+        buf.extend_from_slice(&CONTAINER_INDEX_VERSION.to_le_bytes()); // version 0xE
+        buf.extend_from_slice(&0xFFFF_FFFFu32.to_le_bytes()); // count
+        buf.extend_from_slice(&0u32.to_le_bytes()); // flag1
+        buf.extend_from_slice(&0u32.to_le_bytes()); // package_name (empty utf16)
+        buf.extend_from_slice(&0u64.to_le_bytes()); // mtime
+        buf.extend_from_slice(&0u32.to_le_bytes()); // flag2
+        buf.extend_from_slice(&0u32.to_le_bytes()); // index_uuid (empty utf16)
+        buf.extend_from_slice(&0u64.to_le_bytes()); // reserved
+        buf.extend_from_slice(&[1, 2, 3, 4]); // a handful of trailing bytes
+        assert!(parse_index(&buf).is_err());
+    }
+
+    /// A `container.<seq>` declaring file_count=0xFFFFFFFF with a handful of
+    /// trailing bytes must return `Err`, NOT abort via a giant pre-allocation.
+    #[test]
+    fn parse_container_file_huge_count_does_not_oom() {
+        let mut buf = Vec::new();
+        buf.extend_from_slice(&CONTAINER_FILE_LIST_VERSION.to_le_bytes()); // version 4
+        buf.extend_from_slice(&0xFFFF_FFFFu32.to_le_bytes()); // file_count
+        buf.extend_from_slice(&[1, 2, 3, 4]); // a handful of trailing bytes
+        assert!(parse_container_file(&buf).is_err());
     }
 }

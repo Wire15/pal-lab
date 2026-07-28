@@ -65,6 +65,17 @@ interface Selection {
 const CONTAINER_SEQ = /(^|\/)container\.\d+$/i;
 /** Dimensional-pal-storage player save — excluded from the player count. */
 const DPS_SAV = /_dps\.sav$/i;
+/** Per-file ceiling for the manifest inputs (`containers.index`, `container.<N>`)
+ *  read into memory during WGS detection. These records are tiny (a manifest plus
+ *  fixed-size file lists), so 4 MiB is generous headroom; an oversized file is a
+ *  malformed/hostile store and its store is skipped before `arrayBuffer()` pulls
+ *  the whole thing into memory. */
+const MAX_WGS_INDEX_BYTES = 4 * 1024 * 1024;
+/** Per-file ceiling for a `LevelMeta` blob read only to resolve a world's display
+ *  name. Real LevelMeta blobs are small; 64 MiB covers any legitimate one while
+ *  keeping a forged blob from ballooning memory. Oversized → world name stays
+ *  null (the world still loads). */
+const MAX_WGS_META_BYTES = 64 * 1024 * 1024;
 
 /** One world (save slot) resolved from a dropped WGS store, ready to load. The
  *  `storeFiles`/`refs` payload is opaque to callers — pass the chosen option to
@@ -149,12 +160,23 @@ export async function detectWgsWorlds(
   for (const store of stores) {
     const paths: string[] = [];
     const bufs: ArrayBuffer[] = [];
+    let oversized = false;
     for (const [rel, file] of store.files) {
       if (rel === "containers.index" || CONTAINER_SEQ.test(rel)) {
+        // A manifest input this large is malformed/hostile: skip the whole store
+        // rather than pull it into memory (matches the read-failure skip below).
+        if (file.size > MAX_WGS_INDEX_BYTES) {
+          warnings.push(
+            `${store.label}: ${rel} is ${file.size} bytes (over ${MAX_WGS_INDEX_BYTES}) — store skipped`,
+          );
+          oversized = true;
+          break;
+        }
         paths.push(rel);
         bufs.push(await file.arrayBuffer());
       }
     }
+    if (oversized) continue;
     // The core probes blob existence via the closure; hand it every store path
     // (no byte reads) so a world's Level/player blobs are seen as present.
     const presentPaths = [...store.files.keys()];
@@ -186,6 +208,14 @@ export async function detectWgsWorlds(
       const meta = w.refs.find((r) => r.target_path === "LevelMeta.sav");
       const file = meta && w.storeFiles.get(meta.blob_path);
       if (!file) return;
+      // A LevelMeta blob this large is malformed/hostile: skip name resolution
+      // (the world still loads unnamed) rather than read it into memory.
+      if (file.size > MAX_WGS_META_BYTES) {
+        warnings.push(
+          `${w.saveId}: LevelMeta is ${file.size} bytes (over ${MAX_WGS_META_BYTES}) — world name skipped`,
+        );
+        return;
+      }
       try {
         w.worldName = await wgsWorldName(await file.arrayBuffer());
       } catch {

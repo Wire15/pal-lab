@@ -16,6 +16,9 @@ dist-ssr
 # regenerated from Rust source, never committed.
 src/wasm-pkg
 
+# Cloudflare Wrangler local state (web deploys); regenerated, never committed.
+.wrangler/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

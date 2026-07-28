@@ -134,13 +134,13 @@ fn decompress_zlib(
     save_type: u8,
     _uncompressed_len: usize,
 ) -> Result<Vec<u8>, SaveError> {
-    let first = zlib_inflate(payload)?;
+    let first = zlib_inflate(payload, MAX_UNCOMPRESSED_LEN)?;
     match save_type {
         0x31 => Ok(first),
         0x32 => {
             // Double zlib: the first inflate yields another zlib stream whose
             // output is `uncompressed_len` bytes.
-            zlib_inflate(&first)
+            zlib_inflate(&first, MAX_UNCOMPRESSED_LEN)
         }
         other => Err(SaveError::Compression(format!(
             "unknown PlZ save_type 0x{other:02x}"
@@ -148,11 +148,22 @@ fn decompress_zlib(
     }
 }
 
-fn zlib_inflate(input: &[u8]) -> Result<Vec<u8>, SaveError> {
+/// Inflate a zlib stream, refusing output larger than `max_len` bytes. A
+/// decompression bomb would otherwise drive `read_to_end` to allocate without
+/// bound regardless of the header's declared length; reading one byte past the
+/// ceiling lets us detect and reject overflow. Production callers pass
+/// `MAX_UNCOMPRESSED_LEN`; tests pass a tiny ceiling.
+fn zlib_inflate(input: &[u8], max_len: usize) -> Result<Vec<u8>, SaveError> {
     let mut out = Vec::new();
     ZlibDecoder::new(input)
+        .take(max_len as u64 + 1)
         .read_to_end(&mut out)
         .map_err(|e| SaveError::Compression(format!("zlib inflate failed: {e}")))?;
+    if out.len() > max_len {
+        return Err(SaveError::Compression(format!(
+            "zlib output exceeds {max_len}-byte ceiling (decompression bomb?)"
+        )));
+    }
     Ok(out)
 }
 
@@ -302,5 +313,28 @@ mod tests {
             }
             other => panic!("expected inner-magic error, got {other:?}"),
         }
+    }
+
+    /// The bounded inflate helper rejects output exceeding its `max_len`
+    /// ceiling (decompression-bomb guard) while still returning bytes that fit.
+    #[test]
+    fn zlib_inflate_rejects_output_over_ceiling() {
+        use flate2::write::ZlibEncoder;
+        use flate2::Compression;
+        use std::io::Write;
+        // A small zlib stream that inflates to 4096 bytes.
+        let raw = vec![0u8; 4096];
+        let mut enc = ZlibEncoder::new(Vec::new(), Compression::default());
+        enc.write_all(&raw).unwrap();
+        let comp = enc.finish().unwrap();
+        // A tiny ceiling well below the inflated size must be rejected.
+        match zlib_inflate(&comp, 64) {
+            Err(SaveError::Compression(msg)) => {
+                assert!(msg.contains("ceiling"), "unexpected message: {msg}");
+            }
+            other => panic!("expected ceiling error, got {other:?}"),
+        }
+        // A ceiling that comfortably fits inflates byte-identically.
+        assert_eq!(zlib_inflate(&comp, 8192).expect("within ceiling"), raw);
     }
 }

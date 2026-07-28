@@ -33,6 +33,18 @@ function blobFile(...data: number[]): File {
   return new File([new Uint8Array(data)], "blob");
 }
 
+/** A File-shaped stub reporting `size` bytes without allocating them. Its
+ *  `arrayBuffer()` throws, proving the size ceiling short-circuits before any
+ *  read. */
+function oversizedFile(size: number): File {
+  return {
+    size,
+    arrayBuffer: () => {
+      throw new Error("arrayBuffer() must not be called on an oversized file");
+    },
+  } as unknown as File;
+}
+
 beforeEach(() => {
   manifestCalls.length = 0;
   presentCalls.length = 0;
@@ -184,4 +196,47 @@ test("detectWgsWorlds skips *backup* stores and parses only the live one", async
   const result = await detectWgsWorlds(files);
   expect(manifestCalls).toHaveLength(1); // backup store never parsed
   expect(result!.worlds).toHaveLength(1);
+});
+
+test("detectWgsWorlds skips a store whose containers.index is oversized", async () => {
+  const files = new Map<string, File>([
+    // 8 MiB > the 4 MiB manifest-input ceiling: this store is skipped whole.
+    ["wgs/BIG/containers.index", oversizedFile(8 * 1024 * 1024)],
+    ["wgs/BIG/D1/container.0", blobFile(0)],
+    ["wgs/BIG/D1/BLOB1", blobFile(1)],
+  ]);
+  const result = await detectWgsWorlds(files);
+  expect(result).not.toBeNull();
+  expect(manifestCalls).toHaveLength(0); // oversized store never reaches the bridge
+  expect(result!.worlds).toHaveLength(0);
+  expect(result!.warnings.some((w) => w.includes("store skipped"))).toBe(true);
+});
+
+test("detectWgsWorlds keeps a world whose LevelMeta blob is oversized (name skipped)", async () => {
+  const files = new Map<string, File>([
+    ["wgs/AAAA/containers.index", blobFile(0)],
+    ["wgs/AAAA/D1/container.0", blobFile(0)],
+    ["wgs/AAAA/D1/BLOB1", blobFile(10)],
+    // 128 MiB > the 64 MiB LevelMeta ceiling: name resolution is skipped.
+    ["wgs/AAAA/D2/BLOB2", oversizedFile(128 * 1024 * 1024)],
+  ]);
+  manifestImpl = async () => ({
+    worlds: [
+      {
+        save_id: "SAVE1",
+        mtime_ticks: 1000,
+        files: [
+          { target_path: "Level.sav", blob_path: "D1/BLOB1", size: 1 },
+          { target_path: "LevelMeta.sav", blob_path: "D2/BLOB2", size: 1 },
+        ],
+      },
+    ],
+    warnings: [],
+  });
+  worldNameImpl = async () => "Should Not Be Read";
+
+  const result = await detectWgsWorlds(files);
+  expect(result!.worlds).toHaveLength(1); // world still loads
+  expect(result!.worlds[0]!.worldName).toBeNull(); // name skipped, not read
+  expect(result!.warnings.some((w) => w.includes("world name skipped"))).toBe(true);
 });

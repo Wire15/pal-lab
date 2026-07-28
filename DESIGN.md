@@ -1,5 +1,7 @@
 # Pal Calc (Rust) — Design & Research Capture
 
+*Historical design/research snapshot (2026-07-21, pre-v1.0). Kept as provenance — see README.md and CHANGELOG.md for shipped reality.*
+
 Successor to [tylercamp/palcalc](https://github.com/tylercamp/palcalc) (MIT, C#/WPF):
 a save-aware Palworld breeding solver, combined with a paldb.cc-style reference layer,
 rebuilt as a Rust core + TypeScript UI. Research captured 2026-07-21 (Palworld 1.0 era,
