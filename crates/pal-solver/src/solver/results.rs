@@ -1,12 +1,14 @@
 //! Serializable breeding-plan tree returned to callers (a Tauri command wraps
 //! this next phase, so every node is `Serialize`/`Deserialize`).
 
+use std::collections::HashSet;
+
 use pal_data::types::{Gender, Guid, PassiveId};
 use pal_data::GameData;
 use serde::{Deserialize, Serialize};
 
 use crate::solver::config::CakeKind;
-use crate::solver::refs::{EffPassive, PalRef, RefGender};
+use crate::solver::refs::{BredPalRef, EffPassive, PalRef, RefGender};
 
 /// How a plan node is obtained.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -21,6 +23,25 @@ pub enum PlanSource {
     Wild { captures: u32, min_wild_level: u16 },
     /// A bred child of the two `children`.
     Bred,
+}
+
+/// Per-egg factor breakdown for a bred step: the independent probabilities whose
+/// product drives the step's egg estimate. `passives` and `ivs` are always
+/// present; `move_pass` is set only when a required move threads this step;
+/// `gender` is set only when the child's gender is constrained by downstream use
+/// (both fold into `PlanNode::expected_eggs`). Absent factors are omitted.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct StepOdds {
+    /// P(inherit all desired passives) for this step.
+    pub passives: f64,
+    /// P(inherit all required IVs) for this step.
+    pub ivs: f64,
+    /// Per-egg P(threaded move passes) — `None` when no move threads this step.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub move_pass: Option<f64>,
+    /// P(child rolls the needed gender) — `None` when gender is unconstrained.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gender: Option<f64>,
 }
 
 /// One node of a breeding plan.
@@ -70,6 +91,18 @@ pub struct PlanNode {
     /// threaded move are byte-identical to pre-moves output.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inherited_move: Option<String>,
+    /// Bred nodes only: the per-egg factor breakdown behind `expected_eggs`
+    /// (passives × IVs × move × gender). Absent on owned/wild. `#[serde(default,
+    /// skip_serializing_if)]` keeps pre-odds payloads byte-identical.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub odds: Option<StepOdds>,
+    /// Set on a bred INTERMEDIATE whose sole effect is diluting the junk-passive
+    /// pool: its own passive pool is strictly smaller than the deduped union of
+    /// its parents' pools, it carries no REQUIRED passive, and it threads no
+    /// required move. Lets the UI flag passive-laundering steps ("CLEANS LINE").
+    /// Skipped when `false` so ordinary plans stay byte-identical.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub washes_passives: bool,
 }
 
 /// A full plan, best-first orderable by `total_time_secs`.
@@ -190,6 +223,27 @@ fn passive_labels(passives: &[EffPassive]) -> Vec<String> {
         .collect()
 }
 
+/// Whether a bred node is a passive-laundering intermediate: a step whose sole
+/// effect is diluting the junk-passive pool. True iff it threads no required
+/// move, carries no REQUIRED (desired) passive of its own, and its passive pool
+/// is strictly smaller than the deduped union of its parents' pools. A node that
+/// carries a required passive is a productive consolidation (the final target
+/// carries its required passives), so it never counts as washing.
+fn washes_passives(b: &BredPalRef) -> bool {
+    if b.carries_move {
+        return false;
+    }
+    if b.effective_passives.iter().any(|p| matches!(p, EffPassive::Desired(_))) {
+        return false;
+    }
+    let own = b.effective_passives.len();
+    let (n1, r1) = b.parent1.pool_contribution();
+    let (n2, r2) = b.parent2.pool_contribution();
+    let mut union: HashSet<PassiveId> = n1.into_iter().collect();
+    union.extend(n2);
+    own < union.len() + (r1 + r2) as usize
+}
+
 fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3], threaded_name: Option<&str>) -> PlanNode {
     let species = r.species();
     let species_name = gd
@@ -258,6 +312,29 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3], threaded_name: Opt
         }),
         _ => None,
     };
+    // Per-egg factor breakdown + laundering flag (bred nodes only). The gender
+    // factor is present exactly when this node's gender was resolved downstream
+    // (folded into `expected_eggs`); `move_pass` exactly when the move threads
+    // this step (each threading node re-rolls, so it appears on the whole chain).
+    let (odds, washes_passives) = match r {
+        PalRef::Bred(b) => {
+            let gender = match b.gender {
+                RefGender::Wildcard => None,
+                g => {
+                    let (male, female) = gd.gender_probability(b.species).unwrap_or((0.5, 0.5));
+                    Some(match g {
+                        RefGender::Male => male as f64,
+                        RefGender::Female => female as f64,
+                        RefGender::Wildcard => 1.0,
+                    })
+                }
+            };
+            let move_pass = (b.carries_move && b.move_prob > 0.0).then_some(b.move_prob);
+            let odds = StepOdds { passives: b.passives_prob, ivs: b.ivs_prob, move_pass, gender };
+            (Some(odds), washes_passives(b))
+        }
+        _ => (None, false),
+    };
     PlanNode {
         species,
         species_name,
@@ -273,6 +350,8 @@ fn node_of(gd: &GameData, r: &PalRef, iv_thresholds: [u8; 3], threaded_name: Opt
         iv_targets,
         gender_reversed: false,
         inherited_move,
+        odds,
+        washes_passives,
     }
 }
 

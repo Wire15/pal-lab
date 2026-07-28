@@ -13,8 +13,9 @@
 // the selection type; it never touches Solver.tsx or plan-graph.tsx.
 
 import { useEffect, useRef } from "react";
-import type { FruitStep, Gender, PlanSource, SurgeryStep } from "../lib/types";
+import type { FruitStep, Gender, PlanSource, StepOdds, SurgeryStep } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
+import { buildOddsRows, eggsSummary } from "../lib/odds";
 import { PalIcon, Tag } from "./primitives";
 import { PassiveStrip } from "./passive-strip";
 import { PalHoverCard } from "./pal-hover-card";
@@ -48,6 +49,12 @@ export type PlanNodeSelection = {
   /** Display name of the one inherited move threaded through breeding at THIS
    * node (bred nodes only). ~50%/egg pass rate is community-measured. */
   inheritedMove?: string | null;
+  /** Per-egg factor breakdown for this bred step (absent on owned/wild + legacy). */
+  odds?: StepOdds;
+  /** Expected eggs for THIS step, for the "→ ~N eggs" breakdown summary. */
+  expectedEggs?: number;
+  /** True when this bred intermediate exists purely to shed extra passives. */
+  washesPassives?: boolean;
 };
 
 /** Narrow the externally-tagged source to its variant payloads. */
@@ -135,6 +142,7 @@ export function PlanNodePanel({
   const { species, speciesName, gender, planIndex, passives, probability, estTimeSecs } =
     selection;
   const { genderReversed, surgery, fruits, inheritedMove } = selection;
+  const { odds, expectedEggs, washesPassives } = selection;
   const surgeryCost = (surgery ?? []).reduce((sum, s) => sum + s.cost_secs, 0);
   const fruitCost = (fruits ?? []).reduce((sum, f) => sum + f.cost_secs, 0);
   const src = readSource(selection.source);
@@ -232,6 +240,14 @@ export function PlanNodePanel({
                   {"\u21c4"} reversed
                 </span>
               )}
+              {washesPassives && (
+                <span
+                  className="rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
+                  title="This step exists to shed extra passives so later eggs hit the target more often"
+                >
+                  Cleans line
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -243,7 +259,9 @@ export function PlanNodePanel({
             right={
               <span
                 className={`rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${prob.text} ${prob.ring}`}
-                title={`${prob.label} odds`}
+                title={
+                  odds ? "per-egg acceptance \u2014 see breakdown" : `${prob.label} odds`
+                }
               >
                 {(probability * 100).toFixed(0)}%
               </span>
@@ -260,6 +278,30 @@ export function PlanNodePanel({
                 <span className="font-mono tabular-nums">{formatDuration(estTimeSecs)}</span>
               </FactRow>
             </dl>
+            {odds && (
+              <dl className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3">
+                {buildOddsRows(odds).map((r) => (
+                  <div key={r.label} className="flex items-baseline justify-between gap-3">
+                    <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                      {r.label}
+                    </dt>
+                    <dd className="font-mono text-[13px] tabular-nums text-ink">{r.value}</dd>
+                  </div>
+                ))}
+                {expectedEggs != null && (
+                  <div className="pt-0.5 font-mono text-[12px] tabular-nums text-ink-dim">
+                    {eggsSummary(expectedEggs)}
+                  </div>
+                )}
+              </dl>
+            )}
+            {washesPassives && (
+              <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
+                This step exists to shed extra passives: the child&rsquo;s pool is
+                smaller than its parents&rsquo;, so later eggs hit the target more
+                often.
+              </p>
+            )}
           </Section>
         )}
 

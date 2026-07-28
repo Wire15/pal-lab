@@ -6,7 +6,7 @@ use pal_data::types::{ContainerKind, Gender};
 use pal_data::GameData;
 use pal_solver::solver::config::{BreedingSetup, CakeKind};
 use pal_solver::solver::refs::{
-    BredPalRef, OwnedInstance, OwnedPalRef, PalRef, SolverIv, SolverIvSet,
+    BredPalRef, EffPassive, OwnedInstance, OwnedPalRef, PalRef, RefGender, SolverIv, SolverIvSet,
 };
 use pal_solver::solver::results::{BreedingPlan, PlanSource};
 
@@ -175,4 +175,126 @@ fn expected_eggs_is_per_node_not_cumulative() {
         plan.root.expected_eggs.unwrap() < bred_child.expected_eggs.unwrap(),
         "expected_eggs must be per-node, not cumulative",
     );
+}
+
+/// An owned ref with explicit real passives and effective-passive view.
+fn owned_ref_p(species: u16, gender: Gender, real: &[&str], effective: Vec<EffPassive>) -> PalRef {
+    PalRef::Owned(OwnedPalRef {
+        species,
+        gender: gender.into(),
+        effective_passives: effective,
+        ivs: SolverIvSet::RANDOM,
+        primary: OwnedInstance {
+            instance_id: [species as u8; 16],
+            gender,
+            container: ContainerKind::Palbox,
+            real_passives: real.iter().map(|s| s.to_string()).collect(),
+            ivs: SolverIvSet::RANDOM,
+        },
+        alt: None,
+        carries_move: false,
+    })
+}
+
+/// The laundering scenario: junk-passive females breed a cleaner intermediate,
+/// which the male carrier of the required passive breeds the final target off.
+/// Every bred node carries `odds`; owned leaves do not. The junk-diluting
+/// intermediate flags `washes_passives`; the final target (which carries the
+/// required passive) does not.
+#[test]
+fn laundering_intermediate_flags_washes_but_final_does_not() {
+    let gd = GameData::get();
+    // Two junk females (all-random 3-passive pools) => a 2-random intermediate.
+    let f1 = owned_ref_p(2, Gender::Female, &["JunkA", "JunkB", "JunkC"], vec![
+        EffPassive::Random,
+        EffPassive::Random,
+        EffPassive::Random,
+    ]);
+    let f2 = owned_ref_p(3, Gender::Female, &["JunkA", "JunkB", "JunkC"], vec![
+        EffPassive::Random,
+        EffPassive::Random,
+        EffPassive::Random,
+    ]);
+    let inter = BredPalRef::new(
+        gd,
+        1,
+        f1,
+        f2,
+        vec![EffPassive::Random, EffPassive::Random], // 2 < 3-name parent union
+        0.3,
+        SolverIvSet::RANDOM,
+        1.0,
+        &BreedingSetup::default(),
+        1.0,
+    );
+    let m = owned_ref_p(4, Gender::Male, &["Runner"], vec![EffPassive::Desired("Runner".into())]);
+    let root = BredPalRef::new(
+        gd,
+        0,
+        m,
+        PalRef::Bred(Box::new(inter)),
+        vec![EffPassive::Desired("Runner".into()), EffPassive::Random],
+        0.2,
+        SolverIvSet::RANDOM,
+        1.0,
+        &BreedingSetup::default(),
+        1.0,
+    );
+    let root_ref = PalRef::Bred(Box::new(root));
+
+    let plan = BreedingPlan::from_ref(gd, &root_ref, CakeKind::Normal, [0, 0, 0]);
+    let r = &plan.root;
+
+    // Odds present on every bred node, absent on owned leaves.
+    assert!(r.odds.is_some(), "final bred node carries odds");
+    let inter_node = r
+        .children
+        .iter()
+        .find(|c| matches!(c.source, PlanSource::Bred))
+        .expect("bred intermediate present");
+    assert!(inter_node.odds.is_some(), "intermediate bred node carries odds");
+    for leaf in r.children.iter().filter(|c| matches!(c.source, PlanSource::Owned { .. })) {
+        assert!(leaf.odds.is_none(), "owned leaves carry no odds");
+    }
+
+    // Laundering flag: true on the junk-diluting intermediate, false on the final.
+    assert!(inter_node.washes_passives, "the junk-diluting intermediate cleans the line");
+    assert!(!r.washes_passives, "the final carries a required passive => not washing");
+
+    // Factor breakdown on the final: passives/ivs present; move/gender absent.
+    let odds = r.odds.as_ref().unwrap();
+    assert!((odds.passives - 0.2).abs() < 1e-12);
+    assert!((odds.ivs - 1.0).abs() < 1e-12);
+    assert!(odds.move_pass.is_none(), "no threaded move => no move factor");
+    assert!(odds.gender.is_none(), "root gender unconstrained => no gender factor");
+}
+
+/// The `gender` odds factor is present exactly when the bred child's gender was
+/// resolved (folded into the egg count), and equals the needed-gender probability.
+#[test]
+fn gender_factor_present_only_when_gender_constrained() {
+    let gd = GameData::get();
+    let node = bred(
+        gd,
+        0,
+        0.5,
+        1.0,
+        SolverIvSet::RANDOM,
+        owned_ref(1, Gender::Male),
+        owned_ref(2, Gender::Female),
+    );
+
+    // Wildcard (unresolved) child: no gender factor.
+    let wild = BreedingPlan::from_ref(gd, &PalRef::Bred(Box::new(node.clone())), CakeKind::Normal, [0, 0, 0]);
+    assert!(wild.root.odds.as_ref().unwrap().gender.is_none(), "wildcard child => no gender factor");
+
+    // Resolved to a concrete gender (as downstream use would): factor present and
+    // equal to that gender's probability.
+    let resolved = PalRef::Bred(Box::new(node))
+        .with_gender(gd, RefGender::Female)
+        .expect("a bred child resolves to a concrete gender");
+    let plan = BreedingPlan::from_ref(gd, &resolved, CakeKind::Normal, [0, 0, 0]);
+    let g = plan.root.odds.as_ref().unwrap().gender.expect("resolved gender => factor present");
+    let female = gd.gender_probability(0).unwrap_or((0.5, 0.5)).1 as f64;
+    assert!((g - female).abs() < 1e-9, "gender factor is the needed-gender probability");
 }

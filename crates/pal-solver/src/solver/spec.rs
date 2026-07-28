@@ -15,6 +15,11 @@ pub enum TargetPal {
     Any,
 }
 
+/// serde default for [`TargetSpec::max_irrelevant`] (palcalc default `1`).
+fn default_max_irrelevant() -> u8 {
+    1
+}
+
 /// What the caller wants. `required_passives` MUST all be present; `optional_passives`
 /// are inherited when free. IV thresholds of `0` mean "don't care"; a non-zero
 /// threshold means the stat matters and the result's floor must meet it.
@@ -28,7 +33,9 @@ pub struct TargetSpec {
     pub iv_defense: u8,
     pub required_gender: Option<Gender>,
     /// Max irrelevant passives tolerated on bred children (palcalc
-    /// `MaxBredIrrelevantPassives`). Default 1.
+    /// `MaxBredIrrelevantPassives`). `0..=4` (4 = effectively "any"). Default 1;
+    /// `#[serde(default)]` so payloads omitting it deserialize to that default.
+    #[serde(default = "default_max_irrelevant")]
     pub max_irrelevant: u8,
     /// Owned instance ids that MUST appear as leaves in every returned plan
     /// tree (Wave A pinning). Empty = no constraint. Pinned instances are

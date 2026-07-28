@@ -69,3 +69,82 @@ fn plan_serializes_and_roundtrips() {
     assert_eq!(back.total_wild_pals, plan.total_wild_pals);
     assert_eq!(back.root.species_name, plan.root.species_name);
 }
+
+/// Recursively drop `keys` from every object in a JSON value.
+fn strip_keys(v: &mut serde_json::Value, keys: &[&str]) {
+    match v {
+        serde_json::Value::Object(map) => {
+            for k in keys {
+                map.remove(*k);
+            }
+            for child in map.values_mut() {
+                strip_keys(child, keys);
+            }
+        }
+        serde_json::Value::Array(arr) => {
+            for child in arr.iter_mut() {
+                strip_keys(child, keys);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// A pre-odds plan payload (no `odds` / `washes_passives` keys) still
+/// deserializes: serde `default` + `skip_serializing_if` keep old plans valid.
+#[test]
+fn plan_without_odds_fields_deserializes() {
+    let gd = GameData::get();
+    let male = PalRef::Owned(OwnedPalRef {
+        species: 1,
+        gender: Gender::Male.into(),
+        effective_passives: vec![],
+        ivs: SolverIvSet::RANDOM,
+        primary: OwnedInstance {
+            instance_id: [1u8; 16],
+            gender: Gender::Male,
+            container: ContainerKind::Palbox,
+            real_passives: vec![],
+            ivs: SolverIvSet::RANDOM,
+        },
+        alt: None,
+        carries_move: false,
+    });
+    let female = PalRef::Owned(OwnedPalRef {
+        species: 2,
+        gender: Gender::Female.into(),
+        effective_passives: vec![],
+        ivs: SolverIvSet::RANDOM,
+        primary: OwnedInstance {
+            instance_id: [2u8; 16],
+            gender: Gender::Female,
+            container: ContainerKind::Palbox,
+            real_passives: vec![],
+            ivs: SolverIvSet::RANDOM,
+        },
+        alt: None,
+        carries_move: false,
+    });
+    let bred = PalRef::Bred(Box::new(BredPalRef::new(
+        gd,
+        0,
+        male,
+        female,
+        vec![EffPassive::Random, EffPassive::Random],
+        0.3,
+        SolverIvSet::RANDOM,
+        1.0,
+        &BreedingSetup::default(),
+        1.0,
+    )));
+    let plan = BreedingPlan::from_ref(gd, &bred, CakeKind::Normal, [0, 0, 0]);
+    assert!(plan.root.odds.is_some(), "sanity: new bred plans carry odds");
+
+    // Strip the new keys everywhere (a legacy payload) and re-deserialize.
+    let mut v = serde_json::to_value(&plan).expect("to_value");
+    strip_keys(&mut v, &["odds", "washes_passives"]);
+    let back: BreedingPlan =
+        serde_json::from_value(v).expect("legacy payload without odds must deserialize");
+    assert!(back.root.odds.is_none(), "missing odds defaults to None");
+    assert!(!back.root.washes_passives, "missing washes_passives defaults to false");
+}

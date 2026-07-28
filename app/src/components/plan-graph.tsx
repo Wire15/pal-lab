@@ -314,6 +314,14 @@ function PalCircle({
             Inherit: {node.inherited_move}
           </span>
         )}
+        {node.washes_passives && (
+          <span
+            className="max-w-full truncate rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
+            title="This step exists to shed extra passives so later eggs hit the target more often"
+          >
+            Cleans line
+          </span>
+        )}
         {fruits && fruits.length > 0 && (
           <span
             className="max-w-full truncate rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
@@ -590,6 +598,9 @@ export function PlanGraph({
                     surgery,
                     fruits,
                     inheritedMove: laid.node.inherited_move ?? null,
+                    odds: laid.node.odds,
+                    expectedEggs: laid.node.expected_eggs,
+                    washesPassives: laid.node.washes_passives ?? false,
                   },
                   laid.id,
                 )

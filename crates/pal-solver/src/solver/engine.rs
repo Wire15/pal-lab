@@ -54,16 +54,40 @@ struct MoveCtx {
     /// Per-egg inherit rate (see [`ACTIVE_INHERIT_RATE`]; COMMUNITY-MEASURED).
     rate: f64,
     /// Per-species equipped estimate: the first 3 level-1 learnset moves that are
-    /// `can_inherit`. A parent's equipped-can-inherit pool is estimated from this
-    /// base (plus the threaded move when the parent carries it) to size |U|.
+    /// `can_inherit`. Used for BRED/WILD parents, whose real equipped moveset the
+    /// solver does not track. A parent's estimated pool is this base (plus the
+    /// threaded move when the parent carries it) to size |U|.
     base_by_species: HashMap<u16, Vec<String>>,
+    /// Owned instances' REAL equipped `can_inherit` move ids, keyed by instance
+    /// id. Owned parents size |U| from their actual moveset (accurate) instead of
+    /// the per-species estimate. Composite (wildcard) refs union both members.
+    owned_can_inherit: HashMap<Guid, Vec<String>>,
 }
 
 impl MoveCtx {
-    /// A parent's estimated equipped `can_inherit` move ids: the species base
-    /// plus the threaded move iff this ref carries it.
+    /// A parent's estimated equipped `can_inherit` move ids. OWNED parents expose
+    /// their REAL equipped can_inherit moves (accurate |U|); BRED/WILD parents
+    /// fall back to the per-species estimate. Either way the threaded move is
+    /// appended iff this ref carries it.
     fn equipped(&self, r: &PalRef) -> Vec<String> {
-        let mut v = self.base_by_species.get(&r.species()).cloned().unwrap_or_default();
+        let mut v = match r {
+            PalRef::Owned(o) => {
+                let mut real =
+                    self.owned_can_inherit.get(&o.primary.instance_id).cloned().unwrap_or_default();
+                // A composite (wildcard) pair contributes both members' pools.
+                if let Some(alt) = &o.alt {
+                    if let Some(alt_moves) = self.owned_can_inherit.get(&alt.instance_id) {
+                        for m in alt_moves {
+                            if !real.contains(m) {
+                                real.push(m.clone());
+                            }
+                        }
+                    }
+                }
+                real
+            }
+            _ => self.base_by_species.get(&r.species()).cloned().unwrap_or_default(),
+        };
         if r.carries_move() && !v.iter().any(|m| m == &self.threaded) {
             v.push(self.threaded.clone());
         }
@@ -98,6 +122,26 @@ fn move_estimate_base(gd: &GameData) -> HashMap<u16, Vec<String>> {
             .collect();
         if !base.is_empty() {
             map.insert(s, base);
+        }
+    }
+    map
+}
+
+/// Owned instances' REAL equipped `can_inherit` move ids, keyed by instance id.
+/// Owned parents size the threaded-move pool |U| from their actual equipped
+/// moveset rather than the per-species estimate. Built once, only when a move is
+/// threaded; instances with no inheritable equipped move are omitted.
+fn owned_can_inherit_map(gd: &GameData, owned: &[OwnedPal]) -> HashMap<Guid, Vec<String>> {
+    let mut map = HashMap::new();
+    for p in owned {
+        let moves: Vec<String> = p
+            .active_skills
+            .iter()
+            .filter(|id| gd.active_skill(id).is_some_and(|a| a.can_inherit))
+            .cloned()
+            .collect();
+        if !moves.is_empty() {
+            map.insert(p.instance_id, moves);
         }
     }
     map
@@ -834,6 +878,7 @@ fn solve_core(
         threaded: m.clone(),
         rate: ACTIVE_INHERIT_RATE,
         base_by_species: move_estimate_base(gd),
+        owned_can_inherit: owned_can_inherit_map(gd, owned),
     });
 
     let initial = build_initial_content(gd, &spec, owned, cfg, move_plan.threaded_move.as_deref());

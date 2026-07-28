@@ -358,3 +358,79 @@ fn move_fields_roundtrip_and_backcompat() {
     let f: SkillFruitConfig = serde_json::from_str("{}").unwrap();
     assert!((f.cost_secs - 300.0).abs() < 1e-9, "SkillFruitConfig default cost is 300.0");
 }
+
+/// The first `n` distinct inheritable move ids NOT in `avoid` (the target
+/// learnset). Panics if the pack has fewer than `n`.
+fn find_inherit_moves(gd: &GameData, avoid: &HashSet<String>, n: usize) -> Vec<String> {
+    let v: Vec<String> = gd
+        .active_skills()
+        .iter()
+        .filter(|(id, a)| a.can_inherit && !avoid.contains(id))
+        .map(|(id, _)| id.clone())
+        .take(n)
+        .collect();
+    assert_eq!(v.len(), n, "pack must have >= {n} inheritable moves outside the learnset");
+    v
+}
+
+/// (g) MOVE-POOL ACCURACY: an owned parent's REAL equipped `can_inherit` moves
+/// size the threaded-move pool |U|, not the per-species estimate. A carrier
+/// equipped with THREE distinct inheritable moves (the threaded one + two extra)
+/// yields per-egg move odds of `ACTIVE_INHERIT_RATE / 3` on the bred step — the
+/// two extra moves can only enter |U| by reading the pal's real moveset.
+#[test]
+fn owned_parent_real_move_pool_sizes_union() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd);
+    let learn = learnset_ids(gd, t);
+    let moves = find_inherit_moves(gd, &learn, 3);
+    let (m, x, y) = (moves[0].clone(), moves[1].clone(), moves[2].clone());
+
+    // Carrier `a` equips all three (threaded m + x + y); `b` carries nothing, so
+    // U = {m, x, y} and move_pass = 0.5/3.
+    let pool = vec![
+        owned(gd, 1, a, Gender::Female, &[], &[&m, &x, &y]),
+        owned(gd, 2, b, Gender::Male, &[], &[]),
+    ];
+    let mut spec = TargetSpec::new(TargetPal::Species(t));
+    spec.required_moves = vec![m.clone()];
+
+    let plans = solve(gd, &spec, &pool, &owned_only());
+    assert!(!plans.is_empty(), "an owned carrier makes the move threadable");
+    let odds = plans[0].root.odds.as_ref().expect("bred root carries an odds breakdown");
+    let mp = odds.move_pass.expect("a threaded step carries move_pass");
+    assert!(
+        (mp - 0.5 / 3.0).abs() < 1e-9,
+        "move_pass must be rate/|U| = 0.5/3 for the real 3-move pool, got {mp}"
+    );
+    // Strictly below the single-move value (0.5/1): the extra real moves x,y
+    // entered |U| only because the owned pal's REAL equipped moves were used.
+    assert!(mp < 0.5, "the two extra equipped moves must enlarge |U|");
+}
+
+/// (h) EXTRA PASSIVES = "Any" (`max_irrelevant = 4`) returns the direct one-step
+/// breed, and its threaded-move odds are `ACTIVE_INHERIT_RATE / |U|`. A sole
+/// carrier equipped with only the threaded move gives |U| = 1 => move_pass = 0.5.
+#[test]
+fn max_irrelevant_any_returns_direct_step_with_move_pass() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd);
+    let learn = learnset_ids(gd, t);
+    let (m, _n) = find_move(gd, &learn, true, false); // inheritable, non-fruitable
+
+    let pool = vec![
+        owned(gd, 1, a, Gender::Female, &[], &[&m]),
+        owned(gd, 2, b, Gender::Male, &[], &[]),
+    ];
+    let mut spec = TargetSpec::new(TargetPal::Species(t));
+    spec.required_moves = vec![m.clone()];
+    spec.max_irrelevant = 4; // "Any"
+
+    let plans = solve(gd, &spec, &pool, &owned_only());
+    assert!(!plans.is_empty(), "carrier makes the move threadable");
+    let plan = &plans[0];
+    assert_eq!(plan.total_steps, 1, "the direct one-step breed is returned");
+    let odds = plan.root.odds.as_ref().expect("bred root carries an odds breakdown");
+    let mp = odds.move_pass.expect("a threaded step carries move_pass");
+    assert!((mp - 0.5).abs() < 1e-9, "|U| = {{m}} => move_pass = rate/1 = 0.5, got {mp}");
+}

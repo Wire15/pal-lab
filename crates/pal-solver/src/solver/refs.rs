@@ -347,6 +347,13 @@ pub struct BredPalRef {
     /// threaded, or the roll excluded). `#[serde(default)]` for back-compat.
     #[serde(default)]
     pub carries_move: bool,
+    /// Per-egg pass probability of the THREADED move folded into this child
+    /// (`ACTIVE_INHERIT_RATE / |U|` for its pairing), set by
+    /// [`BredPalRef::with_threaded`]. `0.0` = no threaded move. Surfaced in the
+    /// plan node's odds breakdown so the per-step egg estimate is fully
+    /// explained. `#[serde(default)]` for back-compat.
+    #[serde(default)]
+    pub move_prob: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -686,6 +693,7 @@ impl BredPalRef {
             reverser_cost: 0.0,
             reversed_parent: 0,
             carries_move: false,
+            move_prob: 0.0,
         };
         r.recompute_effort(gd);
         r
@@ -767,6 +775,7 @@ impl BredPalRef {
     /// freshly-`new`'d, un-gendered child (before gender resolution).
     pub fn with_threaded(mut self, gd: &GameData, move_prob: f64, carries: bool) -> BredPalRef {
         self.carries_move = carries;
+        self.move_prob = move_prob;
         let combined = self.passives_prob * self.ivs_prob * move_prob;
         self.avg_required_breedings =
             if combined <= 0.0 { u32::MAX } else { (1.0 / combined).ceil() as u32 };

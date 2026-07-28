@@ -333,6 +333,20 @@ export type PlanSource =
   | { Wild: { captures: number; min_wild_level: number } }
   | "Bred";
 
+/** Per-egg acceptance-factor breakdown for a bred plan step (`PlanNode.odds`),
+ * mirroring the Rust `StepOdds`. Each is a 0-1 per-egg probability. `passives`
+ * and `ivs` are always present on a bred node; `move_pass` (move inherit) and
+ * `gender` are omitted server-side when that factor does not apply to the
+ * step. The node's per-egg acceptance is the product of the present factors. */
+export interface StepOdds {
+  passives: number;
+  ivs: number;
+  /** ~50%/egg pool-based estimate; omitted when no required move threads here. */
+  move_pass?: number | null;
+  /** Omitted when the child's gender is unconstrained at this step. */
+  gender?: number | null;
+}
+
 export interface PlanNode {
   species: number;
   species_name: string;
@@ -368,6 +382,16 @@ export interface PlanNode {
    * (or on owned/wild + legacy plans). Inherit rate ~50%/egg is
    * community-measured; folded into the node's outcome probability. */
   inherited_move?: string | null;
+  /** Bred intermediate nodes only: per-egg factor breakdown for this step, so
+   * the UI can explain the acceptance odds instead of a single opaque %.
+   * `move_pass`/`gender` are omitted server-side when that factor does not
+   * apply here. Absent on owned/wild + legacy plans. */
+  odds?: StepOdds;
+  /** Bred intermediate nodes only: true when this step exists purely to shed
+   * extra passives — its child passive pool is strictly smaller than the
+   * deduped union of its parents' pools and it threads no required move.
+   * Omitted (falsey) otherwise. */
+  washes_passives?: boolean;
 }
 
 /** serde unit enum -> plain string. */

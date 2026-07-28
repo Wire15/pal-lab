@@ -2,6 +2,33 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.7.0] - 2026-07-28
+
+### Added
+- **The solver now explains itself.** Plan steps carry a per-egg odds
+  breakdown (Passives / Move / IVs / Gender → expected eggs) in the step list
+  and node panel — no more mystery percentages on egg chips.
+- **"Cleans line" annotation.** When a plan breeds an intermediate purely to
+  shed unwanted passives from the line (a real technique — a child inherits
+  from BOTH parents' combined passive pool, so a clean parent means more eggs
+  hit the target), that node now says so, with a plain-English explanation in
+  its panel.
+- **Extra-passives tolerance control.** New "Extra passives" setting
+  (Any / ≤2 / ≤1 / None) next to Required passives. Context-aware default:
+  queries with no required passives default to **Any** — the solver will
+  never silently add cleanup steps to a "just get me this species/move"
+  request; queries with required passives default to ≤1. Your explicit
+  choice persists.
+- **More accurate move-inheritance odds.** Owned parents now use their real
+  equipped inheritable moves for the inheritance pool instead of a species
+  estimate (still labeled as an estimate — the ~50% base rate remains
+  community-measured).
+
+### Changed
+- Move-only solves that previously returned multi-step "passive laundering"
+  plans by default now return the fastest direct path (set Extra passives to
+  ≤1/None to get the old behavior deliberately).
+
 ## [1.6.0] - 2026-07-28
 
 ### Added

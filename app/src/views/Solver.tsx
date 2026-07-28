@@ -8,6 +8,16 @@ import type {
   SolveRequest,
 } from "../lib/types";
 import { formatDuration, genderView, probBand } from "../lib/ui";
+import { buildOddsRows, eggsSummary } from "../lib/odds";
+import {
+  EXTRA_PASSIVES_OPTIONS,
+  isExtraPassivesValue,
+  readExtraPassives,
+  resolveExtraPassives,
+  writeExtraPassives,
+  type ExtraPassivesPref,
+  type ExtraPassivesValue,
+} from "../lib/extra-passives";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
 import { PassivePicker } from "../components/passive-picker";
@@ -177,9 +187,21 @@ function TreeNode({
           ) : null}
           {isBred && (
             <>
+              {node.washes_passives && (
+                <span
+                  className="rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
+                  title="This step exists to shed extra passives so later eggs hit the target more often"
+                >
+                  Cleans line
+                </span>
+              )}
               <span
                 className={`rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${prob.text} ${prob.ring}`}
-                title={`${prob.label} odds`}
+                title={
+                  node.odds
+                    ? "per-egg acceptance \u2014 see breakdown"
+                    : `${prob.label} odds`
+                }
               >
                 {(node.probability * 100).toFixed(0)}%
               </span>
@@ -196,6 +218,19 @@ function TreeNode({
           {node.passives.map((p, i) => (
             <PassiveStrip key={`${p}-${i}`} id={p} size="sm" />
           ))}
+        </div>
+      )}
+
+      {node.odds && (
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 pl-[3.6rem] font-mono text-[10px] tabular-nums text-ink-faint">
+          {buildOddsRows(node.odds).map((r) => (
+            <span key={r.label}>
+              <span className="text-ink-dim">{r.label}</span> {r.value}
+            </span>
+          ))}
+          {node.expected_eggs != null && (
+            <span className="text-ink-dim">{eggsSummary(node.expected_eggs)}</span>
+          )}
         </div>
       )}
     </div>
@@ -758,6 +793,7 @@ export default function Solver() {
   const [catching, setCatching] = useState<CatchingMode>("breeding_only");
   const [viewMode, setViewMode] = useState<"graph" | "list">("graph");
   const [pins, setPins] = useState<Guid[]>([]);
+  const [extraPref, setExtraPref] = useState<ExtraPassivesPref>(readExtraPassives);
   const [queue, setQueue] = useState<QueueEntry[]>(readQueue);
   const [historyOpen, setHistoryOpen] = useState(false);
 
@@ -908,6 +944,16 @@ export default function Solver() {
     setMoves((m) => m.filter((x) => x !== id));
   }
 
+  // Resolved `max_irrelevant` for the current query: an explicit pick wins;
+  // an untouched control tracks the query context (no required passives -> Any,
+  // else -> ≤ 1).
+  const extraIrrelevant = resolveExtraPassives(extraPref, passives.length);
+  function pickExtra(value: ExtraPassivesValue) {
+    const pref: ExtraPassivesPref = { mode: "set", value };
+    setExtraPref(pref);
+    writeExtraPassives(pref);
+  }
+
   // The current briefing assembled as a solve spec — exactly what a single solve
   // sends (the hook injects the shared setup/cake at solve time). "Add to queue"
   // reuses it verbatim, so a queued item and a live request are identical.
@@ -920,6 +966,7 @@ export default function Solver() {
       include_wild: includeWild,
       catching,
       ...(pins.length > 0 ? { pinned_parents: pins } : {}),
+      max_irrelevant: extraIrrelevant,
     };
   }
 
@@ -998,6 +1045,16 @@ export default function Solver() {
     setIncludeWild(!!r.include_wild);
     setCatching(r.catching ?? "breeding_only");
     setPins(r.pinned_parents ?? []);
+    // Reflect the loaded request's tolerance in the control (an explicit pick
+    // that then sticks); fall back to auto when it isn't one of our options.
+    if (isExtraPassivesValue(r.max_irrelevant)) {
+      const pref: ExtraPassivesPref = { mode: "set", value: r.max_irrelevant };
+      setExtraPref(pref);
+      writeExtraPassives(pref);
+    } else {
+      setExtraPref({ mode: "auto" });
+      writeExtraPassives({ mode: "auto" });
+    }
   }
 
   // Restore the current solve session when returning to the Solver after a view
@@ -1141,6 +1198,41 @@ export default function Solver() {
           onAdd={(name) => setPassives((p) => (p.includes(name) ? p : [...p, name]))}
           onRemove={removePassive}
         />
+
+        <div className="flex flex-col gap-1.5">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
+            Extra passives
+          </span>
+          <div
+            className="flex overflow-hidden rounded-md border border-line"
+            role="radiogroup"
+            aria-label="How many off-target passives the solver may keep on intermediate parents"
+          >
+            {EXTRA_PASSIVES_OPTIONS.map((o) => {
+              const active = extraIrrelevant === o.value;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => pickExtra(o.value)}
+                  className={`flex-1 border-r border-line px-2 py-1.5 text-center font-mono text-[12px] transition-colors last:border-r-0 ${
+                    active
+                      ? "bg-raised text-amber"
+                      : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
+                  }`}
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
+            Children inherit from BOTH parents&rsquo; combined passives. Stricter =
+            cleaner pal, more eggs. &ldquo;Any&rdquo; never adds cleanup steps.
+          </p>
+        </div>
 
         <div className="flex flex-col gap-1.5">
           <MovePicker
