@@ -23,6 +23,7 @@ import {
 import { invoke } from "./lib/tauri";
 import { caps } from "./lib/caps";
 import { readPlanLink } from "./lib/plan-link";
+import { decodeXboxSource } from "./lib/xbox-save";
 import type {
   BreedingSetup,
   CakeToken,
@@ -50,14 +51,14 @@ function readLastSaveDir(): string {
   }
 }
 
-/** Map a raw backend load error to friendly, actionable copy. Xbox / Game Pass
- * saves use the CNK chunked-compression format the reader can't decode yet; the
- * backend tags that variant with a stable "CNK" token, so detect it and explain
- * the Steam-conversion path instead of surfacing a raw parse error. Everything
+/** Map a raw backend load error to friendly, actionable copy. A folder pointed
+ * at raw Xbox / Game Pass save bytes surfaces the backend's stable "CNK" token
+ * for the chunked-compression variant; point the user at the in-app importer
+ * (which reads the WGS store directly) rather than a raw parse error. Everything
  * else passes through unchanged. */
 function friendlySaveError(raw: string): string {
   if (raw.includes("CNK")) {
-    return "This looks like an Xbox / Game Pass save (CNK format), which Pal Lab can't read yet \u2014 convert it to a Steam save with a tool like palworld-save-pal, or point at a Steam / dedicated-server save.";
+    return "This looks like an Xbox / Game Pass save. Use the \u201CXbox / Game Pass\u201D button on the load screen to import it directly \u2014 no conversion needed.";
   }
   return raw;
 }
@@ -524,9 +525,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveLoading(true);
     setSaveError(null);
     try {
-      const summary = await invoke<SaveSummary>("load_save", {
-        saveDir: trimmed,
-      });
+      // An Xbox save source is the sentinel `xbox://<wgsDir>#<saveId>`; decode
+      // it to the dedicated command. A plain folder path takes `load_save`.
+      const xbox = decodeXboxSource(trimmed);
+      const summary = xbox
+        ? await invoke<SaveSummary>("load_xbox_save", {
+            wgsDir: xbox.wgsDir,
+            saveId: xbox.saveId,
+          })
+        : await invoke<SaveSummary>("load_save", { saveDir: trimmed });
       setSaveSummary(summary);
       setSaveDir(trimmed);
       setLastSaveDir(trimmed);
@@ -544,9 +551,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         // Ignore storage failures (private mode, quota) — non-fatal.
       }
       // Auto-arm the live watcher so external saves trigger a silent reload.
-      // Tauri only — web mode refreshes via the "Re-read folder" button, and
-      // fixture dev has no backend command.
-      if (caps.watchSave) invoke("watch_save", { saveDir: trimmed }).catch(() => {});
+      // Tauri only, and NOT for Xbox saves (the WGS store has no folder to
+      // watch); web mode refreshes via the "Re-read folder" button and fixture
+      // dev has no backend command.
+      if (caps.watchSave && !xbox) {
+        invoke("watch_save", { saveDir: trimmed }).catch(() => {});
+      }
     } catch (e) {
       setSaveError(friendlySaveError(String(e)));
       setSaveSummary(null);
@@ -563,7 +573,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const dir = saveDirRef.current;
     if (!dir) return;
     try {
-      const summary = await invoke<SaveSummary>("load_save", { saveDir: dir });
+      // Xbox saves arm no watcher, so this path is effectively never hit for
+      // them; still decode defensively so a stray reload does the right thing.
+      const xbox = decodeXboxSource(dir);
+      const summary = xbox
+        ? await invoke<SaveSummary>("load_xbox_save", {
+            wgsDir: xbox.wgsDir,
+            saveId: xbox.saveId,
+          })
+        : await invoke<SaveSummary>("load_save", { saveDir: dir });
       setSaveSummary(summary);
       pushRecent(dir, summary);
       showToast("Save reloaded");

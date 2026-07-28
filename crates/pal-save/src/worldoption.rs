@@ -37,6 +37,17 @@ pub fn parse_world_options(blob: &[u8]) -> Result<WorldOptions, SaveError> {
     Ok(WorldOptions { egg_hatch_hours })
 }
 
+/// Parse the breeding-relevant world options directly from raw, still-compressed
+/// `WorldOption.sav` bytes (transparently handles the PlZ / PlM / CNK wrappers
+/// via [`crate::compress::decompress_sav`]). Returns `Ok(Some(..))` on success;
+/// the `Option` mirrors [`crate::read_world_options`]'s return type so
+/// byte-oriented callers (the wasm build, the Xbox WGS reader) are drop-in with
+/// the directory-based path. `Err` only on a present-but-corrupt file.
+pub fn parse_world_options_sav(bytes: &[u8]) -> Result<Option<WorldOptions>, SaveError> {
+    let blob = crate::compress::decompress_sav(bytes)?;
+    Ok(Some(parse_world_options(&blob)?))
+}
+
 /// Recursively search a materialized property value for a `FloatProperty`
 /// named `key`, descending struct property sets and arrays.
 fn find_float(value: &Value, key: &str) -> Option<f32> {

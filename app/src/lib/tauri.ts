@@ -378,6 +378,50 @@ export function loadSaveBundle(
   return postToWorker<SaveSummary>("__load_bundle", { paths, buffers }, buffers);
 }
 
+/** One logical save file within a WGS world and the on-disk blob backing it.
+ *  Snake_case to match the Rust `WgsFileDto` JSON. */
+export interface WgsFileRef {
+  /** Bundle-relative role path: `"Level.sav"`, `"Players/<UID>.sav"`, … */
+  target_path: string;
+  /** Store-root-relative on-disk path `"<CONTAINER_DIR_HEX>/<BLOB_HEX>"`. */
+  blob_path: string;
+  size: number;
+}
+
+/** One world (save slot) resolved from a WGS store index. */
+export interface WgsWorldManifest {
+  save_id: string;
+  /** Max FILETIME (100ns ticks) across the world's containers. */
+  mtime_ticks: number;
+  files: WgsFileRef[];
+}
+
+/** A parsed WGS store: every world plus non-fatal skip warnings. */
+export interface WgsManifest {
+  worlds: WgsWorldManifest[];
+  warnings: string[];
+}
+
+/** Web mode only: parse a dropped WGS store into a manifest. `paths` + `buffers`
+ *  are the `containers.index` + every `container.<N>` file (store-root-relative,
+ *  tiny metadata — copied, not transferred, so the caller may keep reading the
+ *  source). `presentPaths` is every store-relative file path in the store: the
+ *  manifest core probes blob existence through them (no bytes read), so a world's
+ *  Level/player blobs aren't dropped as missing. */
+export function wgsManifest(
+  paths: string[],
+  buffers: ArrayBuffer[],
+  presentPaths: string[],
+): Promise<WgsManifest> {
+  return postToWorker<WgsManifest>("__wgs_manifest", { paths, buffers, presentPaths });
+}
+
+/** Web mode only: decompress a `LevelMeta.sav` blob and return its world name,
+ *  or null when absent/corrupt/unnamed. Used to label the world picker. */
+export function wgsWorldName(levelMeta: ArrayBuffer): Promise<string | null> {
+  return postToWorker<string | null>("__wgs_world_name", { blob: levelMeta });
+}
+
 /**
  * Invoke a Tauri command. Three backends by mode: the real IPC inside Tauri,
  * the wasm worker in the web build (VITE_BACKEND=web), and static fixtures in a

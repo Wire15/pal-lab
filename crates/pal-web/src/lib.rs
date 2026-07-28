@@ -24,6 +24,7 @@ mod mapstate;
 mod paldex;
 mod save;
 mod solver;
+mod wgs;
 mod updater;
 
 use std::cell::RefCell;
@@ -115,6 +116,32 @@ pub fn load_save_bundle(
 ) -> Result<String, String> {
     let buffers: Vec<Vec<u8>> = buffers.iter().map(|b| b.to_vec()).collect();
     load_bundle_core(paths, buffers)
+}
+
+/// Parse a dropped WGS (Xbox / Game Pass) container store into a JSON manifest.
+///
+/// `paths`/`buffers` are the `containers.index` + every `container.<seq>` file
+/// (store-root-relative) with their bytes. `present_paths` is every
+/// store-relative path in the store — the manifest core probes each blob's
+/// existence through it (no blob bytes needed) so worlds keep their Level/player
+/// blobs. Returns the [`wgs::WgsManifestDto`] JSON (worlds + skip-warnings); the
+/// web layer then reads each chosen world's blob files by `blob_path`, keys them
+/// by `target_path`, and feeds the standard [`load_save_bundle`] path.
+#[wasm_bindgen]
+pub fn wgs_manifest(
+    paths: Vec<String>,
+    buffers: Vec<js_sys::Uint8Array>,
+    present_paths: Vec<String>,
+) -> Result<String, String> {
+    let buffers: Vec<Vec<u8>> = buffers.iter().map(|b| b.to_vec()).collect();
+    wgs::manifest_core(paths, buffers, present_paths)
+}
+
+/// Decompress a `LevelMeta.sav` blob and return its world display name, or
+/// `None` when absent/corrupt/unnamed. Used to label the WGS world picker.
+#[wasm_bindgen]
+pub fn wgs_world_name(level_meta_sav: &[u8]) -> Option<String> {
+    wgs::world_name_core(level_meta_sav)
 }
 
 /// Run a command against the cached save / pack. `args_json` is the JSON object

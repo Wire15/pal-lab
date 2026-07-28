@@ -14,3 +14,7 @@ oozextract = "0.5"
 [[bin]]
 name = "dump"
 path = "src/bin/dump.rs"
+
+[[bin]]
+name = "make-wgs-fixture"
+path = "src/bin/make-wgs-fixture.rs"

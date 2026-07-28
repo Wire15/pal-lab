@@ -125,15 +125,22 @@ Point the desktop app at it, or drop that world folder onto the web app.
 |---|---|
 | Steam (local co-op) | ✅ Supported |
 | Dedicated server | ✅ Supported |
-| Xbox / Game Pass (CNK) | ⚠️ Convert first — see below |
+| Xbox / Game Pass (PC) | ✅ Built in — no conversion needed |
 
-Xbox / Game Pass saves use the packed **CNK** format. Convert them with
-[palworld-save-pal](https://github.com/oMaN-Rod/palworld-save-pal) first; Pal Lab
-detects a CNK save and explains what to do.
+**Xbox / Game Pass:** desktop app → **Xbox / Game Pass** button on the load
+screen — it finds the Game Pass save store on your PC and reads it directly
+(read-only, nothing is written). On the web app, drop the store folder itself:
+
+```
+%LOCALAPPDATA%\Packages\PocketpairInc.Palworld_ad4psfrxyesvt\SystemAppData\wgs
+```
+
+Chunked (CNK) saves are decoded natively. Xbox **console** saves must still
+reach your PC first (play the world once on the PC Game Pass app so it syncs).
 
 ## What's new
 
-The latest release is **v1.4.1**. See [`CHANGELOG.md`](CHANGELOG.md) for the
+The latest release is **v1.6.0**. See [`CHANGELOG.md`](CHANGELOG.md) for the
 full history, and the [GitHub Releases](https://github.com/Wire15/pal-lab/releases)
 page for downloads and VirusTotal links.
 

@@ -8,13 +8,18 @@ pub mod compress;
 pub mod gvas;
 pub mod localdata;
 pub mod map_objects;
+pub mod wgs;
 pub mod worldoption;
 
 pub use localdata::{
     read_local_data, parse_player_map_state, CustomMarker, FogLayer, LocalData, PlayerMapRecord,
 };
 pub use map_objects::{read_base_points, read_map_objects, BasePoint, MapObjectInstance};
-pub use worldoption::WorldOptions;
+pub use wgs::{
+    extract_world, list_worlds, manifest, ExtractedWorld, WgsFileRef, WgsManifest, WgsRead,
+    WgsWorld, WgsWorldManifest,
+};
+pub use worldoption::{parse_world_options_sav, WorldOptions};
 
 use std::collections::HashSet;
 use std::path::Path;
@@ -30,8 +35,6 @@ pub enum SaveError {
     Io(#[from] std::io::Error),
     #[error("compression: {0}")]
     Compression(String),
-    #[error("not supported yet: {0}")]
-    NotSupportedYet(String),
     #[error("gvas: {0}")]
     Gvas(String),
     #[error("save layout: {0}")]
@@ -284,8 +287,8 @@ pub fn read_world_options(
     if !path.exists() {
         return Ok(None);
     }
-    let blob = read_and_decompress(&path)?;
-    Ok(Some(worldoption::parse_world_options(&blob)?))
+    let raw = std::fs::read(&path)?;
+    worldoption::parse_world_options_sav(&raw)
 }
 
 /// Classify a pal's physical container. Precedence follows provenance

@@ -30,12 +30,28 @@ interface LoadBundleArgs {
   buffers: ArrayBuffer[];
 }
 
+/** `__wgs_manifest` payload: store-relative `containers.index` + `container.<N>`
+ *  paths + bytes, and `presentPaths` = every store-relative path (for the core's
+ *  blob-existence probe; no bytes needed). */
+interface WgsManifestArgs {
+  paths: string[];
+  buffers: ArrayBuffer[];
+  presentPaths: string[];
+}
+
+/** `__wgs_world_name` payload: one raw `LevelMeta.sav` blob. */
+interface WgsWorldNameArgs {
+  blob: ArrayBuffer;
+}
+
 /** The wasm-pkg surface this worker drives (see the shared web contract). The
  *  default export is the wasm-pack init function that instantiates the module. */
 interface PalWebModule {
   default: (module_or_path?: unknown) => Promise<unknown>;
   init_pack: () => void;
   load_save_bundle: (paths: string[], buffers: Uint8Array[]) => string;
+  wgs_manifest: (paths: string[], buffers: Uint8Array[], presentPaths: string[]) => string;
+  wgs_world_name: (levelMeta: Uint8Array) => string | undefined;
   dispatch: (cmd: string, args_json: string) => string;
   set_progress: (cb: (payload: string) => void) => void;
   cancel_solve_token: (token: number) => void;
@@ -83,6 +99,15 @@ self.onmessage = async (e: MessageEvent<RpcRequest>) => {
       const bundle = args as LoadBundleArgs;
       const views = bundle.buffers.map((b) => new Uint8Array(b));
       value = JSON.parse(mod.load_save_bundle(bundle.paths, views));
+    } else if (cmd === "__wgs_manifest") {
+      const req = args as WgsManifestArgs;
+      const views = req.buffers.map((b) => new Uint8Array(b));
+      value = JSON.parse(mod.wgs_manifest(req.paths, views, req.presentPaths));
+    } else if (cmd === "__wgs_world_name") {
+      const req = args as WgsWorldNameArgs;
+      // wasm-bindgen maps Rust `Option<String>` to `string | undefined`; the
+      // client normalizes undefined to null.
+      value = mod.wgs_world_name(new Uint8Array(req.blob)) ?? null;
     } else {
       // wasm-bindgen throws the Err(String) as a JS exception, caught below.
       value = JSON.parse(mod.dispatch(cmd, JSON.stringify(args ?? {})));

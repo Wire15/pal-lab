@@ -3,6 +3,7 @@ mod paldex;
 mod save;
 mod solver;
 mod updater;
+mod xbox;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -33,7 +34,10 @@ pub fn run() {
             paldex::dex_reachability,
             updater::check_update,
             updater::data_pack_info,
-            mapstate::get_map_state
+            mapstate::get_map_state,
+            xbox::detect_xbox_stores,
+            xbox::list_xbox_worlds,
+            xbox::load_xbox_save
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

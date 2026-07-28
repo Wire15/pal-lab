@@ -29,11 +29,14 @@ import {
   acceptHandle,
   acceptInput,
   acceptSnapshot,
+  acceptWgsWorld,
   currentHandle,
   currentLabel,
   isFsAccessSupported,
   pickDirectory,
   readBundle,
+  type AcquireResult,
+  type WgsWorldOption,
 } from "../lib/save-drop";
 import {
   clearDirHandle,
@@ -144,6 +147,9 @@ export default function WebDropZone() {
   // browsers). When no live handle is remembered, non-null renders the
   // "Restore <folder>" affordance — a stale-but-replayable copy.
   const [snap, setSnap] = useState<StoredSnapshot | null>(null);
+  // Worlds offered by a multi-world Xbox WGS store drop; non-null renders the
+  // world picker modal. Cleared on choose/cancel.
+  const [wgsWorlds, setWgsWorlds] = useState<WgsWorldOption[] | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -179,15 +185,20 @@ export default function WebDropZone() {
   // cancelled picker.
   const runLoad = useCallback(
     async (
-      acquire: () => Promise<string | null>,
+      acquire: () => Promise<AcquireResult | null>,
       opts: { snapshot?: boolean } = {},
     ) => {
       const { snapshot = true } = opts;
       setError(null);
       setBusy(true);
       try {
-        const label = await acquire();
-        if (label === null) return; // picker cancelled — leave the zone as-is
+        const result = await acquire();
+        if (result === null) return; // picker/prompt cancelled — leave as-is
+        if (result.kind === "wgs-picker") {
+          // Multi-world Xbox store — ask which world before loading anything.
+          setWgsWorlds(result.worlds);
+          return;
+        }
         const bundle = await readBundle();
         // Stash the exact bytes for the universal restore path BEFORE handing
         // them to the worker: loadSaveBundle TRANSFERS the ArrayBuffers to the
@@ -231,18 +242,26 @@ export default function WebDropZone() {
       // acceptDrop — both read `dt` while it's still live in the drop handler.
       const handlePromise = dirHandleFromDrop(dt);
       void runLoad(async () => {
-        const label = await acceptDrop(dt);
+        const result = await acceptDrop(dt);
         const handle = await handlePromise;
-        if (handle) persistHandle(handle);
-        return label;
+        // Only a standard folder tree is re-walkable from a stored handle; a WGS
+        // store has no Level.sav, so never remember its dropped handle.
+        if (handle && result.kind === "loaded" && result.rereadable) {
+          persistHandle(handle);
+        }
+        return result;
       });
     },
     [runLoad, persistHandle],
   );
 
   const browse = useCallback(() => {
-    if (isFsAccessSupported()) void runLoad(() => pickDirectory());
-    else inputRef.current?.click();
+    if (isFsAccessSupported()) {
+      void runLoad(async () => {
+        const label = await pickDirectory();
+        return label === null ? null : { kind: "loaded", label, rereadable: true };
+      });
+    } else inputRef.current?.click();
   }, [runLoad]);
 
   // Restore path: on a user gesture, re-grant read permission and feed the
@@ -261,7 +280,7 @@ export default function WebDropZone() {
         throw new Error("Permission to read the save folder was denied.");
       }
       try {
-        return await acceptHandle(handle);
+        return { kind: "loaded", label: await acceptHandle(handle), rereadable: true };
       } catch (e) {
         if (e instanceof DOMException && e.name === "NotFoundError") {
           // The live handle is gone, but the byte snapshot (if any) can still
@@ -295,16 +314,43 @@ export default function WebDropZone() {
   const restoreSnap = useCallback(() => {
     if (!snap) return;
     const { paths, buffers, label } = snap;
-    void runLoad(async () => acceptSnapshot(paths, buffers, label), {
-      snapshot: false,
-    });
+    void runLoad(
+      async () => ({
+        kind: "loaded",
+        label: acceptSnapshot(paths, buffers, label),
+        rereadable: false,
+      }),
+      { snapshot: false },
+    );
   }, [snap, runLoad]);
+
+  // Load a chosen Xbox world: install it as the source, then run the standard
+  // load path (snapshotted for Restore). Close the picker first.
+  const chooseWgsWorld = useCallback(
+    (world: WgsWorldOption) => {
+      setWgsWorlds(null);
+      void runLoad(async () => ({
+        kind: "loaded",
+        label: acceptWgsWorld(world),
+        rereadable: false,
+      }));
+    },
+    [runLoad],
+  );
 
   const working = busy || saveLoading;
   const shownError = error ?? saveError;
 
   return (
     <div className="flex h-full items-center justify-center bg-abyss p-8">
+      {wgsWorlds && (
+        <WgsWorldPicker
+          worlds={wgsWorlds}
+          onPick={chooseWgsWorld}
+          onCancel={() => setWgsWorlds(null)}
+          busy={working}
+        />
+      )}
       <div className="w-full max-w-lg overflow-hidden rounded-lg border border-line bg-panel">
         <div className="border-b border-line px-6 py-5">
           <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
@@ -341,12 +387,18 @@ export default function WebDropZone() {
               <DropGlyph />
             </span>
             <div className="text-[14px] font-medium text-ink">
-              {working ? "Reading save\u2026" : "Drop your SaveGames folder"}
+              {working ? "Reading save\u2026" : "Drop your SaveGames folder or Xbox save store"}
             </div>
             <div className="font-mono text-[11px] text-ink-faint">
               usually at{" "}
               <span className="text-ink-dim">
                 AppData\Local\Pal\Saved\SaveGames
+              </span>
+            </div>
+            <div className="font-mono text-[11px] text-ink-faint">
+              Xbox / Game Pass:{" "}
+              <span className="text-ink-dim">
+                %LOCALAPPDATA%\Packages\PocketpairInc.Palworld_...\SystemAppData\wgs
               </span>
             </div>
             <button
@@ -480,6 +532,92 @@ export default function WebDropZone() {
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-good" />
             parsed locally &mdash; your save never leaves this device
           </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Windows FILETIME (100ns ticks since 1601) → short local date, or "" when
+ *  absent. Float64 drops sub-microsecond ticks, which is irrelevant for a date. */
+function filetimeDate(ticks: number): string {
+  if (!ticks) return "";
+  const ms = ticks / 10000 - 11644473600000;
+  return Number.isFinite(ms) && ms > 0 ? new Date(ms).toLocaleDateString() : "";
+}
+
+/** Modal listing the worlds in a dropped multi-world Xbox WGS store. Mirrors the
+ *  centered AboutModal styling; picking a world hands it back for loading. */
+function WgsWorldPicker({
+  worlds,
+  onPick,
+  onCancel,
+  busy,
+}: {
+  worlds: WgsWorldOption[];
+  onPick: (world: WgsWorldOption) => void;
+  onCancel: () => void;
+  busy: boolean;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
+      onMouseDown={onCancel}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wgs-picker-title"
+        className="w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="border-b border-line px-5 py-4">
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+            Xbox / Game Pass
+          </div>
+          <h2
+            id="wgs-picker-title"
+            className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
+          >
+            Choose a world
+          </h2>
+          <div className="mt-1 font-mono text-[12px] text-ink-dim">
+            {worlds.length} worlds in this save store
+          </div>
+        </div>
+        <div className="max-h-[60vh] overflow-auto p-2">
+          {worlds.map((w) => {
+            const when = filetimeDate(w.mtimeTicks);
+            return (
+              <button
+                key={w.saveId}
+                onClick={() => onPick(w)}
+                disabled={busy}
+                className="flex w-full flex-col items-start gap-0.5 rounded-md border border-transparent px-3 py-2.5 text-left transition-colors hover:border-amber/40 hover:bg-hover disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <span className="text-[14px] font-medium text-ink">
+                  {w.worldName?.trim() || "Unnamed world"}
+                </span>
+                <span className="font-mono text-[11px] text-ink-faint">
+                  {w.playerCount} player{w.playerCount === 1 ? "" : "s"}
+                  {when ? ` \u00b7 ${when}` : ""}
+                </span>
+                <span className="max-w-full truncate font-mono text-[10px] text-ink-faint/70">
+                  {w.saveId}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex justify-end border-t border-line px-5 py-3">
+          <button
+            onClick={onCancel}
+            disabled={busy}
+            className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

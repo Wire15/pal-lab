@@ -31,6 +31,10 @@ const HEADER_LEN: usize = 12;
 /// ceiling that passes real data too loose to add protection over this bound.
 const MAX_UNCOMPRESSED_LEN: usize = 512 * 1024 * 1024;
 
+/// Length of the outer `CNK` wrapper that precedes the authoritative inner
+/// header in Xbox / Game Pass "chunked" blobs.
+const CNK_WRAPPER_LEN: usize = 12;
+
 /// Inspect the header and decompress the payload into the raw GVAS blob.
 pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
     if data.len() < HEADER_LEN {
@@ -40,9 +44,17 @@ pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
         )));
     }
 
+    let magic = &data[8..11];
+    // `CNK` (Xbox / Game Pass chunked): the 12-byte outer header is a wrapper
+    // whose length fields are ignored; the authoritative header lives at
+    // offset 12. Handle it before the outer guards, which would otherwise apply
+    // to the ignored outer lengths.
+    if magic == b"CNK" {
+        return decompress_cnk(data);
+    }
+
     let uncompressed_len = u32::from_le_bytes([data[0], data[1], data[2], data[3]]) as usize;
     let compressed_len = u32::from_le_bytes([data[4], data[5], data[6], data[7]]) as usize;
-    let magic = &data[8..11];
     let save_type = data[11];
     let payload = &data[HEADER_LEN..];
 
@@ -65,13 +77,55 @@ pub fn decompress_sav(data: &[u8]) -> Result<Vec<u8>, SaveError> {
     match magic {
         b"PlZ" => decompress_zlib(payload, save_type, uncompressed_len),
         b"PlM" => decompress_oodle(payload, save_type, uncompressed_len),
-        b"CNK" => Err(SaveError::NotSupportedYet(
-            "Xbox chunked (CNK) saves are not supported yet".into(),
-        )),
         other => Err(SaveError::Compression(format!(
             "unknown save magic {other:?}"
         ))),
     }
+}
+
+/// `CNK`: Xbox / Game Pass "chunked" wrapper. A 12-byte outer header (its
+/// `uncompressed_len` / `compressed_len` both ignored) is prefixed onto an
+/// otherwise-standard PlZ blob: the authoritative header sits at offset 12 and
+/// its zlib payload begins at offset 24. There is no chunk offset table — the
+/// inner magic MUST be `PlZ` (never `PlM`/`CNK`). The `MAX_UNCOMPRESSED_LEN`
+/// guard and the truncation check are re-applied to the INNER length fields.
+fn decompress_cnk(data: &[u8]) -> Result<Vec<u8>, SaveError> {
+    // Payload starts after the outer wrapper plus the inner header.
+    const PAYLOAD_START: usize = CNK_WRAPPER_LEN + HEADER_LEN;
+    if data.len() < PAYLOAD_START {
+        return Err(SaveError::Compression(format!(
+            "CNK file too small: {} bytes, need at least {PAYLOAD_START}",
+            data.len()
+        )));
+    }
+
+    let uncompressed_len = u32::from_le_bytes([data[12], data[13], data[14], data[15]]) as usize;
+    let compressed_len = u32::from_le_bytes([data[16], data[17], data[18], data[19]]) as usize;
+    let inner_magic = &data[20..23];
+    let save_type = data[23];
+
+    if inner_magic != b"PlZ" {
+        return Err(SaveError::Compression(format!(
+            "CNK inner magic {inner_magic:?}, expected b\"PlZ\""
+        )));
+    }
+
+    let payload = &data[PAYLOAD_START..];
+    if payload.len() < compressed_len {
+        return Err(SaveError::Compression(format!(
+            "CNK payload truncated: header claims {compressed_len} compressed bytes, {} available",
+            payload.len()
+        )));
+    }
+    let payload = &payload[..compressed_len];
+
+    if uncompressed_len > MAX_UNCOMPRESSED_LEN {
+        return Err(SaveError::Compression(format!(
+            "implausible CNK uncompressed length {uncompressed_len} exceeds {MAX_UNCOMPRESSED_LEN}-byte ceiling"
+        )));
+    }
+
+    decompress_zlib(payload, save_type, uncompressed_len)
 }
 
 /// `PlZ`: single (`0x31`) or double (`0x32`) zlib pass.
@@ -161,22 +215,92 @@ mod tests {
         }
     }
 
-    /// A `CNK`-magic (Xbox / Game Pass chunked) save must surface as the
-    /// distinct `NotSupportedYet` variant — not a generic `Compression` error —
-    /// so the UI can show the convert-to-Steam guidance. Synthetic 12-byte
-    /// header: uncompressed_len=64, compressed_len=0, magic=b"CNK", type=0x31.
+    /// Build a single-pass PlZ blob: 12-byte header + a real zlib stream of
+    /// `raw`. `decompress_sav` on this yields `raw` byte-identically.
+    fn plz(raw: &[u8]) -> Vec<u8> {
+        use flate2::write::ZlibEncoder;
+        use flate2::Compression;
+        use std::io::Write;
+        let mut enc = ZlibEncoder::new(Vec::new(), Compression::default());
+        enc.write_all(raw).unwrap();
+        let comp = enc.finish().unwrap();
+        let mut out = Vec::new();
+        out.extend_from_slice(&(raw.len() as u32).to_le_bytes());
+        out.extend_from_slice(&(comp.len() as u32).to_le_bytes());
+        out.extend_from_slice(b"PlZ");
+        out.push(0x31);
+        out.extend_from_slice(&comp);
+        out
+    }
+
+    /// Prefix the 12-byte outer `CNK` wrapper (both length fields ignored) onto
+    /// an existing blob — exactly how Xbox chunked saves nest a PlZ payload.
+    fn cnk_wrap(inner: &[u8]) -> Vec<u8> {
+        let mut out = Vec::new();
+        out.extend_from_slice(&0u32.to_le_bytes()); // outer uncompressed_len (ignored)
+        out.extend_from_slice(&0u32.to_le_bytes()); // outer compressed_len (ignored)
+        out.extend_from_slice(b"CNK");
+        out.push(0x31);
+        out.extend_from_slice(inner);
+        out
+    }
+
+    /// A CNK-wrapped copy of a PlZ blob decompresses byte-identically to the
+    /// unwrapped PlZ blob — the wrapper is transparent.
     #[test]
-    fn cnk_magic_detected_as_not_supported() {
-        let mut data = Vec::with_capacity(HEADER_LEN);
-        data.extend_from_slice(&64u32.to_le_bytes());
+    fn cnk_roundtrips_identical_to_plz() {
+        let raw = b"the quick brown fox jumps over the lazy dog, repeatedly.".repeat(40);
+        let plz_blob = plz(&raw);
+        let cnk_blob = cnk_wrap(&plz_blob);
+        let via_plz = decompress_sav(&plz_blob).expect("PlZ decompress");
+        let via_cnk = decompress_sav(&cnk_blob).expect("CNK decompress");
+        assert_eq!(via_plz, raw.as_slice());
+        assert_eq!(via_cnk, via_plz, "CNK wrapper must be byte-transparent");
+    }
+
+    /// A CNK blob whose inner compressed_len claims more bytes than are present
+    /// fails cleanly as a truncation error, never a panic.
+    #[test]
+    fn cnk_truncated_inner_len_rejected() {
+        let mut cnk_blob = cnk_wrap(&plz(b"hello world"));
+        // Overwrite the inner compressed_len (bytes 16..20) with a huge value.
+        cnk_blob[16..20].copy_from_slice(&u32::MAX.to_le_bytes());
+        match decompress_sav(&cnk_blob) {
+            Err(SaveError::Compression(msg)) => {
+                assert!(msg.contains("truncated"), "unexpected message: {msg}");
+            }
+            other => panic!("expected truncation error, got {other:?}"),
+        }
+    }
+
+    /// A CNK blob shorter than the 24-byte double header fails cleanly.
+    #[test]
+    fn cnk_too_small_rejected() {
+        let mut data = Vec::new();
+        data.extend_from_slice(&0u32.to_le_bytes());
         data.extend_from_slice(&0u32.to_le_bytes());
         data.extend_from_slice(b"CNK");
         data.push(0x31);
         match decompress_sav(&data) {
-            Err(SaveError::NotSupportedYet(msg)) => {
-                assert!(msg.contains("CNK"), "unexpected message: {msg}");
+            Err(SaveError::Compression(msg)) => {
+                assert!(msg.contains("too small"), "unexpected message: {msg}");
             }
-            other => panic!("expected NotSupportedYet, got {other:?}"),
+            other => panic!("expected too-small error, got {other:?}"),
+        }
+    }
+
+    /// A CNK inner magic other than `PlZ` (here a nested `PlM`) is rejected —
+    /// the chunked wrapper only ever nests zlib.
+    #[test]
+    fn cnk_non_plz_inner_rejected() {
+        // Inner header at offset 12: forge a PlM inner magic.
+        let inner = forged(64, 4, &[0u8; 4]); // PlM header + payload
+        let cnk_blob = cnk_wrap(&inner);
+        match decompress_sav(&cnk_blob) {
+            Err(SaveError::Compression(msg)) => {
+                assert!(msg.contains("PlZ"), "unexpected message: {msg}");
+            }
+            other => panic!("expected inner-magic error, got {other:?}"),
         }
     }
 }

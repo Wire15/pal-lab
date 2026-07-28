@@ -2,6 +2,39 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.6.0] - 2026-07-28
+
+### Added
+- **Xbox / Game Pass saves, built in.** Pal Lab now reads the Windows Gaming
+  Services (WGS) container store directly — no more converting with an
+  external tool first.
+  - **Desktop:** an *Xbox / Game Pass* button on the load screen auto-detects
+    the Game Pass save store (`%LOCALAPPDATA%\Packages\PocketpairInc.Palworld_…`),
+    lists your worlds (name, players, last played), and loads the one you pick
+    — one world loads immediately. Read-only: nothing is written, ever. The
+    loaded world behaves like any other save (Solver, IV Lab, Pal-dex, plan
+    links), is remembered across restarts, and re-imports fresh on boot.
+  - **Web:** drop the `wgs` store folder onto pal-lab.pages.dev and it's
+    detected automatically — same parsing, run in WebAssembly, still 100%
+    client-side. Snapshot remembrance ("Restore") works for Xbox worlds too.
+  - **CNK support:** the chunked Xbox `.sav` compression variant is decoded
+    natively everywhere (it's a 12-byte wrapper over the standard zlib
+    payload).
+  - Format implemented from the layouts documented by palworld-save-pal,
+    palworld-save-tools, and XGP-save-extractor (all MIT; nothing vendored —
+    see THIRD-PARTY-NOTICES).
+
+### Changed
+- Dropping/pointing at a CNK save now just loads it; the old "convert with
+  palworld-save-pal first" guidance is gone from the app and README.
+- Live save-watching is disabled for Xbox saves (the WGS store has no stable
+  folder to watch); reload by reopening the world from the load screen.
+
+### Known limitations
+- World Map fog-of-war is unavailable for Xbox saves this release.
+- Xbox *console* saves must sync to the PC Game Pass app once before Pal Lab
+  can see them.
+
 ## [1.5.0] - 2026-07-27
 
 ### Added

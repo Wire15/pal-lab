@@ -52,7 +52,7 @@ pub(crate) fn guid_str(g: &Guid) -> String {
 }
 
 /// Map a parsed [`pal_save::SaveData`] into the frontend summary shape.
-fn to_summary(save: pal_save::SaveData) -> SaveSummary {
+pub(crate) fn to_summary(save: pal_save::SaveData) -> SaveSummary {
     SaveSummary {
         world_name: save.world_name.unwrap_or_else(|| "Unknown World".into()),
         players: save

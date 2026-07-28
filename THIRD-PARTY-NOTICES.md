@@ -108,12 +108,29 @@ ships under the MIT License.
 
 - Upstream: https://github.com/oMaN-Rod/palworld-save-pal
 - License: MIT
-- What we use: the alpha (field-boss) marker icon at `app/public/ui/alpha.png`,
-  transcoded from that project's `ui/src/lib/assets/img/alpha.webp` (WEBP → PNG,
-  pixels unchanged). Detailed in
-  [`crates/pal-data/vendor/NOTICE`](crates/pal-data/vendor/NOTICE) (Alpha / UI
-  marker icon section). The icon is ultimately a Palworld game asset ©
-  Pocketpair, Inc.
+- What we use:
+  - the alpha (field-boss) marker icon at `app/public/ui/alpha.png`,
+    transcoded from that project's `ui/src/lib/assets/img/alpha.webp` (WEBP → PNG,
+    pixels unchanged). Detailed in
+    [`crates/pal-data/vendor/NOTICE`](crates/pal-data/vendor/NOTICE) (Alpha / UI
+    marker icon section). The icon is ultimately a Palworld game asset ©
+    Pocketpair, Inc.
+  - **format documentation** for the Xbox / Game Pass (WGS) save container
+    store: `crates/pal-save/src/wgs.rs` implements the `containers.index` /
+    `container.<N>` layouts and the Palworld container-name → save-file mapping
+    as documented by that project's `psp-core/src/gamepass/` sources (and by
+    palworld-save-tools for the CNK compression wrapper). No code was vendored
+    or translated; citations live in `wgs.rs` doc comments.
+
+---
+
+## 5. Z1ni/XGP-save-extractor — MIT (format-documentation reference only)
+
+- Upstream: https://github.com/Z1ni/XGP-save-extractor
+- License: MIT (Copyright (c) 2021 Mark Mäkinen)
+- What we use: **nothing is vendored or ported.** Cross-reference for the
+  generic Xbox WGS container format (`containers.index`, blob GUID naming)
+  implemented in `crates/pal-save/src/wgs.rs`.
 
 ---
 

@@ -17,6 +17,17 @@
 // mis-drop of a huge tree can't exhaust memory. A File System Access pick keeps
 // its directory handle so "Re-read folder" can re-scan in place; a drag-drop or
 // <input> has no persistent handle, so re-reading prompts a re-drop.
+//
+// Xbox / Game Pass saves aren't a `SaveGames` tree: they live in a WGS
+// container store (`containers.index` + GUID-named blob files). When a dropped
+// tree contains a `containers.index`, this module routes to the WGS flow
+// (`detectWgsWorlds` / `acceptWgsWorld`) — it parses the store manifest via the
+// wasm bridge, resolves each world's blob files, and re-keys them by their
+// logical `target_path` (`Level.sav`, `Players/<UID>.sav`, …) into the SAME
+// file-map `Source` a folder drop produces. Everything downstream (`select`,
+// `readBundle`, snapshot save/restore) is then byte-identical to a folder load.
+
+import type { WgsFileRef, WgsManifest } from "./tauri";
 
 /** Files the native reader consumes, matched folder-relative to the save dir. */
 const WANTED_ROOT = new Set([
@@ -46,6 +57,187 @@ interface Selection {
   files: File[];
   /** Basename of the directory holding Level.sav (the world folder). */
   label: string;
+}
+
+// ------------------------------------------------------------------ wgs */
+
+/** A `container.<seq>` generation file inside a container dir. */
+const CONTAINER_SEQ = /(^|\/)container\.\d+$/i;
+/** Dimensional-pal-storage player save — excluded from the player count. */
+const DPS_SAV = /_dps\.sav$/i;
+
+/** One world (save slot) resolved from a dropped WGS store, ready to load. The
+ *  `storeFiles`/`refs` payload is opaque to callers — pass the chosen option to
+ *  [`acceptWgsWorld`] to install it as the active source. */
+export interface WgsWorldOption {
+  /** 32-hex world-folder GUID (the fallback label). */
+  saveId: string;
+  /** Display name from `LevelMeta.sav`, or null when absent/corrupt/unnamed. */
+  worldName: string | null;
+  /** Regular players in the world (`_dps` storage excluded). */
+  playerCount: number;
+  /** Newest FILETIME (100ns ticks) across the world's containers. */
+  mtimeTicks: number;
+  /** Store-root-relative `path -> File` map (case preserved), for blob reads. */
+  storeFiles: Map<string, File>;
+  /** This world's manifest file refs (target_path + blob_path). */
+  refs: WgsFileRef[];
+}
+
+/** Outcome of ingesting a drop / `<input>` selection. A standard `SaveGames`
+ *  tree (or a single-world WGS store) yields `loaded` with the source already
+ *  installed; a multi-world WGS store yields `wgs-picker` so the caller can ask
+ *  which world to load. `rereadable` is true only for a live folder that a
+ *  stored handle could re-walk (never a WGS store — it has no `Level.sav`). */
+export type AcquireResult =
+  | { kind: "loaded"; label: string; rereadable: boolean }
+  | { kind: "wgs-picker"; worlds: WgsWorldOption[] };
+
+/** One WGS container store: a directory holding `containers.index`. */
+interface WgsStore {
+  label: string;
+  /** Store-root-relative `path -> File` (keys case-preserved). */
+  files: Map<string, File>;
+}
+
+/** Group a collected file map into WGS stores — one per `containers.index`,
+ *  keyed store-root-relative. Cloud-backup stores (`*backup*` dirs) are skipped.
+ *  Empty when the tree holds no `containers.index` (→ standard folder path). */
+function findWgsStores(files: Map<string, File>): WgsStore[] {
+  const roots = new Set<string>();
+  for (const path of files.keys()) {
+    const slash = path.lastIndexOf("/");
+    const base = slash < 0 ? path : path.slice(slash + 1);
+    if (base.toLowerCase() !== "containers.index") continue;
+    const root = slash < 0 ? "" : path.slice(0, slash);
+    const seg = root.split("/").pop() ?? "";
+    if (/backup/i.test(seg)) continue; // Xbox cloud-backup copy — skip.
+    roots.add(root);
+  }
+  const stores: WgsStore[] = [];
+  for (const root of roots) {
+    const prefix = root === "" ? "" : `${root}/`;
+    const storeFiles = new Map<string, File>();
+    for (const [path, file] of files) {
+      if (root === "") storeFiles.set(path, file);
+      else if (path.startsWith(prefix)) storeFiles.set(path.slice(prefix.length), file);
+    }
+    stores.push({ label: root.split("/").pop() || "Xbox store", files: storeFiles });
+  }
+  return stores;
+}
+
+/** Detect WGS stores in a collected file map and enumerate their worlds. Returns
+ *  null when no store is present (caller falls back to the `Level.sav` hunt).
+ *  The manifest core PROBES blob existence through the read closure, so it's fed
+ *  `containers.index` + `container.<N>` bytes plus `present_paths` (every
+ *  store-relative path) — the probe only checks presence, so worlds keep their
+ *  Level/player blobs without any blob bytes being read here. Each world's
+ *  display name is then resolved from its `LevelMeta` blob. */
+export async function detectWgsWorlds(
+  files: Map<string, File>,
+): Promise<{ worlds: WgsWorldOption[]; warnings: string[] } | null> {
+  const stores = findWgsStores(files);
+  if (stores.length === 0) return null;
+  // tauri.ts evaluates Vite's `import.meta.glob` at module load, which is
+  // undefined outside the Vite/browser runtime (e.g. bun tests). Import the
+  // wasm bridge lazily so merely loading save-drop never touches it.
+  const { wgsManifest, wgsWorldName } = await import("./tauri");
+
+  const worlds: WgsWorldOption[] = [];
+  const warnings: string[] = [];
+  for (const store of stores) {
+    const paths: string[] = [];
+    const bufs: ArrayBuffer[] = [];
+    for (const [rel, file] of store.files) {
+      if (rel === "containers.index" || CONTAINER_SEQ.test(rel)) {
+        paths.push(rel);
+        bufs.push(await file.arrayBuffer());
+      }
+    }
+    // The core probes blob existence via the closure; hand it every store path
+    // (no byte reads) so a world's Level/player blobs are seen as present.
+    const presentPaths = [...store.files.keys()];
+    let manifest: WgsManifest;
+    try {
+      manifest = await wgsManifest(paths, bufs, presentPaths);
+    } catch (e) {
+      warnings.push(`${store.label}: ${e instanceof Error ? e.message : String(e)}`);
+      continue;
+    }
+    warnings.push(...manifest.warnings);
+    for (const w of manifest.worlds) {
+      worlds.push({
+        saveId: w.save_id,
+        worldName: null,
+        playerCount: w.files.filter(
+          (r) => PLAYERS_SAV.test(r.target_path) && !DPS_SAV.test(r.target_path),
+        ).length,
+        mtimeTicks: w.mtime_ticks,
+        storeFiles: store.files,
+        refs: w.files,
+      });
+    }
+  }
+
+  // Resolve display names from each world's LevelMeta blob (in parallel).
+  await Promise.all(
+    worlds.map(async (w) => {
+      const meta = w.refs.find((r) => r.target_path === "LevelMeta.sav");
+      const file = meta && w.storeFiles.get(meta.blob_path);
+      if (!file) return;
+      try {
+        w.worldName = await wgsWorldName(await file.arrayBuffer());
+      } catch {
+        w.worldName = null;
+      }
+    }),
+  );
+  // Newest world first — the one a returning player most likely wants.
+  worlds.sort((a, b) => b.mtimeTicks - a.mtimeTicks);
+  return { worlds, warnings };
+}
+
+/** Install a chosen WGS world as the active source by re-keying its blob Files
+ *  under their logical `target_path` (`Level.sav`, `Players/<UID>.sav`, …). The
+ *  resulting file-map source is byte-identical to a folder drop, so `readBundle`,
+ *  snapshotting, and restore all work unchanged. Returns the world label. */
+export function acceptWgsWorld(world: WgsWorldOption): string {
+  const files = new Map<string, File>();
+  for (const ref of world.refs) {
+    const blob = world.storeFiles.get(ref.blob_path);
+    if (blob) files.set(ref.target_path, blob);
+  }
+  const label = world.worldName?.trim() || world.saveId;
+  source = { kind: "files", files, rootLabel: label };
+  return label;
+}
+
+/** Route a collected file map: WGS store (single world → load; multiple →
+ *  picker) or the standard `Level.sav` folder path. */
+async function routeSelection(
+  files: Map<string, File>,
+  rootLabel: string,
+): Promise<AcquireResult> {
+  const wgs = await detectWgsWorlds(files);
+  if (wgs) {
+    if (wgs.worlds.length === 1) {
+      return { kind: "loaded", label: acceptWgsWorld(wgs.worlds[0]!), rereadable: false };
+    }
+    if (wgs.worlds.length === 0) {
+      throw new Error(
+        `Found an Xbox save store but no readable worlds in it${
+          wgs.warnings.length ? ` — ${wgs.warnings[0]}` : ""
+        }.`,
+      );
+    }
+    return { kind: "wgs-picker", worlds: wgs.worlds };
+  }
+  // A dropped-folder handle (Chromium) can re-walk this tree to the same
+  // Level.sav, so it is safe to remember and reload (unlike a WGS store).
+  const selection = select(files, rootLabel || "save");
+  source = { kind: "files", files, rootLabel: selection.label };
+  return { kind: "loaded", label: selection.label, rereadable: true };
 }
 
 /** True when the browser exposes the File System Access directory picker (keeps
@@ -114,9 +306,10 @@ export async function acceptHandle(
   return selection.label;
 }
 
-/** Ingest a drag-drop of a folder. Returns the world label. Throws friendly copy
- *  when the drop holds no `Level.sav`. */
-export async function acceptDrop(dt: DataTransfer): Promise<string> {
+/** Ingest a drag-drop of a folder — a Palworld `SaveGames` tree or an Xbox WGS
+ *  store. Returns an [`AcquireResult`] (loaded, or a WGS world picker). Throws
+ *  friendly copy when the drop holds neither a `Level.sav` nor a WGS store. */
+export async function acceptDrop(dt: DataTransfer): Promise<AcquireResult> {
   const roots: FileSystemEntry[] = [];
   for (const item of Array.from(dt.items)) {
     if (item.kind !== "file") continue;
@@ -129,14 +322,13 @@ export async function acceptDrop(dt: DataTransfer): Promise<string> {
     if (entry.isDirectory && !rootLabel) rootLabel = entry.name;
     await walkEntry(entry, "", files);
   }
-  const selection = select(files, rootLabel || "save");
-  source = { kind: "files", files, rootLabel: selection.label };
-  return selection.label;
+  return routeSelection(files, rootLabel);
 }
 
 /** Ingest an `<input type="file" webkitdirectory>` selection (the fallback when
- *  File System Access is unavailable). Returns the world label. */
-export async function acceptInput(list: FileList): Promise<string> {
+ *  File System Access is unavailable) — a folder tree or a WGS store. Returns an
+ *  [`AcquireResult`]. */
+export async function acceptInput(list: FileList): Promise<AcquireResult> {
   const files = new Map<string, File>();
   let rootLabel = "";
   for (const file of Array.from(list)) {
@@ -146,13 +338,10 @@ export async function acceptInput(list: FileList): Promise<string> {
     const slash = rel.indexOf("/");
     if (slash > 0 && !rootLabel) rootLabel = rel.slice(0, slash);
     const path = slash >= 0 ? rel.slice(slash + 1) : rel;
-    if (!path.toLowerCase().endsWith(".sav")) continue;
     if (path.split("/").some((seg) => seg.toLowerCase() === SKIP_DIR)) continue;
     files.set(path, file);
   }
-  const selection = select(files, rootLabel || "save");
-  source = { kind: "files", files, rootLabel: selection.label };
-  return selection.label;
+  return routeSelection(files, rootLabel);
 }
 
 /** Install a byte snapshot (restored from IndexedDB — see lib/idb-snapshot.ts) as
@@ -250,8 +439,10 @@ function depth(path: string): number {
 
 // ------------------------------------------------------------------ walk */
 
-/** Recursively collect `.sav` files under a drag-drop FileSystemEntry tree,
- *  skipping `backup/` directories. Keys are relative to the dropped root. */
+/** Recursively collect files under a drag-drop FileSystemEntry tree, skipping
+ *  `backup/` directories. Keys are relative to the dropped root. Non-`.sav` files
+ *  are kept too, so a WGS store's `containers.index` + blobs are captured (the
+ *  standard path's `select()` still filters to the `.sav` files it wants). */
 async function walkEntry(
   entry: FileSystemEntry,
   path: string,
@@ -259,7 +450,6 @@ async function walkEntry(
 ): Promise<void> {
   const here = path ? `${path}/${entry.name}` : entry.name;
   if (entry.isFile) {
-    if (!entry.name.toLowerCase().endsWith(".sav")) return;
     // Well-known DOM narrowing (isFile guards it); the lib has no discriminant.
     const fileEntry = entry as FileSystemFileEntry;
     out.set(here, await fileFromEntry(fileEntry));

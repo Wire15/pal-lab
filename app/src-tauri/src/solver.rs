@@ -346,7 +346,7 @@ fn run_with_progress(
     let (spec, cfg, catching) = build_request(gd, &req)?;
 
     let save =
-        pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
+        crate::xbox::load_save_data(save_dir).map_err(|e| format!("reading save: {e}"))?;
 
     let emitter = match (app, req.progress_token) {
         (Some(app), Some(token)) => Some(ProgressEmitter::new(app, token, "single")),
@@ -476,7 +476,7 @@ fn run_queue_with_progress(
         .collect::<Result<Vec<_>, String>>()?;
 
     let save =
-        pal_save::read_save_dir(Path::new(save_dir)).map_err(|e| format!("reading save: {e}"))?;
+        crate::xbox::load_save_data(save_dir).map_err(|e| format!("reading save: {e}"))?;
 
     let emitter = match (app, token) {
         (Some(app), Some(token)) => Some(ProgressEmitter::new(app, token, "queue")),
@@ -555,13 +555,18 @@ pub struct WorldOptionsResponse {
     pub egg_hatch_hours: Option<f64>,
 }
 
-/// Scan `<save_dir>/WorldOption.sav` for breeding-relevant world settings.
-/// Never errors on a missing file (returns `egg_hatch_hours: null`); only a
-/// present-but-corrupt save surfaces an error.
+/// Scan a save's `WorldOption.sav` for breeding-relevant world settings. For a
+/// folder save `save_dir` is `<world>/`; for an Xbox save it is the sentinel
+/// `xbox://<wgs_dir>#<save_id>`, decoded via the shared [`crate::xbox`] parser
+/// and read straight from the WGS store. Never errors on a missing file
+/// (returns `egg_hatch_hours: null`); only a present-but-corrupt save errors.
 #[tauri::command]
 pub fn get_world_options(save_dir: String) -> Result<WorldOptionsResponse, String> {
-    let opts = pal_save::read_world_options(Path::new(&save_dir))
-        .map_err(|e| format!("reading world options: {e}"))?;
+    let opts = match crate::xbox::parse_sentinel(&save_dir) {
+        Some((wgs_dir, save_id)) => crate::xbox::read_world_options_xbox(&wgs_dir, &save_id),
+        None => pal_save::read_world_options(Path::new(&save_dir)),
+    }
+    .map_err(|e| format!("reading world options: {e}"))?;
     Ok(WorldOptionsResponse {
         egg_hatch_hours: opts.and_then(|o| o.egg_hatch_hours),
     })

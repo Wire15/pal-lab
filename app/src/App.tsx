@@ -12,6 +12,13 @@ import AboutButton from "./components/about-panel";
 import WebDropZone, { rereadWebSave } from "./components/web-drop-zone";
 import { canReread } from "./lib/save-drop";
 import { caps } from "./lib/caps";
+import { invoke } from "./lib/tauri";
+import {
+  encodeXboxSource,
+  type XboxStore,
+  type XboxWorld,
+  type XboxWorldRow,
+} from "./lib/xbox-save";
 import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
@@ -139,6 +146,9 @@ function SaveModal({ onClose }: { onClose: () => void }) {
   const { lastSaveDir, loadSave, saveLoading, saveError, recentSaves } =
     useAppState();
   const [path, setPath] = useState(lastSaveDir);
+  const [xboxScanning, setXboxScanning] = useState(false);
+  const [xboxNote, setXboxNote] = useState<string | null>(null);
+  const [xboxWorlds, setXboxWorlds] = useState<XboxWorldRow[] | null>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -157,9 +167,50 @@ function SaveModal({ onClose }: { onClose: () => void }) {
     }
   }
 
+  // Scan the local Game Pass save store and route to a world. Zero stores => an
+  // honest inline note; exactly one world loads immediately; several open the
+  // picker. Tauri-only (the commands have no browser/fixture backend).
+  async function scanXbox() {
+    setXboxScanning(true);
+    setXboxNote(null);
+    setXboxWorlds(null);
+    try {
+      const stores = await invoke<XboxStore[]>("detect_xbox_stores");
+      if (stores.length === 0) {
+        setXboxNote("No Xbox Palworld save store found on this PC.");
+        return;
+      }
+      const rows: XboxWorldRow[] = [];
+      for (const store of stores) {
+        try {
+          const worlds = await invoke<XboxWorld[]>("list_xbox_worlds", {
+            wgsDir: store.wgs_dir,
+          });
+          for (const w of worlds) rows.push({ ...w, wgsDir: store.wgs_dir });
+        } catch {
+          // Skip an unreadable store; the others may still list.
+        }
+      }
+      if (rows.length === 0) {
+        setXboxNote("No Palworld worlds found in the Xbox save store.");
+        return;
+      }
+      if (rows.length === 1) {
+        loadSave(encodeXboxSource(rows[0].wgsDir, rows[0].save_id));
+        return;
+      }
+      setXboxWorlds(rows);
+    } catch (e) {
+      setXboxNote(`Couldn't read the Xbox save store: ${String(e)}`);
+    } finally {
+      setXboxScanning(false);
+    }
+  }
+
   const canLoad = !saveLoading && path.trim() !== "";
 
   return (
+    <>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
       onMouseDown={onClose}
@@ -261,6 +312,26 @@ function SaveModal({ onClose }: { onClose: () => void }) {
               {saveError}
             </div>
           )}
+          {caps.isTauri && (
+            <div className="mt-3.5 border-t border-line pt-3.5">
+              <button
+                onClick={scanXbox}
+                disabled={xboxScanning || saveLoading}
+                className="flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {xboxScanning ? "Scanning\u2026" : "Xbox / Game Pass"}
+              </button>
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">
+                Reads the Game Pass save store on this PC. Read only &mdash;
+                nothing is written.
+              </p>
+              {xboxNote && (
+                <div className="mt-2 rounded-md border border-line bg-abyss/40 px-3 py-2 text-[12px] text-ink-dim">
+                  {xboxNote}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-3.5">
@@ -278,6 +349,96 @@ function SaveModal({ onClose }: { onClose: () => void }) {
             {saveLoading ? "Loading\u2026" : "Load save"}
           </button>
         </div>
+      </div>
+    </div>
+      {xboxWorlds && (
+        <XboxWorldPicker
+          worlds={xboxWorlds}
+          onPick={(w) => {
+            setXboxWorlds(null);
+            loadSave(encodeXboxSource(w.wgsDir, w.save_id));
+          }}
+          onClose={() => setXboxWorlds(null)}
+        />
+      )}
+    </>
+  );
+}
+
+/**
+ * Xbox world picker. Shown only when a store holds more than one world (a lone
+ * world loads immediately). Mirrors {@link ScopeModal}'s modal chrome. Rows show
+ * the world name (falling back to the raw save id), player count and last-write
+ * age. Picking builds the `xbox://` sentinel and hands it to `loadSave`.
+ */
+function XboxWorldPicker({
+  worlds,
+  onPick,
+  onClose,
+}: {
+  worlds: XboxWorldRow[];
+  onPick: (world: XboxWorldRow) => void;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
+      onMouseDown={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="xbox-modal-title"
+        className="w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="border-b border-line px-5 py-4">
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+            Xbox / Game Pass
+          </div>
+          <h2
+            id="xbox-modal-title"
+            className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
+          >
+            Choose a world
+          </h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
+            Read from the Game Pass save store on this PC. Nothing is written
+            &mdash; the save is read only.
+          </p>
+        </div>
+
+        <ul className="flex max-h-[60vh] flex-col gap-1.5 overflow-y-auto px-5 py-4">
+          {worlds.map((w) => (
+            <li key={`${w.wgsDir}#${w.save_id}`}>
+              <button
+                onClick={() => onPick(w)}
+                className="group flex w-full items-center justify-between gap-3 rounded-md border border-line bg-raised/50 px-3 py-2 text-left transition-colors hover:border-amber/40 hover:bg-hover"
+              >
+                <div className="min-w-0">
+                  <div className="truncate text-[13px] font-medium text-ink">
+                    {w.world_name || w.save_id}
+                  </div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                    <span className="text-ink-dim">{w.player_count}</span>{" "}
+                    {w.player_count === 1 ? "player" : "players"}
+                    <span className="mx-1 text-line">&middot;</span>
+                    {relativeTime(w.mtime_ms)}
+                  </div>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

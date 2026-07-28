@@ -29,4 +29,9 @@ declare module "bun:test" {
   export function beforeEach(fn: () => void | Promise<void>): void;
   export function afterEach(fn: () => void | Promise<void>): void;
   export function expect(actual: unknown): Matchers;
+  interface MockFn {
+    (...args: unknown[]): unknown;
+    module(specifier: string, factory: () => unknown): void;
+  }
+  export const mock: MockFn;
 }
