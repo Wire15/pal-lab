@@ -2,6 +2,20 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.8.1] - 2026-08-03
+
+### Fixed
+- **SFTP world scan now handles hosting-provider layouts.** Game hosts often
+  jail SFTP at a server root with the world buried at
+  `/Pal/Saved/SaveGames/<id>/<world>` — deeper than the old 2-level scan, so
+  connecting succeeded but no worlds were found. The scanner now searches up
+  to 6 levels deep with a request budget (max 400 directory listings),
+  prioritizing well-known folder names (`Pal`, `Saved`, `SaveGames`, steam
+  ids, world GUIDs) and skipping noise (`backup`, `logs`, dotfolders).
+  Pointing REMOTE PATH at `/` on a typical game host now just works.
+- Clearer guidance when no worlds are found (names the common
+  `/Pal/Saved/SaveGames` path).
+
 ## [1.8.0] - 2026-08-03
 
 ### Added

@@ -228,38 +228,112 @@ struct Bundle {
     dps: Vec<(String, Vec<u8>)>,
 }
 
-/// Discover worlds under `root`: if `root` itself holds `Level.sav` it is the
-/// single world; otherwise scan depth <= 2 for dirs containing `Level.sav`
-/// (covers `SaveGames/<id>/<world>`). For each world, best-effort world name
-/// (from `LevelMeta.sav`), human player count, and `Level.sav` mtime.
+/// Max directory depth explored by [`scan_worlds`] (root = 0). Deep enough to
+/// reach a world jailed at `/Pal/Saved/SaveGames/<id>/<world>` from `/`, but
+/// bounded so a hostile/huge remote tree can't be walked forever.
+const MAX_SCAN_DEPTH: usize = 6;
+
+/// Hard cap on `fs.list()` calls per [`scan_worlds`]. The remote FS is slow and
+/// possibly enormous; once spent the scan stops expanding and returns whatever
+/// it found. Priority ordering (see [`is_hot_dir`]) spends the budget on the
+/// dirs most likely to hold a Palworld world first.
+const MAX_SCAN_LIST_CALLS: usize = 400;
+
+/// Case-insensitive: is `name` a directory we expand FIRST at each depth because
+/// it's on the well-known path to a Palworld world? Covers the fixed segment
+/// names plus all-digit dirs (Steam ids like `0`) and 32-hex dirs (world guids).
+fn is_hot_dir(name: &str) -> bool {
+    let lower = name.to_ascii_lowercase();
+    if matches!(
+        lower.as_str(),
+        "pal" | "palserver"
+            | "saved"
+            | "savegames"
+            | "steamapps"
+            | "common"
+            | "config"
+            | "server"
+            | "data"
+    ) {
+        return true;
+    }
+    // All-digit (steam ids) or 32-char hex (world guids).
+    (!name.is_empty() && name.bytes().all(|b| b.is_ascii_digit()))
+        || (name.len() == 32 && name.bytes().all(|b| b.is_ascii_hexdigit()))
+}
+
+/// Case-insensitive: is `name` a directory we NEVER descend into? Backup/log
+/// spam and dotfiles can't hold the live world and only burn budget.
+fn is_skip_dir(name: &str) -> bool {
+    if name.starts_with('.') {
+        return true;
+    }
+    matches!(
+        name.to_ascii_lowercase().as_str(),
+        "backup" | "backups" | "logs" | "log" | "crashes" | "node_modules" | ".git"
+    )
+}
+
+/// The last `/`-separated component of a remote path (for hotness ranking).
+fn base_name(path: &str) -> &str {
+    path.rsplit('/').next().unwrap_or("")
+}
+
+/// Discover worlds under `root` via a budgeted, prioritized breadth-first walk.
+///
+/// A directory that directly contains `Level.sav` IS a world; we record it and
+/// do NOT descend into it (its `Players` / `backup` subdirs are never worlds).
+/// Otherwise we enqueue its child dirs, expanding [`is_hot_dir`] names before
+/// the rest at each depth so a jailed root buried in noise still finds the world
+/// within [`MAX_SCAN_LIST_CALLS`]. Traversal stops at [`MAX_SCAN_DEPTH`] and
+/// when the list budget is exhausted (returning what was found so far, no
+/// error). [`is_skip_dir`] names are never descended into.
+///
+/// For each world: best-effort name (`LevelMeta.sav`), human player count
+/// (excluding `_dps`), and `Level.sav` mtime.
 async fn scan_worlds<F: RemoteFs>(fs: &F, root: &str) -> Result<Vec<SftpWorld>, String> {
     let root = root.trim_end_matches('/');
     let root = if root.is_empty() { "/" } else { root };
 
     let mut world_dirs: Vec<String> = Vec::new();
-    if fs.stat(&join(root, "Level.sav")).await.is_ok() {
-        world_dirs.push(root.to_string());
-    } else {
-        let level1 = fs
-            .list(root)
-            .await
-            .map_err(|e| format!("listing {root}: {e}"))?;
-        for d1 in level1.iter().filter(|e| e.is_dir) {
-            let p1 = join(root, &d1.name);
-            if fs.stat(&join(&p1, "Level.sav")).await.is_ok() {
-                world_dirs.push(p1);
-                continue;
+    let mut visited: std::collections::HashSet<String> = std::collections::HashSet::new();
+    visited.insert(root.to_string());
+    let mut frontier: Vec<String> = vec![root.to_string()];
+    let mut depth = 0usize;
+    let mut list_calls = 0usize;
+
+    'walk: while !frontier.is_empty() && depth <= MAX_SCAN_DEPTH {
+        // Hot dirs first at this depth; stable otherwise so noise keeps its
+        // listing order and the budget lands on promising dirs first.
+        frontier.sort_by_key(|p| !is_hot_dir(base_name(p)));
+        let mut next: Vec<String> = Vec::new();
+        for dir in &frontier {
+            if list_calls >= MAX_SCAN_LIST_CALLS {
+                break 'walk;
             }
-            // depth 2
-            if let Ok(level2) = fs.list(&p1).await {
-                for d2 in level2.iter().filter(|e| e.is_dir) {
-                    let p2 = join(&p1, &d2.name);
-                    if fs.stat(&join(&p2, "Level.sav")).await.is_ok() {
-                        world_dirs.push(p2);
+            list_calls += 1;
+            let entries = match fs.list(dir).await {
+                Ok(e) => e,
+                Err(_) => continue,
+            };
+            if entries.iter().any(|e| !e.is_dir && e.name == "Level.sav") {
+                world_dirs.push(dir.clone());
+                continue; // A found world's subdirs are never worlds.
+            }
+            if depth < MAX_SCAN_DEPTH {
+                for e in entries.iter().filter(|e| e.is_dir) {
+                    if is_skip_dir(&e.name) {
+                        continue;
+                    }
+                    let child = join(dir, &e.name);
+                    if visited.insert(child.clone()) {
+                        next.push(child);
                     }
                 }
             }
         }
+        frontier = next;
+        depth += 1;
     }
 
     let mut out = Vec::with_capacity(world_dirs.len());
@@ -951,6 +1025,8 @@ mod tests {
         dirs: HashMap<String, Vec<(String, bool)>>,
         /// file path -> (bytes, mtime_ms).
         files: HashMap<String, (Vec<u8>, u64)>,
+        /// Count of `list()` calls, for budget assertions.
+        list_calls: std::cell::Cell<usize>,
     }
 
     impl MockFs {
@@ -965,10 +1041,17 @@ mod tests {
             self.files.insert(path.to_string(), (bytes.to_vec(), mtime_ms));
             self
         }
+        /// Insert an owned dir listing (for programmatically-built wide trees).
+        fn dir_owned(&mut self, path: &str, children: Vec<(String, bool)>) -> &mut Self {
+            self.dirs
+                .insert(path.trim_end_matches('/').to_string(), children);
+            self
+        }
     }
 
     impl RemoteFs for MockFs {
         async fn list(&self, path: &str) -> Result<Vec<RemoteEntry>, String> {
+            self.list_calls.set(self.list_calls.get() + 1);
             self.dirs
                 .get(path.trim_end_matches('/'))
                 .map(|v| {
@@ -1042,16 +1125,17 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn scan_ignores_worlds_deeper_than_two() {
+    async fn scan_finds_world_at_depth_three() {
         let mut fs = MockFs::default();
-        // Level.sav at depth 3 must NOT be discovered.
+        // Level.sav at depth 3 IS now within the depth-6 cap.
         fs.dir("/root", &[("a", true)])
             .dir("/root/a", &[("b", true)])
             .dir("/root/a/b", &[("c", true)])
             .dir("/root/a/b/c", &[("Level.sav", false)])
             .file("/root/a/b/c/Level.sav", b"x", 1);
         let worlds = scan_worlds(&fs, "/root").await.expect("scan");
-        assert!(worlds.is_empty(), "depth-3 world is out of range");
+        assert_eq!(worlds.len(), 1);
+        assert_eq!(worlds[0].world_dir, "/root/a/b/c");
     }
 
     #[tokio::test]
@@ -1075,5 +1159,112 @@ mod tests {
         assert_eq!(b.players[0].0, "p1.sav");
         assert_eq!(b.dps.len(), 1);
         assert_eq!(b.dps[0].0, "p1_dps.sav");
+    }
+
+    #[tokio::test]
+    async fn hosting_layout_from_jail_root() {
+        // Jailed SFTP: world lives at /Pal/Saved/SaveGames/0/<guid>/Level.sav
+        // (depth 5) and must be found scanning from "/".
+        let guid = "0123456789abcdef0123456789abcdef"; // 32 hex
+        let mut fs = MockFs::default();
+        fs.dir("/", &[("Pal", true), ("etc", true)])
+            .dir("/Pal", &[("Saved", true)])
+            .dir("/Pal/Saved", &[("SaveGames", true)])
+            .dir("/Pal/Saved/SaveGames", &[("0", true)])
+            .dir("/Pal/Saved/SaveGames/0", &[(guid, true)])
+            .dir(
+                &format!("/Pal/Saved/SaveGames/0/{guid}"),
+                &[("Level.sav", false)],
+            )
+            .file(&format!("/Pal/Saved/SaveGames/0/{guid}/Level.sav"), b"x", 99);
+
+        let worlds = scan_worlds(&fs, "/").await.expect("scan");
+        assert_eq!(worlds.len(), 1);
+        assert_eq!(worlds[0].world_dir, format!("/Pal/Saved/SaveGames/0/{guid}"));
+        assert_eq!(worlds[0].mtime_ms, 99);
+    }
+
+    #[tokio::test]
+    async fn depth_seven_not_found() {
+        // World dir at depth 7 (root=0) is beyond the depth-6 cap.
+        let mut fs = MockFs::default();
+        fs.dir("/s", &[("a", true)])
+            .dir("/s/a", &[("b", true)])
+            .dir("/s/a/b", &[("c", true)])
+            .dir("/s/a/b/c", &[("d", true)])
+            .dir("/s/a/b/c/d", &[("e", true)])
+            .dir("/s/a/b/c/d/e", &[("f", true)])
+            .dir("/s/a/b/c/d/e/f", &[("g", true)])
+            .dir("/s/a/b/c/d/e/f/g", &[("Level.sav", false)])
+            .file("/s/a/b/c/d/e/f/g/Level.sav", b"x", 1);
+        let worlds = scan_worlds(&fs, "/s").await.expect("scan");
+        assert!(worlds.is_empty(), "depth-7 world is beyond the cap");
+    }
+
+    #[tokio::test]
+    async fn budget_exhaustion_stops() {
+        // A wide tree: 500 non-hot junk dirs at depth 1, each empty.
+        let junk: Vec<(String, bool)> = (0..500).map(|i| (format!("junk{i:04}"), true)).collect();
+
+        // Case A: the ONLY world is under a late non-hot dir (junk0499),
+        // reached only after the list budget is spent -> not found, NO error.
+        let mut late = MockFs::default();
+        let mut late_root = junk.clone();
+        late_root.push(("junk0499_world".to_string(), true));
+        late.dir_owned("/j", late_root);
+        for i in 0..500 {
+            late.dir_owned(&format!("/j/junk{i:04}"), Vec::new());
+        }
+        late.dir("/j/junk0499_world", &[("Level.sav", false)])
+            .file("/j/junk0499_world/Level.sav", b"x", 1);
+        let worlds = scan_worlds(&late, "/j").await.expect("scan (no error)");
+        assert!(worlds.is_empty(), "late world beyond budget not found");
+        assert!(
+            late.list_calls.get() <= MAX_SCAN_LIST_CALLS,
+            "budget honored: {} <= {MAX_SCAN_LIST_CALLS}",
+            late.list_calls.get()
+        );
+
+        // Case B: same wide junk tree, but the world sits under an EARLY hot
+        // dir ("Pal") -> hot-first ordering finds it despite the 500 junk dirs.
+        let mut early = MockFs::default();
+        let mut early_root = junk.clone();
+        early_root.push(("Pal".to_string(), true));
+        early.dir_owned("/j", early_root);
+        for i in 0..500 {
+            early.dir_owned(&format!("/j/junk{i:04}"), Vec::new());
+        }
+        early.dir("/j/Pal", &[("Level.sav", false)])
+            .file("/j/Pal/Level.sav", b"x", 7);
+        let worlds = scan_worlds(&early, "/j").await.expect("scan");
+        assert_eq!(worlds.len(), 1, "hot dir expanded before junk");
+        assert_eq!(worlds[0].world_dir, "/j/Pal");
+    }
+
+    #[tokio::test]
+    async fn skip_list_dirs_not_descended() {
+        // A world buried under a skip-list dir (backup/) is never descended into.
+        let mut fs = MockFs::default();
+        fs.dir("/r", &[("backup", true)])
+            .dir("/r/backup", &[("w", true)])
+            .dir("/r/backup/w", &[("Level.sav", false)])
+            .file("/r/backup/w/Level.sav", b"x", 1);
+        let worlds = scan_worlds(&fs, "/r").await.expect("scan");
+        assert!(worlds.is_empty(), "backup/ is never descended into");
+    }
+
+    #[tokio::test]
+    async fn found_world_subdirs_not_scanned() {
+        // A found world's subdirs are never treated as worlds, even if one holds
+        // its own Level.sav (e.g. a nested backup copy).
+        let mut fs = MockFs::default();
+        fs.dir("/r", &[("W", true)])
+            .dir("/r/W", &[("Level.sav", false), ("nested", true)])
+            .dir("/r/W/nested", &[("Level.sav", false)])
+            .file("/r/W/Level.sav", b"x", 5)
+            .file("/r/W/nested/Level.sav", b"x", 6);
+        let worlds = scan_worlds(&fs, "/r").await.expect("scan");
+        assert_eq!(worlds.len(), 1, "only the outer world is discovered");
+        assert_eq!(worlds[0].world_dir, "/r/W");
     }
 }

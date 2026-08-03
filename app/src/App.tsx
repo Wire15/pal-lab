@@ -520,7 +520,7 @@ function SftpConnectModal({
       }
       if (ci.worlds.length === 0) {
         setError(
-          "No Palworld worlds found under that remote path. Point at a world folder, its SaveGames parent, or the server base dir.",
+          "No Palworld worlds found under that remote path. Try the folder that contains Level.sav (or any parent up to ~5 levels above it) — on most hosts that is /Pal/Saved/SaveGames.",
         );
         setPhase("form");
         return;
