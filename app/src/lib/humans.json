@@ -1,0 +1,7260 @@
+{
+  "Ambassador01": {
+    "name": "Desert Town Ambassador",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_BossDefeat": {
+    "name": "Veteran Hunter",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_DarkTrader": {
+    "name": "Black Marketeer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Arena_Female_Presenter": {
+    "name": "Friendly Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Female_Soldier02": {
+    "name": "Up-and-Coming Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Female_Soldier03": {
+    "name": "Veteran Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Female_Soldier04": {
+    "name": "Master Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_FireCult_FlameThrower": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Hunter_Fat_GatlingGun": {
+    "name": "Syndicate Crusher",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Male_DarkTrader02": {
+    "name": "Medal Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Arena_Male_Police_old": {
+    "name": "Reincarnated Guy",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Arena_Male_Soldier02": {
+    "name": "Newbie Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Male_Soldier02_Invader": {
+    "name": "Fiery Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Male_Soldier03": {
+    "name": "Cruel Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Male_Soldier04": {
+    "name": "Vigorous Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Ninja": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_NinjaElite": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_PalPassive_Doctor": {
+    "name": "Dr. Brawn",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Ranger04": {
+    "name": "Sweet-Smelling Hunter",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Reward_Emote": {
+    "name": "Messenger of Love",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Reward_Paldex": {
+    "name": "Pal Ecological Researcher",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Scholar01": {
+    "name": "Legend-Loving Researcher",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_Scientist_LaserRifle": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Arena_Soldier": {
+    "name": "Sturdy Mercenary",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Arena_Viking": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Arena_VikingElite": {
+    "name": "Feybreak Berserker",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "BOSS_Believer_CrossBow": {
+    "name": "Ego",
+    "faction": "Free Pal Alliance",
+    "icon": "t_boss_npc_believer",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 3000
+  },
+  "BOSS_Believer_Fat_GiantClub": {
+    "name": "Brick",
+    "faction": "Free Pal Alliance",
+    "icon": "t_boss_npc_believer_fat",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 8000
+  },
+  "BOSS_DarkTrader": {
+    "name": "Ram",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_darktrader",
+    "work": {
+      "Handiwork": 4,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "BOSS_Female_DesertPeople": {
+    "name": "Whisper",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_female_desertpeople",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Female_People": {
+    "name": "Flare",
+    "faction": "Villager",
+    "icon": "t_boss_npc_female",
+    "work": {
+      "Kindling": 3,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Female_People02": {
+    "name": "Siren",
+    "faction": "Villager",
+    "icon": "t_boss_npc_female02",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Female_People03": {
+    "name": "Turncoat",
+    "faction": "Villager",
+    "icon": "t_boss_npc_female03",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Female_Soldier": {
+    "name": "Jade",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_female_soldier",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Female_Soldier02": {
+    "name": "Dazzle",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_female_soldier02",
+    "work": {
+      "Kindling": 3,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Female_Soldier03": {
+    "name": "Aloha",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_female_soldier03",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Female_Soldier04": {
+    "name": "Nimble",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_female_soldier04",
+    "work": {
+      "Handiwork": 2,
+      "Gathering": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_FireCult_FlameThrower": {
+    "name": "Shadow",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_boss_npc_firecult",
+    "work": {
+      "Kindling": 3,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 8000
+  },
+  "BOSS_Hunter_Fat_GatlingGun": {
+    "name": "Grill",
+    "faction": "Rayne Syndicate",
+    "icon": "t_boss_npc_hunter_fat",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 8000
+  },
+  "BOSS_Hunter_Fat_GatlingGun_Quest_StrongOldMan": {
+    "name": "Elder",
+    "faction": "Rayne Syndicate",
+    "icon": "t_boss_npc_hunter_fat",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 8000
+  },
+  "BOSS_Hunter_Rifle": {
+    "name": "Hawk",
+    "faction": "Rayne Syndicate",
+    "icon": "t_boss_npc_hunter",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_DesertPeople": {
+    "name": "Phantom",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_male_desertpeople",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_NinjaElite": {
+    "name": "Urchin",
+    "faction": "Moonflower",
+    "icon": "t_boss_npc_male_ninjaelite",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 4,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_People": {
+    "name": "Dyna",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male",
+    "work": {
+      "Kindling": 2,
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_People02": {
+    "name": "Quill",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male02",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_People03": {
+    "name": "Scoot",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male03",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_People2": {
+    "name": "Mite",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male",
+    "work": {
+      "Kindling": 2,
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_Soldier": {
+    "name": "Crash",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_male_soldier",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_Soldier02": {
+    "name": "Dart",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_male_soldier02",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_Soldier03": {
+    "name": "Clint",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_male_soldier03",
+    "work": {
+      "Planting": 3,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_Soldier04": {
+    "name": "Lasso",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_male_soldier04",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Male_Trader01": {
+    "name": "Skim",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male_trader01",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_Trader02": {
+    "name": "Mimic",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male_trader02",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Male_Trader03": {
+    "name": "Billy",
+    "faction": "Villager",
+    "icon": "t_boss_npc_male_trader03",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 3,
+      "Lumbering": 3,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Ninja": {
+    "name": "Fumble",
+    "faction": "Moonflower",
+    "icon": "t_boss_npc_male_ninja",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_Police_Rifle": {
+    "name": "Whip",
+    "faction": "PIDF",
+    "icon": "t_boss_npc_police",
+    "work": {
+      "Handiwork": 2,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "BOSS_Police_old": {
+    "name": "Pinch",
+    "faction": "PIDF",
+    "icon": "t_boss_npc_police_old",
+    "work": {
+      "Handiwork": 2,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 1000
+  },
+  "BOSS_Scientist_LaserRifle": {
+    "name": "Whisk",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_boss_npc_male_scientist",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "BOSS_Viking": {
+    "name": "Gnaw",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_viking",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "BOSS_VikingElite": {
+    "name": "Cache",
+    "faction": "Unknown",
+    "icon": "t_boss_npc_vikingelite",
+    "work": {
+      "Handiwork": 3,
+      "Lumbering": 3,
+      "Mining": 3,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": true,
+    "price": 5000
+  },
+  "Believer_Bat": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 75,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Believer_Bat_Camp02": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 75,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Believer_Bat_Invader": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Believer_CrossBow": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Believer_CrossBow_Camp02": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Believer_CrossBow_Invader": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Believer_CrossBow_Tower": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Believer_Fat_Cane": {
+    "name": "Free Pal Alliance Judicator",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Believer_Fat_Cane_Tower": {
+    "name": "Free Pal Alliance Judicator",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Believer_Fat_GatlingGun": {
+    "name": "Free Pal Alliance Judicator",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Believer_Fat_Prisoner": {
+    "name": "Free Pal Alliance Judicator",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Believer_Prisoner": {
+    "name": "Free Pal Alliance Believer",
+    "faction": "Free Pal Alliance",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 75,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Blacksmith01": {
+    "name": "Blacksmith in Training",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "BountyTrader": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "CaravanLeader01": {
+    "name": "Caravan Leader",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "CaravanLeader02": {
+    "name": "Caravan Leader",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "CaravanLeader03": {
+    "name": "Caravan Leader",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "CaravanLeader04": {
+    "name": "Caravan Leader",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "DeathPenalty_guide": {
+    "name": "Veteran Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Doctor": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_A_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_A_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_B_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_B_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_C_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_C_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_D_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_D_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_E_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_E_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_F_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_F_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_G_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_G_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_H_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_H_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_I_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Emote_location_I_02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Epicure01": {
+    "name": "Gourmet Hunter",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Escort_PalTamer01": {
+    "name": "Pal Tamer Bodyguard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Escort_Warrior01": {
+    "name": "Mercenary Bodyguard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Female_DTairikuPeople01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_DesertPeople02": {
+    "name": "Villager",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Female_Farmer01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Farmer01_v02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Farmer01_v03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Farmer01_v04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Farmer01_v05": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Kunoichi01": {
+    "name": "Azure Covenant Enforcer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 4,
+      "Planting": 1,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Nomad01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Nomad01_v02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Nomad01_v03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Nomad01_v04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Nomad01_v05": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_People02": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Female_People03": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Female_Presenter01": {
+    "name": "Friendly Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Ranger01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Ranger01_v02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Ranger01_v03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Ranger01_v04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Ranger01_v05": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SakurajimaPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SnowPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Soldier01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Soldier02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Soldier03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Soldier03_Invader": {
+    "name": "Gemini Tamers",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 3,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Female_Soldier04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_Soldier04_Invader": {
+    "name": "Gemini Tamers",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Female_SorajimaPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 3,
+      "Gathering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyGirl01": {
+    "name": "Fia",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyGirl02": {
+    "name": "Fia",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 20
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyGirl03": {
+    "name": "Fia",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 40
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyGirl04": {
+    "name": "Fia",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 40
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyWoman01": {
+    "name": "Carla",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 40,
+      "attack": 60,
+      "defense": 20
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_SurveyWoman02": {
+    "name": "Carla",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 40,
+      "attack": 60,
+      "defense": 40
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_TenrakuPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Female_WorldTreePeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 5,
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_FlameThrower": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "FireCult_FlameThrower_Invader": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "FireCult_FlameThrower_Relax": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "FireCult_GrenadeLauncher": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_MissileLauncher": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_Prisoner": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_Rifle": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_Rifle_Invader": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_Rifle_Relax": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "FireCult_RocketLauncher": {
+    "name": "Brothers of the Eternal Pyre Martyr",
+    "faction": "Brothers of the Eternal Pyre",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "GoodwillAmbassador": {
+    "name": "Pal Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "GrassBoss": {
+    "name": "Zoe",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Guard_Rifle": {
+    "name": "Guard",
+    "faction": "Guard",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Guard_Shotgun": {
+    "name": "Guard",
+    "faction": "Guard",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Help01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Help02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Help03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Help04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Bat": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 10,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Hunter_Bat_Invader": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Hunter_BowGun": {
+    "name": "Syndicate Crossbowman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_BowGun_Oilrig": {
+    "name": "Syndicate Crossbowman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Fat_GatlingGun": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_GatlingGun_Invader": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_GatlingGun_LargeOilrig": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_GatlingGun_MiniOilrig": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_GatlingGun_Oilrig": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_GatlingGun_Tower": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_Fat_Prisoner": {
+    "name": "Syndicate Crusher",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Hunter_FlameThrower": {
+    "name": "Syndicate Cleaner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_FlameThrower_Invader": {
+    "name": "Syndicate Cleaner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_FlameThrower_LargeOilrig": {
+    "name": "Syndicate Cleaner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 25,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_FlameThrower_MiiniOilrig": {
+    "name": "Syndicate Cleaner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_FlameThrower_Oilrig": {
+    "name": "Syndicate Cleaner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 25,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Grenade": {
+    "name": "Syndicate Grenadier",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_GrenadeLauncher": {
+    "name": "Syndicate Veteran",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_GrenadeLauncher_LargeOilrig": {
+    "name": "Syndicate Veteran",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_GrenadeLauncher_Oilrig": {
+    "name": "Syndicate Veteran",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_Grenade_Invader": {
+    "name": "Syndicate Grenadier",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Grenade_LargeOilrig": {
+    "name": "Syndicate Grenadier",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Grenade_MiniOilrig": {
+    "name": "Syndicate Grenadier",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Grenade_Oilrig": {
+    "name": "Syndicate Grenadier",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Handgun": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 30,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Hunter_Handgun_Invader": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Hunter_Handgun_MiniOilrig": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 30,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Hunter_Handgun_Quest_StrongOldMan": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 30,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 3000
+  },
+  "Hunter_Katana": {
+    "name": "Syndicate Swordsman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Katana_Oilrig": {
+    "name": "Syndicate Swordsman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_LaserRifle": {
+    "name": "Syndicate Laser Rifleman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 3
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_LaserRifle_Oilrig": {
+    "name": "Syndicate Laser Rifleman",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_MissileLauncher": {
+    "name": "Syndicate Interceptor",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_MissileLauncher_LargeOilrig": {
+    "name": "Syndicate Interceptor",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 10,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_MissileLauncher_Oilrig": {
+    "name": "Syndicate Interceptor",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 10,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_Prisoner": {
+    "name": "Syndicate Thug",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 10,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Hunter_Rifle": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Rifle_Invader": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Rifle_LargeOilrig": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Rifle_MiniOilrig": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Rifle_Oilrig": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Rifle_Tower": {
+    "name": "Syndicate Gunner",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 80,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_RocketLauncher": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_Invader": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_LargeOilrig": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 3,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_MiniOilrig": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_Oilrig": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 3,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_Oilrig_LD": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 3,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_RocketLauncher_Quest_StrongOldMan": {
+    "name": "Syndicate Elite",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Hunter_Shotgun": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Shotgun_Invader": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Shotgun_LargeOilrig": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Shotgun_MiniOilrig": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Shotgun_Oilrig": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Hunter_Shotgun_Quest_StrongOldMan": {
+    "name": "Syndicate Hunter",
+    "faction": "Rayne Syndicate",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Inspector": {
+    "name": "Pal Merchant",
+    "faction": "Pal Merchant",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Angler01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Breeder01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Breeder01_v02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Breeder01_v03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Breeder01_v04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Breeder01_v05": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_DTairikuPeople01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_DarkTrader01": {
+    "name": "Black Marketeer",
+    "faction": "Black Marketeer",
+    "icon": "male_darktrader01",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 2,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_DarkTrader01_02": {
+    "name": "Black Marketeer",
+    "faction": "Black Marketeer",
+    "icon": "male_darktrader01",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 2,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_DarkTrader01_03": {
+    "name": "Black Marketeer",
+    "faction": "Black Marketeer",
+    "icon": "male_darktrader01",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 2,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_DarkTrader01_04": {
+    "name": "Black Marketeer",
+    "faction": "Black Marketeer",
+    "icon": "male_darktrader01",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 2,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_DarkTrader02": {
+    "name": "Medal Merchant",
+    "faction": "Black Marketeer",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_DesertPeople01": {
+    "name": "Villager",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Kigurumi01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Ninja01": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Ninja01_Seabase": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_NinjaElite01": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_NinjaElite01_Invader": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Male_NinjaElite01_Seabase": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_People02": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_People03": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Police_old": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_SakurajimaPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar01_v01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar01_v02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar01_v03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar01_v04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar01_v05": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scholar02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Gathering": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Scientist01_LaserRifle": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_Scientist01_LaserRifle_Invader": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Male_SnowPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier01_EnemyGroup": {
+    "name": "Sturdy Mercenary",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier02": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier02_EnemyGroup": {
+    "name": "Sturdy Mercenary",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier02_Invader": {
+    "name": "Fiery Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Male_Soldier03": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Soldier04": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_SorajimaPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 3,
+      "Gathering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_StrongOldMan01": {
+    "name": "Harold",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 500,
+      "attack": 100,
+      "defense": 500
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_StrongOldMan02": {
+    "name": "Harold",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 500,
+      "attack": 100,
+      "defense": 500
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_SurveyMan01": {
+    "name": "Gadel",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 60,
+      "attack": 80,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_SurveyMan02": {
+    "name": "Gadel",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 60,
+      "attack": 80,
+      "defense": 20
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_SurveyMan03": {
+    "name": "Gadel",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Mining": 1,
+      "Transporting": 1
+    },
+    "stats": {
+      "hp": 60,
+      "attack": 80,
+      "defense": 40
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_TenrakuPeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Male_Trader01": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v04": {
+    "name": "Butcher in Training",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v05": {
+    "name": "Village Grocer",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v06": {
+    "name": "Smugglers' Lackey",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v07": {
+    "name": "Foraging Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v08": {
+    "name": "Bakery Stand Baker",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v09": {
+    "name": "Shady Pharmacist",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v10": {
+    "name": "Surf & Turf Master",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v11": {
+    "name": "Expert Hunter",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v12": {
+    "name": "Legendary Game Hunter",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 4
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v13": {
+    "name": "Mercenary Supplier",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v14": {
+    "name": "Heavy Arms Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 3,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v15": {
+    "name": "Legendary Ammo Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 4,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v16": {
+    "name": "Farm Peddler",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 3,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v17": {
+    "name": "Legendary Grocer",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 4,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v18": {
+    "name": "Authorized Pharmacist",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v19": {
+    "name": "Legendary Pharmacist",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v20": {
+    "name": "Local Restaurateur",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v21": {
+    "name": "Novice Gourmet",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 3,
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v22": {
+    "name": "Legendary Gourmet",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 4,
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v23": {
+    "name": "Authorized Materials Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v24": {
+    "name": "Element Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader01_v25": {
+    "name": "Legendary Materials Merchant",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 4
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader02": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_Trader03": {
+    "name": "Villager",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Male_WorldTreePeople01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 5,
+      "Handiwork": 1,
+      "Gathering": 3,
+      "Lumbering": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "MobuCitizen": {
+    "name": "Islander",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "MobuCitizen_Male": {
+    "name": "Islander",
+    "faction": "Villager",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "MobuVillager": {
+    "name": "Villager",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NPC_Dungeon_Shop": {
+    "name": "Wandering Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "NPC_FoodRequire_1": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NPC_PalDisplay_1": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja01_Tower": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NinjaElite01_Tower": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NinjaElite_Bowgun": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NinjaElite_Grenade": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "NinjaElite_NoEquip": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja_Bowgun": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja_Bowgun_Seabase": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja_Grenade": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja_NoEquip": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Ninja_Prisoner": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "PalDealer": {
+    "name": "Pal Merchant",
+    "faction": "Pal Merchant",
+    "icon": "paldealer",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "PalDealer_Desert": {
+    "name": "Pal Merchant",
+    "faction": "Pal Merchant",
+    "icon": "paldealer_desert",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "PalDealer_Volcano": {
+    "name": "Pal Merchant",
+    "faction": "Pal Merchant",
+    "icon": "paldealer_volcano",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "PalPassive_Doctor": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "PalTrader": {
+    "name": "Pal Merchant",
+    "faction": "Pal Merchant",
+    "icon": "paltrader",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Police_BowGun": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Chief": {
+    "name": "Slacker Chief",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "MedicineProduction": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Police_Handgun": {
+    "name": "PIDF Guard",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_CrossBow": {
+    "name": "PIDF Rioter",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_FlameThrower": {
+    "name": "PIDF Cleaner",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 3,
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_GrenadeLauncher": {
+    "name": "PIDF Veteran",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_Handgun": {
+    "name": "PIDF Guard",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_Katana": {
+    "name": "PIDF Blader",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_LaserRifle": {
+    "name": "PIDF Technophile",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_MissileLauncher": {
+    "name": "PIDF Interceptor",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_Rifle": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_RocketLauncher": {
+    "name": "PIDF Rocketeer",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 1,
+      "Lumbering": 3,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Invader_Shotgun": {
+    "name": "PIDF Elite",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Rifle": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Rifle_Crime_Lv4": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Rifle_Crime_Lv5": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Rifle_Tower": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Shield_Tower": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Shotgun": {
+    "name": "PIDF Elite",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Shotgun_Tower": {
+    "name": "PIDF Elite",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_TreasureGuard_NarrowSite": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_Vigilance": {
+    "name": "PIDF Rifleman",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Police_old_Prisoner": {
+    "name": "Jailed Ex-Chief",
+    "faction": "PIDF",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "QuestMan": {
+    "name": "Quest Client",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Quest_Hunter_Fat_GatlingGun01": {
+    "name": "Syndicate Crusher",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Quest_Hunter_FlameThrower": {
+    "name": "Syndicate Cleaner",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Quest_Hunter_Katana01": {
+    "name": "Syndicate Swordsman",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 10,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 1000
+  },
+  "Quest_Hunter_RocketLauncher01": {
+    "name": "Syndicate Elite",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Quest_Male_Ninja01": {
+    "name": "Moonflower Genin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Quest_Male_NinjaElite01": {
+    "name": "Moonflower Jonin",
+    "faction": "Moonflower",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 1,
+      "MedicineProduction": 4
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Quest_Male_Scientist01_LaserRifle": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Quest_Scientist_FlameThrower": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "RandomEventShop": {
+    "name": "Pal Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Respawn_guide": {
+    "name": "Friendly Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_BossDefeat": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_A_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_B_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_C_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_D_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_E_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_F_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_G_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_H_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Emote_I_01": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Food": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Kindling": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalCaptureCount": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalCaptureCount_v02": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 2,
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_A_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_B_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_C_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_D_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_E_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_F_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_G_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_H_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_PalDisplay_I_01": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Paldex": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Gathering": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Reward_Paldex_v02": {
+    "name": "Guard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 2,
+      "MedicineProduction": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Robbery_Leader": {
+    "name": "Pal Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Robbery_Minion": {
+    "name": "Pal Merchant",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson_Desert": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson_desert",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson_Desert2": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson_desert2",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson_Volcano": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson_volcano",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson_Volcano2": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson_volcano2",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "SalesPerson_Wander": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "salesperson_wander",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Scientist_FlameThrower": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Scientist_FlameThrower_Invader": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Scientist_GrenadeLauncher": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Scientist_MissileLauncher": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Scientist_Prisoner": {
+    "name": "PAL Genetic Research Unit Executioner",
+    "faction": "PAL Genetic Research Unit",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1,
+      "Cooling": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "SecurityDrone": {
+    "name": "Attack Chopper",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "SecurityDrone_Field": {
+    "name": "Attack Chopper",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "SorajimaTowerGuide": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 3,
+      "Handiwork": 3,
+      "Gathering": 2,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 20,
+      "attack": 50,
+      "defense": 10
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "VikingElite_Tower": {
+    "name": "Feybreak Berserker",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 3,
+      "Mining": 3,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_Elite": {
+    "name": "Feybreak Berserker",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 3,
+      "Mining": 3,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_Elite_Invader": {
+    "name": "Feybreak Berserker",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 3,
+      "Mining": 3,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Viking_GrenadeLauncher": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_Melee": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_Prisoner": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_RocketLauncher": {
+    "name": "Feybreak Berserker",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 3,
+      "Mining": 3,
+      "Transporting": 3
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Viking_Tower": {
+    "name": "Feybreak Warrior",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 2,
+      "Mining": 2,
+      "Transporting": 2
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "VisitingMerchant": {
+    "name": "Visitor",
+    "faction": "Wandering Merchant",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "Visitor_Hunter_Rifle": {
+    "name": "Syndicate Thug",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Visitor_Present": {
+    "name": "Wandering Merchant",
+    "faction": "Wandering Merchant",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Visitor_Recruiter": {
+    "name": "Pal Recruiter",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 50,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "WeaponsDealer": {
+    "name": "Weapons Dealer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Watering": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 50
+    },
+    "bounty": false,
+    "price": 10000
+  },
+  "WildlifeSanctuaryDrone": {
+    "name": "Patrol Drone",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 50,
+      "defense": 50
+    },
+    "bounty": true,
+    "price": 10000
+  },
+  "WildlifeSanctuary_guide": {
+    "name": "Newbie Pal Tamer",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 5000
+  },
+  "Yamishima_guide1": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Yamishima_guide2": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Yamishima_guide3": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Yamishima_guide4": {
+    "name": "Islander",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Planting": 1,
+      "Handiwork": 1,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  },
+  "Yamishima_guide5": {
+    "name": "Mercenary Bodyguard",
+    "faction": "Unknown",
+    "icon": "t_commonhuman_icon_normal",
+    "work": {
+      "Handiwork": 2,
+      "Lumbering": 1,
+      "Mining": 1
+    },
+    "stats": {
+      "hp": 100,
+      "attack": 100,
+      "defense": 100
+    },
+    "bounty": false,
+    "price": 8000
+  }
+}

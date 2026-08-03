@@ -9,6 +9,7 @@ import { isAlpha, type OwnedPal } from "../../lib/types";
 import { genderView } from "../../lib/ui";
 import { alphaIconUrl, palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
 import { isHuman } from "./selectors";
+import { getHuman, humanIconUrl } from "../../lib/humans";
 import { useState } from "react";
 
 /** An empty slot: faint dashed circle, non-interactive. */
@@ -22,8 +23,9 @@ export function EmptySlot({ size = 60 }: { size?: number }) {
   );
 }
 
-/** Neutral humanoid silhouette for a captured human entity (not a pal). */
-function HumanGlyph() {
+/** Neutral humanoid silhouette for a captured human entity (not a pal). Shared
+ *  by the palbox slot fallback, the roster icon, and the human card portrait. */
+export function HumanGlyph() {
   return (
     <span className="flex h-full w-full items-center justify-center text-ink-faint">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-[52%] w-[52%]">
@@ -58,6 +60,8 @@ export function Slot({
   const [failed, setFailed] = useState(false);
   const g = genderView(pal.gender);
   const human = isHuman(pal);
+  const humanInfo = human ? getHuman(pal.character_id) : null;
+  const humanName = humanInfo?.name ?? pal.character_id;
   const src = !failed ? palIconUrl(pal.character_id) : UNKNOWN_ICON;
 
   // Badges scale with the fluid slot so glyphs stay legible from ~56px to ~96px.
@@ -71,12 +75,13 @@ export function Slot({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       aria-pressed={selected}
-      aria-label={`${human ? "Human" : name}, level ${pal.level}${isAlpha(pal) ? ", alpha" : ""}`}
+      aria-label={`${human ? humanName : name}, level ${pal.level}${isAlpha(pal) ? ", alpha" : ""}`}
       className="group relative shrink-0 rounded-full"
       style={{ width: size, height: size }}
     >
-      {/* Portrait, clipped to a circle. Captured humans render as a muted neutral
-          silhouette (intentional) — distinct from the '?' unknown-pal fallback. */}
+      {/* Portrait, clipped to a circle. A captured human shows its real portrait
+          when we have one; otherwise a muted neutral silhouette (intentional) —
+          distinct from the '?' unknown-pal fallback. */}
       <span
         className={`block h-full w-full overflow-hidden rounded-full ring-1 transition-[box-shadow,transform] group-hover:-translate-y-0.5 ${
           human ? "bg-abyss/50" : "bg-abyss/70"
@@ -89,7 +94,20 @@ export function Slot({
         }`}
       >
         {human ? (
-          <HumanGlyph />
+          humanInfo && !failed ? (
+            <img
+              src={humanIconUrl(humanInfo)}
+              alt=""
+              width={size}
+              height={size}
+              loading="lazy"
+              draggable={false}
+              onError={() => setFailed(true)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <HumanGlyph />
+          )
         ) : (
           <img
             src={src}

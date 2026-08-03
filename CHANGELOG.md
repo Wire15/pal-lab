@@ -2,6 +2,22 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.9.0] - 2026-08-03
+
+### Added
+- **Captured humans are first-class.** Clicking a captured human (villager,
+  merchant, syndicate thug, bounty target...) now opens a proper detail card -
+  localized name, faction, level, HP/ATK/DEF, and base work suitabilities -
+  instead of an "unknown pal" error. Data for all 401 human NPCs vendored from
+  palworld-save-pal (credited in THIRD-PARTY-NOTICES).
+- **Human portraits.** Real archetype art in the palbox, roster, and card:
+  merchants, dealers, black marketeers, and unique portraits for all 34
+  bounty targets (Hawk, Grill, Ego...). Bounty humans keep the Alpha badge,
+  matching the game.
+- **Roster polish.** Humans show their display name (not a raw id like
+  `Male_People03`), IV cells show em-dashes instead of fake zeros, palbox
+  search finds humans by name, and the header splits "N pals · M humans".
+
 ## [1.8.1] - 2026-08-03
 
 ### Fixed

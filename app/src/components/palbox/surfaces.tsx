@@ -7,6 +7,7 @@
 
 import type { OwnedPal } from "../../lib/types";
 import { PalHoverCard } from "../pal-hover-card";
+import { getHuman } from "../../lib/humans";
 import { EmptySlot, Slot } from "./slot";
 import {
   GRID_COLS,
@@ -18,8 +19,8 @@ import {
 } from "./selectors";
 
 /** One occupied slot wrapped in its hover card. Pals get the full species +
- *  instance card; captured humans have no species row, so they render bare
- *  (never a broken species lookup). */
+ *  instance card; captured humans have no species row, so they skip the species
+ *  lookup entirely and get only a lightweight native tooltip (name + faction). */
 function SlotCell({
   pal,
   name,
@@ -43,7 +44,13 @@ function SlotCell({
       onClick={() => onSelect(pal)}
     />
   );
-  if (isHuman(pal)) return slot;
+  if (isHuman(pal)) {
+    const info = getHuman(pal.character_id);
+    const label = info
+      ? `${info.name} — ${info.faction}`
+      : pal.character_id;
+    return <span title={label}>{slot}</span>;
+  }
   return (
     <PalHoverCard speciesId={pal.character_id} pal={pal}>
       {slot}

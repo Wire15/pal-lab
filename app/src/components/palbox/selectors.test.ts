@@ -68,3 +68,35 @@ test("isQueryActive reflects the passive filter", () => {
   expect(isQueryActive(DEFAULT_QUERY)).toBe(false);
   expect(isQueryActive(q(["Legend"]))).toBe(true);
 });
+
+// A captured human is absent from the species pack; search must fall through to
+// the frontend humans.json profile name (speciesName -> getHuman). We pull a
+// real profile from the shipped data so the test tracks the contract.
+import humansData from "../../lib/humans.json";
+
+const humans = humansData as Record<string, { name: string }>;
+const [KNOWN_HUMAN_ID, KNOWN_HUMAN] = Object.entries(humans)[0]!;
+
+function mkHuman(): OwnedPal {
+  return mkPal({
+    instance_id: guid(9),
+    character_id: KNOWN_HUMAN_ID,
+    is_human: true,
+    gender: null,
+  });
+}
+
+test("matchesQuery finds a captured human by its display name", () => {
+  const human = mkHuman();
+  const firstWord = KNOWN_HUMAN.name.split(" ")[0]!.toLowerCase();
+  const hit: PalboxQuery = { ...DEFAULT_QUERY, search: firstWord };
+  const miss: PalboxQuery = { ...DEFAULT_QUERY, search: "zzz-not-a-human-name" };
+  expect(matchesQuery(human, hit, NAMES, SPECIES)).toBe(true);
+  expect(matchesQuery(human, miss, NAMES, SPECIES)).toBe(false);
+});
+
+test("matchesQuery still finds a captured human by its raw CharacterID", () => {
+  const human = mkHuman();
+  const byId: PalboxQuery = { ...DEFAULT_QUERY, search: KNOWN_HUMAN_ID.toLowerCase() };
+  expect(matchesQuery(human, byId, NAMES, SPECIES)).toBe(true);
+});

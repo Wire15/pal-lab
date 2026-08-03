@@ -100,6 +100,7 @@ test("writeSftpProfile persists only the non-secret profile fields", () => {
     auth: "key",
     key_path: "/home/me/.ssh/id_ed25519",
     root: "/home/steam/Pal/Saved/SaveGames",
+    last_world_name: null,
   });
 });
 

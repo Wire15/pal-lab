@@ -121,6 +121,21 @@ ships under the MIT License.
     as documented by that project's `psp-core/src/gamepass/` sources (and by
     palworld-save-tools for the CNK compression wrapper). No code was vendored
     or translated; citations live in `wgs.rs` doc comments.
+  - **aggregated human-NPC data** for captured humans (villagers, merchants,
+    faction thugs, and bounty targets). We derive `app/src/lib/humans.json` from
+    that project's `data/json/pals.json` (the `is_pal:false` / `tribe:"Human"`
+    rows: stats, work suitabilities, price, boss flags) joined with the English
+    localization `data/json/l10n/en/pals.json` (display names). The data is
+    re-shaped, not copied verbatim; regenerate it with `bun scripts/gen-humans.mjs`.
+  - **human / bounty portrait assets** under `app/public/humans/*.webp`
+    (the generic human portrait `t_commonhuman_icon_normal.webp`, the
+    `t_boss_npc_*.webp` bounty-target portraits, and merchant/dealer portraits
+    such as `salesperson*.webp`), fetched unmodified from that project's
+    `ui/src/lib/assets/img/`. These portraits are ultimately Palworld game art ©
+    Pocketpair, Inc., included for personal, non-commercial use — the same
+    fan-tool practice and provenance as the pal icons above (see the Palworld
+    note below). `scripts/gen-humans.mjs` downloads only the icons actually
+    referenced by `humans.json`.
 
 ---
 

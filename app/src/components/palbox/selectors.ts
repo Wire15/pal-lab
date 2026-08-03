@@ -7,6 +7,7 @@
 // reorder virtually.
 
 import { isAlpha, type OwnedPal, type SaveSummary, type SpeciesEntry } from "../../lib/types";
+import { getHuman } from "../../lib/humans";
 
 /** Slots per Palbox / Dimensional page (6x5), matching the game. */
 export const PAGE_SIZE = 30;
@@ -103,7 +104,16 @@ export function speciesName(
   pal: OwnedPal,
   names: Map<string, string>,
 ): string {
-  return names.get(pal.character_id) ?? pal.character_id;
+  const packName = names.get(pal.character_id);
+  if (packName) return packName;
+  // Captured humans are absent from the species pack; fall back to their
+  // frontend profile name before the raw CharacterID so search / sort / labels
+  // read "Hunter" not "Hunter_Rifle".
+  if (isHuman(pal)) {
+    const info = getHuman(pal.character_id);
+    if (info) return info.name;
+  }
+  return pal.character_id;
 }
 
 /** The name the search / "Name" sort reads: nickname wins, else species name. */

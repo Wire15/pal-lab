@@ -4,6 +4,8 @@ import { isAlpha, type NamedEntry, type OwnedPal, type SpeciesEntry } from "../l
 import { containerLabel, genderView, ivBand, QUALITY_FILL, QUALITY_TEXT } from "../lib/ui";
 import { PalIcon, Tag } from "../components/primitives";
 import { PassiveStrip } from "../components/passive-strip";
+import { HumanCard, HumanPortrait } from "../components/human-card";
+import { getHuman } from "../lib/humans";
 import { useAppState } from "../state";
 import { FilterBar } from "../components/palbox/filter-bar";
 import { BaseStrip, BoxGrid, PartyRail } from "../components/palbox/surfaces";
@@ -17,6 +19,7 @@ import {
   guildBases,
   hexGuid,
   isQueryActive,
+  isHuman,
   matchesQuery,
   palKey,
   partySlots,
@@ -75,6 +78,9 @@ const RosterRow = memo(function RosterRow({
   onSelect: (pal: OwnedPal) => void;
 }) {
   const g = genderView(pal.gender);
+  const human = isHuman(pal);
+  const info = human ? getHuman(pal.character_id) : null;
+  const displayName = human ? info?.name ?? pal.character_id : name;
   return (
     <tr
       data-pal={palKey(pal)}
@@ -89,10 +95,14 @@ const RosterRow = memo(function RosterRow({
           <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-amber" />
         )}
         <div className="flex items-center gap-3">
-          <PalIcon id={pal.character_id} name={name} size={34} />
+          {human ? (
+            <HumanPortrait id={pal.character_id} size={34} shape="rounded" />
+          ) : (
+            <PalIcon id={pal.character_id} name={name} size={34} />
+          )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="truncate font-medium text-ink">{name}</span>
+              <span className="truncate font-medium text-ink">{displayName}</span>
               {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
               {pal.rank > 0 && (
                 <span
@@ -117,15 +127,31 @@ const RosterRow = memo(function RosterRow({
       <td className="px-4 py-2 text-right font-mono text-[13px] tabular-nums text-ink-dim">
         {pal.level}
       </td>
-      <td className="px-4 py-2">
-        <IvCell value={pal.ivs.hp} />
-      </td>
-      <td className="px-4 py-2">
-        <IvCell value={pal.ivs.attack} />
-      </td>
-      <td className="px-4 py-2">
-        <IvCell value={pal.ivs.defense} />
-      </td>
+      {human ? (
+        <>
+          <td className="px-4 py-2 text-right font-mono text-[13px] text-ink-faint">
+            &mdash;
+          </td>
+          <td className="px-4 py-2 text-right font-mono text-[13px] text-ink-faint">
+            &mdash;
+          </td>
+          <td className="px-4 py-2 text-right font-mono text-[13px] text-ink-faint">
+            &mdash;
+          </td>
+        </>
+      ) : (
+        <>
+          <td className="px-4 py-2">
+            <IvCell value={pal.ivs.hp} />
+          </td>
+          <td className="px-4 py-2">
+            <IvCell value={pal.ivs.attack} />
+          </td>
+          <td className="px-4 py-2">
+            <IvCell value={pal.ivs.defense} />
+          </td>
+        </>
+      )}
       <td className="px-4 py-2">
         <Tag>{containerLabel(pal.container_kind)}</Tag>
       </td>
@@ -225,6 +251,10 @@ export default function SaveInspector() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [surface, setSurface] = useState<BoxSurface>("palbox");
   const [page, setPage] = useState(0);
+  // The captured-human detail card overlay: the clicked human instance, or null.
+  // Both roster rows and palbox slots funnel their clicks through `openPal`, so
+  // this one piece of state covers every entry point.
+  const [humanPal, setHumanPal] = useState<OwnedPal | null>(null);
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species")
@@ -389,10 +419,27 @@ export default function SaveInspector() {
 
   // Clicking a pal (slot or roster row) opens its Pal-dex page enriched with
   // this instance's save data — the palbox no longer has its own detail panel.
+  // Captured humans have no Pal-dex entry, so they open the human card instead
+  // (never a requestDex, which would 404 on a non-species id).
   const openPal = useCallback(
-    (pal: OwnedPal) => requestDex(pal.character_id, hexGuid(pal.instance_id)),
+    (pal: OwnedPal) => {
+      if (isHuman(pal)) {
+        setHumanPal(pal);
+        return;
+      }
+      requestDex(pal.character_id, hexGuid(pal.instance_id));
+    },
     [requestDex],
   );
+
+  // Header split: "N pals · M humans". Humans are counted across the whole save
+  // (same pool as the pals total) and subtracted from it so the two never
+  // double-count.
+  const humanCount = useMemo(
+    () => (saveSummary ? saveSummary.pals.filter((p) => isHuman(p)).length : 0),
+    [saveSummary],
+  );
+  const palCount = (saveSummary?.pals.length ?? 0) - humanCount;
 
   // Reset the search + structured filters (keeps the sort) — the one-click
   // escape from an over-narrowed query, mirroring the Pal-dex empty state.
@@ -498,7 +545,13 @@ export default function SaveInspector() {
               <div className="text-right font-mono text-xs text-ink-dim">
                 <span className="text-ink">{saveSummary.world_name}</span>
                 <span className="mx-2 text-ink-faint">/</span>
-                <span className="text-amber">{saveSummary.pals.length}</span> pals
+                <span className="text-amber">{palCount}</span> pals
+                {humanCount > 0 && (
+                  <>
+                    <span className="mx-1.5 text-ink-faint">&middot;</span>
+                    <span className="text-amber">{humanCount}</span> humans
+                  </>
+                )}
               </div>
               {/* Mode toggle */}
               <div className="flex items-center overflow-hidden rounded-md border border-line">
@@ -681,6 +734,9 @@ export default function SaveInspector() {
           </p>
         </div>
       )}
+
+      {/* Captured-human detail overlay — opened by clicking a human row/slot. */}
+      <HumanCard pal={humanPal} onClose={() => setHumanPal(null)} />
     </div>
   );
 }
