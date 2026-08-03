@@ -857,10 +857,18 @@ fn solve_core(
     // in-game surgery table, so they can never be covered by implants.
     let max_implants = cfg.surgery.as_ref().map(SurgeryConfig::implants).unwrap_or(0);
     let surgery_cost = cfg.surgery.as_ref().map(|s| s.cost_secs).unwrap_or(0.0);
+    // A missing required passive is implant-coverable only if it is tier-eligible
+    // (as above) AND not excluded by the surgery allowlist (when one is set).
+    // Folding allowlist exclusions into `unimplantable` keeps enforcement in the
+    // single `satisfied_with_surgery` predicate; `None` = any eligible passive.
+    let allowed = cfg.surgery.as_ref().and_then(|s| s.allowed_passives.as_ref());
     let unimplantable: HashSet<PassiveId> = spec
         .required_passives
         .iter()
-        .filter(|p| gd.passive_by_id(p).is_some_and(|ps| ps.tier.is_some()))
+        .filter(|p| {
+            gd.passive_by_id(p).is_some_and(|ps| ps.tier.is_some())
+                || allowed.is_some_and(|l| !l.contains(*p))
+        })
         .cloned()
         .collect();
 

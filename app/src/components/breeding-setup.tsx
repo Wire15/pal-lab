@@ -21,6 +21,7 @@ import type {
   WorldOptionsResponse,
 } from "../lib/types";
 import { PalIcon } from "./primitives";
+import { PassivePicker } from "./passive-picker";
 import { formatDuration } from "../lib/ui";
 import { useAppState, useBreedingSetup } from "../state";
 
@@ -710,7 +711,7 @@ export function BreedingSetupPanel() {
             type="button"
             role="switch"
             aria-checked={surgery !== null}
-            onClick={() => setSurgery(surgery ? null : { max_implants: 1, cost_secs: 600 })}
+            onClick={() => setSurgery(surgery ? null : { max_implants: 1, cost_secs: 30 })}
             className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
               surgery ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
             }`}
@@ -755,7 +756,7 @@ export function BreedingSetupPanel() {
                         role="radio"
                         aria-checked={active}
                         aria-label={`${n} implants`}
-                        onClick={() => setSurgery({ max_implants: n, cost_secs: surgery.cost_secs })}
+                        onClick={() => setSurgery({ ...surgery, max_implants: n })}
                         className={`w-7 border-r border-line py-1 font-mono text-[11px] tabular-nums transition-colors last:border-r-0 ${
                           active
                             ? "bg-raised text-amber"
@@ -777,7 +778,7 @@ export function BreedingSetupPanel() {
                   value={surgery.cost_secs}
                   onChange={(e) =>
                     setSurgery({
-                      max_implants: surgery.max_implants,
+                      ...surgery,
                       cost_secs: Math.max(0, Number(e.currentTarget.value) || 0),
                     })
                   }
@@ -786,6 +787,35 @@ export function BreedingSetupPanel() {
                   sec per implant ({formatDuration(surgery.cost_secs)})
                 </span>
               </label>
+              <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
+                about 30s per use in practice &mdash; tune it if your runs differ.
+              </p>
+              <div className="flex flex-col gap-1">
+                <PassivePicker
+                  selected={surgery.allowed_passives ?? []}
+                  valueMode="id"
+                  label="Implantable passives"
+                  placeholder={"Search passives\u2026"}
+                  onAdd={(id) =>
+                    setSurgery({
+                      ...surgery,
+                      allowed_passives: (surgery.allowed_passives ?? []).includes(id)
+                        ? surgery.allowed_passives
+                        : [...(surgery.allowed_passives ?? []), id],
+                    })
+                  }
+                  onRemove={(id) => {
+                    const next = (surgery.allowed_passives ?? []).filter((x) => x !== id);
+                    setSurgery({
+                      ...surgery,
+                      allowed_passives: next.length > 0 ? next : undefined,
+                    });
+                  }}
+                />
+                <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
+                  Optional &mdash; leave empty to allow any implantable passive.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -796,7 +826,7 @@ export function BreedingSetupPanel() {
             type="button"
             role="switch"
             aria-checked={genderReverser !== null}
-            onClick={() => setGenderReverser(genderReverser ? null : { cost_secs: 300 })}
+            onClick={() => setGenderReverser(genderReverser ? null : { cost_secs: 30 })}
             className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
               genderReverser ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
             }`}
@@ -850,7 +880,7 @@ export function BreedingSetupPanel() {
             type="button"
             role="switch"
             aria-checked={skillFruit !== null}
-            onClick={() => setSkillFruit(skillFruit ? null : { cost_secs: 300 })}
+            onClick={() => setSkillFruit(skillFruit ? null : { cost_secs: 30 })}
             className={`flex items-center gap-2.5 rounded-md border px-2 py-1.5 text-left transition-colors ${
               skillFruit ? "border-amber/50 bg-amber/[0.08]" : "border-line bg-panel hover:bg-hover"
             }`}

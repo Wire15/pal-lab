@@ -332,7 +332,7 @@ fn build_request(
     if let Some(setup) = req.setup {
         cfg.setup = setup;
     }
-    cfg.surgery = req.surgery;
+    cfg.surgery = req.surgery.clone();
     cfg.gender_reverser = req.gender_reverser;
     cfg.skill_fruit = req.skill_fruit;
 

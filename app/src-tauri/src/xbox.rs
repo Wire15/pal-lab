@@ -202,6 +202,9 @@ pub fn parse_sentinel(s: &str) -> Option<(String, String)> {
 /// via [`pal_save::read_save_dir`]. One seam so every command that reads the
 /// owned roster transparently supports Xbox saves.
 pub fn load_save_data(save_dir: &str) -> Result<pal_save::SaveData, pal_save::SaveError> {
+    if crate::sftp::is_sentinel(save_dir) {
+        return crate::sftp::load_save_data(save_dir).map_err(pal_save::SaveError::Layout);
+    }
     if let Some((wgs_dir, save_id)) = parse_sentinel(save_dir) {
         let extracted = extract(&wgs_dir, &save_id)?;
         return pal_save::read_save_from_parts(

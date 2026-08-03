@@ -24,6 +24,12 @@ import { invoke } from "./lib/tauri";
 import { caps } from "./lib/caps";
 import { readPlanLink } from "./lib/plan-link";
 import { decodeXboxSource } from "./lib/xbox-save";
+import {
+  bootRestoreAction,
+  decodeSftpSource,
+  readSftpProfile,
+  type SftpProfile,
+} from "./lib/sftp";
 import type {
   BreedingSetup,
   CakeToken,
@@ -202,7 +208,14 @@ function readSurgery(): SurgeryOption | null {
     const p = JSON.parse(raw) as Partial<SurgeryOption>;
     const max = Math.min(4, Math.max(1, Math.round(Number(p.max_implants) || 1)));
     const cost = Math.max(0, Number(p.cost_secs) || 0);
-    return { max_implants: max, cost_secs: cost };
+    const allowed = Array.isArray(p.allowed_passives)
+      ? p.allowed_passives.filter((x): x is string => typeof x === "string")
+      : undefined;
+    return {
+      max_implants: max,
+      cost_secs: cost,
+      ...(allowed && allowed.length > 0 ? { allowed_passives: allowed } : {}),
+    };
   } catch {
     return null;
   }
@@ -288,6 +301,13 @@ export interface AppState {
   /** Silently re-read the current save in place (watcher-driven). Preserves
    * `saveDir`, so solver plans/selection survive. No-op with no save loaded. */
   reloadSave: () => Promise<void>;
+  /** Boot-restore reconnect request: set when the persisted `saveDir` is an
+   * SFTP sentinel, since a live SSH connection cannot be re-established blind on
+   * boot. The connect modal opens prefilled to reconnect and auto-load
+   * `worldDir`. Null when no reconnect is pending. */
+  sftpReconnect: { worldDir: string; profile: SftpProfile | null } | null;
+  /** Clear a pending SFTP reconnect request (consumed once by the modal). */
+  clearSftpReconnect: () => void;
   /** Transient status pill message (e.g. "Save reloaded"), or null. The `nonce`
    * re-triggers the auto-dismiss on identical repeat messages. */
   toast: { text: string; nonce: number } | null;
@@ -426,6 +446,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<{ text: string; nonce: number } | null>(
     null,
   );
+  // Pending SFTP boot-restore reconnect (see AppState.sftpReconnect). Set by the
+  // boot effect; consumed + cleared once by the connect modal.
+  const [sftpReconnect, setSftpReconnect] = useState<{
+    worldDir: string;
+    profile: SftpProfile | null;
+  } | null>(null);
+  const clearSftpReconnect = useCallback(() => setSftpReconnect(null), []);
   // Latest saveDir for the save-changed listener, which subscribes once and
   // must not re-bind on every load (a stale closure would reload the wrong dir).
   const saveDirRef = useRef(saveDir);
@@ -525,15 +552,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveLoading(true);
     setSaveError(null);
     try {
-      // An Xbox save source is the sentinel `xbox://<wgsDir>#<saveId>`; decode
-      // it to the dedicated command. A plain folder path takes `load_save`.
+      // Save-source dispatch by sentinel: `sftp://…` -> the live SSH session
+      // (established earlier by `sftp_connect`); `xbox://<wgsDir>#<saveId>` ->
+      // the WGS store command; a plain folder path -> `load_save`.
+      const sftp = decodeSftpSource(trimmed);
       const xbox = decodeXboxSource(trimmed);
-      const summary = xbox
-        ? await invoke<SaveSummary>("load_xbox_save", {
-            wgsDir: xbox.wgsDir,
-            saveId: xbox.saveId,
-          })
-        : await invoke<SaveSummary>("load_save", { saveDir: trimmed });
+      const summary = sftp
+        ? await invoke<SaveSummary>("sftp_load_save", { sentinel: trimmed })
+        : xbox
+          ? await invoke<SaveSummary>("load_xbox_save", {
+              wgsDir: xbox.wgsDir,
+              saveId: xbox.saveId,
+            })
+          : await invoke<SaveSummary>("load_save", { saveDir: trimmed });
       setSaveSummary(summary);
       setSaveDir(trimmed);
       setLastSaveDir(trimmed);
@@ -551,11 +582,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         // Ignore storage failures (private mode, quota) — non-fatal.
       }
       // Auto-arm the live watcher so external saves trigger a silent reload.
-      // Tauri only, and NOT for Xbox saves (the WGS store has no folder to
-      // watch); web mode refreshes via the "Re-read folder" button and fixture
-      // dev has no backend command.
-      if (caps.watchSave && !xbox) {
-        invoke("watch_save", { saveDir: trimmed }).catch(() => {});
+      // Tauri only. SFTP polls the server (mtime) every 60s and emits the same
+      // `save-changed` event; folder saves use the filesystem watcher; Xbox has
+      // no folder to watch. Switching to a non-SFTP source drops any live SSH
+      // session (best-effort; a no-op when nothing is connected).
+      if (caps.watchSave) {
+        if (sftp) {
+          invoke("sftp_watch", { sentinel: trimmed, intervalSecs: 60 }).catch(
+            () => {},
+          );
+        } else {
+          invoke("sftp_disconnect").catch(() => {});
+          if (!xbox) invoke("watch_save", { saveDir: trimmed }).catch(() => {});
+        }
       }
     } catch (e) {
       setSaveError(friendlySaveError(String(e)));
@@ -573,15 +612,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const dir = saveDirRef.current;
     if (!dir) return;
     try {
-      // Xbox saves arm no watcher, so this path is effectively never hit for
-      // them; still decode defensively so a stray reload does the right thing.
+      // The SFTP poller emits `save-changed`; re-read through the live SSH
+      // session. Xbox arms no watcher (never hit); still decode defensively so a
+      // stray reload routes to the right command.
+      const sftp = decodeSftpSource(dir);
       const xbox = decodeXboxSource(dir);
-      const summary = xbox
-        ? await invoke<SaveSummary>("load_xbox_save", {
-            wgsDir: xbox.wgsDir,
-            saveId: xbox.saveId,
-          })
-        : await invoke<SaveSummary>("load_save", { saveDir: dir });
+      const summary = sftp
+        ? await invoke<SaveSummary>("sftp_load_save", { sentinel: dir })
+        : xbox
+          ? await invoke<SaveSummary>("load_xbox_save", {
+              wgsDir: xbox.wgsDir,
+              saveId: xbox.saveId,
+            })
+          : await invoke<SaveSummary>("load_save", { saveDir: dir });
       setSaveSummary(summary);
       pushRecent(dir, summary);
       showToast("Save reloaded");
@@ -596,7 +639,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveError(null);
     setPlayerScopeState("all");
     setScopePromptOpen(false);
-    if (caps.watchSave) invoke("unwatch_save").catch(() => {});
+    if (caps.watchSave) {
+      invoke("unwatch_save").catch(() => {});
+      // Drop any live SSH session on unload (best-effort; no-op when none).
+      invoke("sftp_disconnect").catch(() => {});
+    }
   }, []);
 
   // Auto-dismiss the transient toast after 3s (re-arms per `nonce`).
@@ -644,10 +691,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("save-changed", handler);
   }, [reloadSave]);
 
-  // Boot auto-load (once): if a save folder is persisted, silently re-open it
-  // instead of showing the startup modal. Any failure (moved/deleted dir, Xbox
-  // CNK save, corrupt file) falls through to `saveError` + the modal via Shell —
-  // never a crash. Fresh installs (no persisted dir) skip straight to done.
+  // Boot auto-load (once). A persisted folder/Xbox save silently re-opens
+  // instead of showing the startup modal. A persisted SFTP sentinel MUST NOT
+  // auto-load blind — there is no live SSH session on boot — so it instead
+  // arms a reconnect request (Shell opens the connect modal prefilled). Any
+  // load failure falls through to `saveError` + the modal via Shell, never a
+  // crash. Fresh installs (no persisted dir) skip straight to done.
   useEffect(() => {
     if (bootedRef.current) return;
     bootedRef.current = true;
@@ -657,13 +706,29 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setBooting(false);
       return;
     }
-    const dir = readLastSaveDir();
-    if (!dir) {
+    const action = bootRestoreAction(readLastSaveDir(), readSftpProfile());
+    if (action.kind === "none") {
       setBooting(false);
       return;
     }
-    loadSave(dir).finally(() => setBooting(false));
+    if (action.kind === "sftp") {
+      setSftpReconnect({ worldDir: action.worldDir, profile: action.profile });
+      setBooting(false);
+      return;
+    }
+    loadSave(action.dir).finally(() => setBooting(false));
   }, [loadSave]);
+
+  // Drop any live SSH session when the app window closes (best-effort; the
+  // command is a no-op when nothing is connected). Tauri only.
+  useEffect(() => {
+    if (!caps.watchSave) return;
+    const onExit = () => {
+      invoke("sftp_disconnect").catch(() => {});
+    };
+    window.addEventListener("beforeunload", onExit);
+    return () => window.removeEventListener("beforeunload", onExit);
+  }, []);
 
   // Last-resort net for uncaught async failures (watcher reload rejects, event
   // decode, stray promise rejections): surface a non-blocking toast so a
@@ -755,6 +820,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       clearSave,
       recentSaves,
       reloadSave,
+      sftpReconnect,
+      clearSftpReconnect,
       toast,
       view,
       setView,
@@ -804,6 +871,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       clearSave,
       recentSaves,
       reloadSave,
+      sftpReconnect,
+      clearSftpReconnect,
       toast,
       view,
       solveTarget,

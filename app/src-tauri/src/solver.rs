@@ -288,7 +288,7 @@ fn build_request(
     }
     // Surgery-table / gender-reverser relaxations pass straight through as the
     // shared serde shapes (`max_implants` is clamped 0..=4 inside the solver).
-    cfg.surgery = req.surgery;
+    cfg.surgery = req.surgery.clone();
     cfg.gender_reverser = req.gender_reverser;
     cfg.skill_fruit = req.skill_fruit;
 
@@ -562,9 +562,12 @@ pub struct WorldOptionsResponse {
 /// (returns `egg_hatch_hours: null`); only a present-but-corrupt save errors.
 #[tauri::command]
 pub fn get_world_options(save_dir: String) -> Result<WorldOptionsResponse, String> {
-    let opts = match crate::xbox::parse_sentinel(&save_dir) {
-        Some((wgs_dir, save_id)) => crate::xbox::read_world_options_xbox(&wgs_dir, &save_id),
-        None => pal_save::read_world_options(Path::new(&save_dir)),
+    let opts = if crate::sftp::is_sentinel(&save_dir) {
+        crate::sftp::read_world_options(&save_dir).map_err(pal_save::SaveError::Layout)
+    } else if let Some((wgs_dir, save_id)) = crate::xbox::parse_sentinel(&save_dir) {
+        crate::xbox::read_world_options_xbox(&wgs_dir, &save_id)
+    } else {
+        pal_save::read_world_options(Path::new(&save_dir))
     }
     .map_err(|e| format!("reading world options: {e}"))?;
     Ok(WorldOptionsResponse {

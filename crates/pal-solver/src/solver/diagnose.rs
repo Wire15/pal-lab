@@ -45,6 +45,13 @@ pub enum NoPathReason {
         /// pre-surgery payloads stay byte-identical.
         #[serde(default, skip_serializing_if = "is_false")]
         surgery_off: bool,
+        /// `true` when the Surgery table is ON but this passive is excluded by the
+        /// implant allowlist (`SurgeryConfig::allowed_passives`) — so surgery
+        /// cannot cover it and the remedy is widening the allowlist, not enabling
+        /// the table. Skipped when `false` (mirrors `surgery_off`) so pre-allowlist
+        /// payloads stay byte-identical.
+        #[serde(default, skip_serializing_if = "is_false")]
+        allowed_excluded: bool,
     },
     /// A required active-skill move the delivered pal cannot obtain. `inheritable`
     /// echoes the move's `can_inherit` flag; `fruit_available` echoes its
@@ -327,6 +334,13 @@ pub fn diagnose_no_path(
     let surgery_is_off = cfg.surgery.is_none();
     let implantable =
         |pid: &String| gd.passive_by_id(pid).is_none_or(|ps| ps.tier.is_none());
+    // Implant allowlist (`SurgeryConfig::allowed_passives`): `None` = any eligible
+    // passive; `Some(list)` restricts implants to `list`. A passive outside the
+    // list is not surgery-coverable, so it keeps its carrier blocker and is
+    // flagged `allowed_excluded` (surgery on) rather than `surgery_off`.
+    let allowed = cfg.surgery.as_ref().and_then(|s| s.allowed_passives.as_ref());
+    let allowed_ok = |pid: &String| allowed.is_none_or(|l| l.contains(pid));
+    let coverable = |pid: &String| implantable(pid) && allowed_ok(pid);
     let mut missing_pids: Vec<&String> = Vec::new();
     for pid in &spec.required_passives {
         if owned.iter().any(|p| p.passives.contains(pid)) {
@@ -343,7 +357,7 @@ pub fn diagnose_no_path(
     }
     // Surgery (when on) covers the gap entirely: not a carrier blocker. Any
     // unimplantable missing passive keeps the blocker regardless of implants.
-    let all_coverable = missing_pids.iter().all(|pid| implantable(pid));
+    let all_coverable = missing_pids.iter().all(|pid| coverable(pid));
     if !(all_coverable && max_implants as usize >= missing_pids.len() && max_implants > 0)
         && !missing_pids.is_empty()
     {
@@ -357,6 +371,7 @@ pub fn diagnose_no_path(
                     passive_name,
                     wild_sourcing_enabled: cfg.include_wild,
                     surgery_off: surgery_is_off && implantable(pid),
+                    allowed_excluded: !surgery_is_off && implantable(pid) && !allowed_ok(pid),
                 }
             })
             .collect();
@@ -506,6 +521,7 @@ mod tests {
                 passive_name: name,
                 wild_sourcing_enabled: false,
                 surgery_off: true,
+                allowed_excluded: false,
             }]
         );
     }
@@ -639,6 +655,7 @@ mod tests {
                     passive_name: "Swift".into(),
                     wild_sourcing_enabled: true,
                     surgery_off: false,
+                    allowed_excluded: false,
                 },
                 r#"{"kind":"missing_passive_carrier","passive_id":"Swift","passive_name":"Swift","wild_sourcing_enabled":true}"#,
             ),

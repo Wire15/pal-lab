@@ -354,9 +354,9 @@ fn move_fields_roundtrip_and_backcompat() {
     let c: SolverConfig = serde_json::from_str(old_cfg).unwrap();
     assert!(c.skill_fruit.is_none(), "missing skill_fruit defaults to None");
 
-    // SkillFruitConfig serde default cost is 300.0.
+    // SkillFruitConfig serde default cost is 30.0.
     let f: SkillFruitConfig = serde_json::from_str("{}").unwrap();
-    assert!((f.cost_secs - 300.0).abs() < 1e-9, "SkillFruitConfig default cost is 300.0");
+    assert!((f.cost_secs - 30.0).abs() < 1e-9, "SkillFruitConfig default cost is 30.0");
 }
 
 /// The first `n` distinct inheritable move ids NOT in `avoid` (the target

@@ -62,7 +62,19 @@ fn owned_only() -> SolverConfig {
 /// Owned-only config with the surgery table enabled.
 fn with_surgery(max_implants: u8, cost_secs: f64) -> SolverConfig {
     SolverConfig {
-        surgery: Some(SurgeryConfig { max_implants, cost_secs }),
+        surgery: Some(SurgeryConfig { max_implants, cost_secs, allowed_passives: None }),
+        ..owned_only()
+    }
+}
+
+/// Owned-only config with the surgery table enabled and an implant allowlist.
+fn with_surgery_allowed(max_implants: u8, cost_secs: f64, allowed: &[&str]) -> SolverConfig {
+    SolverConfig {
+        surgery: Some(SurgeryConfig {
+            max_implants,
+            cost_secs,
+            allowed_passives: Some(allowed.iter().map(|s| s.to_string()).collect()),
+        }),
         ..owned_only()
     }
 }
@@ -285,4 +297,69 @@ fn special_tier_passives_are_unimplantable() {
             "special-tier carrier blocker must persist with surgery_off:false, got {reasons:?}"
         );
     }
+}
+
+/// Allowlist PERMITS a listed passive: with the implant allowlist containing the
+/// missing required passive, surgery covers it exactly as with no allowlist.
+#[test]
+fn allowlist_permits_listed_passive() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd);
+    let swift = resolve_passive(gd, "Swift").expect("Swift resolves");
+    let pool = vec![owned(gd, a, Gender::Female, &[]), owned(gd, b, Gender::Male, &[])];
+    let mut spec = TargetSpec::new(TargetPal::Species(t));
+    spec.required_passives = vec![swift.clone()];
+
+    let on = solve(gd, &spec, &pool, &with_surgery_allowed(1, 30.0, &[swift.as_str()]));
+    assert!(!on.is_empty(), "an allowlist containing the missing passive still covers it");
+    assert_eq!(on[0].surgery.len(), 1, "exactly one implant");
+    assert_eq!(on[0].surgery[0].passive_id, swift, "implant is the allowed missing passive");
+}
+
+/// Allowlist EXCLUDES the missing passive: surgery cannot cover it, so no plan
+/// exists, and diagnosis flags `allowed_excluded` (surgery on) — NOT
+/// `surgery_off`. A non-empty allowlist that omits the passive treats it as
+/// uncoverable, identical to a special-tier refusal but for a different reason.
+#[test]
+fn allowlist_excludes_unlisted_passive() {
+    let gd = GameData::get();
+    let (a, b, t) = find_recipe(gd);
+    let swift = resolve_passive(gd, "Swift").expect("Swift resolves");
+    let runner = resolve_passive(gd, "Runner").expect("Runner resolves");
+    assert_ne!(swift, runner, "distinct passives");
+    let pool = vec![owned(gd, a, Gender::Female, &[]), owned(gd, b, Gender::Male, &[])];
+    let mut spec = TargetSpec::new(TargetPal::Species(t));
+    spec.required_passives = vec![swift.clone()];
+
+    // Allowlist covers only Runner, so Swift (the actual requirement) is excluded.
+    let cfg = with_surgery_allowed(1, 30.0, &[runner.as_str()]);
+    let on = solve(gd, &spec, &pool, &cfg);
+    assert!(on.is_empty(), "an allowlist excluding the missing passive must not cover it");
+
+    let reasons = diagnose_no_path(gd, &spec, &pool, &cfg);
+    assert!(
+        reasons.iter().any(|r| matches!(
+            r,
+            NoPathReason::MissingPassiveCarrier {
+                passive_id, surgery_off: false, allowed_excluded: true, ..
+            } if *passive_id == swift
+        )),
+        "excluded passive must flag allowed_excluded:true, surgery_off:false, got {reasons:?}"
+    );
+}
+
+/// `allowed_passives: None` is today's behavior byte-for-byte: an old surgery
+/// payload without the field deserializes to `None`, and re-serializing `None`
+/// never emits the `allowed_passives` key.
+#[test]
+fn allowlist_none_serde_is_byte_identical() {
+    // Old payload shape (pre-allowlist): no `allowed_passives` key.
+    let old = r#"{"max_implants":2,"cost_secs":30.0}"#;
+    let cfg: SurgeryConfig = serde_json::from_str(old).expect("old surgery payload deserializes");
+    assert_eq!(cfg.max_implants, 2);
+    assert!(cfg.allowed_passives.is_none(), "missing field defaults to None");
+
+    let round = serde_json::to_string(&cfg).expect("serialize");
+    assert!(!round.contains("allowed_passives"), "None must skip the key: {round}");
+    assert_eq!(round, old, "round-trip is byte-identical to the old payload");
 }

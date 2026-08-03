@@ -453,6 +453,10 @@ export interface SkillFruitConfig {
 export interface SurgeryOption {
   max_implants: number;
   cost_secs: number;
+  /** Optional implant allowlist by passive id. Absent/empty => any eligible
+   * passive may be implanted; a non-empty list restricts implants to these ids.
+   * Mirrors the Rust `SurgeryConfig::allowed_passives`. */
+  allowed_passives?: string[];
 }
 
 /** Gender-reverser option on a `SolveRequest` (`gender_reverser`). `cost_secs`
@@ -477,6 +481,10 @@ export type NoPathReason =
        * passive — the UI offers an "enable Surgery table" remedy. Absent/false
        * otherwise (surgery already on, or it cannot cover the gap). */
       surgery_off?: boolean;
+      /** True when the Surgery table was ON but this passive is excluded by the
+       * implant allowlist (`surgery.allowed_passives`) — surgery cannot cover it
+       * and the remedy is widening the allowlist. Absent/false otherwise. */
+      allowed_excluded?: boolean;
     }
   | {
       kind: "missing_move_carrier";

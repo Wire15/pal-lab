@@ -19,6 +19,15 @@ import {
   type XboxWorld,
   type XboxWorldRow,
 } from "./lib/xbox-save";
+import {
+  encodeSftpSource,
+  readSftpProfile,
+  writeSftpProfile,
+  type SftpAuth,
+  type SftpConnectInfo,
+  type SftpProfile,
+  type SftpSecret,
+} from "./lib/sftp";
 import type { View } from "./state";
 
 /** Inline nav glyphs: crate (roster), lineage fork (solver), grid (dex). */
@@ -143,12 +152,36 @@ function relativeTime(epoch: number): string {
  * lands. "Skip for now" dismisses it — the app is fully usable without a save.
  */
 function SaveModal({ onClose }: { onClose: () => void }) {
-  const { lastSaveDir, loadSave, saveLoading, saveError, recentSaves } =
-    useAppState();
+  const {
+    lastSaveDir,
+    loadSave,
+    saveLoading,
+    saveError,
+    recentSaves,
+    sftpReconnect,
+    clearSftpReconnect,
+  } = useAppState();
   const [path, setPath] = useState(lastSaveDir);
   const [xboxScanning, setXboxScanning] = useState(false);
   const [xboxNote, setXboxNote] = useState<string | null>(null);
   const [xboxWorlds, setXboxWorlds] = useState<XboxWorldRow[] | null>(null);
+  const [sftpOpen, setSftpOpen] = useState(false);
+  const [sftpReconnectData, setSftpReconnectData] = useState<{
+    worldDir: string;
+    profile: SftpProfile | null;
+  } | null>(null);
+
+  // Boot-restore: a persisted SFTP save arrives as a one-shot reconnect request
+  // (state.tsx never auto-loads it blind). Consume it once on mount — open the
+  // connect modal prefilled/reconnecting and clear the request so a later
+  // manual "Switch save" reopens the plain load modal.
+  useEffect(() => {
+    if (!sftpReconnect) return;
+    setSftpReconnectData(sftpReconnect);
+    setSftpOpen(true);
+    clearSftpReconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -330,6 +363,20 @@ function SaveModal({ onClose }: { onClose: () => void }) {
                   {xboxNote}
                 </div>
               )}
+              <button
+                onClick={() => {
+                  setSftpReconnectData(null);
+                  setSftpOpen(true);
+                }}
+                disabled={saveLoading}
+                className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Dedicated server (SFTP)
+              </button>
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">
+                Load a world live from a Palworld dedicated server over SSH. Read
+                only &mdash; nothing is written to your server.
+              </p>
             </div>
           )}
         </div>
@@ -361,7 +408,377 @@ function SaveModal({ onClose }: { onClose: () => void }) {
           onClose={() => setXboxWorlds(null)}
         />
       )}
+      {sftpOpen && (
+        <SftpConnectModal
+          reconnect={sftpReconnectData}
+          onClose={() => setSftpOpen(false)}
+        />
+      )}
     </>
+  );
+}
+
+/** Last path segment of a POSIX/Windows path, for a compact world label. */
+function baseName(p: string): string {
+  const parts = p.split(/[/\\]/).filter(Boolean);
+  return parts.length ? parts[parts.length - 1] : p;
+}
+
+/**
+ * Dedicated-server (SFTP) connect + world-picker dialog. Desktop only. Mirrors
+ * {@link SaveModal}/{@link XboxWorldPicker} chrome. Collects a connection
+ * profile (host/port/user, password or key-file auth, remote path), invokes
+ * `sftp_connect`, then either auto-loads a single/remembered world or shows a
+ * picker. Secrets live only in this component's state — never persisted. On
+ * boot-restore (`reconnect` set) it prefills the last profile, shows a
+ * "Reconnect to load <world>" line, and auto-loads the remembered world when it
+ * still appears in the scan.
+ */
+function SftpConnectModal({
+  reconnect,
+  onClose,
+}: {
+  reconnect: { worldDir: string; profile: SftpProfile | null } | null;
+  onClose: () => void;
+}) {
+  const { loadSave } = useAppState();
+  const initial = reconnect?.profile ?? readSftpProfile();
+  const [host, setHost] = useState(initial?.host ?? "");
+  const [port, setPort] = useState(String(initial?.port ?? 22));
+  const [user, setUser] = useState(initial?.user ?? "");
+  const [auth, setAuth] = useState<SftpAuth>(initial?.auth ?? "password");
+  const [keyPath, setKeyPath] = useState(initial?.key_path ?? "");
+  const [root, setRoot] = useState(initial?.root ?? "");
+  const [password, setPassword] = useState("");
+  const [passphrase, setPassphrase] = useState("");
+  const [phase, setPhase] = useState<"form" | "connecting" | "worlds">("form");
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<SftpConnectInfo | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  function buildProfile(): SftpProfile {
+    return {
+      host: host.trim(),
+      port: Number(port) || 22,
+      user: user.trim(),
+      auth,
+      key_path: auth === "key" ? keyPath.trim() || null : null,
+      root: root.trim(),
+    };
+  }
+
+  // Native file picker for the private key (Tauri dialog plugin).
+  async function pickKey() {
+    try {
+      const picked = await open({ multiple: false });
+      if (typeof picked === "string") setKeyPath(picked);
+    } catch {
+      // No dialog plugin outside the Tauri webview — ignore.
+    }
+  }
+
+  // Persist the (secret-free) profile and hand the sentinel to shared state,
+  // which invokes `sftp_load_save` + arms the 60s poller.
+  function proceed(profile: SftpProfile, world: { world_dir: string; world_name?: string | null }) {
+    writeSftpProfile({ ...profile, last_world_name: world.world_name ?? null });
+    loadSave(encodeSftpSource(profile, world.world_dir));
+    onClose();
+  }
+
+  async function connect() {
+    const profile = buildProfile();
+    setPhase("connecting");
+    setError(null);
+    try {
+      const secret: SftpSecret = {
+        password: auth === "password" ? password || null : null,
+        key_passphrase: passphrase || null,
+      };
+      const ci = await invoke<SftpConnectInfo>("sftp_connect", {
+        profile,
+        secret,
+      });
+      setInfo(ci);
+      // Reconnect: auto-load the remembered world if the scan still lists it.
+      const remembered = reconnect?.worldDir
+        ? ci.worlds.find((w) => w.world_dir === reconnect.worldDir)
+        : undefined;
+      if (remembered) {
+        proceed(profile, remembered);
+        return;
+      }
+      if (ci.worlds.length === 1) {
+        proceed(profile, ci.worlds[0]);
+        return;
+      }
+      if (ci.worlds.length === 0) {
+        setError(
+          "No Palworld worlds found under that remote path. Point at a world folder, its SaveGames parent, or the server base dir.",
+        );
+        setPhase("form");
+        return;
+      }
+      setPhase("worlds");
+    } catch (e) {
+      setError(String(e));
+      setPhase("form");
+    }
+  }
+
+  const connecting = phase === "connecting";
+  const canConnect =
+    !connecting &&
+    host.trim() !== "" &&
+    user.trim() !== "" &&
+    root.trim() !== "" &&
+    (auth === "password" || keyPath.trim() !== "");
+  const reconnectLabel = reconnect
+    ? initial?.last_world_name ||
+      baseName(reconnect.worldDir) ||
+      reconnect.worldDir
+    : null;
+
+  const inputClass =
+    "min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/60";
+  const fieldLabel =
+    "font-mono text-[11px] uppercase tracking-wider text-ink-faint";
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
+      onMouseDown={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sftp-modal-title"
+        className="w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="border-b border-line px-5 py-4">
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
+            Dedicated server (SFTP)
+          </div>
+          <h2
+            id="sftp-modal-title"
+            className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
+          >
+            {phase === "worlds" ? "Choose a world" : "Connect to your server"}
+          </h2>
+          {reconnectLabel && (
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-dim">
+              Reconnect to load{" "}
+              <span className="font-mono text-ink">{reconnectLabel}</span>
+            </p>
+          )}
+        </div>
+
+        {phase === "worlds" ? (
+          <>
+            {info && !info.known && (
+              <div className="border-b border-line px-5 py-3">
+                <div className="rounded-md border border-amber/40 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-ink-dim">
+                  First connection &mdash; fingerprint pinned. If it changes later
+                  we refuse and warn.
+                  <div className="mt-1 truncate font-mono text-[10px] text-ink-faint">
+                    {info.fingerprint}
+                  </div>
+                </div>
+              </div>
+            )}
+            <ul className="flex max-h-[52vh] flex-col gap-1.5 overflow-y-auto px-5 py-4">
+              {(info?.worlds ?? []).map((w) => (
+                <li key={w.world_dir}>
+                  <button
+                    onClick={() => proceed(buildProfile(), w)}
+                    className="group flex w-full items-center justify-between gap-3 rounded-md border border-line bg-raised/50 px-3 py-2 text-left transition-colors hover:border-amber/40 hover:bg-hover"
+                  >
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-medium text-ink">
+                        {w.world_name || baseName(w.world_dir)}
+                      </div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                        <span className="text-ink-dim">{w.players}</span>{" "}
+                        {w.players === 1 ? "player" : "players"}
+                        <span className="mx-1 text-line">&middot;</span>
+                        {relativeTime(w.mtime_ms)}
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <div className="flex flex-col gap-3 px-5 py-4">
+            <div className="flex gap-2">
+              <label className="flex flex-[3] flex-col gap-1.5">
+                <span className={fieldLabel}>Host</span>
+                <input
+                  autoFocus
+                  className={inputClass}
+                  placeholder="server.example.com"
+                  value={host}
+                  disabled={connecting}
+                  onChange={(e) => setHost(e.currentTarget.value)}
+                />
+              </label>
+              <label className="flex flex-1 flex-col gap-1.5">
+                <span className={fieldLabel}>Port</span>
+                <input
+                  className={inputClass}
+                  inputMode="numeric"
+                  placeholder="22"
+                  value={port}
+                  disabled={connecting}
+                  onChange={(e) => setPort(e.currentTarget.value)}
+                />
+              </label>
+            </div>
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>User</span>
+              <input
+                className={inputClass}
+                placeholder="steam"
+                value={user}
+                disabled={connecting}
+                onChange={(e) => setUser(e.currentTarget.value)}
+              />
+            </label>
+            <div className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Authentication</span>
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setAuth("password")}
+                  disabled={connecting}
+                  className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
+                    auth === "password"
+                      ? "border-amber/60 bg-amber/10 text-ink"
+                      : "border-line bg-raised text-ink-dim hover:bg-hover"
+                  }`}
+                >
+                  Password
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuth("key")}
+                  disabled={connecting}
+                  className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
+                    auth === "key"
+                      ? "border-amber/60 bg-amber/10 text-ink"
+                      : "border-line bg-raised text-ink-dim hover:bg-hover"
+                  }`}
+                >
+                  Key file
+                </button>
+              </div>
+            </div>
+            {auth === "password" ? (
+              <label className="flex flex-col gap-1.5">
+                <span className={fieldLabel}>Password</span>
+                <input
+                  className={inputClass}
+                  type="password"
+                  autoComplete="off"
+                  placeholder="\u2026"
+                  value={password}
+                  disabled={connecting}
+                  onChange={(e) => setPassword(e.currentTarget.value)}
+                />
+              </label>
+            ) : (
+              <>
+                <label className="flex flex-col gap-1.5">
+                  <span className={fieldLabel}>Private key file</span>
+                  <div className="flex gap-2">
+                    <input
+                      className={inputClass}
+                      placeholder="\u2026/.ssh/id_ed25519"
+                      value={keyPath}
+                      disabled={connecting}
+                      onChange={(e) => setKeyPath(e.currentTarget.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={pickKey}
+                      disabled={connecting}
+                      className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:opacity-50"
+                    >
+                      Browse
+                    </button>
+                  </div>
+                </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className={fieldLabel}>Key passphrase (optional)</span>
+                  <input
+                    className={inputClass}
+                    type="password"
+                    autoComplete="off"
+                    placeholder="\u2026"
+                    value={passphrase}
+                    disabled={connecting}
+                    onChange={(e) => setPassphrase(e.currentTarget.value)}
+                  />
+                </label>
+              </>
+            )}
+            <label className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Remote path</span>
+              <input
+                className={inputClass}
+                placeholder="/home/steam/Pal/Saved/SaveGames"
+                value={root}
+                disabled={connecting}
+                onChange={(e) => setRoot(e.currentTarget.value)}
+              />
+              <span className="text-[12px] leading-relaxed text-ink-faint">
+                The world folder, or its SaveGames parent &mdash; we scan for{" "}
+                <span className="font-mono text-ink-dim">Level.sav</span>.
+              </span>
+            </label>
+            {error && (
+              <div className="rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-[12px] leading-relaxed text-bad">
+                {error}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="border-t border-line px-5 py-3">
+          <p className="text-[12px] leading-relaxed text-ink-faint">
+            Read-only - Pal Lab never writes to your server. Save changes are
+            picked up by polling every 60s.
+          </p>
+        </div>
+
+        {phase !== "worlds" && (
+          <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-3.5">
+            <button
+              onClick={onClose}
+              className="rounded-md px-2 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={connect}
+              disabled={!canConnect}
+              className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {connecting ? "Connecting\u2026" : "Connect"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

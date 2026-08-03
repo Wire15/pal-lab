@@ -124,7 +124,8 @@ Point the desktop app at it, or drop that world folder onto the web app.
 | Save type | Status |
 |---|---|
 | Steam (local co-op) | ✅ Supported |
-| Dedicated server | ✅ Supported |
+| Dedicated server (local files) | ✅ Supported |
+| Dedicated server (remote, SFTP) | ✅ Built in — live over SSH (desktop) |
 | Xbox / Game Pass (PC) | ✅ Built in — no conversion needed |
 
 **Xbox / Game Pass:** desktop app → **Xbox / Game Pass** button on the load
@@ -138,9 +139,16 @@ screen — it finds the Game Pass save store on your PC and reads it directly
 Chunked (CNK) saves are decoded natively. Xbox **console** saves must still
 reach your PC first (play the world once on the PC Game Pass app so it syncs).
 
+**Dedicated servers over SFTP:** desktop app → **Dedicated server (SFTP)**
+button on the load screen. Pal Lab connects over SSH, scans for worlds, and
+loads yours live — then polls for changes every 60s so the roster stays
+current while you play. Read-only: nothing is ever written to the server.
+Password or key-file auth; the host fingerprint is pinned on first connect
+and passwords are never stored.
+
 ## What's new
 
-The latest release is **v1.6.0**. See [`CHANGELOG.md`](CHANGELOG.md) for the
+The latest release is **v1.8.0**. See [`CHANGELOG.md`](CHANGELOG.md) for the
 full history, and the [GitHub Releases](https://github.com/Wire15/pal-lab/releases)
 page for downloads and VirusTotal links.
 

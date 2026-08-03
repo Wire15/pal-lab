@@ -1,6 +1,7 @@
 mod mapstate;
 mod paldex;
 mod save;
+mod sftp;
 mod solver;
 mod updater;
 mod xbox;
@@ -12,6 +13,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(save::WatcherState::default())
         .manage(solver::SolveGate::default())
+        .manage(sftp::manager())
         .invoke_handler(tauri::generate_handler![
             save::load_save,
             save::watch_save,
@@ -37,7 +39,12 @@ pub fn run() {
             mapstate::get_map_state,
             xbox::detect_xbox_stores,
             xbox::list_xbox_worlds,
-            xbox::load_xbox_save
+            xbox::load_xbox_save,
+            sftp::sftp_connect,
+            sftp::sftp_load_save,
+            sftp::sftp_watch,
+            sftp::sftp_unwatch,
+            sftp::sftp_disconnect
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

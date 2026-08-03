@@ -182,10 +182,17 @@ impl Default for BreedingSetup {
 /// purely on effort: each implant adds `cost_secs` (the caller's time-cost
 /// estimate) to the plan's ranking effort, so a cheaper exact-breeding plan still
 /// wins. `max_implants` is clamped to `0..=4` (a pal has four passive slots).
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SurgeryConfig {
     pub max_implants: u8,
     pub cost_secs: f64,
+    /// Optional implant allowlist by passive id. `None` (default) = any
+    /// tier-eligible passive may be implanted (today's behavior). `Some(list)`
+    /// restricts implants to exactly these passive ids — a missing required
+    /// passive outside the list is treated as uncoverable, so the solver falls
+    /// back to exact breeding (or reports no path). Ids match `required_passives`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allowed_passives: Option<Vec<String>>,
 }
 
 impl SurgeryConfig {
@@ -223,7 +230,7 @@ pub struct SkillFruitConfig {
 
 impl Default for SkillFruitConfig {
     fn default() -> Self {
-        SkillFruitConfig { cost_secs: 300.0 }
+        SkillFruitConfig { cost_secs: 30.0 }
     }
 }
 

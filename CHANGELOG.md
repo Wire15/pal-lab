@@ -2,6 +2,29 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.8.0] - 2026-08-03
+
+### Added
+- **Dedicated servers over SFTP (desktop).** New *Dedicated server (SFTP)*
+  button on the load screen: connect over SSH (password or key file), Pal Lab
+  scans for worlds, loads yours live, and **polls every 60s** so the roster
+  silently refreshes while you play — no more manual save-backup snapshots.
+  Read-only: nothing is ever written to the server. Host fingerprints are
+  pinned on first connect (changed fingerprint = hard refusal with both
+  fingerprints shown); passwords live in memory for the session only, never
+  on disk. Solver, IV Lab, Pal-dex, and world options all work on the live
+  connection; reopening the app offers one-click reconnect.
+- **Surgery table: implantable-passives list.** Optionally restrict which
+  passives the solver may implant (same picker as Required passives). Leave
+  empty to allow any implantable passive. When a plan is impossible because
+  the allowlist excludes the missing passive, the no-path panel says exactly
+  that.
+
+### Changed
+- Advanced-station time costs (surgery, gender reverser, skill fruits) now
+  default to **30 seconds** — matching real-world use — instead of 300+.
+  Still tunable per station.
+
 ## [1.7.0] - 2026-07-28
 
 ### Added

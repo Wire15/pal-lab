@@ -13,6 +13,8 @@ import type { NoPathReason } from "../lib/types";
 function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
   switch (reason.kind) {
     case "missing_passive_carrier":
+      if (reason.allowed_excluded)
+        return `No pal you own carries ${reason.passive_name}, and the Surgery table's implantable-passives list excludes it. Add ${reason.passive_name} to that list in Breeding setup (or catch a carrier), then re-solve.`;
       return reason.surgery_off
         ? `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier, or enable Surgery table in Breeding setup, then re-solve.`
         : `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
