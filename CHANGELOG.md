@@ -2,6 +2,14 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.10.1] - 2026-08-04
+
+### Changed
+- **SFTP errors now quote the server.** When a host closes the session, the
+  error includes the server's own stated reason (e.g.
+  `server said: "Too many logins for 'user'"`), naming the exact limit
+  instead of a bare "disconnected".
+
 ## [1.10.0] - 2026-08-04
 
 ### Added

@@ -23,6 +23,7 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 use tauri::{async_runtime, AppHandle, Emitter, Manager, State};
+use parking_lot::Mutex as PlMutex;
 use tokio::sync::Mutex;
 
 use russh::client::{self, AuthResult, Handle, Handler};
@@ -512,9 +513,13 @@ fn known_hosts_path(app: &AppHandle) -> Result<PathBuf, String> {
 /// russh client handler. Captures the server's SHA256 host-key fingerprint into
 /// a shared slot; the known-hosts decision is made AFTER the handshake (before
 /// auth) so a mismatch error can name both fingerprints and no credentials are
-/// ever sent to an unverified server.
+/// ever sent to an unverified server. Also captures the server's stated
+/// SSH_MSG_DISCONNECT reason (e.g. "Too many logins for 'user'") so channel
+/// failures can surface WHY the host hung up instead of a bare "Disconnected".
 struct ClientHandler {
-    fingerprint: Arc<std::sync::Mutex<Option<String>>>,
+    fingerprint: Arc<PlMutex<Option<String>>>,
+    /// The server's disconnect message, when it sent one before hanging up.
+    server_bye: Arc<PlMutex<Option<String>>>,
 }
 
 impl Handler for ClientHandler {
@@ -522,8 +527,24 @@ impl Handler for ClientHandler {
 
     async fn check_server_key(&mut self, server_public_key: &PublicKey) -> Result<bool, Self::Error> {
         let fp = server_public_key.fingerprint(HashAlg::Sha256).to_string();
-        *self.fingerprint.lock().unwrap() = Some(fp);
+        *self.fingerprint.lock() = Some(fp);
         Ok(true)
+    }
+
+    async fn disconnected(
+        &mut self,
+        reason: client::DisconnectReason<Self::Error>,
+    ) -> Result<(), Self::Error> {
+        match reason {
+            client::DisconnectReason::ReceivedDisconnect(info) => {
+                let msg = info.message.trim().to_string();
+                if !msg.is_empty() {
+                    *self.server_bye.lock() = Some(msg);
+                }
+                Ok(())
+            }
+            client::DisconnectReason::Error(e) => Err(e),
+        }
     }
 }
 
@@ -534,6 +555,8 @@ impl Handler for ClientHandler {
 struct ConnectError {
     message: String,
     retryable: bool,
+    /// The server's stated disconnect reason, when it sent one.
+    server_bye: Option<String>,
 }
 
 impl From<String> for ConnectError {
@@ -542,6 +565,7 @@ impl From<String> for ConnectError {
         ConnectError {
             message,
             retryable: false,
+            server_bye: None,
         }
     }
 }
@@ -592,9 +616,11 @@ async fn do_connect(
         keepalive_max: KEEPALIVE_MAX,
         ..Default::default()
     });
-    let fp_slot: Arc<std::sync::Mutex<Option<String>>> = Arc::new(std::sync::Mutex::new(None));
+    let fp_slot: Arc<PlMutex<Option<String>>> = Arc::new(PlMutex::new(None));
+    let bye_slot: Arc<PlMutex<Option<String>>> = Arc::new(PlMutex::new(None));
     let handler = ClientHandler {
         fingerprint: fp_slot.clone(),
+        server_bye: bye_slot.clone(),
     };
 
     let connect = client::connect(config, (profile.host.as_str(), profile.port), handler);
@@ -612,7 +638,6 @@ async fn do_connect(
 
     let fingerprint = fp_slot
         .lock()
-        .unwrap()
         .clone()
         .ok_or_else(|| "server presented no host key".to_string())?;
 
@@ -654,17 +679,28 @@ async fn do_connect(
 
     // Channel / subsystem open is where the reconnect-after-restart collision
     // surfaces: a disconnect-class error here is retryable with a fresh dial.
-    let channel = handle.channel_open_session().await.map_err(|e| ConnectError {
-        retryable: is_disconnect_class(&e),
-        message: format!("opening ssh channel: {e}"),
-    })?;
+    // `with_bye` names the server's own disconnect reason when it sent one —
+    // e.g. "Too many logins for 'user'" — turning a bare "Disconnected" into a
+    // diagnosis.
+    let with_bye = |stage: &str, e: russh::Error| {
+        let bye = bye_slot.lock().clone();
+        ConnectError {
+            retryable: is_disconnect_class(&e),
+            message: match &bye {
+                Some(b) => format!("{stage}: {e} — server said: \"{b}\""),
+                None => format!("{stage}: {e}"),
+            },
+            server_bye: bye,
+        }
+    };
+    let channel = handle
+        .channel_open_session()
+        .await
+        .map_err(|e| with_bye("opening ssh channel", e))?;
     channel
         .request_subsystem(true, "sftp")
         .await
-        .map_err(|e| ConnectError {
-            retryable: is_disconnect_class(&e),
-            message: format!("requesting sftp subsystem: {e}"),
-        })?;
+        .map_err(|e| with_bye("requesting sftp subsystem", e))?;
     let sftp = SftpSession::new(channel.into_stream())
         .await
         .map_err(|e| format!("initializing sftp: {e}"))?;
@@ -700,11 +736,16 @@ async fn dial_with_retry(
 
 /// The message surfaced when a re-dial ALSO failed: a second disconnect-class
 /// failure means the host is very likely still holding the old session, so we
-/// return the actionable [`SESSION_LIMIT_HINT`]; any other failure keeps its own
+/// return the actionable [`SESSION_LIMIT_HINT`] — plus the server's own stated
+/// disconnect reason when it sent one, which usually names the exact limit
+/// (e.g. "Too many logins for 'user'"). Any other failure keeps its own
 /// message (bad creds, changed host key, etc.).
 fn retry_failure_message(e: ConnectError) -> String {
     if e.retryable {
-        SESSION_LIMIT_HINT.to_string()
+        match e.server_bye {
+            Some(b) => format!("{SESSION_LIMIT_HINT} — server said: \"{b}\""),
+            None => SESSION_LIMIT_HINT.to_string(),
+        }
     } else {
         e.message
     }
@@ -1466,16 +1507,29 @@ mod tests {
         let retryable = ConnectError {
             message: "opening ssh channel: Disconnected".to_string(),
             retryable: true,
+            server_bye: None,
         };
         let msg = retry_failure_message(retryable);
         assert_eq!(msg, SESSION_LIMIT_HINT);
         assert!(msg.contains("concurrent SFTP sessions"));
         assert!(msg.contains("wait"));
 
+        // When the server stated WHY it hung up, the hint names it verbatim —
+        // that string usually identifies the exact limit (e.g. pam maxlogins).
+        let with_reason = ConnectError {
+            message: "opening ssh channel: Disconnected".to_string(),
+            retryable: true,
+            server_bye: Some("Too many logins for 'pal'".to_string()),
+        };
+        let msg = retry_failure_message(with_reason);
+        assert!(msg.starts_with(SESSION_LIMIT_HINT));
+        assert!(msg.contains("server said: \"Too many logins for 'pal'\""));
+
         // A non-disconnect failure keeps its own message (no misleading hint).
         let fatal = ConnectError {
             message: "auth error: bad password".to_string(),
             retryable: false,
+            server_bye: None,
         };
         assert_eq!(retry_failure_message(fatal), "auth error: bad password");
     }
