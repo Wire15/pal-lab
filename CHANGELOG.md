@@ -2,6 +2,25 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## [1.10.0] - 2026-08-04
+
+### Added
+- **Remembered SFTP logins.** Opt-in "Remember password" on the connect form
+  stores your password (or key passphrase) in the OS credential vault
+  (Windows Credential Manager) - never a file, never plaintext. With it set,
+  reopening Pal Lab reconnects to your server and loads your world
+  automatically, exactly like local saves. Unticking the box scrubs the
+  stored secret.
+
+### Fixed
+- **Reconnecting to a dedicated server after closing the app** no longer
+  fails with "error opening ssh channel: disconnected". Pal Lab previously
+  dropped the connection without an SSH goodbye, so hosts that cap concurrent
+  SFTP sessions kept the old session as a zombie and refused the new one.
+  Now: graceful disconnect on close/switch/exit, one automatic fresh-dial
+  retry when a host is slow to reap, SSH keepalives for long-lived sessions,
+  and a clearer message if the host still holds an old session.
+
 ## [1.9.0] - 2026-08-03
 
 ### Added

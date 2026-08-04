@@ -31,6 +31,10 @@ export interface SftpProfile {
   auth: SftpAuth;
   key_path: string | null;
   root: string;
+  /** Opt-in: remember this endpoint's secret in the OS credential vault. Non-
+   *  secret (the flag itself, not the password) and persisted here so boot
+   *  auto-login knows whether to try `sftp_secret_load`. Default false. */
+  remember?: boolean;
   /** Display name of the last-loaded world (prettifies the reconnect prompt).
    *  Never sent to the backend — buildProfile constructs invoke payloads fresh. */
   last_world_name?: string | null;
@@ -118,6 +122,7 @@ export function writeSftpProfile(profile: SftpProfile): void {
       auth: profile.auth,
       key_path: profile.key_path,
       root: profile.root,
+      remember: profile.remember ?? false,
       last_world_name: profile.last_world_name ?? null,
     };
     localStorage.setItem(SFTP_PROFILE_KEY, JSON.stringify(safe));
@@ -140,6 +145,7 @@ export function readSftpProfile(): SftpProfile | null {
       auth: o.auth === "key" ? "key" : "password",
       key_path: o.key_path != null ? String(o.key_path) : null,
       root: String(o.root ?? ""),
+      remember: o.remember === true,
     };
   } catch {
     return null;
@@ -165,4 +171,25 @@ export function bootRestoreAction(
   const sftp = decodeSftpSource(dir);
   if (sftp) return { kind: "sftp", worldDir: sftp.worldDir, profile };
   return { kind: "load", dir };
+}
+
+/** Whether boot-restore of an SFTP sentinel should silently auto-attempt the
+ *  connect (a remembered secret is available) or fall back to the manual
+ *  reconnect prompt. Pure so it is unit-testable. Auto ONLY when: the profile
+ *  opted into `remember`, a secret is actually stored for it, and the profile's
+ *  endpoint matches the sentinel (else the vaulted secret belongs to a
+ *  different login and must not be blasted at the wrong host). */
+export type SftpAutoLogin = "auto" | "prompt";
+export function sftpAutoLoginDecision(
+  sentinel: string,
+  profile: SftpProfile | null,
+  hasStoredSecret: boolean,
+): SftpAutoLogin {
+  if (!profile || profile.remember !== true || !hasStoredSecret) return "prompt";
+  const src = decodeSftpSource(sentinel);
+  if (!src) return "prompt";
+  if (src.host !== profile.host || src.port !== profile.port || src.user !== profile.user) {
+    return "prompt";
+  }
+  return "auto";
 }

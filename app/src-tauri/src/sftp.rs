@@ -47,6 +47,26 @@ const CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
 /// stall every reload. Emitted as a log warning when skipped.
 const MAX_LOCAL_DATA: u64 = 32 * 1024 * 1024;
 
+/// Keepalive for long-lived watch sessions: after this much silence russh pings
+/// the server; [`KEEPALIVE_MAX`] consecutive unanswered pings tear the
+/// connection down. Keeps a watch alive behind NAT / server idle timeouts.
+const KEEPALIVE_INTERVAL: Duration = Duration::from_secs(30);
+const KEEPALIVE_MAX: usize = 3;
+
+/// Backoff before the single fresh re-dial when the first connect died with a
+/// disconnect-class channel error — gives a host that caps concurrent sessions a
+/// beat to reap the previous session before we log in again.
+const RECONNECT_BACKOFF: Duration = Duration::from_millis(1500);
+
+/// Bound on the best-effort graceful disconnect at process exit, so a wedged
+/// socket can never hang app shutdown.
+const EXIT_DISCONNECT_TIMEOUT: Duration = Duration::from_secs(2);
+
+/// Shown when even a fresh re-dial dies disconnect-class: the overwhelmingly
+/// likely cause is a host still holding the previous (un-goodbyed) SFTP session.
+const SESSION_LIMIT_HINT: &str = "server closed the session — your host may limit \
+concurrent SFTP sessions; wait ~a minute for the old session to expire and try again";
+
 // ---------------------------------------------------------------------------
 // Wire types (serde snake_case, matching the pinned cross-slice contract).
 // ---------------------------------------------------------------------------
@@ -64,6 +84,11 @@ pub struct SftpProfile {
     pub key_path: Option<String>,
     /// Remote dir to scan: a world dir, a `SaveGames` dir, or a server base dir.
     pub root: String,
+    /// Opt-in flag: the user asked to remember this endpoint's secret in the OS
+    /// vault (see `sftp_vault`). Non-secret, persisted TS-side. `#[serde(default)]`
+    /// so older persisted/prefill payloads that omit it decode as `false`.
+    #[serde(default)]
+    pub remember: bool,
 }
 
 /// Secret material for a connect attempt. Held in memory only, NEVER written to
@@ -502,6 +527,56 @@ impl Handler for ClientHandler {
     }
 }
 
+/// A [`do_connect`] failure plus whether a completely fresh dial might recover.
+/// Only a disconnect-class transport failure at channel / subsystem open is
+/// retryable — bad credentials or a changed host key never are (a retry can't
+/// fix them and would only re-send secrets).
+struct ConnectError {
+    message: String,
+    retryable: bool,
+}
+
+impl From<String> for ConnectError {
+    /// Every `?`-propagated stage error (timeout, host key, auth) is fatal.
+    fn from(message: String) -> Self {
+        ConnectError {
+            message,
+            retryable: false,
+        }
+    }
+}
+
+/// Disconnect-class transport errors: the SSH session/transport is gone, so a
+/// fresh dial (new TCP + auth) may succeed once the server reaps the old
+/// session. This is the reconnect-after-restart symptom — a host that caps
+/// concurrent SFTP sessions rejects the new channel by disconnecting while it
+/// still holds the previous (un-goodbyed) session.
+fn is_disconnect_class(e: &russh::Error) -> bool {
+    matches!(
+        e,
+        russh::Error::Disconnect
+            | russh::Error::HUP
+            | russh::Error::SendError
+            | russh::Error::RecvError
+            | russh::Error::ChannelOpenFailure(_)
+            | russh::Error::KeepaliveTimeout
+            | russh::Error::InactivityTimeout
+            | russh::Error::ConnectionTimeout
+    )
+}
+
+/// Send a graceful SSH disconnect so the server reaps the session NOW. Merely
+/// dropping the [`Handle`] only shuts the TCP socket (russh emits no
+/// `SSH_MSG_DISCONNECT` on that path), which a host that caps concurrent
+/// sessions treats as a lingering session and refuses the next login's channel
+/// against until its own reap window expires. Best-effort: a dead transport
+/// just means the goodbye can't be delivered, which is fine.
+async fn graceful_bye(handle: &Handle<ClientHandler>) {
+    let _ = handle
+        .disconnect(russh::Disconnect::ByApplication, "pal-lab: session closed", "")
+        .await;
+}
+
 /// Open a TCP + SSH connection, verify the host key, authenticate, and open the
 /// SFTP subsystem. Returns the live handle, an `Arc`-shared SFTP session, the
 /// host-key fingerprint, and whether the host was already known.
@@ -509,8 +584,14 @@ async fn do_connect(
     app: &AppHandle,
     profile: &SftpProfile,
     secret: &SftpSecret,
-) -> Result<(Handle<ClientHandler>, Arc<SftpSession>, String, bool), String> {
-    let config = Arc::new(client::Config::default());
+) -> Result<(Handle<ClientHandler>, Arc<SftpSession>, String, bool), ConnectError> {
+    // Keepalive keeps a long-lived watch session alive behind NAT / idle
+    // timeouts; defaults otherwise.
+    let config = Arc::new(client::Config {
+        keepalive_interval: Some(KEEPALIVE_INTERVAL),
+        keepalive_max: KEEPALIVE_MAX,
+        ..Default::default()
+    });
     let fp_slot: Arc<std::sync::Mutex<Option<String>>> = Arc::new(std::sync::Mutex::new(None));
     let handler = ClientHandler {
         fingerprint: fp_slot.clone(),
@@ -565,25 +646,68 @@ async fn do_connect(
                 .await
                 .map_err(|e| format!("auth error: {e}"))?
         }
-        other => return Err(format!("unknown auth method: {other} (expected password|key)")),
+        other => return Err(format!("unknown auth method: {other} (expected password|key)").into()),
     };
     if !matches!(auth, AuthResult::Success) {
-        return Err("authentication failed (bad credentials or method not allowed)".to_string());
+        return Err("authentication failed (bad credentials or method not allowed)".to_string().into());
     }
 
-    let channel = handle
-        .channel_open_session()
-        .await
-        .map_err(|e| format!("opening ssh channel: {e}"))?;
+    // Channel / subsystem open is where the reconnect-after-restart collision
+    // surfaces: a disconnect-class error here is retryable with a fresh dial.
+    let channel = handle.channel_open_session().await.map_err(|e| ConnectError {
+        retryable: is_disconnect_class(&e),
+        message: format!("opening ssh channel: {e}"),
+    })?;
     channel
         .request_subsystem(true, "sftp")
         .await
-        .map_err(|e| format!("requesting sftp subsystem: {e}"))?;
+        .map_err(|e| ConnectError {
+            retryable: is_disconnect_class(&e),
+            message: format!("requesting sftp subsystem: {e}"),
+        })?;
     let sftp = SftpSession::new(channel.into_stream())
         .await
         .map_err(|e| format!("initializing sftp: {e}"))?;
 
     Ok((handle, Arc::new(sftp), fingerprint, known))
+}
+
+/// [`do_connect`] with a single fresh re-dial when the first attempt died with a
+/// disconnect-class channel error: the reconnect-after-restart case where a host
+/// that caps concurrent SFTP sessions just needs a beat to reap the previous
+/// (possibly zombie) session. The retry is a COMPLETELY fresh dial (new TCP +
+/// auth), bounded to one extra attempt after [`RECONNECT_BACKOFF`]. A second
+/// disconnect-class failure surfaces the actionable [`SESSION_LIMIT_HINT`] copy.
+async fn dial_with_retry(
+    app: &AppHandle,
+    profile: &SftpProfile,
+    secret: &SftpSecret,
+) -> Result<(Handle<ClientHandler>, Arc<SftpSession>, String, bool), String> {
+    match do_connect(app, profile, secret).await {
+        Ok(v) => Ok(v),
+        Err(e) if e.retryable => {
+            eprintln!(
+                "sftp connect: {} — retrying once after {}ms",
+                e.message,
+                RECONNECT_BACKOFF.as_millis()
+            );
+            tokio::time::sleep(RECONNECT_BACKOFF).await;
+            do_connect(app, profile, secret).await.map_err(retry_failure_message)
+        }
+        Err(e) => Err(e.message),
+    }
+}
+
+/// The message surfaced when a re-dial ALSO failed: a second disconnect-class
+/// failure means the host is very likely still holding the old session, so we
+/// return the actionable [`SESSION_LIMIT_HINT`]; any other failure keeps its own
+/// message (bad creds, changed host key, etc.).
+fn retry_failure_message(e: ConnectError) -> String {
+    if e.retryable {
+        SESSION_LIMIT_HINT.to_string()
+    } else {
+        e.message
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -592,8 +716,9 @@ async fn do_connect(
 
 /// The one live SFTP connection.
 struct Active {
-    /// Kept alive to hold the SSH connection open; dropping it disconnects.
-    #[allow(dead_code)]
+    /// Kept alive to hold the SSH connection open. On teardown we send a
+    /// graceful SSH disconnect (see [`graceful_bye`]) instead of just dropping
+    /// it, so a host that caps concurrent sessions reaps this one immediately.
     handle: Handle<ClientHandler>,
     sftp: Arc<SftpSession>,
     profile: SftpProfile,
@@ -637,16 +762,22 @@ impl SftpManager {
         secret: SftpSecret,
     ) -> Result<SftpConnectInfo, String> {
         // Tear down any prior connection + watch first (clean world A->B switch).
-        {
+        // Take the old session out under the lock, then say a graceful SSH
+        // goodbye UNLOCKED so the server reaps it before we dial the replacement
+        // (else the replacement can collide with the still-live old session).
+        let previous = {
             let mut inner = self.inner.lock().await;
             if let Some(h) = inner.watch.take() {
                 h.abort();
             }
-            inner.session = None;
             inner.cache.clear();
+            inner.session.take()
+        };
+        if let Some(active) = previous {
+            graceful_bye(&active.handle).await;
         }
 
-        let (handle, sftp, fingerprint, known) = do_connect(app, &profile, &secret).await?;
+        let (handle, sftp, fingerprint, known) = dial_with_retry(app, &profile, &secret).await?;
         let worlds = scan_worlds(&SftpFs(&sftp), &profile.root).await?;
 
         let mut inner = self.inner.lock().await;
@@ -789,14 +920,20 @@ impl SftpManager {
         }
     }
 
-    /// Drop the connection + watch + cache. Idempotent.
+    /// Drop the connection + watch + cache. Sends a graceful SSH goodbye so the
+    /// server reaps the session immediately. Idempotent.
     async fn disconnect(&self) {
-        let mut inner = self.inner.lock().await;
-        if let Some(h) = inner.watch.take() {
-            h.abort();
+        let previous = {
+            let mut inner = self.inner.lock().await;
+            if let Some(h) = inner.watch.take() {
+                h.abort();
+            }
+            inner.cache.clear();
+            inner.session.take()
+        };
+        if let Some(active) = previous {
+            graceful_bye(&active.handle).await;
         }
-        inner.session = None;
-        inner.cache.clear();
     }
 }
 
@@ -825,6 +962,22 @@ struct SaveChanged {
 pub fn manager() -> Arc<SftpManager> {
     static M: OnceLock<Arc<SftpManager>> = OnceLock::new();
     M.get_or_init(|| Arc::new(SftpManager::new())).clone()
+}
+
+/// Best-effort graceful disconnect of the live session at process exit, bounded
+/// by [`EXIT_DISCONNECT_TIMEOUT`] so app shutdown can NEVER hang. Runs the async
+/// teardown on Tauri's runtime and blocks the (main-thread) caller on a std
+/// channel with a hard ceiling, so even a wedged socket or a runtime already
+/// tearing down cannot stall exit. Wire this to `RunEvent::ExitRequested`.
+pub fn disconnect_on_exit() {
+    let (tx, rx) = std::sync::mpsc::channel();
+    async_runtime::spawn(async move {
+        let mgr = manager();
+        let _ = tokio::time::timeout(EXIT_DISCONNECT_TIMEOUT, mgr.disconnect()).await;
+        let _ = tx.send(());
+    });
+    // Never wait past the budget (+ a small margin), even if the runtime is gone.
+    let _ = rx.recv_timeout(EXIT_DISCONNECT_TIMEOUT + Duration::from_millis(500));
 }
 
 // ---------------------------------------------------------------------------
@@ -1266,5 +1419,64 @@ mod tests {
         let worlds = scan_worlds(&fs, "/r").await.expect("scan");
         assert_eq!(worlds.len(), 1, "only the outer world is discovered");
         assert_eq!(worlds[0].world_dir, "/r/W");
+    }
+
+    // -- reconnect lifecycle: disconnect-class classification + retry decision --
+
+    #[test]
+    fn disconnect_class_covers_transport_death() {
+        use russh::ChannelOpenFailure;
+        // A dead/rejected transport at channel open — a fresh dial may recover.
+        for e in [
+            russh::Error::Disconnect,
+            russh::Error::HUP,
+            russh::Error::SendError,
+            russh::Error::RecvError,
+            russh::Error::ChannelOpenFailure(ChannelOpenFailure::AdministrativelyProhibited),
+            russh::Error::KeepaliveTimeout,
+            russh::Error::InactivityTimeout,
+            russh::Error::ConnectionTimeout,
+        ] {
+            assert!(is_disconnect_class(&e), "should be disconnect-class: {e:?}");
+        }
+        // Credential / protocol errors a retry can NEVER fix — must not loop.
+        for e in [
+            russh::Error::NotAuthenticated,
+            russh::Error::NoAuthMethod,
+            russh::Error::RequestDenied,
+            russh::Error::WrongChannel,
+        ] {
+            assert!(!is_disconnect_class(&e), "should NOT be disconnect-class: {e:?}");
+        }
+    }
+
+    #[test]
+    fn stage_errors_are_fatal_not_retryable() {
+        // Every `?`-propagated stage error (timeout, host key, auth) is fatal:
+        // From<String> must never mark a connect error retryable.
+        let e: ConnectError = "auth error: bad password".to_string().into();
+        assert!(!e.retryable);
+        assert_eq!(e.message, "auth error: bad password");
+    }
+
+    #[test]
+    fn retry_failure_uses_session_limit_hint_only_when_disconnect_class() {
+        // A second disconnect-class failure => the actionable concurrent-session
+        // hint (this is the reconnect-after-restart copy).
+        let retryable = ConnectError {
+            message: "opening ssh channel: Disconnected".to_string(),
+            retryable: true,
+        };
+        let msg = retry_failure_message(retryable);
+        assert_eq!(msg, SESSION_LIMIT_HINT);
+        assert!(msg.contains("concurrent SFTP sessions"));
+        assert!(msg.contains("wait"));
+
+        // A non-disconnect failure keeps its own message (no misleading hint).
+        let fatal = ConnectError {
+            message: "auth error: bad password".to_string(),
+            retryable: false,
+        };
+        assert_eq!(retry_failure_message(fatal), "auth error: bad password");
     }
 }

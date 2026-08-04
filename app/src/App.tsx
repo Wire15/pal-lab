@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import SaveInspector from "./views/SaveInspector";
 import Solver from "./views/Solver";
@@ -22,6 +22,7 @@ import {
 import {
   encodeSftpSource,
   readSftpProfile,
+  sftpAutoLoginDecision,
   writeSftpProfile,
   type SftpAuth,
   type SftpConnectInfo,
@@ -454,6 +455,13 @@ function SftpConnectModal({
   const [phase, setPhase] = useState<"form" | "connecting" | "worlds">("form");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<SftpConnectInfo | null>(null);
+  const [remember, setRemember] = useState(initial?.remember ?? false);
+  // A secret already vaulted for this endpoint (loaded on a Remember reconnect).
+  // Drives the "leave blank to use" placeholder and lets the one-click reconnect
+  // / boot auto-login connect without re-typing. NEVER rendered; only merged
+  // into the connect payload.
+  const [storedSecret, setStoredSecret] = useState<SftpSecret | null>(null);
+  const autoAttempted = useRef(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -463,6 +471,33 @@ function SftpConnectModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Boot auto-login: on a reconnect request whose profile opted into Remember,
+  // load the vaulted secret and — when one exists — silently attempt the connect
+  // (spinner, no typing). Any failure falls through to the manual prompt with an
+  // inline error (connect's catch). Runs at most once, so there is no retry loop.
+  useEffect(() => {
+    if (autoAttempted.current) return;
+    autoAttempted.current = true;
+    const rc = reconnect;
+    const profile = rc?.profile;
+    if (!rc || !profile || !profile.remember) return;
+    void (async () => {
+      let secret: SftpSecret | null = null;
+      try {
+        secret = await invoke<SftpSecret | null>("sftp_secret_load", { profile });
+      } catch {
+        secret = null;
+      }
+      if (!secret) return;
+      setStoredSecret(secret);
+      const sentinel = encodeSftpSource(profile, rc.worldDir);
+      if (sftpAutoLoginDecision(sentinel, profile, true) === "auto") {
+        void connect(secret);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function buildProfile(): SftpProfile {
     return {
       host: host.trim(),
@@ -471,6 +506,7 @@ function SftpConnectModal({
       auth,
       key_path: auth === "key" ? keyPath.trim() || null : null,
       root: root.trim(),
+      remember,
     };
   }
 
@@ -492,19 +528,41 @@ function SftpConnectModal({
     onClose();
   }
 
-  async function connect() {
+  async function connect(secretOverride?: SftpSecret) {
     const profile = buildProfile();
     setPhase("connecting");
     setError(null);
     try {
-      const secret: SftpSecret = {
+      // Manual connect: fall back to the vaulted secret for any field left blank
+      // (one-click reconnect). Boot auto-login passes the secret directly.
+      const typed: SftpSecret = {
         password: auth === "password" ? password || null : null,
         key_passphrase: passphrase || null,
       };
+      const secret: SftpSecret =
+        secretOverride ??
+        (storedSecret
+          ? {
+              password: typed.password ?? storedSecret.password,
+              key_passphrase: typed.key_passphrase ?? storedSecret.key_passphrase,
+            }
+          : typed);
       const ci = await invoke<SftpConnectInfo>("sftp_connect", {
         profile,
         secret,
       });
+      // Connect succeeded — honor the Remember toggle against the OS vault:
+      // ticked stores the working secret; unticked scrubs any prior entry.
+      try {
+        if (remember) {
+          await invoke("sftp_secret_store", { profile, secret });
+        } else {
+          await invoke("sftp_secret_forget", { profile });
+        }
+      } catch {
+        // Vault write failed (locked keychain, etc.) — non-fatal; the live
+        // connection stands regardless.
+      }
       setInfo(ci);
       // Reconnect: auto-load the remembered world if the scan still lists it.
       const remembered = reconnect?.worldDir
@@ -689,7 +747,11 @@ function SftpConnectModal({
                   className={inputClass}
                   type="password"
                   autoComplete="off"
-                  placeholder="\u2026"
+                  placeholder={
+                    storedSecret?.password
+                      ? "saved \u2014 leave blank to use"
+                      : "\u2026"
+                  }
                   value={password}
                   disabled={connecting}
                   onChange={(e) => setPassword(e.currentTarget.value)}
@@ -723,7 +785,11 @@ function SftpConnectModal({
                     className={inputClass}
                     type="password"
                     autoComplete="off"
-                    placeholder="\u2026"
+                    placeholder={
+                      storedSecret?.key_passphrase
+                        ? "saved \u2014 leave blank to use"
+                        : "\u2026"
+                    }
                     value={passphrase}
                     disabled={connecting}
                     onChange={(e) => setPassphrase(e.currentTarget.value)}
@@ -731,6 +797,21 @@ function SftpConnectModal({
                 </label>
               </>
             )}
+            <label className="flex items-center gap-2 text-[12px] text-ink-dim">
+              <input
+                type="checkbox"
+                className="h-3.5 w-3.5 accent-amber disabled:opacity-30"
+                checked={remember}
+                disabled={connecting}
+                onChange={(e) => setRemember(e.currentTarget.checked)}
+              />
+              <span>
+                Remember password
+                <span className="ml-1 text-ink-faint">
+                  &mdash; kept in your OS credential vault
+                </span>
+              </span>
+            </label>
             <label className="flex flex-col gap-1.5">
               <span className={fieldLabel}>Remote path</span>
               <input
@@ -769,7 +850,7 @@ function SftpConnectModal({
               Cancel
             </button>
             <button
-              onClick={connect}
+              onClick={() => connect()}
               disabled={!canConnect}
               className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
             >

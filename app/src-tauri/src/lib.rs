@@ -2,6 +2,7 @@ mod mapstate;
 mod paldex;
 mod save;
 mod sftp;
+mod sftp_vault;
 mod solver;
 mod updater;
 mod xbox;
@@ -44,8 +45,20 @@ pub fn run() {
             sftp::sftp_load_save,
             sftp::sftp_watch,
             sftp::sftp_unwatch,
-            sftp::sftp_disconnect
+            sftp::sftp_disconnect,
+            sftp_vault::sftp_secret_store,
+            sftp_vault::sftp_secret_load,
+            sftp_vault::sftp_secret_forget
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|_app, event| {
+            // On exit, send a graceful SSH goodbye so a host that caps concurrent
+            // SFTP sessions reaps ours immediately — otherwise a quick relaunch
+            // collides with the lingering session ("opening ssh channel:
+            // disconnected"). Bounded so exit never hangs.
+            if let tauri::RunEvent::ExitRequested { .. } = event {
+                sftp::disconnect_on_exit();
+            }
+        });
 }

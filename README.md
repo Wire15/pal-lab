@@ -148,7 +148,7 @@ and passwords are never stored.
 
 ## What's new
 
-The latest release is **v1.9.0**. See [`CHANGELOG.md`](CHANGELOG.md) for the
+The latest release is **v1.10.0**. See [`CHANGELOG.md`](CHANGELOG.md) for the
 full history, and the [GitHub Releases](https://github.com/Wire15/pal-lab/releases)
 page for downloads and VirusTotal links.
 

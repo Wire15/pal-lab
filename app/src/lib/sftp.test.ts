@@ -11,6 +11,7 @@ import {
   decodeSftpSource,
   encodeSftpSource,
   readSftpProfile,
+  sftpAutoLoginDecision,
   writeSftpProfile,
 } from "./sftp";
 
@@ -21,6 +22,7 @@ const PROFILE: SftpProfile = {
   auth: "key",
   key_path: "/home/me/.ssh/id_ed25519",
   root: "/home/steam/Pal/Saved/SaveGames",
+  remember: false,
 };
 const WORLD = "/home/steam/Pal/Saved/SaveGames/0/ABCDEF0123456789";
 
@@ -100,6 +102,7 @@ test("writeSftpProfile persists only the non-secret profile fields", () => {
     auth: "key",
     key_path: "/home/me/.ssh/id_ed25519",
     root: "/home/steam/Pal/Saved/SaveGames",
+    remember: false,
     last_world_name: null,
   });
 });
@@ -123,6 +126,18 @@ test("writeSftpProfile never persists a password or key passphrase", () => {
 test("readSftpProfile round-trips a written profile", () => {
   writeSftpProfile(PROFILE);
   expect(readSftpProfile()).toEqual(PROFILE);
+});
+
+test("writeSftpProfile persists the remember flag and readSftpProfile restores it", () => {
+  writeSftpProfile({ ...PROFILE, remember: true });
+  const stored = JSON.parse(localStorage.getItem(SFTP_PROFILE_KEY) as string);
+  expect(stored.remember).toBe(true);
+  expect(readSftpProfile()).toEqual({ ...PROFILE, remember: true });
+});
+
+test("readSftpProfile defaults a missing remember flag to false", () => {
+  localStorage.setItem(SFTP_PROFILE_KEY, JSON.stringify({ host: "h", user: "u" }));
+  expect(readSftpProfile()?.remember).toBe(false);
 });
 
 test("readSftpProfile returns null when nothing is stored", () => {
@@ -171,4 +186,38 @@ test("bootRestoreAction carries a null profile through unchanged", () => {
     worldDir: WORLD,
     profile: null,
   });
+});
+
+// ---- auto-login decision ------------------------------------------------
+
+test("sftpAutoLoginDecision auto when remember + stored secret + endpoint match", () => {
+  const sentinel = encodeSftpSource(PROFILE, WORLD);
+  expect(sftpAutoLoginDecision(sentinel, { ...PROFILE, remember: true }, true)).toBe(
+    "auto",
+  );
+});
+
+test("sftpAutoLoginDecision prompts when remember is false", () => {
+  const sentinel = encodeSftpSource(PROFILE, WORLD);
+  expect(sftpAutoLoginDecision(sentinel, { ...PROFILE, remember: false }, true)).toBe(
+    "prompt",
+  );
+});
+
+test("sftpAutoLoginDecision prompts when no secret is stored", () => {
+  const sentinel = encodeSftpSource(PROFILE, WORLD);
+  expect(sftpAutoLoginDecision(sentinel, { ...PROFILE, remember: true }, false)).toBe(
+    "prompt",
+  );
+});
+
+test("sftpAutoLoginDecision prompts when the profile is null", () => {
+  const sentinel = encodeSftpSource(PROFILE, WORLD);
+  expect(sftpAutoLoginDecision(sentinel, null, true)).toBe("prompt");
+});
+
+test("sftpAutoLoginDecision prompts when the stored profile endpoint differs", () => {
+  const sentinel = encodeSftpSource(PROFILE, WORLD);
+  const other = { ...PROFILE, remember: true, host: "other.example.com" };
+  expect(sftpAutoLoginDecision(sentinel, other, true)).toBe("prompt");
 });

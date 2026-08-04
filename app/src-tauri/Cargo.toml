@@ -49,4 +49,10 @@ russh-sftp = "2.4"
 # Direct tokio handle for the async SFTP session (Mutex, timeout, poll sleep) and
 # the #[tokio::test] scan tests. The Tauri async runtime IS tokio.
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time", "sync", "io-util", "net"] }
+# OS credential vault for opt-in remembered SFTP secrets (sftp_vault.rs). keyring
+# 3.x ships NO default credential store (its default feature set is empty and
+# falls back to an in-memory mock), so the Windows Credential Manager backend
+# MUST be opted into explicitly via `windows-native` — otherwise stored secrets
+# would silently not persist. Secrets NEVER touch a file or localStorage.
+keyring = { version = "3", features = ["windows-native"] }
 
