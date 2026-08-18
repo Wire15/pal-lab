@@ -28,6 +28,7 @@ import {
   type SftpConnectInfo,
   type SftpProfile,
   type SftpSecret,
+  type RemoteProtocol,
 } from "./lib/sftp";
 import type { View } from "./state";
 
@@ -372,11 +373,11 @@ function SaveModal({ onClose }: { onClose: () => void }) {
                 disabled={saveLoading}
                 className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Dedicated server (SFTP)
+                Dedicated server
               </button>
               <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">
-                Load a world live from a Palworld dedicated server over SSH. Read
-                only &mdash; nothing is written to your server.
+                Load a world live over FTPS, FTP, or SFTP. Read only &mdash;
+                nothing is written to your server.
               </p>
             </div>
           )}
@@ -444,8 +445,11 @@ function SftpConnectModal({
 }) {
   const { loadSave } = useAppState();
   const initial = reconnect?.profile ?? readSftpProfile();
+  const initialProtocol = initial?.protocol ?? "ftps";
+  const defaultPort = (p: RemoteProtocol) => (p === "sftp" ? 22 : 21);
+  const [protocol, setProtocol] = useState<RemoteProtocol>(initialProtocol);
   const [host, setHost] = useState(initial?.host ?? "");
-  const [port, setPort] = useState(String(initial?.port ?? 22));
+  const [port, setPort] = useState(String(initial?.port ?? defaultPort(initialProtocol)));
   const [user, setUser] = useState(initial?.user ?? "");
   const [auth, setAuth] = useState<SftpAuth>(initial?.auth ?? "password");
   const [keyPath, setKeyPath] = useState(initial?.key_path ?? "");
@@ -500,11 +504,12 @@ function SftpConnectModal({
 
   function buildProfile(): SftpProfile {
     return {
+      protocol,
       host: host.trim(),
-      port: Number(port) || 22,
+      port: Number(port) || defaultPort(protocol),
       user: user.trim(),
-      auth,
-      key_path: auth === "key" ? keyPath.trim() || null : null,
+      auth: protocol === "sftp" ? auth : "password",
+      key_path: protocol === "sftp" && auth === "key" ? keyPath.trim() || null : null,
       root: root.trim(),
       remember,
     };
@@ -536,8 +541,8 @@ function SftpConnectModal({
       // Manual connect: fall back to the vaulted secret for any field left blank
       // (one-click reconnect). Boot auto-login passes the secret directly.
       const typed: SftpSecret = {
-        password: auth === "password" ? password || null : null,
-        key_passphrase: passphrase || null,
+        password: protocol !== "sftp" || auth === "password" ? password || null : null,
+        key_passphrase: protocol === "sftp" ? passphrase || null : null,
       };
       const secret: SftpSecret =
         secretOverride ??
@@ -596,7 +601,7 @@ function SftpConnectModal({
     host.trim() !== "" &&
     user.trim() !== "" &&
     root.trim() !== "" &&
-    (auth === "password" || keyPath.trim() !== "");
+    (protocol !== "sftp" || auth === "password" || keyPath.trim() !== "");
   const reconnectLabel = reconnect
     ? initial?.last_world_name ||
       baseName(reconnect.worldDir) ||
@@ -623,7 +628,7 @@ function SftpConnectModal({
       >
         <div className="border-b border-line px-5 py-4">
           <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Dedicated server (SFTP)
+            Dedicated server
           </div>
           <h2
             id="sftp-modal-title"
@@ -677,6 +682,32 @@ function SftpConnectModal({
           </>
         ) : (
           <div className="flex flex-col gap-3 px-5 py-4">
+            <div className="flex flex-col gap-1.5">
+              <span className={fieldLabel}>Protocol</span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(["ftps", "ftp", "sftp"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => {
+                      setProtocol(p);
+                      setAuth("password");
+                      if (port.trim() === "" || port === String(defaultPort(protocol))) {
+                        setPort(String(defaultPort(p)));
+                      }
+                    }}
+                    disabled={connecting}
+                    className={`rounded-md border px-3 py-1.5 text-[12px] font-medium uppercase transition-colors disabled:opacity-50 ${
+                      protocol === p
+                        ? "border-amber/60 bg-amber/10 text-ink"
+                        : "border-line bg-raised text-ink-dim hover:bg-hover"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex gap-2">
               <label className="flex flex-[3] flex-col gap-1.5">
                 <span className={fieldLabel}>Host</span>
@@ -694,7 +725,7 @@ function SftpConnectModal({
                 <input
                   className={inputClass}
                   inputMode="numeric"
-                  placeholder="22"
+                  placeholder={String(defaultPort(protocol))}
                   value={port}
                   disabled={connecting}
                   onChange={(e) => setPort(e.currentTarget.value)}
@@ -711,36 +742,38 @@ function SftpConnectModal({
                 onChange={(e) => setUser(e.currentTarget.value)}
               />
             </label>
-            <div className="flex flex-col gap-1.5">
-              <span className={fieldLabel}>Authentication</span>
-              <div className="flex gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setAuth("password")}
-                  disabled={connecting}
-                  className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
-                    auth === "password"
-                      ? "border-amber/60 bg-amber/10 text-ink"
-                      : "border-line bg-raised text-ink-dim hover:bg-hover"
-                  }`}
-                >
-                  Password
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAuth("key")}
-                  disabled={connecting}
-                  className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
-                    auth === "key"
-                      ? "border-amber/60 bg-amber/10 text-ink"
-                      : "border-line bg-raised text-ink-dim hover:bg-hover"
-                  }`}
-                >
-                  Key file
-                </button>
+            {protocol === "sftp" && (
+              <div className="flex flex-col gap-1.5">
+                <span className={fieldLabel}>Authentication</span>
+                <div className="flex gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setAuth("password")}
+                    disabled={connecting}
+                    className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
+                      auth === "password"
+                        ? "border-amber/60 bg-amber/10 text-ink"
+                        : "border-line bg-raised text-ink-dim hover:bg-hover"
+                    }`}
+                  >
+                    Password
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAuth("key")}
+                    disabled={connecting}
+                    className={`flex-1 rounded-md border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-50 ${
+                      auth === "key"
+                        ? "border-amber/60 bg-amber/10 text-ink"
+                        : "border-line bg-raised text-ink-dim hover:bg-hover"
+                    }`}
+                  >
+                    Key file
+                  </button>
+                </div>
               </div>
-            </div>
-            {auth === "password" ? (
+            )}
+            {protocol !== "sftp" || auth === "password" ? (
               <label className="flex flex-col gap-1.5">
                 <span className={fieldLabel}>Password</span>
                 <input
@@ -816,7 +849,7 @@ function SftpConnectModal({
               <span className={fieldLabel}>Remote path</span>
               <input
                 className={inputClass}
-                placeholder="/home/steam/Pal/Saved/SaveGames"
+                placeholder={protocol === "sftp" ? "/home/steam/Pal/Saved/SaveGames" : "palworld/Pal/Saved/SaveGames/0"}
                 value={root}
                 disabled={connecting}
                 onChange={(e) => setRoot(e.currentTarget.value)}

@@ -2,6 +2,26 @@
 
 Notable changes per release, newest first. Dates are ship dates.
 
+## Unreleased
+
+### Added
+- **Dedicated servers over FTPS/FTP.** The desktop dedicated-server loader now
+  supports FTPS and plain FTP in addition to SFTP, so hosts that expose game
+  files through FTP credentials (for example Nitrado) can be loaded live and
+  polled read-only just like SSH/SFTP hosts. The connect dialog now has a
+  protocol picker and prefers FTPS for FTP-style endpoints.
+
+### Fixed
+- **FTP hosts that drop idle control connections now recover automatically.**
+  When an FTP/FTPS stat or download fails with a stale-connection error such as
+  Windows `os error 10054`, Pal Lab reconnects with the active in-memory
+  credentials and retries once instead of leaving the save source marked as
+  connected but unable to reload.
+- **Optional remote save parts are only downloaded when present.** Missing
+  `WorldOption.sav` / `LevelMeta.sav` / `LocalData.sav` files no longer cause
+  FTP loads to block on a doomed retrieve; the world folder is listed first and
+  optional files are skipped unless listed.
+
 ## [1.10.1] - 2026-08-04
 
 ### Changed
