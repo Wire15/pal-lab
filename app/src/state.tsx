@@ -552,8 +552,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSaveLoading(true);
     setSaveError(null);
     try {
-      // Save-source dispatch by sentinel: `sftp://…` -> the live SSH session
-      // (established earlier by `sftp_connect`); `xbox://<wgsDir>#<saveId>` ->
+      // Save-source dispatch by sentinel: remote `sftp://` / `ftps://` / `ftp://`
+      // sources use the live connection established earlier by `sftp_connect`; `xbox://<wgsDir>#<saveId>` ->
       // the WGS store command; a plain folder path -> `load_save`.
       const sftp = decodeSftpSource(trimmed);
       const xbox = decodeXboxSource(trimmed);
@@ -582,7 +582,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         // Ignore storage failures (private mode, quota) — non-fatal.
       }
       // Auto-arm the live watcher so external saves trigger a silent reload.
-      // Tauri only. SFTP polls the server (mtime) every 60s and emits the same
+      // Tauri only. Remote saves poll the server (mtime) every 60s and emit the same
       // `save-changed` event; folder saves use the filesystem watcher; Xbox has
       // no folder to watch. Switching to a non-SFTP source drops any live SSH
       // session (best-effort; a no-op when nothing is connected).
@@ -612,7 +612,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const dir = saveDirRef.current;
     if (!dir) return;
     try {
-      // The SFTP poller emits `save-changed`; re-read through the live SSH
+      // The remote poller emits `save-changed`; re-read through the live remote
       // session. Xbox arms no watcher (never hit); still decode defensively so a
       // stray reload routes to the right command.
       const sftp = decodeSftpSource(dir);

@@ -1,13 +1,14 @@
-// Desktop SFTP save source: a Palworld world loaded live from a dedicated
-// server over SSH. Like the Xbox source, an SFTP world has no local filesystem
+// Desktop remote save source: a Palworld world loaded live from a dedicated
+// server over SFTP or FTP(S). Like the Xbox source, a remote world has no local filesystem
 // folder, so it is identified by a *sentinel* string stored in the same slot as
 // a folder path (localStorage `pal-lab.saveDir`, the recents list, and
 // `AppState.saveDir`). Everything that persists or invokes with a save path
 // treats the sentinel like any other string; the desktop Rust commands decode
 // it (mirrors `decodeSftpSource` / Rust `rsplit_once('#')`).
 //
-// Format: `sftp://<user>@<host>:<port>#<remoteWorldDir>`
-//   - user/host/port: the SSH connection endpoint
+// Format: `<protocol>://<user>@<host>:<port>#<remoteWorldDir>`
+//   - protocol: `sftp`, `ftp`, or `ftps` (explicit FTPS / AUTH TLS)
+//   - user/host/port: the remote connection endpoint
 //   - remoteWorldDir: absolute remote path of the folder containing Level.sav
 //
 // The decoder splits on the LAST '#' so a remote path that itself contains '#'
@@ -17,6 +18,10 @@
 
 /** Sentinel scheme marking a save source as a live SFTP dedicated-server save. */
 export const SFTP_SENTINEL_PREFIX = "sftp://";
+export const FTP_SENTINEL_PREFIX = "ftp://";
+export const FTPS_SENTINEL_PREFIX = "ftps://";
+
+export type RemoteProtocol = "sftp" | "ftp" | "ftps";
 
 /** SSH auth method. */
 export type SftpAuth = "password" | "key";
@@ -25,6 +30,7 @@ export type SftpAuth = "password" | "key";
  *  `SftpProfile` serde shape (no rename_all). `root` is the remote dir to
  *  scan: a world dir, a SaveGames dir, or a server base dir. */
 export interface SftpProfile {
+  protocol?: RemoteProtocol;
   host: string;
   port: number;
   user: string;
@@ -70,14 +76,16 @@ export interface SftpConnectInfo {
 
 /** Build the sentinel for an SFTP world source from the connection endpoint. */
 export function encodeSftpSource(
-  profile: Pick<SftpProfile, "user" | "host" | "port">,
+  profile: Pick<SftpProfile, "user" | "host" | "port" | "protocol">,
   worldDir: string,
 ): string {
-  return `${SFTP_SENTINEL_PREFIX}${profile.user}@${profile.host}:${profile.port}#${worldDir}`;
+  const protocol = profile.protocol ?? "sftp";
+  return `${protocol}://${profile.user}@${profile.host}:${profile.port}#${worldDir}`;
 }
 
 /** A decoded SFTP save source. */
 export interface SftpSource {
+  protocol: RemoteProtocol;
   user: string;
   host: string;
   port: number;
@@ -88,8 +96,15 @@ export interface SftpSource {
  *  `dir` is a plain path / other scheme, or is malformed. Splits on the LAST
  *  '#' so a '#' inside the remote path survives (matches Rust `rsplit_once`). */
 export function decodeSftpSource(dir: string): SftpSource | null {
-  if (!dir.startsWith(SFTP_SENTINEL_PREFIX)) return null;
-  const rest = dir.slice(SFTP_SENTINEL_PREFIX.length);
+  const protocol = dir.startsWith(SFTP_SENTINEL_PREFIX)
+    ? "sftp"
+    : dir.startsWith(FTPS_SENTINEL_PREFIX)
+      ? "ftps"
+      : dir.startsWith(FTP_SENTINEL_PREFIX)
+        ? "ftp"
+        : null;
+  if (!protocol) return null;
+  const rest = dir.slice(`${protocol}://`.length);
   const hash = rest.lastIndexOf("#");
   if (hash < 0) return null;
   const endpoint = rest.slice(0, hash);
@@ -103,7 +118,7 @@ export function decodeSftpSource(dir: string): SftpSource | null {
   const host = hostPort.slice(0, colon);
   const port = Number(hostPort.slice(colon + 1));
   if (!user || !host || !Number.isFinite(port)) return null;
-  return { user, host, port, worldDir };
+  return { protocol, user, host, port, worldDir };
 }
 
 /** localStorage key for the last-used SFTP profile (no secrets). */
@@ -116,6 +131,7 @@ export const SFTP_PROFILE_KEY = "pal-lab.sftpProfile";
 export function writeSftpProfile(profile: SftpProfile): void {
   try {
     const safe: SftpProfile = {
+      protocol: profile.protocol ?? "sftp",
       host: profile.host,
       port: profile.port,
       user: profile.user,
@@ -139,6 +155,7 @@ export function readSftpProfile(): SftpProfile | null {
     const o = JSON.parse(raw) as Record<string, unknown>;
     if (!o || typeof o !== "object") return null;
     return {
+      protocol: o.protocol === "ftp" || o.protocol === "ftps" ? o.protocol : "sftp",
       host: String(o.host ?? ""),
       port: Number(o.port) || 22,
       user: String(o.user ?? ""),
@@ -188,7 +205,12 @@ export function sftpAutoLoginDecision(
   if (!profile || profile.remember !== true || !hasStoredSecret) return "prompt";
   const src = decodeSftpSource(sentinel);
   if (!src) return "prompt";
-  if (src.host !== profile.host || src.port !== profile.port || src.user !== profile.user) {
+  if (
+    src.host !== profile.host ||
+    src.port !== profile.port ||
+    src.user !== profile.user ||
+    src.protocol !== (profile.protocol ?? "sftp")
+  ) {
     return "prompt";
   }
   return "auto";

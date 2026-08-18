@@ -125,7 +125,7 @@ Point the desktop app at it, or drop that world folder onto the web app.
 |---|---|
 | Steam (local co-op) | ✅ Supported |
 | Dedicated server (local files) | ✅ Supported |
-| Dedicated server (remote, SFTP) | ✅ Built in — live over SSH (desktop) |
+| Dedicated server (remote, FTPS/FTP/SFTP) | ✅ Built in — live over host file access (desktop) |
 | Xbox / Game Pass (PC) | ✅ Built in — no conversion needed |
 
 **Xbox / Game Pass:** desktop app → **Xbox / Game Pass** button on the load
@@ -139,12 +139,15 @@ screen — it finds the Game Pass save store on your PC and reads it directly
 Chunked (CNK) saves are decoded natively. Xbox **console** saves must still
 reach your PC first (play the world once on the PC Game Pass app so it syncs).
 
-**Dedicated servers over SFTP:** desktop app → **Dedicated server (SFTP)**
-button on the load screen. Pal Lab connects over SSH, scans for worlds, and
-loads yours live — then polls for changes every 60s so the roster stays
-current while you play. Read-only: nothing is ever written to the server.
-Password or key-file auth; the host fingerprint is pinned on first connect
-and passwords are never stored.
+**Dedicated servers over FTPS/FTP/SFTP:** desktop app → **Dedicated server**
+button on the load screen. Pal Lab connects to the host's file-access endpoint,
+scans for worlds, and loads yours live — then polls for changes every 60s so the
+roster stays current while you play. Read-only: nothing is ever written to the
+server. FTPS is preferred for FTP hosts such as Nitrado; SFTP still supports
+password or key-file auth and pins the SSH host fingerprint on first connect.
+FTP/FTPS connections automatically reconnect if the host drops an idle control
+connection. Passwords are never stored unless you opt into the OS credential
+vault.
 
 ## What's new
 

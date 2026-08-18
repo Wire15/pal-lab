@@ -46,6 +46,10 @@ ureq = "2"
 # transport-agnostic and rides the russh channel stream.
 russh = { version = "0.62", default-features = false, features = ["ring", "flate2", "rsa"] }
 russh-sftp = "2.4"
+# FTP/explicit FTPS for hosts such as Nitrado that expose file access over
+# FTP(S) instead of SSH/SFTP. We run the sync client on Tokio's blocking pool;
+# native-tls gives AUTH TLS support without adding app-level write capability.
+suppaftp = { version = "10", default-features = false, features = ["native-tls"] }
 # Direct tokio handle for the async SFTP session (Mutex, timeout, poll sleep) and
 # the #[tokio::test] scan tests. The Tauri async runtime IS tokio.
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "time", "sync", "io-util", "net"] }

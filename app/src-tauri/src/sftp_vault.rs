@@ -9,7 +9,7 @@
 //!
 //! Vault key (pinned cross-slice contract):
 //!   - service: `"pal-lab.sftp"`
-//!   - account: `"<host>:<port>:<user>"`
+//!   - account: `"<protocol>:<host>:<port>:<user>"`
 //!   - value:   JSON `{"password": string|null, "key_passphrase": string|null}`
 //!
 //! Commands ([`sftp_secret_store`], [`sftp_secret_load`], [`sftp_secret_forget`])
@@ -37,12 +37,30 @@ pub struct StoredSecret {
 /// the per-endpoint identity; changing host, port, or user targets a different
 /// stored secret (correct — they are different logins).
 fn account(profile: &SftpProfile) -> String {
-    format!("{}:{}:{}", profile.host, profile.port, profile.user)
+    format!(
+        "{}:{}:{}:{}",
+        profile.protocol.scheme(),
+        profile.host,
+        profile.port,
+        profile.user
+    )
+}
+
+/// Pre-FTP SFTP vault key. Load/forget still check it so existing remembered
+/// SFTP users do not lose their saved password after the protocol field lands.
+fn legacy_sftp_account(profile: &SftpProfile) -> Option<String> {
+    matches!(profile.protocol, crate::sftp::RemoteProtocol::Sftp)
+        .then(|| format!("{}:{}:{}", profile.host, profile.port, profile.user))
 }
 
 /// Open the keyring [`Entry`] for a profile's endpoint.
 fn entry(profile: &SftpProfile) -> Result<Entry, String> {
     Entry::new(VAULT_SERVICE, &account(profile))
+        .map_err(|e| format!("Couldn't open the OS credential vault: {e}"))
+}
+
+fn entry_for_account(account: &str) -> Result<Entry, String> {
+    Entry::new(VAULT_SERVICE, account)
         .map_err(|e| format!("Couldn't open the OS credential vault: {e}"))
 }
 
@@ -64,7 +82,19 @@ pub fn sftp_secret_load(profile: SftpProfile) -> Result<Option<StoredSecret>, St
         Ok(json) => serde_json::from_str(&json)
             .map(Some)
             .map_err(|e| format!("The stored credential is corrupt: {e}")),
-        Err(KeyringError::NoEntry) => Ok(None),
+        Err(KeyringError::NoEntry) => {
+            if let Some(legacy) = legacy_sftp_account(&profile) {
+                match entry_for_account(&legacy)?.get_password() {
+                    Ok(json) => serde_json::from_str(&json)
+                        .map(Some)
+                        .map_err(|e| format!("The stored credential is corrupt: {e}")),
+                    Err(KeyringError::NoEntry) => Ok(None),
+                    Err(e) => Err(format!("Couldn't read the credential from the OS vault: {e}")),
+                }
+            } else {
+                Ok(None)
+            }
+        }
         Err(e) => Err(format!("Couldn't read the credential from the OS vault: {e}")),
     }
 }
@@ -74,7 +104,16 @@ pub fn sftp_secret_load(profile: SftpProfile) -> Result<Option<StoredSecret>, St
 #[tauri::command]
 pub fn sftp_secret_forget(profile: SftpProfile) -> Result<(), String> {
     match entry(&profile)?.delete_credential() {
-        Ok(()) | Err(KeyringError::NoEntry) => Ok(()),
+        Ok(()) | Err(KeyringError::NoEntry) => {
+            if let Some(legacy) = legacy_sftp_account(&profile) {
+                match entry_for_account(&legacy)?.delete_credential() {
+                    Ok(()) | Err(KeyringError::NoEntry) => Ok(()),
+                    Err(e) => Err(format!("Couldn't remove the credential from the OS vault: {e}")),
+                }
+            } else {
+                Ok(())
+            }
+        }
         Err(e) => Err(format!("Couldn't remove the credential from the OS vault: {e}")),
     }
 }
@@ -85,6 +124,7 @@ mod tests {
 
     fn profile() -> SftpProfile {
         SftpProfile {
+            protocol: crate::sftp::RemoteProtocol::Sftp,
             host: "server.example.com".into(),
             port: 2222,
             user: "steam".into(),
@@ -97,7 +137,8 @@ mod tests {
 
     #[test]
     fn account_key_is_host_port_user() {
-        assert_eq!(account(&profile()), "server.example.com:2222:steam");
+        assert_eq!(account(&profile()), "sftp:server.example.com:2222:steam");
+        assert_eq!(legacy_sftp_account(&profile()).as_deref(), Some("server.example.com:2222:steam"));
     }
 
     #[test]

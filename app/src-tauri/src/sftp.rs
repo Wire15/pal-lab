@@ -1,16 +1,16 @@
-//! SFTP dedicated-server save loading. READ-ONLY: this module NEVER writes to
-//! the remote server — it opens a russh SFTP session, downloads the `.sav`
+//! Dedicated-server save loading. READ-ONLY: this module NEVER writes to the
+//! remote server — it opens an SFTP or FTP(S) session, downloads the `.sav`
 //! parts into memory, and parses them through the SAME pipeline as folder / Xbox
 //! saves (`pal_save::read_save_from_parts`).
 //!
-//! A save-source *sentinel* string `sftp://<user>@<host>:<port>#<remote_world_dir>`
+//! A save-source *sentinel* string `<protocol>://<user>@<host>:<port>#<remote_world_dir>`
 //! (see [`parse_sentinel`]) lets the rest of the app treat a remote world like a
 //! folder path: [`load_save_data`] / [`read_world_options`] are the seams the
 //! Solver / IV Lab route through, so they work against SFTP saves unchanged.
 //!
 //! A single live connection lives in the managed [`SftpManager`] state. The
 //! commands ([`sftp_connect`], [`sftp_load_save`], [`sftp_watch`],
-//! [`sftp_unwatch`], [`sftp_disconnect`]) drive the desktop SFTP flow;
+//! [`sftp_unwatch`], [`sftp_disconnect`]) drive the desktop remote flow;
 //! [`load_save_data`] bridges the async session into the synchronous solver via
 //! Tauri's runtime (spawn + block-on-channel), never a nested runtime.
 
@@ -18,6 +18,7 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 
@@ -30,12 +31,18 @@ use russh::client::{self, AuthResult, Handle, Handler};
 use russh::keys::ssh_key::PublicKey;
 use russh::keys::{load_secret_key, HashAlg, PrivateKeyWithHashAlg};
 use russh_sftp::client::SftpSession;
+use suppaftp::list::File as FtpListFile;
+use suppaftp::native_tls::TlsConnector;
+use suppaftp::types::FileType;
+use suppaftp::{FtpStream, NativeTlsConnector, NativeTlsFtpStream};
 
 use crate::save::{to_summary, SaveSummary};
 
 /// Sentinel scheme marking a save source as a remote SFTP world rather than a
-/// local folder: `sftp://<user>@<host>:<port>#<remote_world_dir>`.
+/// local folder.
 const SFTP_SENTINEL_PREFIX: &str = "sftp://";
+const FTP_SENTINEL_PREFIX: &str = "ftp://";
+const FTPS_SENTINEL_PREFIX: &str = "ftps://";
 
 /// Known-hosts store filename under the Tauri app config dir. Maps `host:port`
 /// to a pinned SHA256 host-key fingerprint. Secrets NEVER touch this file.
@@ -43,6 +50,11 @@ const KNOWN_HOSTS_FILE: &str = "pal-lab.sftp.knownHosts.json";
 
 /// TCP + SSH handshake budget for [`sftp_connect`].
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(15);
+
+/// FTP/FTPS LIST / SIZE / MDTM / RETR budget. FTP libraries cannot cancel a
+/// blocked socket cleanly, but surfacing a timeout is still better than leaving
+/// the load modal spinning with no diagnosis.
+const FTP_OP_TIMEOUT: Duration = Duration::from_secs(90);
 
 /// Skip `LocalData.sav` above this size (bytes) — a runaway map blob must not
 /// stall every reload. Emitted as a log warning when skipped.
@@ -76,6 +88,9 @@ concurrent SFTP sessions; wait ~a minute for the old session to expire and try a
 /// localStorage and used to prefill the connect modal / boot-restore.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SftpProfile {
+    /// `"sftp"`, `"ftp"`, or `"ftps"`. Omitted profiles are legacy SFTP.
+    #[serde(default)]
+    pub protocol: RemoteProtocol,
     pub host: String,
     pub port: u16,
     pub user: String,
@@ -90,6 +105,30 @@ pub struct SftpProfile {
     /// so older persisted/prefill payloads that omit it decode as `false`.
     #[serde(default)]
     pub remember: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RemoteProtocol {
+    Sftp,
+    Ftp,
+    Ftps,
+}
+
+impl Default for RemoteProtocol {
+    fn default() -> Self {
+        RemoteProtocol::Sftp
+    }
+}
+
+impl RemoteProtocol {
+    pub(crate) fn scheme(self) -> &'static str {
+        match self {
+            RemoteProtocol::Sftp => "sftp",
+            RemoteProtocol::Ftp => "ftp",
+            RemoteProtocol::Ftps => "ftps",
+        }
+    }
 }
 
 /// Secret material for a connect attempt. Held in memory only, NEVER written to
@@ -131,6 +170,7 @@ pub struct SftpConnectInfo {
 /// A parsed SFTP sentinel: the connection authority plus the remote world dir.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SftpTarget {
+    pub protocol: RemoteProtocol,
     pub user: String,
     pub host: String,
     pub port: u16,
@@ -141,6 +181,8 @@ pub struct SftpTarget {
 /// Whether `s` is an SFTP save-source sentinel.
 pub fn is_sentinel(s: &str) -> bool {
     s.starts_with(SFTP_SENTINEL_PREFIX)
+        || s.starts_with(FTP_SENTINEL_PREFIX)
+        || s.starts_with(FTPS_SENTINEL_PREFIX)
 }
 
 /// Build a sentinel string from its parts.
@@ -148,7 +190,18 @@ pub fn is_sentinel(s: &str) -> bool {
 /// symmetry with [`parse_sentinel`].)
 #[allow(dead_code)]
 pub fn format_sentinel(user: &str, host: &str, port: u16, world_dir: &str) -> String {
-    format!("{SFTP_SENTINEL_PREFIX}{user}@{host}:{port}#{world_dir}")
+    format_remote_sentinel(RemoteProtocol::Sftp, user, host, port, world_dir)
+}
+
+#[allow(dead_code)]
+pub fn format_remote_sentinel(
+    protocol: RemoteProtocol,
+    user: &str,
+    host: &str,
+    port: u16,
+    world_dir: &str,
+) -> String {
+    format!("{}://{user}@{host}:{port}#{world_dir}", protocol.scheme())
 }
 
 /// Parse `sftp://<user>@<host>:<port>#<remote_world_dir>` into an [`SftpTarget`],
@@ -157,7 +210,15 @@ pub fn format_sentinel(user: &str, host: &str, port: u16, world_dir: &str) -> St
 /// authority `host:port` split takes the LAST `:` so the user (before `@`) is
 /// isolated first.
 pub fn parse_sentinel(s: &str) -> Option<SftpTarget> {
-    let rest = s.strip_prefix(SFTP_SENTINEL_PREFIX)?;
+    let (protocol, rest) = if let Some(rest) = s.strip_prefix(SFTP_SENTINEL_PREFIX) {
+        (RemoteProtocol::Sftp, rest)
+    } else if let Some(rest) = s.strip_prefix(FTPS_SENTINEL_PREFIX) {
+        (RemoteProtocol::Ftps, rest)
+    } else if let Some(rest) = s.strip_prefix(FTP_SENTINEL_PREFIX) {
+        (RemoteProtocol::Ftp, rest)
+    } else {
+        return None;
+    };
     let (authority, world_dir) = rest.rsplit_once('#')?;
     if world_dir.is_empty() {
         return None;
@@ -169,6 +230,7 @@ pub fn parse_sentinel(s: &str) -> Option<SftpTarget> {
     }
     let port: u16 = port.parse().ok()?;
     Some(SftpTarget {
+        protocol,
         user: user.to_string(),
         host: host.to_string(),
         port,
@@ -232,6 +294,211 @@ impl RemoteFs for SftpFs<'_> {
 
     async fn read(&self, path: &str) -> Result<Vec<u8>, String> {
         self.0.read(path).await.map_err(|e| e.to_string())
+    }
+}
+
+enum FtpClient {
+    Plain(FtpStream),
+    Secure(NativeTlsFtpStream),
+}
+
+impl FtpClient {
+    fn set_common_options(&mut self) -> Result<(), String> {
+        match self {
+            FtpClient::Plain(c) => {
+                c.set_passive_nat_workaround(true);
+                c.transfer_type(FileType::Binary).map_err(|e| e.to_string())
+            }
+            FtpClient::Secure(c) => {
+                c.set_passive_nat_workaround(true);
+                c.transfer_type(FileType::Binary).map_err(|e| e.to_string())
+            }
+        }
+    }
+
+    fn login(&mut self, user: &str, password: &str) -> Result<(), String> {
+        match self {
+            FtpClient::Plain(c) => c.login(user, password),
+            FtpClient::Secure(c) => c.login(user, password),
+        }
+        .map_err(|e| e.to_string())
+    }
+
+    fn list_entries(&mut self, path: &str) -> Result<Vec<RemoteEntry>, String> {
+        let lines = match self {
+            FtpClient::Plain(c) => c.list(Some(path)),
+            FtpClient::Secure(c) => c.list(Some(path)),
+        }
+        .map_err(|e| e.to_string())?;
+        let mut entries = Vec::new();
+        for line in lines {
+            let Ok(f) = FtpListFile::from_str(line.as_str()) else {
+                continue;
+            };
+            entries.push(RemoteEntry {
+                name: f.name().rsplit('/').next().unwrap_or(f.name()).to_string(),
+                is_dir: f.is_directory(),
+            });
+        }
+        Ok(entries)
+    }
+
+    fn stat_file(&mut self, path: &str) -> Result<RemoteStat, String> {
+        let size = match self {
+            FtpClient::Plain(c) => c.size(path),
+            FtpClient::Secure(c) => c.size(path),
+        }
+        .map_err(|e| e.to_string())?;
+        let mtime_ms = match self {
+            FtpClient::Plain(c) => c.mdtm(path),
+            FtpClient::Secure(c) => c.mdtm(path),
+        }
+        .map(|t| t.and_utc().timestamp_millis().max(0) as u64)
+        .unwrap_or(0);
+        Ok(RemoteStat {
+            size: size as u64,
+            mtime_ms,
+        })
+    }
+
+    fn read_file(&mut self, path: &str) -> Result<Vec<u8>, String> {
+        match self {
+            FtpClient::Plain(c) => c.retr_as_buffer(path),
+            FtpClient::Secure(c) => c.retr_as_buffer(path),
+        }
+        .map(|b| b.into_inner())
+        .map_err(|e| e.to_string())
+    }
+
+    fn quit(&mut self) {
+        match self {
+            FtpClient::Plain(c) => {
+                let _ = c.quit();
+            }
+            FtpClient::Secure(c) => {
+                let _ = c.quit();
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
+struct FtpFs {
+    inner: Arc<PlMutex<FtpClient>>,
+}
+
+impl FtpFs {
+    async fn connect(profile: SftpProfile, secret: SftpSecret) -> Result<Arc<Self>, String> {
+        let host = profile.host.clone();
+        let port = profile.port;
+        tokio::time::timeout(CONNECT_TIMEOUT, tokio::task::spawn_blocking(move || {
+            connect_ftp_blocking(&profile, &secret)
+        }))
+        .await
+        .map_err(|_| {
+            format!(
+                "connection to {}:{} timed out after {}s",
+                host,
+                port,
+                CONNECT_TIMEOUT.as_secs()
+            )
+        })?
+        .map_err(|e| format!("ftp worker failed: {e}"))?
+        .map(|client| Arc::new(FtpFs {
+            inner: Arc::new(PlMutex::new(client)),
+        }))
+    }
+
+    async fn with_client<R, F>(&self, label: String, op: F) -> Result<R, String>
+    where
+        R: Send + 'static,
+        F: FnOnce(&mut FtpClient) -> Result<R, String> + Send + 'static,
+    {
+        let inner = self.inner.clone();
+        let timeout_label = label.clone();
+        let task = tokio::task::spawn_blocking(move || {
+            eprintln!("ftp: {label} start");
+            let started = std::time::Instant::now();
+            let mut client = inner.lock();
+            let result = op(&mut client);
+            match &result {
+                Ok(_) => eprintln!("ftp: {label} ok in {:?}", started.elapsed()),
+                Err(e) => eprintln!("ftp: {label} failed in {:?}: {e}", started.elapsed()),
+            }
+            result
+        });
+        tokio::time::timeout(FTP_OP_TIMEOUT, task)
+            .await
+            .map_err(|_| {
+                format!(
+                    "FTP operation timed out after {}s: {timeout_label}",
+                    FTP_OP_TIMEOUT.as_secs()
+                )
+            })?
+            .map_err(|e| format!("ftp worker failed: {e}"))?
+    }
+
+    async fn quit(&self) {
+        let inner = self.inner.clone();
+        let _ = tokio::task::spawn_blocking(move || inner.lock().quit()).await;
+    }
+}
+
+fn connect_ftp_blocking(profile: &SftpProfile, secret: &SftpSecret) -> Result<FtpClient, String> {
+    let password = secret
+        .password
+        .as_deref()
+        .ok_or_else(|| "password required for FTP/FTPS auth".to_string())?;
+    let addr = format!("{}:{}", profile.host, profile.port);
+    eprintln!("ftp: connecting via {} to {addr}", profile.protocol.scheme());
+    let mut client = match profile.protocol {
+        RemoteProtocol::Ftp => FtpClient::Plain(
+            FtpStream::connect(addr.as_str()).map_err(|e| format!("ftp connect failed: {e}"))?,
+        ),
+        RemoteProtocol::Ftps => {
+            let connector = NativeTlsConnector::from(
+                TlsConnector::new().map_err(|e| format!("creating TLS connector: {e}"))?,
+            );
+            let stream = NativeTlsFtpStream::connect(addr.as_str())
+                .map_err(|e| format!("ftps connect failed: {e}"))?
+                .into_secure(connector, &profile.host)
+                .map_err(|e| format!("ftps AUTH TLS failed: {e}"))?;
+            FtpClient::Secure(stream)
+        }
+        RemoteProtocol::Sftp => return Err("internal error: FTP connector received SFTP profile".into()),
+    };
+    client.login(&profile.user, password)?;
+    eprintln!("ftp: authenticated as {}", profile.user);
+    client.set_common_options()?;
+    eprintln!("ftp: binary transfer mode enabled");
+    Ok(client)
+}
+
+impl RemoteFs for FtpFs {
+    async fn list(&self, path: &str) -> Result<Vec<RemoteEntry>, String> {
+        let path = path.to_string();
+        self.with_client(format!("LIST {path}"), move |c| {
+            let entries = c.list_entries(&path)?;
+            eprintln!("ftp: LIST {path} -> {} entries", entries.len());
+            Ok(entries)
+        })
+        .await
+    }
+
+    async fn stat(&self, path: &str) -> Result<RemoteStat, String> {
+        let path = path.to_string();
+        self.with_client(format!("STAT {path}"), move |c| c.stat_file(&path))
+            .await
+    }
+
+    async fn read(&self, path: &str) -> Result<Vec<u8>, String> {
+        let path = path.to_string();
+        self.with_client(format!("RETR {path}"), move |c| {
+            let bytes = c.read_file(&path)?;
+            eprintln!("ftp: RETR {path} -> {} bytes", bytes.len());
+            Ok(bytes)
+        })
+        .await
     }
 }
 
@@ -398,26 +665,40 @@ async fn scan_worlds<F: RemoteFs>(fs: &F, root: &str) -> Result<Vec<SftpWorld>, 
 /// above [`MAX_LOCAL_DATA`] is skipped with a log warning.
 async fn download_bundle<F: RemoteFs>(fs: &F, world_dir: &str) -> Result<Bundle, String> {
     let base = world_dir.trim_end_matches('/');
+    let base_entries = fs.list(base).await.unwrap_or_default();
+    let has_file = |name: &str| base_entries.iter().any(|e| !e.is_dir && e.name == name);
 
     let level = fs
         .read(&join(base, "Level.sav"))
         .await
         .map_err(|e| format!("Level.sav: {e}"))?;
-    let level_meta = fs.read(&join(base, "LevelMeta.sav")).await.ok();
-    let world_option = fs.read(&join(base, "WorldOption.sav")).await.ok();
+    let level_meta = if has_file("LevelMeta.sav") {
+        fs.read(&join(base, "LevelMeta.sav")).await.ok()
+    } else {
+        None
+    };
+    let world_option = if has_file("WorldOption.sav") {
+        fs.read(&join(base, "WorldOption.sav")).await.ok()
+    } else {
+        None
+    };
 
     let local_path = join(base, "LocalData.sav");
-    let local_data = match fs.stat(&local_path).await {
-        Ok(s) if s.size <= MAX_LOCAL_DATA => fs.read(&local_path).await.ok(),
-        Ok(s) => {
-            eprintln!(
-                "sftp: skipping LocalData.sav ({} bytes > {} MiB cap) in {base}",
-                s.size,
-                MAX_LOCAL_DATA / (1024 * 1024)
-            );
-            None
+    let local_data = if has_file("LocalData.sav") {
+        match fs.stat(&local_path).await {
+            Ok(s) if s.size <= MAX_LOCAL_DATA => fs.read(&local_path).await.ok(),
+            Ok(s) => {
+                eprintln!(
+                    "sftp: skipping LocalData.sav ({} bytes > {} MiB cap) in {base}",
+                    s.size,
+                    MAX_LOCAL_DATA / (1024 * 1024)
+                );
+                None
+            }
+            Err(_) => None,
         }
-        Err(_) => None,
+    } else {
+        None
     };
 
     let mut players = Vec::new();
@@ -755,17 +1036,80 @@ fn retry_failure_message(e: ConnectError) -> String {
 // Managed connection state.
 // ---------------------------------------------------------------------------
 
-/// The one live SFTP connection.
+/// The one live remote connection.
 struct Active {
-    /// Kept alive to hold the SSH connection open. On teardown we send a
-    /// graceful SSH disconnect (see [`graceful_bye`]) instead of just dropping
-    /// it, so a host that caps concurrent sessions reaps this one immediately.
-    handle: Handle<ClientHandler>,
-    sftp: Arc<SftpSession>,
+    remote: ActiveRemote,
     profile: SftpProfile,
     /// In-memory only, for potential reconnect; NEVER persisted.
     #[allow(dead_code)]
     secret: SftpSecret,
+}
+
+enum ActiveRemote {
+    /// Kept alive to hold the SSH connection open. On teardown we send a
+    /// graceful SSH disconnect (see [`graceful_bye`]) instead of just dropping
+    /// it, so a host that caps concurrent sessions reaps this one immediately.
+    Sftp {
+        handle: Handle<ClientHandler>,
+        sftp: Arc<SftpSession>,
+    },
+    Ftp(Arc<FtpFs>),
+}
+
+#[derive(Clone)]
+enum RemoteSnapshot {
+    Sftp(Arc<SftpSession>),
+    Ftp(Arc<FtpFs>),
+}
+
+impl ActiveRemote {
+    fn snapshot(&self) -> RemoteSnapshot {
+        match self {
+            ActiveRemote::Sftp { sftp, .. } => RemoteSnapshot::Sftp(sftp.clone()),
+            ActiveRemote::Ftp(ftp) => RemoteSnapshot::Ftp(ftp.clone()),
+        }
+    }
+}
+
+impl RemoteSnapshot {
+    async fn stat(&self, path: &str) -> Result<RemoteStat, String> {
+        match self {
+            RemoteSnapshot::Sftp(sftp) => SftpFs(sftp).stat(path).await,
+            RemoteSnapshot::Ftp(ftp) => ftp.stat(path).await,
+        }
+    }
+
+    async fn download_bundle(&self, world_dir: &str) -> Result<Bundle, String> {
+        match self {
+            RemoteSnapshot::Sftp(sftp) => download_bundle(&SftpFs(sftp), world_dir).await,
+            RemoteSnapshot::Ftp(ftp) => download_bundle(ftp.as_ref(), world_dir).await,
+        }
+    }
+}
+
+fn should_reconnect_ftp(error: &str) -> bool {
+    let lower = error.to_ascii_lowercase();
+    lower.contains("connection error")
+        || lower.contains("connection reset")
+        || lower.contains("forcibly closed")
+        || lower.contains("broken pipe")
+        || lower.contains("not connected")
+        || lower.contains("timed out")
+        || lower.contains("os error 10054")
+}
+
+async fn scan_remote(remote: &ActiveRemote, root: &str) -> Result<Vec<SftpWorld>, String> {
+    match remote {
+        ActiveRemote::Sftp { sftp, .. } => scan_worlds(&SftpFs(sftp), root).await,
+        ActiveRemote::Ftp(ftp) => scan_worlds(ftp.as_ref(), root).await,
+    }
+}
+
+async fn close_active(active: Active) {
+    match active.remote {
+        ActiveRemote::Sftp { handle, .. } => graceful_bye(&handle).await,
+        ActiveRemote::Ftp(ftp) => ftp.quit().await,
+    }
 }
 
 /// A cached download, keyed by world dir and validated by `Level.sav` mtime.
@@ -781,7 +1125,7 @@ struct Inner {
     watch: Option<async_runtime::JoinHandle<()>>,
 }
 
-/// Managed Tauri state: the single active SFTP connection, its download cache,
+/// Managed Tauri state: the single active remote connection, its download cache,
 /// and the live mtime-poll watch task.
 pub struct SftpManager {
     inner: Mutex<Inner>,
@@ -815,16 +1159,24 @@ impl SftpManager {
             inner.session.take()
         };
         if let Some(active) = previous {
-            graceful_bye(&active.handle).await;
+            close_active(active).await;
         }
 
-        let (handle, sftp, fingerprint, known) = dial_with_retry(app, &profile, &secret).await?;
-        let worlds = scan_worlds(&SftpFs(&sftp), &profile.root).await?;
+        let (remote, fingerprint, known) = match profile.protocol {
+            RemoteProtocol::Sftp => {
+                let (handle, sftp, fingerprint, known) = dial_with_retry(app, &profile, &secret).await?;
+                (ActiveRemote::Sftp { handle, sftp }, fingerprint, known)
+            }
+            RemoteProtocol::Ftp | RemoteProtocol::Ftps => {
+                let ftp = FtpFs::connect(profile.clone(), secret.clone()).await?;
+                (ActiveRemote::Ftp(ftp), String::new(), true)
+            }
+        };
+        let worlds = scan_remote(&remote, &profile.root).await?;
 
         let mut inner = self.inner.lock().await;
         inner.session = Some(Active {
-            handle,
-            sftp,
+            remote,
             profile,
             secret,
         });
@@ -835,12 +1187,50 @@ impl SftpManager {
         })
     }
 
+    async fn reconnect_ftp(&self, target: &SftpTarget, reason: &str) -> Result<RemoteSnapshot, String> {
+        if !matches!(target.protocol, RemoteProtocol::Ftp | RemoteProtocol::Ftps) {
+            return Err(reason.to_string());
+        }
+
+        let (profile, secret) = {
+            let inner = self.inner.lock().await;
+            let active = inner.session.as_ref().ok_or("Not connected")?;
+            require_authority_match(&active.profile, target)?;
+            (active.profile.clone(), active.secret.clone())
+        };
+
+        eprintln!(
+            "ftp: reconnecting {}://{}@{}:{} after: {reason}",
+            profile.protocol.scheme(),
+            profile.user,
+            profile.host,
+            profile.port
+        );
+        let new_ftp = FtpFs::connect(profile.clone(), secret).await.map_err(|e| {
+            format!("{reason}; reconnect failed for {}://{}@{}:{}: {e}", profile.protocol.scheme(), profile.user, profile.host, profile.port)
+        })?;
+
+        let old_ftp = {
+            let mut inner = self.inner.lock().await;
+            let active = inner.session.as_mut().ok_or("Not connected")?;
+            require_authority_match(&active.profile, target)?;
+            match std::mem::replace(&mut active.remote, ActiveRemote::Ftp(new_ftp.clone())) {
+                ActiveRemote::Ftp(old) => Some(old),
+                ActiveRemote::Sftp { .. } => None,
+            }
+        };
+        if let Some(old) = old_ftp {
+            old.quit().await;
+        }
+        Ok(RemoteSnapshot::Ftp(new_ftp))
+    }
+
     /// Load (or reuse the cached) bundle for `target`, requiring an active
     /// connection whose authority matches the sentinel. Caches by `Level.sav`
     /// mtime; a matching mtime reuses the cached bundle with no re-download.
     async fn load_bundle(&self, target: &SftpTarget) -> Result<Arc<Bundle>, String> {
         // Snapshot the session + any cached bundle, then do network I/O unlocked.
-        let (sftp, cached) = {
+        let (mut remote, cached) = {
             let inner = self.inner.lock().await;
             let active = inner.session.as_ref().ok_or("Not connected")?;
             require_authority_match(&active.profile, target)?;
@@ -848,11 +1238,21 @@ impl SftpManager {
                 .cache
                 .get(&target.world_dir)
                 .map(|c| (c.level_mtime_ms, c.bundle.clone()));
-            (active.sftp.clone(), cached)
+            (active.remote.snapshot(), cached)
         };
 
         let level_path = join(&target.world_dir, "Level.sav");
-        let stat = SftpFs(&sftp).stat(&level_path).await?;
+        let mut stat = match remote.stat(&level_path).await {
+            Ok(stat) => stat,
+            Err(e) if should_reconnect_ftp(&e) => {
+                remote = self.reconnect_ftp(target, &e).await?;
+                remote
+                    .stat(&level_path)
+                    .await
+                    .map_err(|retry| format!("{e}; reconnect retry failed: {retry}"))?
+            }
+            Err(e) => return Err(e),
+        };
 
         if let Some((mtime, bundle)) = cached {
             if mtime == stat.mtime_ms {
@@ -860,7 +1260,23 @@ impl SftpManager {
             }
         }
 
-        let bundle = Arc::new(download_bundle(&SftpFs(&sftp), &target.world_dir).await?);
+        let bundle = match remote.download_bundle(&target.world_dir).await {
+            Ok(bundle) => Arc::new(bundle),
+            Err(e) if should_reconnect_ftp(&e) => {
+                remote = self.reconnect_ftp(target, &e).await?;
+                stat = remote
+                    .stat(&level_path)
+                    .await
+                    .map_err(|retry| format!("{e}; reconnect stat retry failed: {retry}"))?;
+                Arc::new(
+                    remote
+                        .download_bundle(&target.world_dir)
+                        .await
+                        .map_err(|retry| format!("{e}; reconnect download retry failed: {retry}"))?,
+                )
+            }
+            Err(e) => return Err(e),
+        };
 
         // Re-lock to publish the cache entry (only if the session still matches,
         // so a concurrent reconnect doesn't get polluted with a stale entry).
@@ -889,22 +1305,22 @@ impl SftpManager {
         sentinel: String,
         interval_secs: u32,
     ) -> Result<(), String> {
-        let target = parse_sentinel(&sentinel).ok_or("malformed sftp sentinel")?;
+        let target = parse_sentinel(&sentinel).ok_or("malformed remote sentinel")?;
         let interval = Duration::from_secs(interval_secs.clamp(15, 600) as u64);
         let level_path = join(&target.world_dir, "Level.sav");
 
         // Replace any prior watch; snapshot the live session for the baseline.
-        let sftp = {
+        let remote = {
             let mut inner = self.inner.lock().await;
             if let Some(h) = inner.watch.take() {
                 h.abort();
             }
             let active = inner.session.as_ref().ok_or("Not connected")?;
             require_authority_match(&active.profile, &target)?;
-            active.sftp.clone()
+            active.remote.snapshot()
         };
 
-        let mut last_mtime = SftpFs(&sftp)
+        let mut last_mtime = remote
             .stat(&level_path)
             .await
             .map(|s| s.mtime_ms)
@@ -917,14 +1333,14 @@ impl SftpManager {
                 tokio::time::sleep(interval).await;
                 // Re-fetch the current session each tick (it may be replaced or
                 // dropped); a gone session stops the watch.
-                let sftp = {
+                let remote = {
                     let inner = me.inner.lock().await;
                     match inner.session.as_ref() {
-                        Some(a) => a.sftp.clone(),
+                        Some(a) => a.remote.snapshot(),
                         None => break,
                     }
                 };
-                match SftpFs(&sftp).stat(&level_path).await {
+                match remote.stat(&level_path).await {
                     Ok(s) => {
                         logged_fail = false;
                         if last_mtime != 0 && s.mtime_ms != last_mtime {
@@ -936,6 +1352,26 @@ impl SftpManager {
                             );
                         }
                         last_mtime = s.mtime_ms;
+                    }
+                    Err(e) if should_reconnect_ftp(&e) => {
+                        match me.reconnect_ftp(&target, &e).await {
+                            Ok(remote) => match remote.stat(&level_path).await {
+                                Ok(s) => {
+                                    logged_fail = false;
+                                    last_mtime = s.mtime_ms;
+                                }
+                                Err(retry) if !logged_fail => {
+                                    eprintln!("sftp watch: stat failed after reconnect ({retry}); continuing to poll");
+                                    logged_fail = true;
+                                }
+                                Err(_) => {}
+                            },
+                            Err(reconnect) if !logged_fail => {
+                                eprintln!("sftp watch: reconnect failed ({reconnect}); continuing to poll");
+                                logged_fail = true;
+                            }
+                            Err(_) => {}
+                        }
                     }
                     Err(e) => {
                         // Transient server restarts must not kill the watch:
@@ -961,8 +1397,8 @@ impl SftpManager {
         }
     }
 
-    /// Drop the connection + watch + cache. Sends a graceful SSH goodbye so the
-    /// server reaps the session immediately. Idempotent.
+    /// Drop the connection + watch + cache. SFTP sends a graceful SSH goodbye;
+    /// FTP(S) sends QUIT. Idempotent.
     async fn disconnect(&self) {
         let previous = {
             let mut inner = self.inner.lock().await;
@@ -973,19 +1409,30 @@ impl SftpManager {
             inner.session.take()
         };
         if let Some(active) = previous {
-            graceful_bye(&active.handle).await;
+            close_active(active).await;
         }
     }
 }
 
 /// Error out when the active session's authority doesn't match the sentinel's.
 fn require_authority_match(profile: &SftpProfile, target: &SftpTarget) -> Result<(), String> {
-    if profile.host == target.host && profile.port == target.port && profile.user == target.user {
+    if profile.protocol == target.protocol
+        && profile.host == target.host
+        && profile.port == target.port
+        && profile.user == target.user
+    {
         Ok(())
     } else {
         Err(format!(
-            "Not connected: active session is {}@{}:{}, but sentinel wants {}@{}:{} — reconnect first",
-            profile.user, profile.host, profile.port, target.user, target.host, target.port
+            "Not connected: active session is {}://{}@{}:{}, but sentinel wants {}://{}@{}:{} — reconnect first",
+            profile.protocol.scheme(),
+            profile.user,
+            profile.host,
+            profile.port,
+            target.protocol.scheme(),
+            target.user,
+            target.host,
+            target.port
         ))
     }
 }

@@ -4,6 +4,7 @@
 import { afterEach, beforeEach, expect, test } from "bun:test";
 
 import {
+  FTPS_SENTINEL_PREFIX,
   SFTP_PROFILE_KEY,
   SFTP_SENTINEL_PREFIX,
   type SftpProfile,
@@ -16,6 +17,7 @@ import {
 } from "./sftp";
 
 const PROFILE: SftpProfile = {
+  protocol: "sftp",
   host: "server.example.com",
   port: 2222,
   user: "steam",
@@ -37,11 +39,18 @@ test("encodeSftpSource builds the sftp:// sentinel from the endpoint", () => {
 test("decodeSftpSource round-trips an encoded sentinel", () => {
   const decoded = decodeSftpSource(encodeSftpSource(PROFILE, WORLD));
   expect(decoded).toEqual({
+    protocol: "sftp",
     user: "steam",
     host: "server.example.com",
     port: 2222,
     worldDir: WORLD,
   });
+});
+
+test("encodeSftpSource supports FTPS sentinels for FTP hosts", () => {
+  expect(encodeSftpSource({ ...PROFILE, protocol: "ftps", port: 21 }, WORLD)).toBe(
+    `${FTPS_SENTINEL_PREFIX}steam@server.example.com:21#${WORLD}`,
+  );
 });
 
 test("decodeSftpSource returns null for a plain folder path or other scheme", () => {
@@ -96,6 +105,7 @@ test("writeSftpProfile persists only the non-secret profile fields", () => {
   expect(raw).not.toBeNull();
   const stored = JSON.parse(raw as string);
   expect(stored).toEqual({
+    protocol: "sftp",
     host: "server.example.com",
     port: 2222,
     user: "steam",
@@ -138,6 +148,17 @@ test("writeSftpProfile persists the remember flag and readSftpProfile restores i
 test("readSftpProfile defaults a missing remember flag to false", () => {
   localStorage.setItem(SFTP_PROFILE_KEY, JSON.stringify({ host: "h", user: "u" }));
   expect(readSftpProfile()?.remember).toBe(false);
+});
+
+test("readSftpProfile preserves FTP/FTPS protocol and defaults missing protocol to sftp", () => {
+  localStorage.setItem(
+    SFTP_PROFILE_KEY,
+    JSON.stringify({ host: "h", user: "u", protocol: "ftps", port: 21 }),
+  );
+  expect(readSftpProfile()?.protocol).toBe("ftps");
+
+  localStorage.setItem(SFTP_PROFILE_KEY, JSON.stringify({ host: "h", user: "u" }));
+  expect(readSftpProfile()?.protocol).toBe("sftp");
 });
 
 test("readSftpProfile returns null when nothing is stored", () => {
