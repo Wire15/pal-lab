@@ -288,8 +288,10 @@ export default function MapView() {
   }, [entry]);
 
   // --- Fetch the save's map state (fog + players + markers + poi). ---------
+  // Reloads replace the loaded summary without changing the directory.
+  // Read map data again after each successful load, preserving pan and filters.
   useEffect(() => {
-    if (!saveDir) {
+    if (!saveDir || !saveSummary) {
       setMapState(null);
       return;
     }
@@ -300,7 +302,7 @@ export default function MapView() {
     return () => {
       alive = false;
     };
-  }, [saveDir]);
+  }, [saveDir, saveSummary]);
 
   // --- Build the fog mask for the active layer when state/layer changes. ---
   const activeFog = useMemo(
