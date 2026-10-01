@@ -9,6 +9,7 @@ import { PassivePicker } from "../passive-picker";
 import {
   ELEMENT_ORDER,
   type GenderFilter,
+  type IvFilter,
   type PalboxQuery,
   type SortKey,
 } from "./selectors";
@@ -168,6 +169,24 @@ export function FilterBar({
         <span aria-hidden>{"\u2726"}</span>
         Alpha
       </button>
+
+      <label className="flex items-center gap-1.5" title="HP, ATK and DEF individual values">
+        <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+          IV
+        </span>
+        <select
+          value={query.ivFilter}
+          onChange={(e) => onChange({ ivFilter: e.currentTarget.value as IvFilter })}
+          aria-label="Filter perfect IVs"
+          className={`rounded-md border bg-abyss px-2 py-1.5 text-[13px] focus:border-amber/60 ${
+            query.ivFilter === "any" ? "border-line text-ink" : "border-amber/60 text-amber"
+          }`}
+        >
+          <option value="any">All Pals</option>
+          <option value="all100">All 3 at 100</option>
+          <option value="one100">At least 1 at 100</option>
+        </select>
+      </label>
 
       {/* Passive multi-select filter (shared PassivePicker; AND across selected) */}
       <div className="w-56">

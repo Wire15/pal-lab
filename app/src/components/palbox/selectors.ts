@@ -41,6 +41,7 @@ export type SortKey =
 export type SortDir = "asc" | "desc";
 
 export type GenderFilter = "any" | "Male" | "Female";
+export type IvFilter = "any" | "all100" | "one100";
 
 /** The shared sort/search/filter state, applied to BOTH grid and list modes. */
 export interface PalboxQuery {
@@ -52,6 +53,8 @@ export interface PalboxQuery {
   elements: string[];
   gender: GenderFilter;
   alphaOnly: boolean;
+  /** Perfect IVs in HP / attack / defense: all three or at least one. */
+  ivFilter: IvFilter;
   /** Required passive IDs; a pal must carry ALL of them (AND). Empty = no filter. */
   passives: string[];
 }
@@ -63,6 +66,7 @@ export const DEFAULT_QUERY: PalboxQuery = {
   elements: [],
   gender: "any",
   alphaOnly: false,
+  ivFilter: "any",
   passives: [],
 };
 
@@ -74,6 +78,7 @@ export function isQueryActive(q: PalboxQuery): boolean {
     q.elements.length > 0 ||
     q.gender !== "any" ||
     q.alphaOnly ||
+    q.ivFilter !== "any" ||
     q.passives.length > 0
   );
 }
@@ -177,6 +182,13 @@ export function matchesQuery(
   if (q.gender !== "any" && pal.gender !== q.gender) return false;
 
   if (q.alphaOnly && !isAlpha(pal)) return false;
+
+  if (q.ivFilter !== "any") {
+    if (isHuman(pal)) return false;
+    const ivs = [pal.ivs.hp, pal.ivs.attack, pal.ivs.defense];
+    if (q.ivFilter === "all100" && !ivs.every((iv) => iv === 100)) return false;
+    if (q.ivFilter === "one100" && !ivs.some((iv) => iv === 100)) return false;
+  }
 
   if (q.passives.length > 0) {
     const owned = new Set(pal.passives);

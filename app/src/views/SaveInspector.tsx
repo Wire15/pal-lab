@@ -450,6 +450,7 @@ export default function SaveInspector() {
         elements: [],
         gender: "any",
         alphaOnly: false,
+        ivFilter: "any",
         passives: [],
       }),
     [patchQuery],

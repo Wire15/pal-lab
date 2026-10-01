@@ -1,4 +1,4 @@
-// Unit tests for the Palbox passive multi-select filter. Run with `bun test`.
+// Unit tests for the shared Palbox filters. Run with `bun test`.
 // The `bun:test` import type-resolves via the ambient app/src/bun-test.d.ts shim.
 import { expect, test } from "bun:test";
 
@@ -67,6 +67,47 @@ test("passive match is exact by id (no substring)", () => {
 test("isQueryActive reflects the passive filter", () => {
   expect(isQueryActive(DEFAULT_QUERY)).toBe(false);
   expect(isQueryActive(q(["Legend"]))).toBe(true);
+});
+
+test("perfect IV filters check each stat and require exactly 100", () => {
+  const all: PalboxQuery = { ...DEFAULT_QUERY, ivFilter: "all100" };
+  const one: PalboxQuery = { ...DEFAULT_QUERY, ivFilter: "one100" };
+  const cases = [
+    { ivs: { hp: 100, attack: 100, defense: 100 }, all: true, one: true },
+    { ivs: { hp: 100, attack: 20, defense: 0 }, all: false, one: true },
+    { ivs: { hp: 20, attack: 100, defense: 0 }, all: false, one: true },
+    { ivs: { hp: 20, attack: 0, defense: 100 }, all: false, one: true },
+    { ivs: { hp: 100, attack: 100, defense: 99 }, all: false, one: true },
+    { ivs: { hp: 99, attack: 99, defense: 99 }, all: false, one: false },
+    { ivs: { hp: 101, attack: 0, defense: 0 }, all: false, one: false },
+    { ivs: { hp: 0, attack: 0, defense: 0 }, all: false, one: false },
+  ];
+  for (const c of cases) {
+    const p = mkPal({ instance_id: guid(1), character_id: "PenguinPal", ivs: c.ivs });
+    expect(matchesQuery(p, DEFAULT_QUERY, NAMES, SPECIES)).toBe(true);
+    expect(matchesQuery(p, all, NAMES, SPECIES)).toBe(c.all);
+    expect(matchesQuery(p, one, NAMES, SPECIES)).toBe(c.one);
+  }
+  expect(isQueryActive(all)).toBe(true);
+  expect(isQueryActive(one)).toBe(true);
+  const human = mkPal({ instance_id: guid(2), character_id: "Hunter_Rifle",
+    is_human: true, ivs: { hp: 100, attack: 100, defense: 100 } });
+  expect(matchesQuery(human, DEFAULT_QUERY, NAMES, SPECIES)).toBe(true);
+  expect(matchesQuery(human, all, NAMES, SPECIES)).toBe(false);
+  expect(matchesQuery(human, one, NAMES, SPECIES)).toBe(false);
+});
+
+test("perfect IV filters combine with gender and required passives", () => {
+  const query: PalboxQuery = {
+    ...DEFAULT_QUERY, ivFilter: "all100", gender: "Female", passives: ["Legend"],
+  };
+  const p = mkPal({
+    instance_id: guid(1), character_id: "PenguinPal", gender: "Female",
+    passives: ["Legend"], ivs: { hp: 100, attack: 100, defense: 100 },
+  });
+  expect(matchesQuery(p, query, NAMES, SPECIES)).toBe(true);
+  expect(matchesQuery({ ...p, gender: "Male" }, query, NAMES, SPECIES)).toBe(false);
+  expect(matchesQuery({ ...p, passives: [] }, query, NAMES, SPECIES)).toBe(false);
 });
 
 // A captured human is absent from the species pack; search must fall through to

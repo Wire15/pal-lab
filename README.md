@@ -49,7 +49,8 @@ device.
   inventing odds.
 
 **Save Inspector** — party, palbox, dimensional storage, global storage, and
-cages, scoped per player.
+cages, scoped per player. Filter for perfect IVs: all three stats at
+100, or at least one of HP / ATK / DEF at 100; combine with the existing filters.
 
 **IV Lab** — inspect and compare individual values across your pals, and breed
 for stat thresholds with best-donor rankings, cake floors, and the same
