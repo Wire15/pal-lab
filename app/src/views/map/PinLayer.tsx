@@ -51,6 +51,7 @@ export interface LayerFilters {
   fastTravel: boolean;
   alpha: boolean;
   effigies: boolean;
+  poiCategories?: Record<string, boolean>;
   bounties: boolean;
   towers: boolean;
   spawns: boolean;

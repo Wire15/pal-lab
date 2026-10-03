@@ -93,6 +93,8 @@ export interface TowerPoint {
   map: string;
   name?: string | null;
   key?: string | null;
+  /** Native boss encounter identity, when the arena landmark is resolved. */
+  boss_type?: string | null;
 }
 
 /** The whole `map-data.json` document. Wave 2 consumes every pin array; the

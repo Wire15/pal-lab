@@ -65,6 +65,12 @@ no-path diagnostics and session persistence as the solver.
 **World Map** — fast-travel points, effigies, alphas, bounties, towers, and
 bases, plus **spawn search**; fog-of-war is reconstructed from your save.
 
+**Materials** — search by English or French item name, compare Pal drops by
+quantity and chance, inspect ranch yields, merchant catalogs, fishing and
+expedition rewards, and follow crafting ingredients. Owned counts follow the
+selected player. Pal and map links connect sources to the existing views.
+See the [material reference](docs/materials.md) for data coverage and units.
+
 **Plan tracking (desktop)** — saved plans auto-check their steps as you breed
 in-game: node status badges, progress %, and stale-parent warnings driven by
 the live save watcher.

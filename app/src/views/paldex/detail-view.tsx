@@ -279,6 +279,7 @@ function fmtNum(n: number, decimals = 2): string {
 /** The item-drop table: item name, min-max quantity, and drop rate (a percent
  * 0..100 straight from the pack). Rendered only when the species has drops. */
 function DropsTable({ drops }: { drops: ItemDrop[] }) {
+  const { requestMaterial } = useAppState();
   return (
     <div className="flex flex-col">
       <div className="grid grid-cols-[1fr_auto_auto] gap-x-6 border-b border-line pb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
@@ -291,7 +292,7 @@ function DropsTable({ drops }: { drops: ItemDrop[] }) {
           key={`${d.item_id}-${i}`}
           className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-6 border-b border-line-soft py-1.5 last:border-b-0"
         >
-          <span className="min-w-0 truncate text-[13px] text-ink">{d.item_name}</span>
+          <button onClick={() => requestMaterial(d.item_id)} className="min-w-0 truncate text-left text-[13px] text-ink hover:text-amber">{d.item_name}</button>
           <span className="text-right font-mono text-[13px] tabular-nums text-ink-dim">
             {d.min === d.max ? d.min : `${d.min}\u2013${d.max}`}
           </span>

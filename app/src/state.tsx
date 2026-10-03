@@ -44,7 +44,7 @@ import type {
 import type { SolveSpec } from "./lib/use-solve";
 import { hexGuid } from "./components/palbox/selectors";
 
-export type View = "save" | "solver" | "paldex" | "ivlab" | "worldmap";
+export type View = "save" | "solver" | "paldex" | "ivlab" | "worldmap" | "materials";
 
 /** localStorage key for the last successfully loaded save folder. */
 const SAVE_DIR_KEY = "pal-lab.saveDir";
@@ -342,6 +342,12 @@ export interface AppState {
   requestMapSpawn: (speciesId: string) => void;
   /** The World Map clears the pending spawn target once it has consumed it. */
   clearMapSpawnTarget: () => void;
+  materialTarget: string | null;
+  requestMaterial: (id: string) => void;
+  clearMaterialTarget: () => void;
+  mapMaterialTarget: import("./lib/materials").MaterialMapTarget | null;
+  requestMapMaterial: (target: import("./lib/materials").MaterialMapTarget) => void;
+  clearMapMaterialTarget: () => void;
   /** A pending batch of solve specs the Solver should load into its breeding
    * queue and solve once, on its next render — the one-shot hand-off behind the
    * Pal-dex "Breed missing" action. Null when nothing is pending. */
@@ -415,6 +421,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
   const [mapSpawnTarget, setMapSpawnTarget] = useState<string | null>(null);
+  const [materialTarget, setMaterialTarget] = useState<string | null>(null);
+  const [mapMaterialTarget, setMapMaterialTarget] = useState<import("./lib/materials").MaterialMapTarget | null>(null);
   const [queueSeed, setQueueSeed] = useState<SolveSpec[] | null>(null);
   // Shared plan link (`#plan=<code>`): read the fragment ONCE at mount (lazy
   // initializer, so it's captured before any later in-app hash change), then let
@@ -795,6 +803,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setView("worldmap");
   }, []);
   const clearMapSpawnTarget = useCallback(() => setMapSpawnTarget(null), []);
+  const requestMaterial = useCallback((id: string) => { setMaterialTarget(id); setView("materials"); }, []);
+  const clearMaterialTarget = useCallback(() => setMaterialTarget(null), []);
+  const requestMapMaterial = useCallback((target: import("./lib/materials").MaterialMapTarget) => {
+    setMapMaterialTarget(target); setView("worldmap");
+  }, []);
+  const clearMapMaterialTarget = useCallback(() => setMapMaterialTarget(null), []);
 
   const requestQueueSolve = useCallback((specs: SolveSpec[]) => {
     setQueueSeed(specs);
@@ -835,6 +849,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       mapSpawnTarget,
       requestMapSpawn,
       clearMapSpawnTarget,
+      materialTarget, requestMaterial, clearMaterialTarget,
+      mapMaterialTarget, requestMapMaterial, clearMapMaterialTarget,
       queueSeed,
       requestQueueSolve,
       clearQueueSeed,
@@ -885,6 +901,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       mapSpawnTarget,
       requestMapSpawn,
       clearMapSpawnTarget,
+      materialTarget, requestMaterial, clearMaterialTarget,
+      mapMaterialTarget, requestMapMaterial, clearMapMaterialTarget,
       queueSeed,
       requestQueueSolve,
       clearQueueSeed,

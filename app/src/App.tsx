@@ -5,6 +5,8 @@ import Solver from "./views/Solver";
 import Paldex from "./views/Paldex";
 import IvLab from "./views/IvLab";
 import MapView from "./views/map/MapView";
+import Materials from "./views/Materials";
+import { t as materialText, useLocale as useMaterialLocale } from "./lib/materials-i18n";
 import { AppStateProvider, useAppState } from "./state";
 import { hexGuid } from "./components/palbox/selectors";
 import ErrorBoundary from "./components/error-boundary";
@@ -93,6 +95,7 @@ const NAV: { id: View; label: string; hint: string }[] = [
   { id: "ivlab", label: "IV Lab", hint: "Stat breeding" },
   { id: "paldex", label: "Pal-dex", hint: "Reference" },
   { id: "worldmap", label: "World Map", hint: "Explore" },
+  { id: "materials", get label() { return materialText("Materials"); }, get hint() { return materialText("Sources and yields"); } },
 ];
 
 /** Two-arrow swap glyph for the "switch save" affordance. */
@@ -1056,6 +1059,7 @@ function ScopeModal({ onClose }: { onClose: () => void }) {
 }
 
 function Shell() {
+  useMaterialLocale();
   const {
     view,
     setView,
@@ -1211,7 +1215,7 @@ function Shell() {
       </nav>
 
       <main className="flex-1 overflow-hidden">
-        {caps.isWeb && !saveSummary ? (
+        {caps.isWeb && !saveSummary && view !== "materials" ? (
           <WebDropZone />
         ) : (
           <ErrorBoundary key={view} onReset={() => setView("save")}>
@@ -1220,6 +1224,7 @@ function Shell() {
             {view === "ivlab" && <IvLab />}
             {view === "paldex" && <Paldex />}
             {view === "worldmap" && <MapView />}
+            {view === "materials" && <Materials />}
           </ErrorBoundary>
         )}
       </main>

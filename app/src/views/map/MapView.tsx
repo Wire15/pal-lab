@@ -119,6 +119,8 @@ export default function MapView() {
     requestDex,
     mapSpawnTarget,
     clearMapSpawnTarget,
+    mapMaterialTarget,
+    clearMapMaterialTarget,
   } = useAppState();
 
   const [mapData, setMapData] = useState<MapData | null>(null);
@@ -245,6 +247,16 @@ export default function MapView() {
     setFilters((f) => (f.spawns ? f : { ...f, spawns: true }));
     clearMapSpawnTarget();
   }, [mapSpawnTarget, clearMapSpawnTarget]);
+
+  useEffect(() => {
+    if (!mapMaterialTarget) return;
+    setLayer(mapMaterialTarget.map);
+    setSpawnSpecies(mapMaterialTarget.species ?? null);
+    setFilters(f => ({ ...f, spawns: !!mapMaterialTarget.species || f.spawns,
+      alpha: !!mapMaterialTarget.alpha || f.alpha,
+      towers: !!mapMaterialTarget.tower || f.towers,
+      poiCategories: { ...f.poiCategories, ...(mapMaterialTarget.category ? { [mapMaterialTarget.category]: true } : {}) } }));
+  }, [mapMaterialTarget]);
 
   // --- Load (and cache) the active layer's image lazily. ------------------
   useEffect(() => {
@@ -453,6 +465,17 @@ export default function MapView() {
     setViewport({ w: el.clientWidth, h: el.clientHeight });
     return () => ro.disconnect();
   }, [fit]);
+
+  useEffect(() => {
+    const target = mapMaterialTarget;
+    const el = canvasRef.current;
+    if (!target || !entry || !bitmap || imgLoading || layer !== target.map || !el || viewport.w === 0) return;
+    const [u, v] = worldToPx(entry, target.x, target.y);
+    const k = Math.max(viewRef.current.k, 0.35);
+    const nv = { k, tx: el.clientWidth / 2 - u * k, ty: el.clientHeight / 2 - v * k };
+    gesturing.current = false; clearTimeout(settleTimer.current); liveRef.current = nv; setView(nv);
+    clearMapMaterialTarget();
+  }, [mapMaterialTarget, layer, entry, bitmap, imgLoading, viewport.w, clearMapMaterialTarget]);
 
   // --- Canvas paint: map -> spawn heat -> fog, under the viewport transform. -
   const paint = useCallback(() => {

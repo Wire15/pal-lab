@@ -153,3 +153,8 @@ ships under the MIT License.
 
 Palworld and all related data, names, and artwork are © Pocketpair, Inc. Pal Lab
 is an unofficial fan tool and is not affiliated with or endorsed by Pocketpair.
+
+`app/public/data/materials.json` contains reference names and gameplay values
+extracted from installed Palworld data tables and actor components. English and
+French item/Pal names come from the game’s localization tables. This game data
+is not relicensed under the project’s MIT license.

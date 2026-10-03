@@ -18,10 +18,10 @@ using SkiaSharp;
 
 namespace PalExtract;
 
-static class Program
+static partial class Program
 {
-    // Known build of the installed Palworld (per project constraints / build 24181527).
-    const string GameBuild = "24181527";
+    // Override the build metadata when extracting a newer local installation.
+    static readonly string GameBuild = Environment.GetEnvironmentVariable("PALCALC_GAME_BUILD") ?? "24181527";
     const string UsmapSource = "PalworldModding/UsefulFiles@1.0";
 
     static readonly string PaksDir = Environment.GetEnvironmentVariable("PALCALC_PALWORLD_PAKS")
@@ -59,6 +59,7 @@ static class Program
         if (args.Contains("--discover-drops")) { DiscoverDrops(provider); return 0; }
         if (args.Contains("--discover-element")) { DiscoverElement(provider); return 0; }
         if (args.Contains("--export-map")) return ExportMap(provider);
+        if (args.Contains("--export-materials")) return ExportMaterials(provider);
         if (args.Contains("--discover-map-icons")) { DiscoverMapIcons(provider); return 0; }
         if (args.Contains("--discover-map-guids")) { DiscoverMapGuids(provider); return 0; }
         if (args.Contains("--discover-tower")) { DiscoverTower(provider); return 0; }

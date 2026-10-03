@@ -136,3 +136,11 @@ evidence log under `testdata/probe/`: `--discover-incident` (incident/bounty Dat
 `bounty.log`), `--discover-bounty-actors` (world-partition NPC/spawner actor histogram + bounty/FT
 actor locations -> `bounty-actors.log`), `--list-dt` (all DataTable paths -> `datatables.log`), and
 `--dump-table <pkgPath>` (one DataTable's rows to stdout).
+
+
+## Material reference
+
+`--export-materials` writes `app/public/data/materials.json` from native item,
+loot, recipe, shop and localization tables and actor components. See
+[coverage and interpretation](../../docs/materials.md). Set `PALCALC_GAME_BUILD`
+to the installed build when regenerating the reference.
