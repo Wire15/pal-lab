@@ -142,3 +142,17 @@ export function markerFallback(color: string): string {
     24,
   );
 }
+
+/** Small vector glyphs for additional layers without a native compass icon. */
+export function extraPoiGlyph(category: string, color = "#74d3e6"): string {
+  let shape = '<path d="M6 24 5 15 13 6 24 8 28 20 20 27Z M13 6 16 17 5 15 M16 17 24 8 M16 17 20 27"/>';
+  if (["skill_fruit", "food", "lotus"].includes(category)) shape = '<path d="M16 28V14 M16 18C4 18 4 4 4 4S18 4 16 18Z M16 23C28 23 28 9 28 9S14 9 16 23Z"/>';
+  if (["oil", "healing"].includes(category)) shape = '<path d="M16 3S6 15 6 21a10 10 0 0 0 20 0C26 15 16 3 16 3Z"/>';
+  if (category === "fishing") shape = '<path d="M5 16c7-12 16-10 23 0-7 10-16 12-23 0Z M5 16 2 8v16Z"/><circle cx="22" cy="14" r="1"/>';
+  if (category === "journal") shape = '<path d="M3 6c5-2 9-1 13 2 4-3 8-4 13-2v20c-5-2-9-1-13 2-4-3-8-4-13-2Z M16 8v20"/>';
+  if (category === "egg") shape = '<path d="M16 3C7 3 5 17 5 22a11 8 0 0 0 22 0c0-5-2-19-11-19Z"/>';
+  if (category === "statue") shape = '<circle cx="16" cy="8" r="4"/><path d="M12 13h8l3 12H9Z M6 29h20"/>';
+  if (category === "merchant") shape = '<path d="M4 13V8h24v5 M6 13v15h20V13 M4 8l3-5h18l3 5 M12 28V17h8v11"/>';
+  if (category === "npc") shape = '<circle cx="16" cy="9" r="5"/><path d="M5 29v-4c0-13 22-13 22 0v4Z"/>';
+  return svg(`<g fill="#0d1117" fill-opacity=".75" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${shape}</g>`);
+}

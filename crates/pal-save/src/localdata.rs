@@ -156,10 +156,11 @@ pub struct PlayerMapRecord {
     pub effigy_possess_num: i32,
     pub bosses_defeated: Vec<String>,
     pub areas_found: Vec<String>,
-    /// Per-player tower progress. The save exposes no dedicated tower-defeat flag, so this is the
-    /// `Tower_<Region>`-prefixed subset of `FindAreaFlagMap` (semantics: tower area reached), which
-    /// is the only per-player tower-keyed signal in the save. Joins to `map-data.json` `towers[].key`.
+    /// Legacy tower area progress: `Tower_<Region>` keys from `FindAreaFlagMap`.
+    /// This field means reached, independently of the newer TowerBossDefeatFlag.
     pub towers_defeated: Vec<String>,
+    /// Exact RecordData flag keys for additional map collectibles.
+    pub poi_flags: std::collections::BTreeMap<String, Vec<String>>,
 }
 
 /// Parse a decompressed player `.sav` blob into its map state.
@@ -223,13 +224,31 @@ fn parse_player_body_map(r: &mut Reader) -> Result<PlayerMapRecord, SaveError> {
 fn fill_record(rec: &mut PlayerMapRecord, props: &[(String, Value)]) {
     rec.fast_travel_unlocked = true_keys(props, "FastTravelPointUnlockFlag");
     rec.effigies_found = true_keys(props, "RelicObtainForInstanceFlag");
+    // Newer saves group all effigy variants by relic type. Keep legacy flags
+    // too: migration can leave both representations present in the same save.
+    if let Some(groups) =
+        gvas::find(props, "RelicObtainForInstanceFlagByType").and_then(Value::as_array)
+    {
+        for group in groups {
+            if let Some(flags) = group.as_props() {
+                rec.effigies_found.extend(true_keys(flags, "Flags"));
+            }
+        }
+    }
+    rec.effigies_found.sort();
+    rec.effigies_found.dedup();
     rec.effigy_possess_num = gvas::find(props, "RelicPossessNum")
         .and_then(Value::as_i32)
         .unwrap_or(0);
+    rec.poi_flags.clear();
+    for field in ["FastTravelPointUnlockFlag", "ItemPickupObtainForInstanceFlag", "NoteObtainForInstanceFlag"] {
+        if matches!(gvas::find(props, field), Some(Value::Map(_))) {
+            rec.poi_flags.insert(field.to_owned(), true_keys(props, field));
+        }
+    }
     rec.bosses_defeated = true_keys(props, "NormalBossDefeatFlag");
     rec.areas_found = true_keys(props, "FindAreaFlagMap");
-    // No dedicated tower-defeat flag exists in the save; the `Tower_<Region>` area keys are the only
-    // per-player tower signal (join key for map-data.json towers[].key).
+    // Preserve the existing area-reached contract for legacy map tower keys.
     rec.towers_defeated = rec
         .areas_found
         .iter()
@@ -256,6 +275,75 @@ fn true_keys(props: &[(String, Value)], name: &str) -> Vec<String> {
 mod tests {
     use super::*;
     use crate::compress::decompress_sav;
+
+    fn flags(entries: &[(&str, bool)]) -> Value {
+        Value::Map(
+            entries
+                .iter()
+                .map(|(k, v)| (Value::Name(k.to_string()), Value::Bool(*v)))
+                .collect(),
+        )
+    }
+
+    #[test]
+    fn extra_poi_flags_preserve_exact_keys_and_missing_field_state() {
+        let mut rec = PlayerMapRecord::default();
+        fill_record(&mut rec, &[
+            ("FastTravelPointUnlockFlag".into(), flags(&[("ABCDEF", true), ("FALSE", false)])),
+            ("NoteObtainForInstanceFlag".into(), flags(&[("Day0", true), ("Day1", false)])),
+            ("ItemPickupObtainForInstanceFlag".into(), flags(&[])),
+        ]);
+        assert_eq!(rec.poi_flags["FastTravelPointUnlockFlag"], vec!["ABCDEF"]);
+        assert_eq!(rec.poi_flags["NoteObtainForInstanceFlag"], vec!["Day0"]);
+        assert!(rec.poi_flags.contains_key("ItemPickupObtainForInstanceFlag"));
+        fill_record(&mut rec, &[]);
+        assert!(rec.poi_flags.is_empty());
+    }
+
+    #[test]
+    fn effigy_flags_merge_legacy_and_typed_groups() {
+        let props = vec![
+            (
+                "RelicObtainForInstanceFlag".into(),
+                flags(&[("OLD", true), ("NO", false)]),
+            ),
+            (
+                "RelicObtainForInstanceFlagByType".into(),
+                Value::Array(vec![
+                    Value::Props(vec![(
+                        "Flags".into(),
+                        flags(&[("OLD", true), ("LAMBALL", true)]),
+                    )]),
+                    Value::Props(vec![(
+                        "Flags".into(),
+                        flags(&[("CATTIVA", true), ("NO", false)]),
+                    )]),
+                    Value::Props(vec![]),
+                ]),
+            ),
+        ];
+        let mut rec = PlayerMapRecord::default();
+        fill_record(&mut rec, &props);
+        assert_eq!(rec.effigies_found, vec!["CATTIVA", "LAMBALL", "OLD"]);
+    }
+
+    #[test]
+    fn typed_effigies_work_without_legacy_flags() {
+        let mut rec = PlayerMapRecord::default();
+        fill_record(
+            &mut rec,
+            &[(
+                "RelicObtainForInstanceFlagByType".into(),
+                Value::Array(vec![Value::Props(vec![(
+                    "Flags".into(),
+                    flags(&[("NEW", true)]),
+                )])]),
+            )],
+        );
+        assert_eq!(rec.effigies_found, vec!["NEW"]);
+        fill_record(&mut rec, &[]);
+        assert!(rec.effigies_found.is_empty());
+    }
 
     fn load(name: &str) -> Vec<u8> {
         let path = format!(

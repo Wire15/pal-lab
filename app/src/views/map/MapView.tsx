@@ -36,6 +36,8 @@ import {
   type MapEntry,
 } from "../../lib/map-coords";
 import { loadMapData, baseSpeciesId, isFieldBossSpawn } from "../../lib/map-data";
+import { speciesLocations, chooseSpawnLayer, fitSpawnLocations, alphaSpawnTime, matchesSpawnPeriod,
+  type SpawnKind, type SpawnPeriod, type SpeciesLocation } from "../../lib/map-spawns";
 import type { MapState, NamedEntry } from "../../lib/types";
 import { buildFogMask, isRevealed, type FogMask } from "./fog";
 import { buildPois } from "./pins";
@@ -69,6 +71,8 @@ const DEFAULT_FILTERS: LayerFilters = {
   fastTravel: true,
   alpha: true,
   effigies: true,
+  effigyTypes: {},
+  poiCategories: {},
   bounties: true,
   towers: true,
   spawns: true,
@@ -152,6 +156,13 @@ export default function MapView() {
   });
   const [filterOpen, setFilterOpen] = useState(false);
   const [spawnSpecies, setSpawnSpecies] = useState<string | null>(null);
+  const [spawnKind, setSpawnKind] = useState<SpawnKind>("wild");
+  const [spawnPeriod, setSpawnPeriod] = useState<SpawnPeriod>(() => {
+    try { const value = localStorage.getItem("pal-lab.mapSpawnPeriod"); if (value === "day" || value === "night") return value; } catch { /* optional */ }
+    return "all";
+  });
+  const [spawnFocus, setSpawnFocus] = useState<{ map: LayerKey; locations: SpeciesLocation[] } | null>(null);
+  useEffect(() => { try { localStorage.setItem("pal-lab.mapSpawnPeriod", spawnPeriod); } catch { /* optional */ } }, [spawnPeriod]);
   const [spawnHover, setSpawnHover] = useState<{
     sx: number;
     sy: number;
@@ -238,13 +249,28 @@ export default function MapView() {
     return () => window.removeEventListener("keydown", onKey);
   }, [filterOpen]);
 
-  // --- Consume a one-shot dex -> map spawn target. -------------------------
+  const selectSpawnSpecies = useCallback((id: string, requestedKind?: SpawnKind, resetPeriod = false) => {
+    if (!mapData) return;
+    const wild = speciesLocations(mapData, id, "wild");
+    const alphas = speciesLocations(mapData, id, "alpha");
+    const kind = requestedKind ?? (spawnKind === "wild" && !wild.length && alphas.length ? "alpha" : spawnKind);
+    const locations = kind === "wild" ? wild : kind === "alpha" ? alphas : [...wild, ...alphas];
+    const nextLayer = chooseSpawnLayer(locations, layer);
+    setSpawnSpecies(id);
+    setSpawnKind(kind);
+    setSpawnHover(null);
+    if (resetPeriod) setSpawnPeriod("all");
+    setLayer(nextLayer);
+    setFilters(f => ({ ...f, spawns: kind !== "alpha" || f.spawns, alpha: kind !== "wild" || f.alpha }));
+    setSpawnFocus({ map: nextLayer, locations: locations.filter(p => p.map === nextLayer) });
+  }, [mapData, layer, spawnKind]);
+
+  // Wait for the manifest before choosing the layer and encounter variant.
   useEffect(() => {
-    if (!mapSpawnTarget) return;
-    setSpawnSpecies(mapSpawnTarget);
-    setFilters((f) => (f.spawns ? f : { ...f, spawns: true }));
+    if (!mapSpawnTarget || !mapData) return;
+    selectSpawnSpecies(mapSpawnTarget.species, mapSpawnTarget.kind, true);
     clearMapSpawnTarget();
-  }, [mapSpawnTarget, clearMapSpawnTarget]);
+  }, [mapSpawnTarget, mapData, selectSpawnSpecies, clearMapSpawnTarget]);
 
   // --- Load (and cache) the active layer's image lazily. ------------------
   useEffect(() => {
@@ -332,15 +358,16 @@ export default function MapView() {
         counts: {
           fastTravel: { found: 0, total: 0 },
           effigies: { found: 0, total: 0 },
-          towers: { found: 0, total: 0, joined: false },
-          bounties: 0,
-          alphas: 0,
+          effigyTypes: [],
+          towers: { found: 0, total: 0, landmarks: 0, joined: false },
+          bounties: { found: 0, total: 0, joined: false },
+          alphas: { found: 0, total: 0, joined: false },
           joined: false,
         },
       };
     }
-    return buildPois(mapData, mapState, playerScope);
-  }, [mapData, mapState, playerScope]);
+    return buildPois(mapData, mapState, playerScope, layer);
+  }, [mapData, mapState, playerScope, layer]);
   const hasBounties = (mapData?.bounties?.length ?? 0) > 0;
 
   // --- Player pins (resolve nicknames from the cached summary). ------------
@@ -359,67 +386,46 @@ export default function MapView() {
       }));
   }, [mapState, saveSummary]);
 
-  // --- Spawnable species options for the search combobox. ------------------
+  // Search includes fixed Alpha-only species as well as ordinary wild spawns.
   const spawnOptions = useMemo(() => {
     if (!mapData) return [];
-    const nameById = new Map(speciesNames.map((n) => [n.id, n.name]));
-    const ids = new Set(
-      mapData.spawns
-        .filter((s) => !isFieldBossSpawn(s.species))
-        .map((s) => baseSpeciesId(s.species)),
-    );
-    return [...ids]
-      .map((id) => ({ id, name: nameById.get(id) ?? id }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const nameById = new Map(speciesNames.map(n => [n.id, n.name]));
+    const ids = new Set(mapData.spawns.filter(s => !isFieldBossSpawn(s.species) && s.points.some(p => !p.boss))
+      .map(s => baseSpeciesId(s.species)));
+    for (const b of mapData.bosses) ids.add(baseSpeciesId(b.species));
+    return [...ids].map(id => ({ id, name: nameById.get(id) ?? id })).sort((a,b) => a.name.localeCompare(b.name));
   }, [mapData, speciesNames]);
-  const spawnName = useMemo(
-    () => spawnOptions.find((o) => o.id === spawnSpecies)?.name ?? null,
-    [spawnOptions, spawnSpecies],
-  );
-
-  // --- Resolved spawn dots (content px) for the active species + layer. ----
+  const spawnName = spawnOptions.find(o => o.id === spawnSpecies)?.name ?? null;
+  const selectedLocations = useMemo(() => mapData && spawnSpecies
+    ? speciesLocations(mapData, spawnSpecies, spawnKind, spawnPeriod).filter(p => p.map === layer) : [],
+    [mapData, spawnSpecies, spawnKind, spawnPeriod, layer]);
   const spawnDots = useMemo<SpawnDot[]>(() => {
-    if (!mapData || !entry || !spawnSpecies) return [];
-    const sx = entry.px[0] / (entry.world_max[1] - entry.world_min[1]); // px per world unit (u axis)
-    const dots: SpawnDot[] = [];
-    for (const s of mapData.spawns) {
-      if (
-        s.map !== layer ||
-        isFieldBossSpawn(s.species) ||
-        baseSpeciesId(s.species) !== spawnSpecies
-      )
-        continue;
-      for (const p of s.points) {
-        const [u, v] = worldToPx(entry, p.x, p.y);
-        dots.push({
-          u,
-          v,
-          r: Math.max(p.r * sx, entry.px[0] * 0.0015),
-          night: p.time === "night",
-          lv: p.lv,
-          n: p.n,
-          time: p.time,
-        });
-      }
-    }
-    return dots;
-  }, [mapData, entry, spawnSpecies, layer]);
+    if (!entry) return [];
+    const scale = entry.px[0] / (entry.world_max[1] - entry.world_min[1]);
+    return selectedLocations.filter(p => !p.alpha).map(p => {
+      const [u, v] = worldToPx(entry, p.x, p.y);
+      return { u, v, r: Math.max(p.radius * scale, entry.px[0] * 0.0015),
+        night: p.time === "night", lv: p.lv, n: p.n, time: p.time ?? null };
+    });
+  }, [entry, selectedLocations]);
   const spawnActive = filters.spawns && spawnDots.length > 0;
-
   const spawnLegend = useMemo<SpawnLegend | null>(() => {
-    if (spawnDots.length === 0) return null;
-    let lo = Infinity;
-    let hi = -Infinity;
-    let hasDay = false;
-    let hasNight = false;
-    for (const d of spawnDots) {
-      lo = Math.min(lo, d.lv[0]);
-      hi = Math.max(hi, d.lv[1]);
-      if (d.night) hasNight = true;
-      else hasDay = true;
-    }
-    return { count: spawnDots.length, lv: [lo, hi], hasDay, hasNight };
-  }, [spawnDots]);
+    if (!spawnSpecies) return null;
+    const levels = selectedLocations.flatMap(p => p.lv);
+    return { count: selectedLocations.length, lv: levels.length ? [Math.min(...levels), Math.max(...levels)] : [0,0],
+      hasDay: selectedLocations.some(p => p.time !== "night"), hasNight: selectedLocations.some(p => p.time === "night"),
+      wildCount: selectedLocations.filter(p => !p.alpha).length, alphaCount: selectedLocations.filter(p => p.alpha).length };
+  }, [selectedLocations, spawnSpecies]);
+  const displayedPins = useMemo(() => {
+    if (!mapData) return pins;
+    return pins.filter(p => {
+      if (p.kind !== "alpha") return true;
+      if (spawnSpecies && spawnKind !== "wild" && p.speciesId !== spawnSpecies) return false;
+      const boss = mapData.bosses.find(b => b.map === p.map && b.x === p.x && b.y === p.y
+        && baseSpeciesId(b.species) === p.speciesId);
+      return !boss || matchesSpawnPeriod(alphaSpawnTime(mapData, boss), spawnPeriod);
+    });
+  }, [mapData, pins, spawnSpecies, spawnKind, spawnPeriod]);
 
   // --- Fit the map into the viewport (centered, padded). -------------------
   const fit = useCallback(() => {
@@ -439,20 +445,42 @@ export default function MapView() {
   }, [entry]);
 
   useLayoutEffect(() => {
-    if (bitmap) fit();
+    if (bitmap && entry && bitmapCache.current.get(entry.image) === bitmap) fit();
   }, [bitmap, layer, fit]);
 
   useEffect(() => {
     const el = canvasRef.current;
     if (!el) return;
+    let previous = { w: el.clientWidth, h: el.clientHeight };
     const ro = new ResizeObserver(() => {
-      setViewport({ w: el.clientWidth, h: el.clientHeight });
-      fit();
+      const next = { w: el.clientWidth, h: el.clientHeight };
+      setViewport(next);
+      if (previous.w > 0 && previous.h > 0 && (next.w !== previous.w || next.h !== previous.h)) {
+        const base = liveRef.current;
+        const nv = { ...base, tx: base.tx + (next.w - previous.w) / 2, ty: base.ty + (next.h - previous.h) / 2 };
+        gesturing.current = false;
+        clearTimeout(settleTimer.current);
+        liveRef.current = nv;
+        setView(nv);
+      }
+      previous = next;
     });
     ro.observe(el);
     setViewport({ w: el.clientWidth, h: el.clientHeight });
     return () => ro.disconnect();
   }, [fit]);
+
+  useEffect(() => {
+    if (!spawnFocus || !entry || !bitmap || bitmapCache.current.get(entry.image) !== bitmap || imgLoading || layer !== spawnFocus.map || viewport.w === 0) return;
+    const next = fitSpawnLocations(entry, spawnFocus.locations, viewport.w, viewport.h);
+    if (next) {
+      gesturing.current = false;
+      clearTimeout(settleTimer.current);
+      liveRef.current = next;
+      setView(next);
+    }
+    setSpawnFocus(null);
+  }, [spawnFocus, entry, bitmap, imgLoading, layer, viewport.w, viewport.h]);
 
   // --- Canvas paint: map -> spawn heat -> fog, under the viewport transform. -
   const paint = useCallback(() => {
@@ -706,7 +734,7 @@ export default function MapView() {
     [commitGesture],
   );
 
-  const setFilter = useCallback((key: keyof LayerFilters, on: boolean) => {
+  const setFilter = useCallback((key: Exclude<keyof LayerFilters, "effigyTypes" | "poiCategories">, on: boolean) => {
     setFilters((f) => ({ ...f, [key]: on }));
   }, []);
 
@@ -725,12 +753,10 @@ export default function MapView() {
   return (
     <div className="flex h-full flex-col">
       {/* Header: eyebrow / title / layer tabs, overlay controls on the right. */}
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-line bg-panel/60 px-6 pb-4 pt-5">
+      <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 border-b border-line bg-panel/60 px-6 pb-4 pt-5">
         <div className="flex items-center gap-4">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              World Map
-            </div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{"World Map"}</div>
             <h1 className="font-display text-xl font-bold tracking-wide text-ink">
               {LAYERS.find((l) => l.key === layer)?.label}
             </h1>
@@ -757,7 +783,7 @@ export default function MapView() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Spawn search / legend. */}
           {mapData && (
             <SpawnSearch
@@ -765,8 +791,14 @@ export default function MapView() {
               selectedId={spawnSpecies}
               selectedName={spawnName}
               legend={spawnLegend}
-              onSelect={setSpawnSpecies}
-              onClear={() => setSpawnSpecies(null)}
+              onSelect={(id) => selectSpawnSpecies(id)}
+              kind={spawnKind}
+              period={spawnPeriod}
+              onKindChange={(kind) => {
+                if (spawnSpecies) selectSpawnSpecies(spawnSpecies, kind); else setSpawnKind(kind);
+              }}
+              onPeriodChange={(period) => { setSpawnPeriod(period); setSpawnHover(null); }}
+              onClear={() => { setSpawnSpecies(null); setSpawnFocus(null); setSpawnHover(null); }}
               onOpenDex={openSpecies}
             />
           )}
@@ -786,9 +818,7 @@ export default function MapView() {
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 5h18M6 12h12M10 19h4" />
-                </svg>
-                Filter
-              </button>
+                </svg>{"Filter"}</button>
               {filterOpen && (
                 <>
                   <div
@@ -798,6 +828,9 @@ export default function MapView() {
                   <FilterPanel
                     filters={filters}
                     setFilter={setFilter}
+                    setEffigyType={(id, on) => setFilters(f => ({ ...f, effigyTypes: { ...f.effigyTypes, [id]: on } }))}
+                    setPoiCategory={(id, on) => setFilters(f => ({ ...f, poiCategories: { ...f.poiCategories, [id]: on } }))}
+                    icons={icons}
                     counts={counts}
                     hasBounties={hasBounties}
                     spawnLabel={spawnActive ? (spawnName ?? spawnSpecies) : null}
@@ -843,13 +876,9 @@ export default function MapView() {
                       ? "border-amber/50 bg-raised text-amber"
                       : "border-line bg-raised text-ink-dim hover:bg-hover hover:text-ink"
                 }`}
-              >
-                Fog
-              </button>
+              >{"Fog"}</button>
               {!fogAvailable && (
-                <span className="font-mono text-[10px] tracking-wider text-ink-faint">
-                  No local map data found for this world
-                </span>
+                <span className="font-mono text-[10px] tracking-wider text-ink-faint">{"No local map data found for this world"}</span>
               )}
             </>
           )}
@@ -884,7 +913,7 @@ export default function MapView() {
             ty={view.ty}
             vw={viewport.w}
             vh={viewport.h}
-            pois={pins}
+            pois={displayedPins}
             players={players}
             markers={mapState?.markers ?? []}
             bases={mapState?.bases ?? []}

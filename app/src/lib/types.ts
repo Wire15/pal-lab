@@ -781,6 +781,8 @@ export interface MapPlayerState {
   /** Tower-region area keys the player has reached (`Tower_<Region>`; joins to
    * `MapData.towers[].key`). No dedicated tower-defeat flag exists in the save. */
   towers_defeated: string[];
+  /** Exact RecordData flags; absent in older exports. */
+  poi_flags?: Record<string, string[]>;
 }
 
 /** Response from `get_map_state(saveDir)`. `fog` is `null` when no client

@@ -53,6 +53,7 @@ pub struct MapPlayerState {
     pub bosses_defeated: Vec<String>,
     pub areas_found: Vec<String>,
     pub towers_defeated: Vec<String>,
+    pub poi_flags: std::collections::BTreeMap<String, Vec<String>>,
 }
 
 /// One player base-camp map point (R2): world `x`/`y` of a base camp anchor
@@ -164,6 +165,7 @@ fn read_players(dir: &Path, nicknames: &HashMap<String, String>) -> Vec<MapPlaye
             bosses_defeated: rec.bosses_defeated,
             areas_found: rec.areas_found,
             towers_defeated: rec.towers_defeated,
+            poi_flags: rec.poi_flags,
         });
     }
     players

@@ -54,6 +54,8 @@ export interface SpawnEntry {
 /** A field-boss (alpha) location. `species` is `BOSS_<Internal>` (strip the
  *  case-insensitive `BOSS_` prefix for the pal-icon / dex id). */
 export interface BossEntry {
+  /** SpawnerID, matched exactly against NormalBossDefeatFlag. */
+  key?: string | null;
   species: string;
   x: number;
   y: number;
@@ -78,6 +80,8 @@ export interface PoiPoint {
    *  `BOSS_`-prefixed). Bounty names are procedural (always null), so the UI
    *  humanizes this into an enemy-type label. Absent on fast-travel/effigy. */
   cid?: string | null;
+  /** Effigy item id (Relic, Relic_01, ...); absent on legacy Lifmunk-only maps. */
+  item_id?: string;
 }
 
 /** A syndicate-tower landmark POI (Map Wave 3). Towers are major in-game
@@ -95,6 +99,22 @@ export interface TowerPoint {
   key?: string | null;
 }
 
+/** Static outdoor gameplay categories extracted from placed game actors. */
+export interface PoiCategory {
+  id: string;
+  name: string;
+  icon: string;
+  group: string;
+  default_visible: boolean;
+  flag?: string | null;
+  recurring?: boolean;
+}
+export interface ExtraPoiPoint extends PoiPoint {
+  category: string;
+  save_key?: string | null;
+  detail?: string | null;
+}
+
 /** The whole `map-data.json` document. Wave 2 consumes every pin array; the
  *  optional `bounties` is appended by IconExtract only if bounty POI locations
  *  are found in the paks (contract C1), so it may be absent. */
@@ -104,11 +124,15 @@ export interface MapData {
   spawns: SpawnEntry[];
   bosses: BossEntry[];
   effigies: PoiPoint[];
+  /** Placed effigy types, with names and icon keys extracted from game items. */
+  effigy_types?: { id: string; name: string; icon: string }[];
   fast_travel: PoiPoint[];
   bounties?: PoiPoint[];
   /** Syndicate-tower landmarks (Map Wave 3, TowerData/T1). Absent on data
    *  extracted before towers were added; the UI degrades to no tower layer. */
   towers?: TowerPoint[];
+  poi_categories?: PoiCategory[];
+  points_of_interest?: ExtraPoiPoint[];
 }
 
 /**

@@ -15,5 +15,6 @@
   <ItemGroup>
     <PackageReference Include="CUE4Parse" Version="1.2.2.202607" />
     <PackageReference Include="CUE4Parse-Conversion" Version="1.2.2.202607" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.9" />
   </ItemGroup>
 </Project>

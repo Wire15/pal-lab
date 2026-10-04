@@ -37,13 +37,14 @@ import { PalHoverCard } from "../../components/pal-hover-card";
 import { isRevealed, type FogMask } from "./fog";
 import {
   fallbackIcon,
+  extraPoiGlyph,
   iconUrl,
   isMonoIcon,
   markerFallback,
   type IconManifest,
 } from "./icons";
 import { alphaIconUrl, palIconUrl, UNKNOWN_ICON } from "../../lib/assets";
-import type { PoiPin } from "./pins";
+import { isEffigyVisible, isExtraPoiVisible, clusterExtraPois, type PoiPin } from "./pins";
 
 /** Per-layer visibility toggles (persisted by MapView). `hideUnfoundEffigies`
  *  is a spoiler modifier on the effigy layer, not a layer of its own. */
@@ -51,6 +52,9 @@ export interface LayerFilters {
   fastTravel: boolean;
   alpha: boolean;
   effigies: boolean;
+  /** Unlisted item ids default to visible (legacy saved filters). */
+  effigyTypes?: Record<string, boolean>;
+  poiCategories?: Record<string, boolean>;
   bounties: boolean;
   towers: boolean;
   spawns: boolean;
@@ -242,20 +246,21 @@ function PinTypeIcon({
     );
   }
   if (pin.kind === "effigy") {
-    // Real green Lifmunk statuette (colored art) on a chip: unfound = full color
+    // The collected item's own statuette (colored art) on a chip: unfound = full color
     // + faint green glow (actionable); found = grayscale + dimmed, NO badge (the
     // dimming + tooltip carry the state; a ✓ badge read as "the icon is a check").
-    const entry = icons?.effigy ?? null;
+    const iconKey = pin.iconKey ?? "effigy";
+    const entry = icons?.[iconKey] ?? null;
     return (
       <GlyphChip
         src={entry ? iconUrl(entry) : fallbackIcon("effigy", pin.found ? DIM : GREEN)}
-        mono={isMonoIcon(icons, "effigy")}
+        mono={isMonoIcon(icons, iconKey)}
         tint={GREEN}
         size={ALPHA_SIZE}
         grayscale={pin.found}
         dim={pin.found ? 0.45 : 1}
         glow={pin.found ? undefined : GREEN}
-        title={pin.found ? "Lifmunk Effigy · collected" : "Lifmunk Effigy"}
+        title={pin.found ? `${pin.name ?? "Lifmunk Effigy"} · collected` : pin.name ?? "Lifmunk Effigy"}
       />
     );
   }
@@ -286,6 +291,16 @@ function PinTypeIcon({
       />
     );
   }
+  if (pin.kind === "poi") {
+    const key = pin.iconKey ?? "unknown";
+    const entry = key === "marker_0" || pin.category === "merchant" || pin.category === "npc" ? undefined : icons?.[key];
+    const title = [pin.name, pin.detail ? pin.detail : null,
+      pin.tracked ? (pin.category === "watchtower" ? (pin.found ? "Unlocked" : "Locked") : (pin.found ? "Collected" : "Not collected")) : null,
+      pin.recurring ? "Potential spawn location" : null].filter(Boolean).join(" · ");
+    return <GlyphChip src={entry ? iconUrl(entry) : extraPoiGlyph(pin.category ?? "", pin.found ? DIM : CYAN)}
+      mono={entry ? isMonoIcon(icons, key) : false} tint={pin.found ? DIM : CYAN} size={32}
+      grayscale={pin.found} dim={pin.found ? 0.45 : 1} title={title} />;
+  }
   // bounty — purple-hooded colored art on a chip; name tooltip handled by caller.
   const entry = icons?.bounty ?? null;
   return (
@@ -294,7 +309,9 @@ function PinTypeIcon({
       mono={isMonoIcon(icons, "bounty")}
       tint={PURPLE}
       size={56}
-      title={pin.name ? `Bounty · ${pin.name}` : "Bounty"}
+      grayscale={pin.found}
+      dim={pin.found ? 0.45 : 1}
+      title={`Bounty${pin.found ? " · defeated" : ""}${pin.name ? ` · ${pin.name}` : ""}`}
     />
   );
 }
@@ -304,16 +321,18 @@ function PinTypeIcon({
 function AlphaPortrait({
   speciesId,
   size,
+  found,
 }: {
   speciesId: string | null;
   size: number;
+  found: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const src = speciesId && !failed ? palIconUrl(speciesId) : UNKNOWN_ICON;
   return (
     <span
       className="block overflow-hidden rounded-full bg-abyss/70 ring-2 ring-abyss shadow-[0_1px_4px_rgba(0,0,0,0.6)] transition-[box-shadow,transform] group-hover:-translate-y-0.5 group-hover:ring-amber/80"
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, filter: found ? "grayscale(1)" : undefined, opacity: found ? 0.45 : 1 }}
     >
       <img
         src={src}
@@ -331,7 +350,7 @@ function AlphaPortrait({
 }
 
 /** The species-mode PalHoverCard context strip for an alpha pin. */
-function AlphaNote({ level }: { level?: number }) {
+function AlphaNote({ level, found }: { level?: number; found: boolean }) {
   return (
     <span className="flex items-center gap-1.5">
       <img
@@ -344,6 +363,7 @@ function AlphaNote({ level }: { level?: number }) {
         className="h-[13px] w-[13px] shrink-0 object-contain"
       />
       <span className="font-semibold text-amber-bright">Alpha Pal</span>
+      {found && <span className="text-ink">· Defeated</span>}
       {level != null && (
         <>
           <span className="text-ink-faint">·</span>
@@ -379,10 +399,10 @@ function AlphaPin({
       onClick={() => pin.speciesId && onOpenSpecies(pin.speciesId)}
       className="group pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber"
       style={{ left, top }}
-      aria-label={`Alpha Pal${pin.level != null ? `, level ${pin.level}` : ""}`}
+      aria-label={`Alpha Pal${pin.level != null ? `, level ${pin.level}` : ""}${pin.found ? " · Defeated" : ""}`}
     >
       <span className="relative block transition-transform duration-150 ease-out" style={ZOOM_STYLE}>
-        <AlphaPortrait speciesId={pin.speciesId ?? null} size={ALPHA_SIZE} />
+        <AlphaPortrait speciesId={pin.speciesId ?? null} size={ALPHA_SIZE} found={pin.found} />
         {badgeSrc && (
           <span
             aria-hidden
@@ -403,7 +423,7 @@ function AlphaPin({
   // bare (still clickable) pin if it is somehow missing rather than crash.
   if (!pin.speciesId) return button;
   return (
-    <PalHoverCard speciesId={pin.speciesId} note={<AlphaNote level={pin.level} />}>
+    <PalHoverCard speciesId={pin.speciesId} note={<AlphaNote level={pin.level} found={pin.found} />}>
       {button}
     </PalHoverCard>
   );
@@ -477,19 +497,16 @@ function PinLayer({
       if (pin.map !== layer) continue;
       if (pin.kind === "fast_travel" && !filters.fastTravel) continue;
       if (pin.kind === "alpha" && !filters.alpha) continue;
-      if (pin.kind === "effigy" && !filters.effigies) continue;
-      // Spoiler modifier: hide effigies the scoped player hasn't collected, even
-      // in revealed terrain (the location itself is the spoiler).
-      if (pin.kind === "effigy" && filters.hideUnfoundEffigies && !pin.found)
-        continue;
+      if (pin.kind === "effigy" && !isEffigyVisible(pin, filters)) continue;
       if (pin.kind === "bounty" && !filters.bounties) continue;
       if (pin.kind === "tower" && !filters.towers) continue;
+      if (pin.kind === "poi" && !isExtraPoiVisible(pin, filters.poiCategories)) continue;
       const [u, v] = worldToPx(entry, pin.x, pin.y);
       if (u < minU || u > maxU || v < minV || v > maxV) continue;
       if (spoilerHidden(pin.x, pin.y, pin.known)) continue;
       out.push({ pin, left: u * k, top: v * k });
     }
-    return out;
+    return clusterExtraPois(out);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pois, layer, k, bx, by, vw, vh, filters, fog, fogOn, showHidden, entry]);
 
@@ -589,7 +606,7 @@ function PinLayer({
           );
         })}
 
-        {visiblePois.map(({ pin, left, top }) =>
+        {visiblePois.map(({ pin, left, top, count }) =>
           pin.kind === "alpha" ? (
             <AlphaPin
               key={pin.key}
@@ -610,10 +627,12 @@ function PinLayer({
                 style={pin.kind === "tower" ? ZOOM_STYLE : DIM_STYLE}
               >
                 <PinTypeIcon pin={pin} icons={icons} />
+                {count > 1 && <span title={`${count} locations · zoom in to separate`}
+                  className="absolute -right-2 -top-2 rounded-full border border-line bg-panel px-1 font-mono text-[10px] text-ink">{count}</span>}
               </span>
               {pin.name && (
                 <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-xs border border-line bg-panel/90 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-ink opacity-0 transition-opacity group-hover:opacity-100">
-                  {pin.name}
+                  {pin.name}{pin.detail ? ` · ${pin.detail}` : ""}
                 </span>
               )}
             </div>

@@ -18,11 +18,12 @@ using SkiaSharp;
 
 namespace PalExtract;
 
-static class Program
+static partial class Program
 {
-    // Known build of the installed Palworld (per project constraints / build 24181527).
-    const string GameBuild = "24181527";
-    const string UsmapSource = "PalworldModding/UsefulFiles@1.0";
+    // Override when extracting a newer installed build; retain the legacy default.
+    static readonly string GameBuild = Environment.GetEnvironmentVariable("PALCALC_GAME_BUILD") ?? "24181527";
+    static string UsmapSource => "Mappings.usmap sha256:" + Convert.ToHexString(
+        System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(Path.GetFullPath(UsmapPath)))).ToLowerInvariant();
 
     static readonly string PaksDir = Environment.GetEnvironmentVariable("PALCALC_PALWORLD_PAKS")
         ?? @"C:\Program Files (x86)\Steam\steamapps\common\Palworld\Pal\Content\Paks";
@@ -40,6 +41,7 @@ static class Program
 
     static int Main(string[] args)
     {
+        if (args.Contains("--check-map-transforms")) return CheckMapTransforms();
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
         OodleHelper.DownloadOodleDll();
@@ -63,9 +65,26 @@ static class Program
         if (args.Contains("--discover-map-guids")) { DiscoverMapGuids(provider); return 0; }
         if (args.Contains("--discover-tower")) { DiscoverTower(provider); return 0; }
         if (args.Contains("--discover-incident")) { DiscoverIncident(provider); return 0; }
+        if (args.Contains("--discover-effigies")) { DiscoverEffigies(provider); return 0; }
         if (args.Contains("--discover-bounty-actors")) { DiscoverBountyActors(provider); return 0; }
         if (args.Contains("--list-dt")) { ListDataTables(provider); return 0; }
         if (args.Contains("--dump-table")) { DumpTable(provider, args); return 0; }
+        if (args.Contains("--audit-map-pois")) { AuditMapPois(provider); return 0; }
+        if (args.Contains("--export-extra-map")) return ExportExtraMap(provider);
+        if (args.Contains("--dump-assets")) {
+            var rx = new Regex(args[Array.IndexOf(args, "--dump-assets") + 1], RegexOptions.IgnoreCase);
+            foreach (var file in provider.Files.Values.Where(f => f.Path.EndsWith(".uasset") && rx.IsMatch(f.Path))) {
+                if (!provider.TryLoadPackage(file, out var pkg)) continue;
+                var log = new System.Text.StringBuilder(); log.AppendLine("ASSET " + file.Path);
+                for (int i=0; i<pkg.ExportMapLength; i++) {
+                    var ptr=new FPackageIndex(pkg, i+1).ResolvedObject;
+                    if (ptr?.Name.Text.StartsWith("Default__") == true || ptr?.Class?.Name.Text.Contains("Drop") == true) { log.AppendLine(ptr.Name.Text); DumpStruct(ptr.Object.Value, log, "  "); }
+                }
+                Console.Write(log.ToString());
+            }
+            return 0;
+        }
+        if (args.Contains("--list-assets")) { var rx = new Regex(args[Array.IndexOf(args, "--list-assets") + 1], RegexOptions.IgnoreCase); foreach (var path in provider.Files.Keys.Where(p => rx.IsMatch(p))) Console.WriteLine(path); return 0; }
         if (args.Contains("--export-map-icons")) return ExportMapIcons(provider);
 
         var monsters = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalMonsterParameter");
@@ -116,7 +135,7 @@ static class Program
         // fields: CharacterID, Level, then 10 slots of ItemId<N>/Rate<N>/min<N>/Max<N>. Rate is a
         // PERCENT (100 => 100%). DT_PalDropItem and DT_PalDropItem_Common are byte-identical in this
         // build (verified via --discover-drops, 0 differing rows); we use DT_PalDropItem. We pick the
-        // LOWEST-Level row per CharacterID (the base drop table palpedia displays) and emit only the
+        // LOWEST-Level row per CharacterID (the base drop table) and emit only the
         // non-empty slots in order. Item names localize via ITEM_NAME_<ItemId> in DT_ItemNameText_Common
         // (falls back to the raw ItemId — never fabricated). Keyed by species internal name (CharacterID).
         var dropTable = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalDropItem");
@@ -635,7 +654,7 @@ static class Program
             $"no negative-rank passive found (Brittle rank={(brittle == null ? "n/a" : GetProp(brittle, "rank"))})");
         Gate(passKept > 200, $"passive count {passKept} unexpectedly low");
         if (passPalAny != 114)
-            Console.WriteLine($"[WARN] pal-passive count (any pool) {passPalAny} != 114 (paldb ref); AddPal-only={passAddPal} — game version may differ");
+            Console.WriteLine($"[WARN] pal-passive count (any pool) {passPalAny} != 114 (legacy build baseline); AddPal-only={passAddPal} — game version may differ");
 
         // active skills: expect several hundred; coverage must not regress below the old name set.
         Gate(activeSkills.Count >= 300, $"active_skills count {activeSkills.Count} < 300");
@@ -755,6 +774,65 @@ static class Program
         return res;
     }
 
+    sealed record EffigyDefinition(string item_id, string name, string icon, string asset);
+
+    // The variant blueprint suffix is a game CharacterID. Resolve its English Pal name, then
+    // exact-match the corresponding item name; the item icon table supplies the texture path.
+    // The original (unsuffixed) relic is the game's legacy Lifmunk item. Unknown variants fail
+    // extraction rather than silently publishing an incomplete map.
+    static Dictionary<string, EffigyDefinition> LoadEffigyDefinitions(IFileProvider provider)
+    {
+        var names = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_ItemNameText_Common");
+        var pals = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_PalNameText_Common");
+        var icons = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Item/DT_ItemIconDataTable")
+            .RowMap.ToDictionary(kv => kv.Key.Text, kv => S(Vals(kv.Value), "Icon"));
+        var result = new Dictionary<string, EffigyDefinition>(StringComparer.Ordinal);
+        const string prefix = "BP_LevelObject_Relic";
+        foreach (var f in provider.Files.Keys.Where(f => f.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase)))
+        {
+            var bp = Path.GetFileNameWithoutExtension(f);
+            if (bp != prefix && !bp.StartsWith(prefix + "_", StringComparison.Ordinal)) continue;
+            string id = "Relic";
+            if (bp != prefix)
+            {
+                var species = bp.Substring(prefix.Length + 1);
+                if (!pals.TryGetValue("PAL_NAME_" + species, out var palName))
+                    throw new InvalidDataException($"Unknown effigy species: {bp}");
+                var item = names.Single(kv => kv.Value == Clean(palName) + " Effigy");
+                id = item.Key.Substring("ITEM_NAME_".Length);
+            }
+            var name = Clean(names["ITEM_NAME_" + id]);
+            var path = icons[id].Split('.')[0].Replace("/Game/", "Pal/Content/");
+            result.Add(bp + "_C", new(id, name, id == "Relic" ? "effigy" : "effigy_" + id, path));
+        }
+        return result;
+    }
+
+    // SaveKeyName is authored in each wanted-target spawner's blueprint defaults. Some
+    // class names omit BOSS_ (including three trader-type targets), so class-name tokens
+    // cannot distinguish them from ordinary merchants. Confirm each key against the game's
+    // boss-NPC icon table, rather than dropping every class containing "Trader".
+    static Dictionary<string, string> LoadBountyDefinitions(IFileProvider provider)
+    {
+        var ids = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalBossNPCIcon")
+            .RowMap.Keys.Select(k => k.Text).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var gf in provider.Files.Values.Where(f => f.Path.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase)
+            && Regex.IsMatch(Path.GetFileName(f.Path), @"^BP_(?:Mono|Squad)NPCSpawnerBossBase_.+\.uasset$")))
+        {
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                if (ptr?.Name.Text.StartsWith("Default__") != true) continue;
+                var id = ptr.Object.Value.GetOrDefault<FName>("SaveKeyName").Text;
+                if (!string.IsNullOrEmpty(id) && ids.Contains(id))
+                    result.Add(Path.GetFileNameWithoutExtension(gf.Path) + "_C", id);
+            }
+        }
+        return result;
+    }
+
     // ---- MAP EXTRACTION (--export-map) ----------------------------------------------------------
     // Emits app/public/map/{worldmap.webp,treemap.webp,map-data.json} per Wave-1 contract C1:
     //   (a) T_WorldMap/T_TreeMap -> 8192x8192 lossy WebP (q85, asserted <=10MB each)
@@ -861,7 +939,7 @@ static class Program
 
         // ---- (d) bosses: DT_BossSpawnerLoactionData ----
         var bossTable = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/UI/DT_BossSpawnerLoactionData");
-        var bosses = new List<(string species, double x, double y, int level)>();
+        var bosses = new List<(string species, double x, double y, int level, string key)>();
         int bossEmptyCid = 0; var bossEmptySamples = new List<string>();
         foreach (var r in bossTable.RowMap)
         {
@@ -869,7 +947,7 @@ static class Program
             var cid = S(v, "CharacterID");
             if (string.IsNullOrEmpty(cid) || cid == "None") { bossEmptyCid++; if (bossEmptySamples.Count < 8) bossEmptySamples.Add(S(v, "SpawnerID") ?? r.Key.Text); continue; }
             var loc = r.Value.GetOrDefault<FVector>("Location");
-            bosses.Add((cid, loc.X, loc.Y, I(v, "Level")));
+            bosses.Add((cid, loc.X, loc.Y, I(v, "Level"), S(v, "SpawnerID")));
         }
         Console.WriteLine($"[bosses] rows={bossTable.RowMap.Count} emitted={bosses.Count} emptyCharacterID={bossEmptyCid} distinctSpecies={bosses.Select(b => b.species).Distinct().Count()}");
         if (bossEmptySamples.Count > 0) Console.WriteLine($"[bosses] empty-CID SpawnerIDs (sample): {string.Join(", ", bossEmptySamples)}");
@@ -877,18 +955,21 @@ static class Program
         // ---- (e) actor sweep: Relic effigies + Tower fast-travel points + humanoid bounty targets ----
         // Bounty targets are the fixed PIDF wanted-list humanoid boss NPCs (purple-hood map icon),
         // placed as BP_(Mono|Squad)NPCSpawnerBossBase_<CID>_C actors with a world RootComponent.
-        // Their spawn locations are 100% static (gameplay ground truth). Merchant "boss" NPCs
-        // (DarkTrader / Male_Trader##) share the spawner class but are NOT bounties -> excluded by
-        // CID token "Trader". Names are procedural (assigned from a name pool at spawn), so no fixed
+        // Their spawn locations are static. SaveKeyName + DT_PalBossNPCIcon identify wanted
+        // targets, including trader-type bosses; ordinary merchants are not in this set.
+        // Names are procedural (assigned from a name pool at spawn), so no fixed
         // name links per location -> name=null per contract X1 (never fabricated).
         var ftNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_MapRespawnPointInfoText");
-        var effigies = new List<(double x, double y, double z, string guid)>();
+        var uiNames = LoadText(provider, "Pal/Content/L10N/en/Pal/DataTable/Text/DT_UI_Common_Text_Common");
+        var bountyDefinitions = LoadBountyDefinitions(provider);
+        var effigyDefinitions = LoadEffigyDefinitions(provider);
+        var effigies = new List<(double x, double y, double z, string guid, string itemId)>();
         var fastTravel = new List<(double x, double y, string name, string guid)>();
         var bounties = new List<(double x, double y, string cid)>();
         var effigySeen = new HashSet<(long, long, long)>();
         var ftSeen = new HashSet<(long, long, long)>();
         var bountySeen = new HashSet<(long, long, long)>();
-        var bountyRx = new Regex(@"^BP_(?:Mono|Squad)NPCSpawnerBossBase_(.+)_C$", RegexOptions.Compiled);
+        var worldTreeTowers = new List<(double x, double y, string bossType)>();
         // Tower POIs (contract T1): the placed "* Tower Entrance" fast-travel actors are the tower
         // map markers; the per-player defeat proxy is the FindAreaFlagMap `Tower_<Region>` key, whose
         // world placement is carried by the `BP_PalRegionTriggerBox_C` region actors (AreaName.Key).
@@ -901,7 +982,8 @@ static class Program
         var towerEntrances = new List<(double x, double y, string name, string guid)>();
         var towerBoxes = new List<(string key, double x, double y)>();
         var towerAreaRx = new Regex(@"^Tower_[A-Za-z]+$", RegexOptions.Compiled);
-        int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0, bountyDup = 0, bountyNoRoot = 0, bountyTrader = 0;
+        var classCounts = new SortedDictionary<string, int>(StringComparer.Ordinal);
+        int cellsSwept = 0, relicNoRoot = 0, ftNoRoot = 0, effigyDup = 0, ftDup = 0, ftNameHit = 0, bountyDup = 0, bountyNoRoot = 0;
         var mapCells = provider.Files.Values
             .Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
                 && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase))
@@ -914,17 +996,26 @@ static class Program
             {
                 var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
                 var cls = ptr?.Class?.Name.Text;
-                bool isRelic = cls == "BP_LevelObject_Relic_C";
+                if (cls != null) classCounts[cls] = classCounts.GetValueOrDefault(cls) + 1;
+                bool isRelic = cls != null && effigyDefinitions.ContainsKey(cls);
+                bool isTowerLandmark = cls != null && Regex.IsMatch(cls, @"^BP_PalBossTower(?:_\w+)?_C$");
                 bool isFt = cls == "BP_LevelObject_TowerFastTravelPoint_C";
-                bool isBounty = cls != null && bountyRx.IsMatch(cls);
+                bool isBounty = cls != null && bountyDefinitions.ContainsKey(cls);
                 bool isTowerBox = cls == "BP_PalRegionTriggerBox_C";
-                if (!isRelic && !isFt && !isBounty && !isTowerBox) continue;
+                if (!isRelic && !isFt && !isBounty && !isTowerBox && !isTowerLandmark) continue;
                 var actor = ptr.Object?.Value;
                 if (actor == null) continue;
                 var rootIdx = actor.GetOrDefault<FPackageIndex>("RootComponent");
                 var comp = rootIdx != null && rootIdx.IsExport ? rootIdx.Load() : null;
                 if (comp == null) { if (isRelic) relicNoRoot++; else if (isFt) ftNoRoot++; else bountyNoRoot++; continue; }
                 var loc = comp.GetOrDefault("RelativeLocation", new FVector());
+                if (isTowerLandmark)
+                {
+                    var bossType = StripEnum(actor.Properties.FirstOrDefault(p => p.Name.Text == "BossType")?.Tag?.GenericValue?.ToString());
+                    if (bossType?.StartsWith("WorldTree", StringComparison.Ordinal) == true)
+                        worldTreeTowers.Add((loc.X, loc.Y, bossType));
+                    continue;
+                }
                 var dedupe = ((long)Math.Round(loc.X * 10), (long)Math.Round(loc.Y * 10), (long)Math.Round(loc.Z * 10));
                 if (isTowerBox)
                 {
@@ -936,8 +1027,7 @@ static class Program
                 }
                 if (isBounty)
                 {
-                    var cid = bountyRx.Match(cls).Groups[1].Value;
-                    if (cid.Contains("Trader", StringComparison.OrdinalIgnoreCase)) { bountyTrader++; continue; } // merchant, not a bounty
+                    var cid = bountyDefinitions[cls];
                     if (!bountySeen.Add(dedupe)) { bountyDup++; continue; }
                     bounties.Add((loc.X, loc.Y, cid));
                     continue;
@@ -950,7 +1040,7 @@ static class Program
                 if (isRelic)
                 {
                     if (!effigySeen.Add(dedupe)) { effigyDup++; continue; }
-                    effigies.Add((loc.X, loc.Y, loc.Z, guid));
+                    effigies.Add((loc.X, loc.Y, loc.Z, guid, effigyDefinitions[cls].item_id));
                 }
                 else
                 {
@@ -966,7 +1056,9 @@ static class Program
                 }
             }
         }
-        Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} bounties={bounties.Count} (dup={bountyDup} noRoot={bountyNoRoot} tradersExcluded={bountyTrader}) ({sw.Elapsed.TotalSeconds:F0}s)");
+        File.WriteAllText(Path.Combine(probeDir, "map-actor-classes.log"),
+            string.Join("\n", classCounts.Select(kv => $"{kv.Key} {kv.Value}")));
+        Console.WriteLine($"[actors] cellsSwept={cellsSwept} effigies={effigies.Count} (dup={effigyDup} noRoot={relicNoRoot}) fastTravel={fastTravel.Count} (dup={ftDup} noRoot={ftNoRoot}) ftNamesResolved={ftNameHit}/{fastTravel.Count} bounties={bounties.Count} (dup={bountyDup} noRoot={bountyNoRoot}) ({sw.Elapsed.TotalSeconds:F0}s)");
         Console.WriteLine($"[bounty] CIDs: {string.Join(", ", bounties.Select(b => b.cid).OrderBy(c => c, StringComparer.Ordinal))}");
 
         // ---- tower join: assign each Tower_* region box to a tower entrance by greedy global-min
@@ -1019,7 +1111,7 @@ static class Program
         Console.WriteLine($"[calibrate] WINNER uIsY={best.uIsY} uFlip={best.uFlip} vFlip={best.vFlip} landHit={bestScore:P1} (runner-up {secondScore:P1}, separation {bestScore / Math.Max(secondScore, 0.001):F2}x)");
         var formula = BuildFormula(best.uIsY, best.uFlip, best.vFlip);
         Console.WriteLine($"[calibrate] world_to_px = {formula}");
-        RenderCalibration(worldBmp, main, best, bosses, fastTravel, effigies, Path.Combine(probeDir, "calibration.png"));
+        RenderCalibration(worldBmp, main, best, bosses.Select(b => (b.species, b.x, b.y, b.level)).ToList(), fastTravel, effigies.Select(e => (e.x, e.y, e.z, e.guid)).ToList(), Path.Combine(probeDir, "calibration.png"));
         worldBmp.Dispose();
 
         // ---- assign every point to a map layer (Tree first: more specific), build JSON ----
@@ -1056,7 +1148,7 @@ static class Program
         {
             var m = AssignMap(b.x, b.y);
             if (m == null) { bossDropped++; continue; }
-            bossesOut.Add(new { species = b.species, x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), level = b.level, map = m });
+            bossesOut.Add(new { species = b.species, x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), level = b.level, map = m, key = b.key });
         }
         var effigiesOut = new List<object>();
         int effigyDropped = 0;
@@ -1064,7 +1156,7 @@ static class Program
         {
             var m = AssignMap(e.x, e.y);
             if (m == null) { effigyDropped++; continue; }
-            effigiesOut.Add(new { x = Math.Round(e.x, 3), y = Math.Round(e.y, 3), z = Math.Round(e.z, 3), map = m, guid = e.guid });
+            effigiesOut.Add(new { x = Math.Round(e.x, 3), y = Math.Round(e.y, 3), z = Math.Round(e.z, 3), map = m, guid = e.guid, item_id = e.itemId });
         }
         var ftOut = new List<object>();
         int ftDropped = 0;
@@ -1081,7 +1173,7 @@ static class Program
             var m = AssignMap(b.x, b.y);
             if (m == null) { bountyDropped++; continue; }
             // name is procedural (assigned from a pool at spawn) -> null per contract X1; cid = the
-            // humanoid boss CharacterID (grounded enemy-type metadata for the pin hover).
+            // humanoid boss SaveKeyName (victory join key and enemy-type metadata).
             bountiesOut.Add(new { x = Math.Round(b.x, 3), y = Math.Round(b.y, 3), map = m, name = (string)null, cid = b.cid });
         }
         var towersOut = new List<object>();
@@ -1094,6 +1186,20 @@ static class Program
             // key = the Tower_<Region> FindAreaFlagMap key joined via nearest region box (null when no
             // Tower_* box exists, e.g. Feybreak-era towers). name = localized "* Tower Entrance" text.
             towersOut.Add(new { x = Math.Round(t.x, 3), y = Math.Round(t.y, 3), map = m, name = t.name, key = towerKeyByEntrance[ei] });
+        }
+        // World Tree arenas use separate tower actor classes and have no "Tower Entrance"
+        // fast-travel label. Use their own RootComponent position and BossType UI name.
+        // The final boss name is deliberately "???" in the game: use the nearest fast-travel
+        // landmark name instead. Keep key=null; proximity must not fabricate a save-state join.
+        foreach (var t in worldTreeTowers)
+        {
+            var m = AssignMap(t.x, t.y);
+            if (m == null) { towerDropped++; continue; }
+            uiNames.TryGetValue("BOSS_BATTLE_NAME_" + t.bossType, out var name);
+            if (string.IsNullOrEmpty(name) || name.Trim('?', '？', ' ').Length == 0)
+                name = fastTravel.OrderBy(f => Math.Pow(f.x - t.x, 2) + Math.Pow(f.y - t.y, 2)).First().name;
+            towersOut.Add(new { x = Math.Round(t.x, 3), y = Math.Round(t.y, 3), map = m,
+                name = Clean(name), key = (string)null, boss_type = t.bossType });
         }
         towersOut = towersOut.OrderBy(o => (double)GetProp(o, "x")).ThenBy(o => (double)GetProp(o, "y")).ToList();
         Console.WriteLine($"[assign] spawnsDroppedOutside={droppedOutside} bossDropped={bossDropped} effigyDropped={effigyDropped} ftDropped={ftDropped} bountyDropped={bountyDropped} towerDropped={towerDropped}");
@@ -1114,13 +1220,13 @@ static class Program
             spawns = spawnsOut,
             bosses = bossesOut,
             effigies = effigiesOut,
+            effigy_types = effigyDefinitions.Values.OrderBy(e => e.item_id, StringComparer.Ordinal)
+                .Select(e => new { id = e.item_id, e.name, e.icon }).ToList(),
             fast_travel = ftOut,
             bounties = bountiesOut,
             towers = towersOut,
         };
         var outPath = Path.Combine(mapDir, "map-data.json");
-        File.WriteAllText(outPath, JsonConvert.SerializeObject(root, Formatting.None));
-        Console.WriteLine($"[write] {outPath} ({new FileInfo(outPath).Length / 1024.0:F0}KB)");
 
         // ---- validation gates ----
         var errors = new List<string>();
@@ -1132,11 +1238,14 @@ static class Program
         Gate(spawnsOut.Count > 0 && spawnAgg.Count > 5000, $"spawns unexpectedly low (groups={spawnsOut.Count} pts={spawnAgg.Count})");
         Gate(bosses.Count + bossEmptyCid == bossTable.RowMap.Count, $"boss row accounting mismatch (emitted={bosses.Count} emptyCID={bossEmptyCid} rows={bossTable.RowMap.Count})");
         Gate(bossesOut.Count >= 85, $"bosses low ({bossesOut.Count})");
-        Gate(effigiesOut.Count >= 100, $"effigies low ({effigiesOut.Count})");
+        Gate(effigiesOut.Count >= 400, $"effigies low ({effigiesOut.Count})");
+        Gate(effigies.Select(e => e.itemId).Distinct().Count() == effigyDefinitions.Count,
+            "not every effigy blueprint variant was found in world actors");
+        Gate(effigies.Select(e => e.guid).Distinct().Count() == effigies.Count, "duplicate effigy instance GUIDs");
         Gate(ftOut.Count >= 40, $"fast_travel low ({ftOut.Count})");
         // bounty POIs: fixed humanoid PIDF wanted-target NPCs. Expect ~25+ across the world; must not
         // be clustered at origin (sanity: X-span and Y-span each > 100k world units).
-        Gate(bountiesOut.Count >= 25, $"bounties low ({bountiesOut.Count})");
+        Gate(bountiesOut.Count >= 33, $"bounties low ({bountiesOut.Count})");
         if (bountiesOut.Count > 0)
         {
             var bx = bountiesOut.Select(b => (double)GetProp(b, "x")).ToList();
@@ -1145,11 +1254,11 @@ static class Program
                 $"bounties clustered (Xspan={bx.Max() - bx.Min():F0} Yspan={by.Max() - by.Min():F0})");
             Gate(bountiesOut.All(b => (string)GetProp(b, "name") == null), "bounty name must be null (procedural)");
         }
-        // tower POIs: 9 named "* Tower Entrance" fast-travel actors (5 base + Sakurajima + 3 Feybreak-
-        // era). Exactly 6 have a Tower_* region box -> keyed; the rest key=null. The grass join is the
+        // Tower POIs: 9 named entrance fast-travel actors plus 4 World Tree arena actors.
+        // Exactly 6 have a Tower_* region box -> keyed; the rest key=null. The grass join is the
         // ground-truth anchor: 'Tower_Grass' must be present and must resolve to the Rayne Syndicate
         // Tower entrance (host defeated it; see coop-Player-host.sav FindAreaFlagMap + FT-unlock GUID).
-        Gate(towersOut.Count >= 5, $"towers low ({towersOut.Count})");
+        Gate(towersOut.Count >= 13, $"towers low ({towersOut.Count})");
         var towerKeys = towersOut.Select(t => (string)GetProp(t, "key")).Where(k => k != null).ToList();
         Gate(towerKeys.Count == towerBoxes.Count, $"tower key count {towerKeys.Count} != region boxes {towerBoxes.Count}");
         Gate(towerKeys.Distinct().Count() == towerKeys.Count, "duplicate tower keys assigned");
@@ -1203,6 +1312,8 @@ static class Program
             foreach (var e in errors) Console.WriteLine("  FAIL: " + e);
             return 1;
         }
+        File.WriteAllText(outPath, JsonConvert.SerializeObject(root, Formatting.None));
+        Console.WriteLine($"[write] {outPath} ({new FileInfo(outPath).Length / 1024.0:F0}KB)");
         Console.WriteLine("==== ALL MAP GATES PASSED ====");
         return 0;
     }
@@ -1506,6 +1617,38 @@ static class Program
         File.WriteAllText(Path.Combine(probeDir, "bounty-actors.log"), log.ToString());
         Console.WriteLine($"[bounty-actors] cells={cells} refHits={occurrences} distinctSpawnerClasses={classCounts.Count} -> testdata/probe/bounty-actors.log");
     }
+    // Inventory of placed relic variants and their blueprint defaults. Locations and identifiers
+    // come from world actors; item names/icons come from the installed game's own assets.
+    static void DiscoverEffigies(IFileProvider provider)
+    {
+        var probeDir = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe"));
+        Directory.CreateDirectory(probeDir);
+        var log = new System.Text.StringBuilder();
+        foreach (var f in provider.Files.Keys.Where(f => Regex.IsMatch(f, "Relic|Effigy", RegexOptions.IgnoreCase)).OrderBy(f => f))
+            log.AppendLine("ASSET " + f);
+        var classes = new SortedDictionary<string, int>();
+        var dumped = new HashSet<string>();
+        foreach (var gf in provider.Files.Values.Where(f => f.Path.EndsWith(".umap", StringComparison.OrdinalIgnoreCase)
+            && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                if (cls == null || !Regex.IsMatch(cls, "Relic|Effigy", RegexOptions.IgnoreCase)) continue;
+                classes[cls] = classes.GetValueOrDefault(cls) + 1;
+                if (!dumped.Add(cls)) continue;
+                log.AppendLine("CLASS " + cls);
+                if (ptr.Object?.Value is UObject actor) DumpStruct(actor, log, "  ");
+                if (ptr.Class?.Object?.Value is UObject blueprint) DumpStruct(blueprint, log, "  DEFAULTS ");
+            }
+        }
+        log.Insert(0, string.Join("\n", classes.Select(kv => $"COUNT {kv.Key} {kv.Value}")) + "\n");
+        File.WriteAllText(Path.Combine(probeDir, "effigies.log"), log.ToString());
+        Console.WriteLine($"[effigies] {string.Join(", ", classes.Select(kv => $"{kv.Key}={kv.Value}"))} -> testdata/probe/effigies.log");
+    }
+
     // ---- TOWER DISCOVERY (`--discover-tower`) ---------------------------------------------------
     // Two grounding goals dumped to testdata/probe/tower.log:
     //   (1) Placement: the "* Tower Entrance" fast-travel points (DT_MapRespawnPointInfoText rows
@@ -1621,6 +1764,39 @@ static class Program
     }
 
 
+    // Inspect gameplay POIs separately from decorative meshes and dungeon interiors.
+    static void AuditMapPois(IFileProvider provider)
+    {
+        var rx = new Regex(@"(small_tower|Tower02|MainTower|DungeonPortalMarker|DungeonFixedEntrance|NPCSpawner|FishingSpot|GoddessStatue|HealSpring|ItemPickupTower|OilField|SkylandWarp|WarpAltar|PalMapObjectSpawner|palegg|MapPoint|Ruins|Camp|Arena|Note|Journal|Predator)", RegexOptions.IgnoreCase);
+        var seen = new Dictionary<string, int>();
+        var log = new System.Text.StringBuilder();
+        foreach (var f in provider.Files.Keys.Where(p => Regex.IsMatch(p, @"(watchtower|observation|locationtype|compass|mapicon|oilrig|merchant|dungeon.*area|map.*location)", RegexOptions.IgnoreCase) && p.EndsWith(".uasset")))
+            log.AppendLine("ASSET " + f);
+        foreach (var gf in provider.Files.Values.Where(f => f.Path.EndsWith(".umap") && f.Path.Contains("Pal/Content/Pal/Maps/MainWorld_5/")))
+        {
+            if (!provider.TryLoadPackage(gf, out var pkg)) continue;
+            for (int i = 0; i < pkg.ExportMapLength; i++)
+            {
+                var ptr = new FPackageIndex(pkg, i + 1).ResolvedObject;
+                var cls = ptr?.Class?.Name.Text;
+                if (cls == null || !rx.IsMatch(cls)) continue;
+                int count = seen.GetValueOrDefault(cls) + 1; seen[cls] = count;
+                if (count > (cls.Contains("tower", StringComparison.OrdinalIgnoreCase) ? 30 : 2)) continue;
+                var actor = ptr.Object?.Value;
+                if (actor == null) continue;
+                log.AppendLine($"ACTOR {cls} {ptr.Name.Text} {gf.Path}");
+                DumpStruct(actor, log, "  ");
+                var root = actor.GetOrDefault<FPackageIndex>("RootComponent");
+                var comp = root != null && root.IsExport ? root.Load() : null;
+                if (comp != null) { log.AppendLine("  ROOT"); DumpStruct(comp, log, "    "); }
+            }
+        }
+        foreach (var kv in seen.OrderBy(k => k.Key)) log.AppendLine($"COUNT {kv.Key} {kv.Value}");
+        var output = Path.GetFullPath(Path.Combine(OutDir, "..", "..", "..", "testdata", "probe", "poi-audit.log"));
+        File.WriteAllText(output, log.ToString());
+        Console.WriteLine($"[poi-audit] {seen.Count} classes -> {output}");
+    }
+
     // `--list-dt`: write every DataTable asset path to testdata/probe/datatables.log (grep target).
     static void ListDataTables(IFileProvider provider)
     {
@@ -1668,6 +1844,9 @@ static class Program
             case null:
                 sb.AppendLine("null");
                 break;
+            case FScriptStruct script when script.StructType is FStructFallback inner:
+                DumpValue(inner, sb, indent);
+                break;
             case FStructFallback s:
                 sb.AppendLine("{");
                 DumpStruct(s, sb, indent + "    ");
@@ -1713,6 +1892,12 @@ static class Program
         ("fast_travel", "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_FTtower"),   // eagle statue (diamond-framed)
         ("tower",       "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_tower"),     // tower spire (diamond-framed)
         ("dungeon",     "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_dungeon"),   // cave archway
+        ("watchtower",  "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_FTUnlockMap"),
+        ("enemy_camp",  "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_EnemyCamp"),
+        ("oilrig",      "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Oilrig"),
+        ("junk",        "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Search_Junk"),
+        ("treasure",    "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Search_Treasure"),
+        ("portal",      "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Teleport"),
         ("bounty",      "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Bounty"),    // purple hooded figure
         ("base",        "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_camp"),      // fortress/castle (player base)
         ("alpha_badge", "Pal/Content/Pal/Texture/UI/Map/T_prt_map_BossIconFrame"),     // white ring/frame drawn around boss pins (tint in UI)
@@ -1757,6 +1942,7 @@ static class Program
         }
 
         foreach (var (key, asset) in IconAssets) Emit(key, asset);
+        foreach (var e in LoadEffigyDefinitions(provider).Values.Where(e => e.item_id != "Relic")) Emit(e.icon, e.asset);
         foreach (var (ord, enumName, asset) in MarkerAssets) Emit($"marker_{ord}", asset);
 
         File.WriteAllText(Path.Combine(mapDir, "icons.json"), JsonConvert.SerializeObject(manifest, Formatting.Indented));
@@ -2369,9 +2555,9 @@ static class Program
     //   ActiveSkill.ActiveSkill_MainValueByRank[]           -> {ActiveSkillMainValueByRank}
     //   ActiveSkill.ActiveSkill_OverWriteEffectTimeByRank[] -> {ActiveSkillOverWriteEffectTime}
     //   {ReferenceMsgId_X} -> DT_PartnerSkillAppendText row "X_Rank_1" (the game shows the Lv.1 append
-    //     message; every current _Rank_1 row is blank, so paldb renders these as nothing). Resolved
+    //     message; every current _Rank_1 row is blank, so there is no message to render). Resolved
     //     text is re-substituted (cycle-guarded) then rich-tag-cleaned by the shared Clean() pass.
-    // POLICY (matches paldb): compute each numeric placeholder at EVERY rank; emit the single value
+    // POLICY: compute each numeric placeholder at EVERY rank; emit the single value
     //   if constant across ranks, else "(min~max)". Unresolvable templates are left verbatim + reported.
 
     // True if a DT_PartnerSkillParameter row carries any per-rank template data (non-stub); used to

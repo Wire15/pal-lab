@@ -32,6 +32,7 @@ import ReverseBreeding from "../../components/reverse-breeding";
 import { loadActiveSkills, type ActiveSkills } from "../../lib/active-skills";
 import { loadMapData, speciesHasSpawns } from "../../lib/map-data";
 import { useAppState } from "../../state";
+import { speciesLocations } from "../../lib/map-spawns";
 
 /** Slots in the game-style food demand meter (matches paldb's 10-pip bar). */
 const FOOD_PIPS = 10;
@@ -539,6 +540,7 @@ export default function PaldexDetail({
   const [childLoading, setChildLoading] = useState(false);
   const [activeMap, setActiveMap] = useState<ActiveSkills>({});
   const [hasSpawns, setHasSpawns] = useState(false);
+  const [hasAlphas, setHasAlphas] = useState(false);
 
   useEffect(() => {
     invoke<NamedEntry[]>("list_species").then(setNames).catch(() => {});
@@ -554,8 +556,9 @@ export default function PaldexDetail({
   useEffect(() => {
     let alive = true;
     setHasSpawns(false);
+    setHasAlphas(false);
     loadMapData()
-      .then((d) => alive && setHasSpawns(speciesHasSpawns(d, id)))
+      .then((d) => { if (alive) { setHasSpawns(speciesHasSpawns(d, id)); setHasAlphas(speciesLocations(d, id, "alpha").length > 0); } })
       .catch(() => {});
     return () => {
       alive = false;
@@ -744,7 +747,8 @@ export default function PaldexDetail({
           <Section
             eyebrow="Field data"
             right={
-              hasSpawns ? (
+              <div className="flex flex-wrap gap-2">
+              {hasSpawns && (
                 <button
                   onClick={() => requestMapSpawn(detail.id)}
                   className="inline-flex items-center gap-1.5 rounded-sm border border-el-leaf/45 bg-el-leaf/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-el-leaf transition-colors hover:bg-el-leaf/20"
@@ -752,10 +756,14 @@ export default function PaldexDetail({
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16" />
-                  </svg>
-                  Show on map
-                </button>
-              ) : undefined
+                  </svg>{"Show on map"}</button>
+              )}
+              {hasAlphas && <button
+                onClick={() => requestMapSpawn(detail.id, "alpha")}
+                className="inline-flex items-center gap-1.5 rounded-sm border border-amber/45 bg-amber/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-amber hover:bg-amber/20"
+                title={`Show ${detail.name} Alpha locations on the world map`}
+              >{"Show Alpha locations"}</button>}
+              </div>
             }
           >
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">

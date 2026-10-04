@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { PalIcon } from "../../components/primitives";
+import type { SpawnKind, SpawnPeriod } from "../../lib/map-spawns";
 
 /** Aggregate legend info for the active species on the active layer. */
 export interface SpawnLegend {
@@ -13,6 +14,8 @@ export interface SpawnLegend {
   lv: [number, number];
   hasDay: boolean;
   hasNight: boolean;
+  wildCount: number;
+  alphaCount: number;
 }
 
 export default function SpawnSearch({
@@ -23,6 +26,10 @@ export default function SpawnSearch({
   onSelect,
   onClear,
   onOpenDex,
+  kind,
+  period,
+  onKindChange,
+  onPeriodChange,
 }: {
   options: { id: string; name: string }[];
   selectedId: string | null;
@@ -31,19 +38,39 @@ export default function SpawnSearch({
   onSelect: (id: string) => void;
   onClear: () => void;
   onOpenDex: (id: string) => void;
+  kind: SpawnKind;
+  period: SpawnPeriod;
+  onKindChange: (kind: SpawnKind) => void;
+  onPeriodChange: (period: SpawnPeriod) => void;
 }) {
+
   const [text, setText] = useState("");
   const nameToId = new Map(options.map((o) => [o.name, o.id]));
 
-  if (selectedId && legend) {
-    return (
-      <div className="flex items-center gap-2 rounded-md border border-el-leaf/40 bg-el-leaf/10 py-1 pl-1.5 pr-1 font-mono text-[11px]">
+  return <div className="flex flex-wrap items-center gap-2">
+    <label className="sr-only" htmlFor="map-spawn-kind">{"Encounter type"}</label>
+    <select id="map-spawn-kind" value={kind} onChange={e => onKindChange(e.target.value as SpawnKind)}
+      className="rounded-md border border-line bg-abyss px-2 py-1.5 text-xs text-ink-dim">
+      <option value="wild">{"Wild spawns"}</option>
+      <option value="alpha">{"Alpha Pals"}</option>
+      <option value="both">{"Wild and Alpha"}</option>
+    </select>
+    <label className="sr-only" htmlFor="map-spawn-period">{"Spawn period"}</label>
+    <select id="map-spawn-period" value={period} onChange={e => onPeriodChange(e.target.value as SpawnPeriod)}
+      title={"Spawns without a time restriction remain visible during both day and night."}
+      className="rounded-md border border-line bg-abyss px-2 py-1.5 text-xs text-ink-dim">
+      <option value="all">{"All times"}</option>
+      <option value="day">{"Day"}</option>
+      <option value="night">{"Night"}</option>
+    </select>
+    {selectedId && legend ? (
+      <div className="flex max-w-full flex-wrap items-center gap-2 rounded-md border border-el-leaf/40 bg-el-leaf/10 py-1 pl-1.5 pr-1 font-mono text-[11px]">
         <PalIcon id={selectedId} size={20} className="!rounded-full" />
         <button
           type="button"
           onClick={() => onOpenDex(selectedId)}
           className="tracking-wide text-el-leaf transition-colors hover:text-ink"
-          title="Open in Pal-dex"
+          title={"Open in Pal-dex"}
         >
           {selectedName ?? selectedId}
         </button>
@@ -51,16 +78,17 @@ export default function SpawnSearch({
           {legend.count} {legend.count === 1 ? "site" : "sites"}
         </span>
         <span className="text-line">·</span>
-        <span className="tabular-nums text-ink-faint">
-          Lv {legend.lv[0] === legend.lv[1] ? legend.lv[0] : `${legend.lv[0]}\u2013${legend.lv[1]}`}
-        </span>
+        {legend.count > 0 ? <>
+          <span className="tabular-nums text-ink-faint">{"Lv "}{legend.lv[0] === legend.lv[1] ? legend.lv[0] : `${legend.lv[0]}–${legend.lv[1]}`}</span>
+          <span className="text-ink-faint">{`${legend.wildCount} wild · ${legend.alphaCount} Alpha`}</span>
+        </> : <span className="text-ink-faint">{"No locations for this map and period"}</span>}
         {legend.hasNight && (
-          <span className="text-el-dark" title="Night-only spawns present">
+          <span className="text-el-dark" title={"Night-only spawns present"}>
             {"\u263e"}
           </span>
         )}
         {legend.hasDay && legend.hasNight && (
-          <span className="text-amber" title="Day spawns present">
+          <span className="text-amber" title={"Day spawns present"}>
             {"\u2600"}
           </span>
         )}
@@ -70,7 +98,7 @@ export default function SpawnSearch({
             setText("");
             onClear();
           }}
-          aria-label="Clear spawn overlay"
+          aria-label={"Clear spawn overlay"}
           className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-sm text-ink-faint transition-colors hover:bg-hover hover:text-ink"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -78,10 +106,7 @@ export default function SpawnSearch({
           </svg>
         </button>
       </div>
-    );
-  }
-
-  return (
+    ) : (
     <div className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2 py-1 focus-within:border-el-leaf/60">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-faint">
         <circle cx="11" cy="11" r="7" />
@@ -90,7 +115,8 @@ export default function SpawnSearch({
       <input
         className="w-40 min-w-0 bg-transparent py-0.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:outline-none"
         list="spawn-species-options"
-        placeholder={"Find spawns\u2026"}
+        placeholder={"Find spawns…"}
+        aria-label={"Find spawns…"}
         value={text}
         onChange={(e) => {
           const v = e.currentTarget.value;
@@ -105,5 +131,6 @@ export default function SpawnSearch({
         ))}
       </datalist>
     </div>
-  );
+    )}
+  </div>;
 }

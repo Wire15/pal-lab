@@ -47,6 +47,7 @@ export function isFieldBossSpawn(species: string): boolean {
  *  entry) return false — they have no wild heat to render. */
 export function speciesHasSpawns(data: MapData, id: string): boolean {
   return data.spawns.some(
-    (s) => !isFieldBossSpawn(s.species) && baseSpeciesId(s.species) === id,
+    (s) => !isFieldBossSpawn(s.species) && baseSpeciesId(s.species) === id
+      && (s.map === "MainMap" || s.map === "Tree") && s.points.some(p => !p.boss),
   );
 }

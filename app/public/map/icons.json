@@ -44,6 +44,114 @@
     "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic",
     "mono": false
   },
+  "effigy_Relic_01": {
+    "file": "effigy_Relic_01.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_01",
+    "mono": false
+  },
+  "effigy_Relic_02": {
+    "file": "effigy_Relic_02.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_02",
+    "mono": false
+  },
+  "effigy_Relic_03": {
+    "file": "effigy_Relic_03.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_03",
+    "mono": false
+  },
+  "effigy_Relic_04": {
+    "file": "effigy_Relic_04.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_04",
+    "mono": false
+  },
+  "effigy_Relic_05": {
+    "file": "effigy_Relic_05.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_05",
+    "mono": false
+  },
+  "effigy_Relic_06": {
+    "file": "effigy_Relic_06.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_06",
+    "mono": false
+  },
+  "effigy_Relic_07": {
+    "file": "effigy_Relic_07.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_07",
+    "mono": false
+  },
+  "effigy_Relic_08": {
+    "file": "effigy_Relic_08.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_08",
+    "mono": false
+  },
+  "effigy_Relic_09": {
+    "file": "effigy_Relic_09.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_09",
+    "mono": false
+  },
+  "effigy_Relic_10": {
+    "file": "effigy_Relic_10.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_10",
+    "mono": false
+  },
+  "effigy_Relic_11": {
+    "file": "effigy_Relic_11.png",
+    "px": [
+      256,
+      256
+    ],
+    "source": "Pal/Content/Others/InventoryItemIcon/Texture/T_itemicon_Relic_11",
+    "mono": false
+  },
+  "enemy_camp": {
+    "file": "enemy_camp.png",
+    "px": [
+      80,
+      80
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_EnemyCamp",
+    "mono": false
+  },
   "fast_travel": {
     "file": "fast_travel.png",
     "px": [
@@ -51,6 +159,15 @@
       100
     ],
     "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_FTtower",
+    "mono": false
+  },
+  "junk": {
+    "file": "junk.png",
+    "px": [
+      80,
+      80
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Search_Junk",
     "mono": false
   },
   "marker_0": {
@@ -206,6 +323,24 @@
     "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_09",
     "mono": false
   },
+  "oilrig": {
+    "file": "oilrig.png",
+    "px": [
+      80,
+      80
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Oilrig",
+    "mono": false
+  },
+  "portal": {
+    "file": "portal.png",
+    "px": [
+      80,
+      80
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Teleport",
+    "mono": false
+  },
   "tower": {
     "file": "tower.png",
     "px": [
@@ -215,6 +350,15 @@
     "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_tower",
     "mono": false
   },
+  "treasure": {
+    "file": "treasure.png",
+    "px": [
+      80,
+      80
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_Search_Treasure",
+    "mono": false
+  },
   "unknown": {
     "file": "unknown.png",
     "px": [
@@ -222,6 +366,15 @@
       64
     ],
     "source": "Pal/Content/Pal/Texture/UI/Map/T_icon_compass_Boss_Unknown",
+    "mono": false
+  },
+  "watchtower": {
+    "file": "watchtower.png",
+    "px": [
+      100,
+      100
+    ],
+    "source": "Pal/Content/Pal/Texture/UI/InGame/T_icon_compass_FTUnlockMap",
     "mono": false
   }
 }

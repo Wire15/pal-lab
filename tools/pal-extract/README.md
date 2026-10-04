@@ -36,7 +36,7 @@ species internal name) + `DT_PassiveSkill_Main` + `DT_PartnerSkillAppendText`:
 rank-scaled active-skill arrays; `{ReferenceMsgId_X}` -> append-text row `X_Rank_1` (the game's
 Lv.1 message, blank today; resolved recursively + cycle-guarded). Each numeric value is computed
 at every rank and emitted as a single number if constant across ranks, else `(min~max)` — matching
-paldb (e.g. Cattiva carry capacity `(100~200)`). Element-swap variants carry stub param rows and
+the game (e.g. Cattiva carry capacity `(100~200)`). Element-swap variants carry stub param rows and
 inherit the base pal's data. Any template that cannot be resolved from static data is left verbatim
 and reported (`[partner-template UNRESOLVED]`); the run gates on zero unresolved `{` placeholders.
 
@@ -61,6 +61,7 @@ dotnet run -c Release
 
 Paths default to the standard Steam install and `./Mappings.usmap`; override with env vars
 `PALCALC_PALWORLD_PAKS` (folder containing `Pal-Windows.pak`) and `PALCALC_MAPPINGS_USMAP`.
+Set `PALCALC_GAME_BUILD` to the installed Steam build id when refreshing map data.
 The run asserts validation gates (species >= 299, Lamball partner skill + "becomes a shield"
 description, Jormuntide elements, non-empty Combi arrays, `Legend`/`Lucky` passives with effects,
 a negative-rank passive, partner coverage, zero unresolved `{` template placeholders across all
@@ -86,19 +87,33 @@ and exits non-zero if any fail.
     with level/count ranges, `time` (`day`/`night`/null), `weather` (raw or null), and a `boss` flag
     (`SpawnerType==FieldBoss`). NPC-only slots and non-species `Pal` values (e.g. `RowName`) are dropped.
   - `bosses`: `DT_BossSpawnerLoactionData` rows with a real pal `CharacterID` (rows for human/NPC
-    bosses carry no `CharacterID` and are excluded).
+    bosses carry no `CharacterID` and are excluded). Each entry includes the table's
+    `SpawnerID` as `key`, joined exactly against `NormalBossDefeatFlag`.
   - `effigies` / `fast_travel`: a World-Partition actor sweep of `Pal/Content/Pal/Maps/MainWorld_5`
-    (~10k cells, ~60s) for `BP_LevelObject_Relic_C` and `BP_LevelObject_TowerFastTravelPoint_C`, each
+    (~10k cells, ~60s) for `BP_LevelObject_Relic_C`, its `BP_LevelObject_Relic_<CharacterID>_C`
+    variants, and `BP_LevelObject_TowerFastTravelPoint_C`, each
     resolved via its **own** `RootComponent(FPackageIndex) -> RelativeLocation` (a naive first-component
     grab yields bogus constants). Fast-travel names resolve from `DT_MapRespawnPointInfoText` keyed by
-    the actor's `FastTravelPointID`, else null.
+    the actor's `FastTravelPointID`, else null. Each effigy carries `item_id`, matching the
+    `effigy_types` metadata (`id`, English game-item `name`, icon-manifest `icon`). The legacy
+    unsuffixed blueprint uses item `Relic`; variants exact-match their localized Pal name
+    against `DT_ItemNameText_Common`, with icons resolved from `DT_ItemIconDataTable`.
   - `bounties`: fixed PIDF wanted-target humanoid boss NPCs (the purple-hood map "bounty" POIs), from
     the same `MainWorld_5` actor sweep for `BP_(Mono|Squad)NPCSpawnerBossBase_<CID>_C` placed actors,
-    resolved via `RootComponent -> RelativeLocation`. Merchant "boss" NPCs (CID contains `Trader`,
-    e.g. `DarkTrader`/`Male_Trader##`) are excluded. Each entry is `{x, y, map, name, cid}`: `name` is
+    resolved via `RootComponent -> RelativeLocation`. Their `cid` comes from the blueprint
+    default `SaveKeyName`, checked against `DT_PalBossNPCIcon`. This includes four trader-type
+    wanted bosses; ordinary merchants are excluded. Class-name tokens are not a reliable
+    discriminator. Each entry is `{x, y, map, name, cid}`: `name` is
     always `null` (bounty NPC names are procedural, assigned from a pool at spawn — no fixed name per
     location), `cid` is the humanoid boss `CharacterID` (enemy-type metadata for the pin hover). Spawn
     locations are 100% static (gameplay ground truth); gated on count and world-spread (not clustered).
+
+  - `towers`: named tower-entrance fast-travel points retain their existing region-key join.
+    World Tree arenas are additionally extracted from `BP_PalBossTower_LastBoss_C` and
+    `BP_PalBossTower_MiddleBoss_C` actor positions. Their `BossType` resolves the
+    `BOSS_BATTLE_NAME_*` UI text; the final arena uses the nearby named fast-travel landmark
+    because its boss-name text is deliberately hidden. These four have `key:null`: a nearby
+    fast-travel point does not establish a reached/defeated save-state join.
 
 Every point is assigned to `MainMap` or `Tree` by world-bounds containment (Tree checked first);
 points in neither are dropped with a logged count.
@@ -134,5 +149,44 @@ and the purple bounty portrait are all `mono:false`.
 Read-only sweeps that establish (never guess) the mappings baked into the exporters, each writing an
 evidence log under `testdata/probe/`: `--discover-incident` (incident/bounty DataTables ->
 `bounty.log`), `--discover-bounty-actors` (world-partition NPC/spawner actor histogram + bounty/FT
-actor locations -> `bounty-actors.log`), `--list-dt` (all DataTable paths -> `datatables.log`), and
+actor locations -> `bounty-actors.log`), `--discover-effigies` (relic variant assets, actor counts
+and blueprint samples -> `effigies.log`), `--list-dt` (all DataTable paths -> `datatables.log`), and
 `--dump-table <pkgPath>` (one DataTable's rows to stdout).
+
+
+## Map coverage audit (Steam build 25246127)
+
+The refreshed manifest was extracted from a local `Pal-Windows.pak`. No external
+map dataset is used by the exporter or the shipped manifest.
+
+| Category | Main map | World Tree | Total |
+| --- | ---: | ---: | ---: |
+| Placed effigies | 360 | 47 | 407 |
+| Fast-travel points | 137 | 15 | 152 |
+| Tower landmarks | 9 | 4 | 13 |
+| Wanted targets | 33 | 0 | 33 |
+
+The twelve placed effigy types are Lifmunk (155); Lamball, Pengullet, Munchill,
+Rooby, Herbil, Tanzee, Depresso and Cattiva (30 each); Lunaris, Relaxaurus and
+Yakumo (4 each). The Mimog item exists in the game's item table but has no
+placed relic actor and is therefore not emitted as a map pin. All 407 placed
+effigies have distinct non-null UE-Digits GUIDs. Existing world bounds, image
+orientation and player-GUID joins are preserved. The save reader merges legacy
+`RelicObtainForInstanceFlag` flags with every `Flags` map in
+`RelicObtainForInstanceFlagByType`, deduplicating GUIDs. Alpha and bounty pins
+use `NormalBossDefeatFlag` keys (`SpawnerID` and blueprint `SaveKeyName`,
+respectively), with defeated/total counters scoped to the player and map.
+The game reuses the GrassGolem spawner key for two locations; both reflect
+that shared save flag. Missing keys remain neutral. Field bosses (90 entries) and
+species spawn data (542 species/map groups) are also re-extracted.
+
+This audit covers the map's existing POI categories. Dungeon entrances, ruins,
+watchtowers, ordinary merchants and resource nodes do not currently have
+rendered layers; they remain separate feature work. Tower reachability only
+tracks six region keys; keyless landmarks display neutrally without inventing
+completion flags. The filter's tower count includes all landmarks, with tracked
+reachability shown in its tooltip.
+
+## Additional outdoor points of interest
+
+`--export-extra-map` extends an existing map manifest from the same game build with additional gameplay categories. See the [coverage audit](../../docs/map-poi-audit.md) for counts, exact save keys, parent-transform handling and runtime/interior exclusions. `--check-map-transforms` validates coordinate composition without loading game assets; `--audit-map-pois` writes a read-only actor/property inventory.

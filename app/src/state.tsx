@@ -335,11 +335,10 @@ export interface AppState {
   requestDex: (speciesId: string, instanceId?: string) => void;
   /** Pal-dex clears the pending target + instance once it has consumed them. */
   clearDexTarget: () => void;
-  /** Species id the World Map should open with its spawn overlay active on the
-   * next render, or null. Set by the Pal-dex "Show on map" cross-link. */
-  mapSpawnTarget: string | null;
-  /** Jump to the World Map and activate `speciesId`'s spawn overlay. */
-  requestMapSpawn: (speciesId: string) => void;
+  /** Pending species and encounter variant for a Pal-dex map cross-link. */
+  mapSpawnTarget: import("./lib/map-spawns").MapSpawnTarget | null;
+  /** Jump to the World Map and show wild, Alpha, or both encounter types. */
+  requestMapSpawn: (speciesId: string, kind?: import("./lib/map-spawns").SpawnKind) => void;
   /** The World Map clears the pending spawn target once it has consumed it. */
   clearMapSpawnTarget: () => void;
   /** A pending batch of solve specs the Solver should load into its breeding
@@ -414,7 +413,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [solveTarget, setSolveTarget] = useState<string | null>(null);
   const [dexTarget, setDexTarget] = useState<string | null>(null);
   const [dexInstance, setDexInstance] = useState<string | null>(null);
-  const [mapSpawnTarget, setMapSpawnTarget] = useState<string | null>(null);
+  const [mapSpawnTarget, setMapSpawnTarget] = useState<import("./lib/map-spawns").MapSpawnTarget | null>(null);
   const [queueSeed, setQueueSeed] = useState<SolveSpec[] | null>(null);
   // Shared plan link (`#plan=<code>`): read the fragment ONCE at mount (lazy
   // initializer, so it's captured before any later in-app hash change), then let
@@ -790,8 +789,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setDexInstance(null);
   }, []);
 
-  const requestMapSpawn = useCallback((speciesId: string) => {
-    setMapSpawnTarget(speciesId);
+  const requestMapSpawn = useCallback((speciesId: string, kind: import("./lib/map-spawns").SpawnKind = "wild") => {
+    setMapSpawnTarget({ species: speciesId, kind });
     setView("worldmap");
   }, []);
   const clearMapSpawnTarget = useCallback(() => setMapSpawnTarget(null), []);

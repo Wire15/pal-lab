@@ -5,6 +5,7 @@
 
 import type { LayerFilters } from "./PinLayer";
 import type { PoiCounts } from "./pins";
+import { iconUrl, type IconManifest } from "./icons";
 
 /** A layer toggle row: a checkbox-style switch, label, and a right-aligned
  *  count chip. `dimCount` styles the count as approximate (no per-pin join). */
@@ -15,6 +16,7 @@ function Row({
   count,
   countTitle,
   dimCount,
+  icon,
 }: {
   on: boolean;
   onToggle: () => void;
@@ -22,6 +24,7 @@ function Row({
   count?: string;
   countTitle?: string;
   dimCount?: boolean;
+  icon?: string;
 }) {
   return (
     <button
@@ -42,6 +45,7 @@ function Row({
           </svg>
         )}
       </span>
+      {icon && <img src={icon} alt="" aria-hidden width={20} height={20} className="shrink-0 object-contain" />}
       <span
         className={`flex-1 font-mono text-[12px] tracking-wide ${on ? "text-ink" : "text-ink-faint"}`}
       >
@@ -62,6 +66,9 @@ function Row({
 export default function FilterPanel({
   filters,
   setFilter,
+  setEffigyType,
+  setPoiCategory,
+  icons,
   counts,
   hasBounties,
   spawnLabel,
@@ -73,7 +80,10 @@ export default function FilterPanel({
   setShowHidden,
 }: {
   filters: LayerFilters;
-  setFilter: (key: keyof LayerFilters, on: boolean) => void;
+  setFilter: (key: Exclude<keyof LayerFilters, "effigyTypes" | "poiCategories">, on: boolean) => void;
+  setEffigyType: (id: string, on: boolean) => void;
+  setPoiCategory: (id: string, on: boolean) => void;
+  icons: IconManifest | null;
   counts: PoiCounts;
   hasBounties: boolean;
   spawnLabel: string | null;
@@ -90,7 +100,7 @@ export default function FilterPanel({
   const hideUnfound = filters.hideUnfoundEffigies;
   const effigyCount = hideUnfound ? `${ef.found} found` : `${ef.found}/${ef.total}`;
   return (
-    <div className="absolute right-0 top-full z-20 mt-2 w-60 rounded-md border border-line bg-panel/95 p-1.5 shadow-lg backdrop-blur">
+    <div className="absolute right-0 top-full z-20 mt-2 max-h-[calc(100vh-10rem)] w-80 overflow-y-auto rounded-md border border-line bg-panel/95 p-1.5 shadow-lg backdrop-blur">
       <div className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
         Layers
       </div>
@@ -106,7 +116,8 @@ export default function FilterPanel({
         on={filters.alpha}
         onToggle={() => setFilter("alpha", !filters.alpha)}
         label="Alpha Pals"
-        count={String(counts.alphas)}
+        count={counts.alphas.joined ? `${counts.alphas.found}/${counts.alphas.total}` : String(counts.alphas.total)}
+        countTitle={counts.alphas.joined ? "Defeated / total" : "Per-pin match unavailable"}
       />
       <Row
         on={filters.effigies}
@@ -124,6 +135,18 @@ export default function FilterPanel({
       />
       {filters.effigies && (
         <div className="mb-0.5 ml-3 border-l border-line-soft pl-2">
+          {counts.effigyTypes.map(type => (
+            <Row
+              key={type.id}
+              on={filters.effigyTypes?.[type.id] !== false}
+              onToggle={() => setEffigyType(type.id, filters.effigyTypes?.[type.id] === false)}
+              label={type.name}
+              icon={icons?.[type.icon] ? iconUrl(icons[type.icon]) : undefined}
+              count={hideUnfound ? `${type.found} found` : `${type.found}/${type.total}`}
+              countTitle={type.joined ? "Collected / total" : "Collected (per-pin match unavailable)"}
+              dimCount={!type.joined}
+            />
+          ))}
           <button
             type="button"
             onClick={() => setFilter("hideUnfoundEffigies", !hideUnfound)}
@@ -156,18 +179,31 @@ export default function FilterPanel({
           on={filters.bounties}
           onToggle={() => setFilter("bounties", !filters.bounties)}
           label="Bounties"
-          count={String(counts.bounties)}
+          count={counts.bounties.joined ? `${counts.bounties.found}/${counts.bounties.total}` : String(counts.bounties.total)}
+          countTitle={counts.bounties.joined ? "Defeated / total" : "Per-pin match unavailable"}
         />
       )}
-      {tw.total > 0 && (
+      {tw.landmarks > 0 && (
         <Row
           on={filters.towers}
           onToggle={() => setFilter("towers", !filters.towers)}
           label="Towers"
-          count={tw.joined ? `${tw.found}/${tw.total}` : String(tw.total)}
-          countTitle={tw.joined ? "Reached / tracked towers" : "Syndicate towers"}
+          count={String(tw.landmarks)}
+          countTitle={tw.joined ? `${tw.found}/${tw.total} tracked towers reached` : "Syndicate towers"}
         />
       )}
+      {[...new Set((counts.categories ?? []).map(c => c.group))].map(group => (
+        <div key={group} className="mt-2 border-t border-line-soft pt-1">
+          <div className="px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-ink-faint">{group}</div>
+          {(counts.categories ?? []).filter(c => c.group === group).map(c => {
+            const on = filters.poiCategories?.[c.id] ?? c.default_visible;
+            return <Row key={c.id} on={on} onToggle={() => setPoiCategory(c.id, !on)} label={c.name}
+              count={c.joined ? `${c.found}/${c.total}` : String(c.total)}
+              countTitle={c.joined ? "Collected / unlocked / total" : c.recurring ? "Potential spawn locations" : "Static locations"} />;
+          })}
+        </div>
+      ))}
+      {(counts.categories?.length ?? 0) > 0 && <p className="px-2 py-2 font-mono text-[9px] text-ink-faint">{"Resources and loot mark potential spawn locations. Nearby markers are grouped; zoom in for details."}</p>}
       <Row
         on={filters.spawns}
         onToggle={() => setFilter("spawns", !filters.spawns)}
