@@ -1,3 +1,4 @@
+import { matchesText, t, tr, useLocale } from "../i18n";
 // Required-passives picker for the Solver. A search input that opens an
 // anchored popover of **pal-facing** passives (the only ones a pal can roll),
 // each rendered in its in-game STRIP band so rarity reads at a glance — the
@@ -61,6 +62,7 @@ function PassiveChipRemovable({
   value: string;
   onRemove: (value: string) => void;
 }) {
+  useLocale();
   const rank = row?.rank ?? 1;
   const band = stripBand(rank, row?.tier);
   const tint = stripTint(band);
@@ -69,9 +71,9 @@ function PassiveChipRemovable({
     <span
       className="inline-flex items-center gap-1.5 rounded-sm border py-0.5 pl-2 pr-1 text-[11px] font-semibold leading-tight"
       style={{ ...tint.banner, color: tint.nameColor, borderLeftWidth: 2 }}
-      title={row?.id ?? value}
+      title={tr(row?.id ?? value)}
     >
-      <span className="max-w-[13rem] truncate">{label}</span>
+      <span className="max-w-[13rem] truncate">{tr(label)}</span>
       <span style={{ color: tint.accent }}>
         <RankCluster rank={rank} band={band} size="sm" />
       </span>
@@ -79,10 +81,8 @@ function PassiveChipRemovable({
         type="button"
         className="ml-0.5 grid h-4 w-4 place-items-center rounded-sm text-current opacity-60 transition-opacity hover:opacity-100"
         onClick={() => onRemove(value)}
-        aria-label={`Remove ${label}`}
-      >
-        &times;
-      </button>
+        aria-label={t("Remove {0}", [label])}
+      >{t("×")}</button>
     </span>
   );
 }
@@ -113,6 +113,7 @@ export function PassivePicker({
   /** What each selected value is keyed on: "name" (Solver contract) or "id". */
   valueMode?: "name" | "id";
 }) {
+  useLocale();
   const [entries, setEntries] = useState<PassiveRow[]>([]);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -151,7 +152,7 @@ export function PassivePicker({
     return palFacing.filter(
       (p) =>
         !selectedSet.has(valueMode === "id" ? p.id : p.name) &&
-        (!q || p.name.toLowerCase().includes(q)),
+        (!q || matchesText(q, p.name, p.id)),
     );
   }, [palFacing, selectedSet, query, valueMode]);
 
@@ -237,7 +238,7 @@ export function PassivePicker({
     <div className="flex flex-col gap-1.5">
       {label && (
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          {label}
+          {tr(label)}
         </span>
       )}
 
@@ -245,7 +246,7 @@ export function PassivePicker({
         <input
           ref={inputRef}
           className="w-full min-w-0 rounded-md border border-line bg-abyss px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-          placeholder={placeholder}
+          placeholder={tr(placeholder)}
           value={query}
           role="combobox"
           aria-expanded={open}
@@ -262,8 +263,7 @@ export function PassivePicker({
       </div>
 
       {open &&
-        pos &&
-        createPortal(
+        pos && createPortal(
           <div
             ref={popRef}
             id="passive-picker-list"
@@ -281,11 +281,7 @@ export function PassivePicker({
           >
             {rows.length === 0 ? (
               <div className="px-2 py-3 text-center text-[12px] text-ink-faint">
-                {entries.length === 0
-                  ? "Loading passives\u2026"
-                  : query.trim()
-                    ? `No passives match \u201c${query.trim()}\u201d`
-                    : "All pal passives added"}
+                {entries.length === 0 ? t("Loading passives…") : query.trim() ? t("No passives match “{0}”", [query.trim()]) : t("All pal passives added")}
               </div>
             ) : (
               rows.map((p, i) => (

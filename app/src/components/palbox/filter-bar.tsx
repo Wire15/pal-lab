@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // Shared sort / search / filter bar, applied to BOTH the grid and list modes
 // (PALBOX-SORT-SPEC). Reproduces every real in-game Palbox sort (Slot order,
 // Paldeck No., Level, Name, Rarity, Element, Alpha-first) and the name search,
@@ -14,19 +15,19 @@ import {
 } from "./selectors";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "slot", label: "Slot order" },
-  { key: "paldex", label: "Paldeck No." },
-  { key: "level", label: "Level" },
-  { key: "name", label: "Name" },
-  { key: "rarity", label: "Rarity" },
-  { key: "element", label: "Element" },
-  { key: "alpha", label: "Alpha-first" },
+  { key: "slot", get label() { return t("Slot order"); } },
+  { key: "paldex", get label() { return t("Paldeck No."); } },
+  { key: "level", get label() { return t("Level"); } },
+  { key: "name", get label() { return t("Name"); } },
+  { key: "rarity", get label() { return t("Rarity"); } },
+  { key: "element", get label() { return t("Element"); } },
+  { key: "alpha", get label() { return t("Alpha-first"); } },
 ];
 
 const GENDERS: { value: GenderFilter; glyph: string; label: string }[] = [
-  { value: "any", glyph: "\u2015", label: "Any gender" },
-  { value: "Male", glyph: "\u2642", label: "Male" },
-  { value: "Female", glyph: "\u2640", label: "Female" },
+  { value: "any", glyph: "\u2015", get label() { return t("Any gender"); } },
+  { value: "Male", glyph: "\u2642", get label() { return t("Male"); } },
+  { value: "Female", glyph: "\u2640", get label() { return t("Female"); } },
 ];
 
 export function FilterBar({
@@ -40,6 +41,7 @@ export function FilterBar({
   shown: number;
   total: number;
 }) {
+  useLocale();
   const toggleElement = (el: string) => {
     const has = query.elements.includes(el);
     onChange({
@@ -57,8 +59,8 @@ export function FilterBar({
           type="search"
           value={query.search}
           onChange={(e) => onChange({ search: e.currentTarget.value })}
-          placeholder="Search name or nickname..."
-          aria-label="Search pals by name"
+          placeholder={t("Search name or nickname...")}
+          aria-label={t("Search pals by name")}
           className="w-52 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
         />
         <span className="whitespace-nowrap font-mono text-[11px] tabular-nums text-ink-faint">
@@ -70,25 +72,23 @@ export function FilterBar({
 
       {/* Sort key + direction */}
       <div className="flex items-center gap-1.5">
-        <label className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          Sort
-        </label>
+        <label className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Sort")}</label>
         <select
           value={query.sortKey}
           onChange={(e) => onChange({ sortKey: e.currentTarget.value as SortKey })}
-          aria-label="Sort by"
+          aria-label={t("Sort by")}
           className="rounded-md border border-line bg-abyss px-2 py-1.5 text-[13px] text-ink focus:border-amber/60"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.key} value={o.key}>
-              {o.label}
+              {tr(o.label)}
             </option>
           ))}
         </select>
         <button
           onClick={() => onChange({ sortDir: query.sortDir === "asc" ? "desc" : "asc" })}
-          aria-label={`Sort ${query.sortDir === "asc" ? "ascending" : "descending"}`}
-          title={query.sortDir === "asc" ? "Ascending" : "Descending"}
+          aria-label={t("Sort {0}", [query.sortDir === "asc" ? "ascending" : "descending"])}
+          title={tr(query.sortDir === "asc" ? "Ascending" : "Descending")}
           className="rounded-md border border-line bg-abyss px-2 py-1.5 font-mono text-[12px] leading-none text-amber transition-colors hover:bg-hover"
         >
           {query.sortDir === "asc" ? "\u25b2" : "\u25bc"}
@@ -96,7 +96,7 @@ export function FilterBar({
       </div>
 
       {/* Element toggles */}
-      <div className="flex items-center gap-1" role="group" aria-label="Filter by element">
+      <div className="flex items-center gap-1" role="group" aria-label={t("Filter by element")}>
         {ELEMENT_ORDER.map((el) => {
           const active = query.elements.includes(el);
           return (
@@ -104,7 +104,7 @@ export function FilterBar({
               key={el}
               onClick={() => toggleElement(el)}
               aria-pressed={active}
-              title={el}
+              title={tr(el)}
               className={`group flex items-center rounded-md border p-0.5 transition-colors ${
                 active
                   ? "border-amber/70 bg-raised"
@@ -129,7 +129,7 @@ export function FilterBar({
       <div
         className="flex items-center overflow-hidden rounded-md border border-line"
         role="group"
-        aria-label="Filter by gender"
+        aria-label={t("Filter by gender")}
       >
         {GENDERS.map((ggg) => {
           const active = query.gender === ggg.value;
@@ -144,7 +144,7 @@ export function FilterBar({
               key={ggg.value}
               onClick={() => onChange({ gender: ggg.value })}
               aria-pressed={active}
-              title={ggg.label}
+              title={tr(ggg.label)}
               className={`px-2 py-1.5 text-[13px] leading-none transition-colors ${
                 active ? "bg-amber/15 text-amber" : `bg-abyss ${tint} hover:bg-hover`
               }`}
@@ -166,7 +166,7 @@ export function FilterBar({
         }`}
       >
         <span aria-hidden>{"\u2726"}</span>
-        Alpha
+        {t("Alpha")}
       </button>
 
       {/* Passive multi-select filter (shared PassivePicker; AND across selected) */}
@@ -174,8 +174,8 @@ export function FilterBar({
         <PassivePicker
           selected={query.passives}
           valueMode="id"
-          label=""
-          placeholder={"Passive\u2026"}
+          label={t("")}
+          placeholder={tr("Passive\u2026")}
           onAdd={(id) =>
             onChange({
               passives: query.passives.includes(id)

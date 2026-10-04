@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The centered "no path found" empty state, shared by the Solver and IV Lab
 // results panes. Both render the same structured no-path DIAGNOSIS list (one
 // actionable line per `NoPathReason`) when the last solve returned zero plans
@@ -14,28 +15,28 @@ function diagnosisCopy(reason: NoPathReason, maxSteps: number): string {
   switch (reason.kind) {
     case "missing_passive_carrier":
       if (reason.allowed_excluded)
-        return `No pal you own carries ${reason.passive_name}, and the Surgery table's implantable-passives list excludes it. Add ${reason.passive_name} to that list in Breeding setup (or catch a carrier), then re-solve.`;
+        return t("No pal you own carries {0}, and the Surgery table's implantable-passives list excludes it. Add {1} to that list in Breeding setup (or catch a carrier), then re-solve.", [reason.passive_name, reason.passive_name]);
       return reason.surgery_off
-        ? `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier, or enable Surgery table in Breeding setup, then re-solve.`
-        : `No pal you own carries ${reason.passive_name}. Wild pals can't introduce required passives — catch a ${reason.passive_name} carrier and re-solve.`;
+        ? t("No pal you own carries {0}. Wild pals can't introduce required passives — catch a {1} carrier, or enable Surgery table in Breeding setup, then re-solve.", [reason.passive_name, reason.passive_name])
+        : t("No pal you own carries {0}. Wild pals can't introduce required passives — catch a {1} carrier and re-solve.", [reason.passive_name, reason.passive_name]);
     case "missing_move_carrier":
       if (!reason.inheritable)
-        return `${reason.move_name} is exclusive and can't be inherited or taught.`;
+        return t("{0} is exclusive and can't be inherited or taught.", [reason.move_name]);
       return reason.fruit_off && reason.fruit_available
-        ? `No owned pal carries ${reason.move_name} equipped — enable Skill Fruits in Breeding setup or equip ${reason.move_name} on a parent.`
-        : `No owned pal has ${reason.move_name} equipped — equip it on a potential parent and re-read your save.`;
+        ? t("No owned pal carries {0} equipped — enable Skill Fruits in Breeding setup or equip {1} on a parent.", [reason.move_name, reason.move_name])
+        : t("No owned pal has {0} equipped — equip it on a potential parent and re-read your save.", [reason.move_name]);
     case "target_species_unreachable":
       return reason.min_steps == null
-        ? `Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.`
-        : `Target isn't reachable from your pals. Breedable in ${reason.min_steps} steps from species you don't own — add a source pal or include pals you don't own.`;
+        ? t("Target isn't producible by breeding from your pals — no recipe chain reaches it. It may only be catchable.")
+        : t("Target isn't reachable from your pals. Breedable in {0} steps from species you don't own — add a source pal or include pals you don't own.", [reason.min_steps]);
     case "step_cap_too_low":
-      return `Reachable in ${reason.needed} steps but cap is ${reason.cap} — raise Max steps to ${reason.needed}.`;
+      return t("Reachable in {0} steps but cap is {1} — raise Max steps to {2}.", [reason.needed, reason.cap, reason.needed]);
     case "gender_bottleneck":
-      return `Every ${reason.species_name} you own shares one gender, so no pair can breed — add an opposite-gender ${reason.species_name} or include pals you don't own.`;
+      return t("Every {0} you own shares one gender, so no pair can breed — add an opposite-gender {1} or include pals you don't own.", [reason.species_name, reason.species_name]);
     case "exhausted_search":
-      return `No viable pairing in your pool reaches the target within ${maxSteps} steps. Try raising Max steps, relaxing passives, or including pals you don't own.`;
+      return t("No viable pairing in your pool reaches the target within {0} steps. Try raising Max steps, relaxing passives, or including pals you don't own.", [maxSteps]);
     case "search_budget_exhausted":
-      return `Search hit its ${reason.budget_secs}s budget before finishing — the target may still be reachable. Narrow the request (fewer passives, lower IV floors, fewer steps) and re-solve.`;
+      return t("Search hit its {0}s budget before finishing — the target may still be reachable. Narrow the request (fewer passives, lower IV floors, fewer steps) and re-solve.", [reason.budget_secs]);
   }
 }
 
@@ -53,9 +54,10 @@ export function NoPathPanel({
   title: string;
   fallback: ReactNode;
 }) {
+  useLocale();
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-      <div className="font-display text-lg text-ink-dim">{title}</div>
+      <div className="font-display text-lg text-ink-dim">{tr(title)}</div>
       {diagnosis.length > 0 ? (
         <ul className="flex max-w-md flex-col gap-2 text-left">
           {diagnosis.map((reason, i) => (

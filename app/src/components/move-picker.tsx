@@ -1,3 +1,4 @@
+import { matchesText, t, tr, useLocale } from "../i18n";
 // Required-MOVES picker for the Solver. A search input that opens an anchored
 // popover of active skills (waza) from `list_active_skills`, each row showing the
 // element tile + name + faint INHERIT / FRUIT chips (from `can_inherit` /
@@ -25,17 +26,14 @@ interface MoveRow {
 /** Faint INHERIT / FRUIT chips — the pack's `can_inherit` / `has_skill_fruit`
  *  flags. The inherit RATE (~50%/egg) is community-measured, not code-verified. */
 function MoveTags({ skill }: { skill: ActiveSkill }) {
+  useLocale();
   return (
     <>
       {skill.can_inherit && (
-        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
-          Inherit
-        </span>
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">{t("Inherit")}</span>
       )}
       {skill.has_skill_fruit && (
-        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
-          Fruit
-        </span>
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">{t("Fruit")}</span>
       )}
     </>
   );
@@ -51,6 +49,7 @@ function MoveChipRemovable({
   value: string;
   onRemove: (value: string) => void;
 }) {
+  useLocale();
   const label = row?.skill.name ?? humanizeWaza(value);
   const key = row ? elementTokenKey(row.skill.element) : null;
   const accent = key ? `var(--color-el-${key})` : "var(--color-amber)";
@@ -58,18 +57,16 @@ function MoveChipRemovable({
     <span
       className="inline-flex items-center gap-1.5 rounded-sm border border-line bg-raised py-0.5 pl-2 pr-1 text-[11px] font-semibold leading-tight text-ink"
       style={{ borderLeftWidth: 2, borderLeftColor: accent }}
-      title={value}
+      title={tr(value)}
     >
       {row && <ElementIcon element={row.skill.element} size={13} />}
-      <span className="max-w-[13rem] truncate">{label}</span>
+      <span className="max-w-[13rem] truncate">{tr(label)}</span>
       <button
         type="button"
         className="ml-0.5 grid h-4 w-4 place-items-center rounded-sm text-ink-faint transition-colors hover:text-ink"
         onClick={() => onRemove(value)}
-        aria-label={`Remove ${label}`}
-      >
-        &times;
-      </button>
+        aria-label={t("Remove {0}", [label])}
+      >{t("×")}</button>
     </span>
   );
 }
@@ -92,6 +89,7 @@ export function MovePicker({
   onAdd: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
+  useLocale();
   const [entries, setEntries] = useState<MoveRow[]>([]);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -125,7 +123,7 @@ export function MovePicker({
     return entries.filter(
       (e) =>
         !selectedSet.has(e.id) &&
-        (!q || e.skill.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)),
+        (!q || matchesText(q, e.skill.name, e.id)),
     );
   }, [entries, selectedSet, query]);
 
@@ -209,15 +207,13 @@ export function MovePicker({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-        Required moves
-      </span>
+      <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Required moves")}</span>
 
       <div ref={anchorRef} className="relative">
         <input
           ref={inputRef}
           className="w-full min-w-0 rounded-md border border-line bg-abyss px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-          placeholder={"Search moves\u2026"}
+          placeholder={tr("Search moves\u2026")}
           value={query}
           role="combobox"
           aria-expanded={open}
@@ -234,8 +230,7 @@ export function MovePicker({
       </div>
 
       {open &&
-        pos &&
-        createPortal(
+        pos && createPortal(
           <div
             ref={popRef}
             id="move-picker-list"
@@ -253,11 +248,7 @@ export function MovePicker({
           >
             {rows.length === 0 ? (
               <div className="px-2 py-3 text-center text-[12px] text-ink-faint">
-                {entries.length === 0
-                  ? "Loading moves\u2026"
-                  : query.trim()
-                    ? `No moves match \u201c${query.trim()}\u201d`
-                    : "All moves added"}
+                {entries.length === 0 ? t("Loading moves…") : query.trim() ? t("No moves match “{0}”", [query.trim()]) : t("All moves added")}
               </div>
             ) : (
               rows.map((e, i) => (
@@ -278,7 +269,7 @@ export function MovePicker({
                 >
                   <ElementIcon element={e.skill.element} size={16} />
                   <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">
-                    {e.skill.name}
+                    {tr(e.skill.name)}
                   </span>
                   <span className="flex shrink-0 items-center gap-1">
                     <MoveTags skill={e.skill} />

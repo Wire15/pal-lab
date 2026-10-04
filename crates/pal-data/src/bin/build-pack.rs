@@ -527,7 +527,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         })
                     })
                     .collect(),
-                // Palpedia gap fields — own-install extraction ground truth.
+                // Pal-dex reference fields — own-install extraction ground truth.
                 drops: ex
                     .drops
                     .iter()

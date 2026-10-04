@@ -1,3 +1,4 @@
+import { setLocale, t, tr, useLocale } from "./i18n";
 import { useEffect, useRef, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import SaveInspector from "./views/SaveInspector";
@@ -137,14 +138,14 @@ function relativeTime(epoch: number): string {
   const s = Math.max(0, Math.floor((Date.now() - epoch) / 1000));
   if (s < 45) return "just now";
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return t("{0}m ago", [m]);
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
+  if (h < 24) return t("{0}h ago", [h]);
   const d = Math.floor(h / 24);
-  if (d < 30) return `${d}d ago`;
+  if (d < 30) return t("{0}d ago", [d]);
   const mo = Math.floor(d / 30);
-  if (mo < 12) return `${mo}mo ago`;
-  return `${Math.floor(mo / 12)}y ago`;
+  if (mo < 12) return t("{0}mo ago", [mo]);
+  return t("{0}y ago", [Math.floor(mo / 12)]);
 }
 
 /**
@@ -153,6 +154,7 @@ function relativeTime(epoch: number): string {
  * lands. "Skip for now" dismisses it — the app is fully usable without a save.
  */
 function SaveModal({ onClose }: { onClose: () => void }) {
+  useLocale();
   const {
     lastSaveDir,
     loadSave,
@@ -235,7 +237,7 @@ function SaveModal({ onClose }: { onClose: () => void }) {
       }
       setXboxWorlds(rows);
     } catch (e) {
-      setXboxNote(`Couldn't read the Xbox save store: ${String(e)}`);
+      setXboxNote(t("Couldn't read the Xbox save store: {0}", [String(e)]));
     } finally {
       setXboxScanning(false);
     }
@@ -258,22 +260,16 @@ function SaveModal({ onClose }: { onClose: () => void }) {
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="border-b border-line px-5 py-4">
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Palworld save
-          </div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Palworld save")}</div>
           <h2
             id="save-modal-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
-          >
-            Load your Palworld save
-          </h2>
+          >{t("Load your Palworld save")}</h2>
         </div>
 
         {recentSaves.length > 0 && (
           <div className="border-b border-line px-5 py-4">
-            <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Recent saves
-            </div>
+            <div className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Recent saves")}</div>
             <ul className="flex flex-col gap-1.5">
               {recentSaves.map((r) => (
                 <li key={r.dir}>
@@ -292,10 +288,9 @@ function SaveModal({ onClose }: { onClose: () => void }) {
                     </div>
                     <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
                       <span className="text-ink-dim">{r.players}</span>{" "}
-                      {r.players === 1 ? "player" : "players"}
+                      {r.players === 1 ? t("player") : t("players")}
                       <span className="mx-1 text-line">&middot;</span>
-                      <span className="text-amber">{r.pals}</span> pals
-                    </div>
+                      <span className="text-amber">{r.pals}</span>{t(" pals")}</div>
                     <div
                       className="truncate font-mono text-[10px] text-ink-faint/80"
                       title={r.dir}
@@ -311,14 +306,12 @@ function SaveModal({ onClose }: { onClose: () => void }) {
 
         <div className="px-5 py-4">
           <label className="flex flex-col gap-1.5">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Save folder
-            </span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Save folder")}</span>
             <div className="flex gap-2">
               <input
                 autoFocus
                 className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-                placeholder={"\u2026/Saved/SaveGames/<id>/<world>"}
+                placeholder={tr("\u2026/Saved/SaveGames/<id>/<world>")}
                 value={path}
                 onChange={(e) => setPath(e.currentTarget.value)}
                 onKeyDown={(e) => {
@@ -331,16 +324,11 @@ function SaveModal({ onClose }: { onClose: () => void }) {
               <button
                 className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
                 onClick={browse}
-              >
-                Browse
-              </button>
+              >{t("Browse")}</button>
             </div>
           </label>
-          <p className="mt-2.5 text-[12px] leading-relaxed text-ink-faint">
-            Point at the world folder that contains{" "}
-            <span className="font-mono text-ink-dim">Level.sav</span>. Nothing is
-            written &mdash; the save is read only.
-          </p>
+          <p className="mt-2.5 text-[12px] leading-relaxed text-ink-faint">{t("Point at the world folder that contains")}{" "}
+            <span className="font-mono text-ink-dim">{t("Level.sav")}</span>{t(". Nothing is written — the save is read only.")}</p>
           {saveError && (
             <div className="mt-3 rounded-md border border-bad/40 bg-bad/10 px-3 py-2 text-[12px] text-bad">
               {saveError}
@@ -353,12 +341,9 @@ function SaveModal({ onClose }: { onClose: () => void }) {
                 disabled={xboxScanning || saveLoading}
                 className="flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {xboxScanning ? "Scanning\u2026" : "Xbox / Game Pass"}
+                {xboxScanning ? t("Scanning…") : t("Xbox / Game Pass")}
               </button>
-              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">
-                Reads the Game Pass save store on this PC. Read only &mdash;
-                nothing is written.
-              </p>
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">{t("Reads the Game Pass save store on this PC. Read only — nothing is written.")}</p>
               {xboxNote && (
                 <div className="mt-2 rounded-md border border-line bg-abyss/40 px-3 py-2 text-[12px] text-ink-dim">
                   {xboxNote}
@@ -371,13 +356,8 @@ function SaveModal({ onClose }: { onClose: () => void }) {
                 }}
                 disabled={saveLoading}
                 className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Dedicated server (SFTP)
-              </button>
-              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">
-                Load a world live from a Palworld dedicated server over SSH. Read
-                only &mdash; nothing is written to your server.
-              </p>
+              >{t("Dedicated server (SFTP)")}</button>
+              <p className="mt-2 text-[12px] leading-relaxed text-ink-faint">{t("Load a world live from a Palworld dedicated server over SSH. Read only — nothing is written to your server.")}</p>
             </div>
           )}
         </div>
@@ -386,15 +366,13 @@ function SaveModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={onClose}
             className="rounded-md px-2 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
-          >
-            Skip for now
-          </button>
+          >{t("Skip for now")}</button>
           <button
             onClick={() => loadSave(path)}
             disabled={!canLoad}
             className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {saveLoading ? "Loading\u2026" : "Load save"}
+            {saveLoading ? t("Loading…") : t("Load save")}
           </button>
         </div>
       </div>
@@ -442,6 +420,7 @@ function SftpConnectModal({
   reconnect: { worldDir: string; profile: SftpProfile | null } | null;
   onClose: () => void;
 }) {
+  useLocale();
   const { loadSave } = useAppState();
   const initial = reconnect?.profile ?? readSftpProfile();
   const [host, setHost] = useState(initial?.host ?? "");
@@ -622,18 +601,15 @@ function SftpConnectModal({
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="border-b border-line px-5 py-4">
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Dedicated server (SFTP)
-          </div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Dedicated server (SFTP)")}</div>
           <h2
             id="sftp-modal-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
           >
-            {phase === "worlds" ? "Choose a world" : "Connect to your server"}
+            {phase === "worlds" ? t("Choose a world") : t("Connect to your server")}
           </h2>
           {reconnectLabel && (
-            <p className="mt-1 text-[12px] leading-relaxed text-ink-dim">
-              Reconnect to load{" "}
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-dim">{t("Reconnect to load")}{" "}
               <span className="font-mono text-ink">{reconnectLabel}</span>
             </p>
           )}
@@ -643,10 +619,7 @@ function SftpConnectModal({
           <>
             {info && !info.known && (
               <div className="border-b border-line px-5 py-3">
-                <div className="rounded-md border border-amber/40 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-ink-dim">
-                  First connection &mdash; fingerprint pinned. If it changes later
-                  we refuse and warn.
-                  <div className="mt-1 truncate font-mono text-[10px] text-ink-faint">
+                <div className="rounded-md border border-amber/40 bg-amber/10 px-3 py-2 text-[12px] leading-relaxed text-ink-dim">{t("First connection — fingerprint pinned. If it changes later we refuse and warn.")}<div className="mt-1 truncate font-mono text-[10px] text-ink-faint">
                     {info.fingerprint}
                   </div>
                 </div>
@@ -665,7 +638,7 @@ function SftpConnectModal({
                       </div>
                       <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
                         <span className="text-ink-dim">{w.players}</span>{" "}
-                        {w.players === 1 ? "player" : "players"}
+                        {w.players === 1 ? t("player") : t("players")}
                         <span className="mx-1 text-line">&middot;</span>
                         {relativeTime(w.mtime_ms)}
                       </div>
@@ -679,22 +652,22 @@ function SftpConnectModal({
           <div className="flex flex-col gap-3 px-5 py-4">
             <div className="flex gap-2">
               <label className="flex flex-[3] flex-col gap-1.5">
-                <span className={fieldLabel}>Host</span>
+                <span className={fieldLabel}>{t("Host")}</span>
                 <input
                   autoFocus
                   className={inputClass}
-                  placeholder="server.example.com"
+                  placeholder={t("server.example.com")}
                   value={host}
                   disabled={connecting}
                   onChange={(e) => setHost(e.currentTarget.value)}
                 />
               </label>
               <label className="flex flex-1 flex-col gap-1.5">
-                <span className={fieldLabel}>Port</span>
+                <span className={fieldLabel}>{t("Port")}</span>
                 <input
                   className={inputClass}
                   inputMode="numeric"
-                  placeholder="22"
+                  placeholder={t("22")}
                   value={port}
                   disabled={connecting}
                   onChange={(e) => setPort(e.currentTarget.value)}
@@ -702,17 +675,17 @@ function SftpConnectModal({
               </label>
             </div>
             <label className="flex flex-col gap-1.5">
-              <span className={fieldLabel}>User</span>
+              <span className={fieldLabel}>{t("User")}</span>
               <input
                 className={inputClass}
-                placeholder="steam"
+                placeholder={t("steam")}
                 value={user}
                 disabled={connecting}
                 onChange={(e) => setUser(e.currentTarget.value)}
               />
             </label>
             <div className="flex flex-col gap-1.5">
-              <span className={fieldLabel}>Authentication</span>
+              <span className={fieldLabel}>{t("Authentication")}</span>
               <div className="flex gap-1.5">
                 <button
                   type="button"
@@ -723,9 +696,7 @@ function SftpConnectModal({
                       ? "border-amber/60 bg-amber/10 text-ink"
                       : "border-line bg-raised text-ink-dim hover:bg-hover"
                   }`}
-                >
-                  Password
-                </button>
+                >{t("Password")}</button>
                 <button
                   type="button"
                   onClick={() => setAuth("key")}
@@ -735,22 +706,20 @@ function SftpConnectModal({
                       ? "border-amber/60 bg-amber/10 text-ink"
                       : "border-line bg-raised text-ink-dim hover:bg-hover"
                   }`}
-                >
-                  Key file
-                </button>
+                >{t("Key file")}</button>
               </div>
             </div>
             {auth === "password" ? (
               <label className="flex flex-col gap-1.5">
-                <span className={fieldLabel}>Password</span>
+                <span className={fieldLabel}>{t("Password")}</span>
                 <input
                   className={inputClass}
                   type="password"
                   autoComplete="off"
                   placeholder={
-                    storedSecret?.password
+                    tr(storedSecret?.password
                       ? "saved \u2014 leave blank to use"
-                      : "\u2026"
+                      : "\u2026")
                   }
                   value={password}
                   disabled={connecting}
@@ -760,11 +729,11 @@ function SftpConnectModal({
             ) : (
               <>
                 <label className="flex flex-col gap-1.5">
-                  <span className={fieldLabel}>Private key file</span>
+                  <span className={fieldLabel}>{t("Private key file")}</span>
                   <div className="flex gap-2">
                     <input
                       className={inputClass}
-                      placeholder="\u2026/.ssh/id_ed25519"
+                      placeholder={t("\\u2026/.ssh/id_ed25519")}
                       value={keyPath}
                       disabled={connecting}
                       onChange={(e) => setKeyPath(e.currentTarget.value)}
@@ -774,21 +743,19 @@ function SftpConnectModal({
                       onClick={pickKey}
                       disabled={connecting}
                       className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:opacity-50"
-                    >
-                      Browse
-                    </button>
+                    >{t("Browse")}</button>
                   </div>
                 </label>
                 <label className="flex flex-col gap-1.5">
-                  <span className={fieldLabel}>Key passphrase (optional)</span>
+                  <span className={fieldLabel}>{t("Key passphrase (optional)")}</span>
                   <input
                     className={inputClass}
                     type="password"
                     autoComplete="off"
                     placeholder={
-                      storedSecret?.key_passphrase
+                      tr(storedSecret?.key_passphrase
                         ? "saved \u2014 leave blank to use"
-                        : "\u2026"
+                        : "\u2026")
                     }
                     value={passphrase}
                     disabled={connecting}
@@ -805,25 +772,20 @@ function SftpConnectModal({
                 disabled={connecting}
                 onChange={(e) => setRemember(e.currentTarget.checked)}
               />
-              <span>
-                Remember password
-                <span className="ml-1 text-ink-faint">
-                  &mdash; kept in your OS credential vault
-                </span>
+              <span>{t("Remember password")}<span className="ml-1 text-ink-faint">{t("— kept in your OS credential vault")}</span>
               </span>
             </label>
             <label className="flex flex-col gap-1.5">
-              <span className={fieldLabel}>Remote path</span>
+              <span className={fieldLabel}>{t("Remote path")}</span>
               <input
                 className={inputClass}
-                placeholder="/home/steam/Pal/Saved/SaveGames"
+                placeholder={t("/home/steam/Pal/Saved/SaveGames")}
                 value={root}
                 disabled={connecting}
                 onChange={(e) => setRoot(e.currentTarget.value)}
               />
-              <span className="text-[12px] leading-relaxed text-ink-faint">
-                The world folder, or its SaveGames parent &mdash; we scan for{" "}
-                <span className="font-mono text-ink-dim">Level.sav</span>.
+              <span className="text-[12px] leading-relaxed text-ink-faint">{t("The world folder, or its SaveGames parent — we scan for")}{" "}
+                <span className="font-mono text-ink-dim">{t("Level.sav")}</span>.
               </span>
             </label>
             {error && (
@@ -835,10 +797,7 @@ function SftpConnectModal({
         )}
 
         <div className="border-t border-line px-5 py-3">
-          <p className="text-[12px] leading-relaxed text-ink-faint">
-            Read-only - Pal Lab never writes to your server. Save changes are
-            picked up by polling every 60s.
-          </p>
+          <p className="text-[12px] leading-relaxed text-ink-faint">{t("Read-only - Pal Lab never writes to your server. Save changes are picked up by polling every 60s.")}</p>
         </div>
 
         {phase !== "worlds" && (
@@ -846,15 +805,13 @@ function SftpConnectModal({
             <button
               onClick={onClose}
               className="rounded-md px-2 py-1.5 text-[13px] font-medium text-ink-faint transition-colors hover:text-ink-dim"
-            >
-              Cancel
-            </button>
+            >{t("Cancel")}</button>
             <button
               onClick={() => connect()}
               disabled={!canConnect}
               className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {connecting ? "Connecting\u2026" : "Connect"}
+              {connecting ? t("Connecting…") : t("Connect")}
             </button>
           </div>
         )}
@@ -878,6 +835,7 @@ function XboxWorldPicker({
   onPick: (world: XboxWorldRow) => void;
   onClose: () => void;
 }) {
+  useLocale();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -900,19 +858,12 @@ function XboxWorldPicker({
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="border-b border-line px-5 py-4">
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Xbox / Game Pass
-          </div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Xbox / Game Pass")}</div>
           <h2
             id="xbox-modal-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
-          >
-            Choose a world
-          </h2>
-          <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
-            Read from the Game Pass save store on this PC. Nothing is written
-            &mdash; the save is read only.
-          </p>
+          >{t("Choose a world")}</h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">{t("Read from the Game Pass save store on this PC. Nothing is written — the save is read only.")}</p>
         </div>
 
         <ul className="flex max-h-[60vh] flex-col gap-1.5 overflow-y-auto px-5 py-4">
@@ -928,7 +879,7 @@ function XboxWorldPicker({
                   </div>
                   <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
                     <span className="text-ink-dim">{w.player_count}</span>{" "}
-                    {w.player_count === 1 ? "player" : "players"}
+                    {w.player_count === 1 ? t("player") : t("players")}
                     <span className="mx-1 text-line">&middot;</span>
                     {relativeTime(w.mtime_ms)}
                   </div>
@@ -949,6 +900,7 @@ function XboxWorldPicker({
  * multi-player world; also reachable from the sidebar scope pill.
  */
 function ScopeModal({ onClose }: { onClose: () => void }) {
+  useLocale();
   const { saveSummary, playerScope, setPlayerScope } = useAppState();
 
   useEffect(() => {
@@ -990,17 +942,16 @@ function ScopeModal({ onClose }: { onClose: () => void }) {
       >
         <div className="border-b border-line px-5 py-4">
           <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Player scope
+            {t("Player scope")}
           </div>
           <h2
             id="scope-modal-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
           >
-            Who plays this world?
+            {t("Who plays this world?")}
           </h2>
           <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
-            Scopes the solver, donors and Pal-dex counts to one player's pals.
-            Change it any time from the scope pill.
+            {t("Scopes the solver, donors and Pal-dex counts to one player's pals. Change it any time from the scope pill.")}
           </p>
         </div>
 
@@ -1019,16 +970,14 @@ function ScopeModal({ onClose }: { onClose: () => void }) {
                 >
                   <div className="min-w-0">
                     <div className="truncate text-[13px] font-medium text-ink">
-                      {p.name || "Unnamed player"}
+                      {p.name || t("Unnamed player")}
                     </div>
                     <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
                       {p.uid.slice(0, 8)}
                     </div>
                   </div>
                   <span className="shrink-0 font-mono text-[11px] tabular-nums text-ink-faint">
-                    <span className="text-amber">{ownedByUid.get(p.uid) ?? 0}</span>{" "}
-                    pals
-                  </span>
+                    <span className="text-amber">{ownedByUid.get(p.uid) ?? 0}</span>{" "}{t("pals")}</span>
                 </button>
               </li>
             );
@@ -1042,10 +991,10 @@ function ScopeModal({ onClose }: { onClose: () => void }) {
                   : "border-line bg-raised/50 hover:border-amber/40 hover:bg-hover"
               }`}
             >
-              <span className="text-[13px] font-medium text-ink">All players</span>
+              <span className="text-[13px] font-medium text-ink">{t("All players")}</span>
               <span className="shrink-0 font-mono text-[11px] tabular-nums text-ink-faint">
                 <span className="text-amber">{saveSummary?.pals.length ?? 0}</span>{" "}
-                pals
+                {t("pals")}
               </span>
             </button>
           </li>
@@ -1056,6 +1005,7 @@ function ScopeModal({ onClose }: { onClose: () => void }) {
 }
 
 function Shell() {
+  const locale = useLocale();
   const {
     view,
     setView,
@@ -1072,7 +1022,7 @@ function Shell() {
   // Human-readable label for the active scope pill: the player's name, or "All".
   const scopeLabel =
     playerScope === "all"
-      ? "All"
+      ? t("All")
       : saveSummary?.players.find((p) => p.uid === playerScope)?.name ||
         playerScope.slice(0, 8);
 
@@ -1102,7 +1052,7 @@ function Shell() {
               PAL&middot;LAB
             </div>
             <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-              Breeding lab
+              {t("Breeding lab")}
             </div>
           </div>
         </div>
@@ -1132,9 +1082,9 @@ function Shell() {
                     <NavIcon view={item.id} />
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-[13px] font-medium leading-tight">{item.label}</span>
+                    <span className="text-[13px] font-medium leading-tight">{tr(item.label)}</span>
                     <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      {item.hint}
+                      {tr(item.hint)}
                     </span>
                   </span>
                 </button>
@@ -1144,6 +1094,18 @@ function Shell() {
         </ul>
 
         <div className="mt-auto px-3 pb-4 pt-3">
+          <label className="mb-3 flex items-center justify-between gap-2 text-xs text-ink-dim">
+            <span>{t("Language")}</span>
+            <select
+              aria-label={t("Language")}
+              value={locale}
+              onChange={e => setLocale(e.currentTarget.value as "fr" | "en")}
+              className="rounded-md border border-line bg-abyss px-2 py-1.5 text-ink"
+            >
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+            </select>
+          </label>
           {saveSummary ? (
             <div className="rounded-md border border-line bg-raised/50 p-2.5">
               <div className="flex items-start justify-between gap-2">
@@ -1158,16 +1120,16 @@ function Shell() {
                     <span className="text-ink-dim">
                       {saveSummary.players.length}
                     </span>{" "}
-                    {saveSummary.players.length === 1 ? "player" : "players"}
+                    {saveSummary.players.length === 1 ? t("player") : t("players")}
                     <span className="mx-1 text-line">&middot;</span>
                     <span className="text-amber">{saveSummary.pals.length}</span>{" "}
-                    pals
+                    {t("pals")}
                   </div>
                 </div>
                 <button
                   onClick={() => (caps.isWeb ? clearSave() : setModalOpen(true))}
-                  title="Switch save"
-                  aria-label="Switch save"
+                  title={t("Switch save")}
+                  aria-label={t("Switch save")}
                   className="shrink-0 rounded-md border border-line bg-raised p-1.5 text-ink-faint transition-colors hover:bg-hover hover:text-ink"
                 >
                   <SwapIcon />
@@ -1176,10 +1138,10 @@ function Shell() {
               {saveSummary.players.length > 1 && (
                 <button
                   onClick={() => setScopePromptOpen(true)}
-                  title="Change player scope"
+                  title={t("Change player scope")}
                   className="mt-2 flex w-full items-center gap-1.5 rounded-md border border-line bg-abyss/60 px-2.5 py-1.5 font-mono text-[10px] tracking-wider text-ink-faint transition-colors hover:border-amber/40 hover:text-ink"
                 >
-                  <span className="uppercase text-ink-faint">Scope:</span>
+                  <span className="uppercase text-ink-faint">{t("Scope:")}</span>
                   <span className="truncate text-amber">{scopeLabel}</span>
                 </button>
               )}
@@ -1190,10 +1152,10 @@ function Shell() {
                     rereadWebSave().finally(() => setRereading(false));
                   }}
                   disabled={rereading}
-                  title="Re-read the save folder"
+                  title={t("Re-read the save folder")}
                   className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-line bg-abyss/60 px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {rereading ? "Re-reading\u2026" : "Re-read folder"}
+                  {rereading ? t("Re-reading…") : t("Re-read folder")}
                 </button>
               )}
             </div>
@@ -1203,7 +1165,7 @@ function Shell() {
               className="flex w-full items-center justify-center gap-2 rounded-md border border-line bg-raised px-3 py-2 text-[13px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:bg-hover hover:text-ink"
             >
               <FolderIcon />
-              Load save
+              {t("Load save")}
             </button>
           )}
           <AboutButton />
@@ -1234,7 +1196,7 @@ function Shell() {
           className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-md border border-amber/40 bg-raised px-3.5 py-2 text-[12px] font-medium text-ink"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-amber" />
-          {toast.text}
+          {tr(toast.text)}
         </div>
       )}
     </div>
@@ -1242,6 +1204,7 @@ function Shell() {
 }
 
 export default function App() {
+  useLocale();
   return (
     <AppStateProvider>
       <Shell />

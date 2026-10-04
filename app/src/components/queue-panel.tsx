@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // BREEDING QUEUE (Solver form tail) — a collapsible section that stacks several
 // targets into one sequential solve. "Add current target to queue" snapshots
 // the current full solve spec (target / passives / max-steps / source pool /
@@ -53,12 +54,13 @@ function MoveButton({
   disabled: boolean;
   onClick: () => void;
 }) {
+  useLocale();
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={dir === "up" ? "Move up" : "Move down"}
+      aria-label={tr(dir === "up" ? "Move up" : "Move down")}
       className="rounded-sm px-1 text-[11px] leading-none text-ink-faint transition-colors enabled:hover:bg-hover enabled:hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
     >
       {dir === "up" ? "\u25b2" : "\u25bc"}
@@ -90,6 +92,7 @@ export function QueuePanel({
   onSolve,
   solving,
 }: QueuePanelProps) {
+  useLocale();
   const [open, setOpen] = useState(entries.length > 0);
 
   return (
@@ -113,9 +116,7 @@ export function QueuePanel({
         >
           <path d="M9 6l6 6-6 6" />
         </svg>
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">
-          Breeding queue
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">{t("Breeding queue")}</span>
         {entries.length > 0 && (
           <span className="rounded-sm bg-raised px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-ink-dim">
             {entries.length}
@@ -130,15 +131,10 @@ export function QueuePanel({
             onClick={onAdd}
             disabled={!canAdd}
             className="rounded-md border border-line bg-raised px-2.5 py-1.5 text-[12px] font-medium text-ink-dim transition-colors enabled:hover:bg-hover enabled:hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            + Add current target to queue
-          </button>
+          >{t("+ Add current target to queue")}</button>
 
           {entries.length === 0 ? (
-            <p className="text-[12px] leading-relaxed text-ink-faint">
-              Queue several targets to solve them in order &mdash; each one&rsquo;s
-              plan assumes the earlier targets were bred first.
-            </p>
+            <p className="text-[12px] leading-relaxed text-ink-faint">{t("Queue several targets to solve them in order — each one’s plan assumes the earlier targets were bred first.")}</p>
           ) : (
             <>
               <ol className="flex flex-col gap-1">
@@ -160,22 +156,20 @@ export function QueuePanel({
                       />
                       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                         <span className="truncate text-[12px] font-medium text-ink">
-                          {e.spec.target_species}
+                          {tr(e.spec.target_species)}
                         </span>
                         <div className="flex flex-wrap items-center gap-1 font-mono text-[10px] text-ink-faint">
                           {passives > 0 && (
                             <span className="rounded-sm bg-raised px-1 py-0.5 tabular-nums">
-                              {passives}p
-                            </span>
+                              {passives}{t("p")}</span>
                           )}
                           {pins > 0 && (
                             <span className="rounded-sm bg-amber/10 px-1 py-0.5 tabular-nums text-amber/90">
-                              {pins} pin{pins > 1 ? "s" : ""}
+                              {pins}{t(" pin")}{pins > 1 ? t("s") : ""}
                             </span>
                           )}
                           <span className="rounded-sm bg-raised px-1 py-0.5 tabular-nums">
-                            {e.spec.max_steps ?? 5} steps
-                          </span>
+                            {e.spec.max_steps ?? 5}{t(" steps")}</span>
                         </div>
                       </div>
                       <div className="flex shrink-0 flex-col">
@@ -193,11 +187,9 @@ export function QueuePanel({
                       <button
                         type="button"
                         onClick={() => onRemove(e.id)}
-                        aria-label="Remove"
+                        aria-label={t("Remove")}
                         className="shrink-0 rounded-sm px-1 leading-none text-ink-faint transition-colors hover:bg-hover hover:text-bad"
-                      >
-                        &times;
-                      </button>
+                      >{t("×")}</button>
                     </li>
                   );
                 })}
@@ -209,7 +201,7 @@ export function QueuePanel({
                 disabled={solving || entries.length === 0}
                 className="rounded-md bg-amber px-4 py-2 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {solving ? "Solving queue\u2026" : `Solve queue (${entries.length})`}
+                {solving ? t("Solving queue…") : t("Solve queue ({0})", [entries.length])}
               </button>
             </>
           )}

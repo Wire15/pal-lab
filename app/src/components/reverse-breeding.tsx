@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // BRED FROM — the reverse-breeding surface for a pal-dex detail page: every
 // parent pair whose bred child resolves to this species, from the
 // `reverse_breeding` command. Gender-pinned "unique" combos are badged and shown
@@ -33,12 +34,13 @@ function speciesMap(): Promise<Map<string, SpeciesEntry>> {
 
 /** Gender glyph (♂ water-blue / ♀ dragon-magenta), matching the app's palette. */
 function GenderGlyph({ gender }: { gender: Gender }) {
+  useLocale();
   return (
     <span
       className={`font-mono text-[11px] leading-none ${
         gender === "Male" ? "text-el-water" : "text-el-dragon"
       }`}
-      title={gender}
+      title={tr(gender)}
     >
       {gender === "Male" ? "\u2642" : "\u2640"}
     </span>
@@ -59,6 +61,7 @@ function ParentChip({
   owned: boolean;
   onNavigate: (id: string) => void;
 }) {
+  useLocale();
   return (
     <PalHoverCard speciesId={id}>
       <button
@@ -67,7 +70,7 @@ function ParentChip({
       >
         <PalIcon id={id} name={name} size={22} />
         <span className={`truncate text-[12px] ${owned ? "text-amber" : "text-ink"}`}>
-          {name}
+          {tr(name)}
         </span>
         {gender && <GenderGlyph gender={gender} />}
       </button>
@@ -91,6 +94,7 @@ function PairRow({
   isOwned: (id: string) => boolean;
   onNavigate: (id: string) => void;
 }) {
+  useLocale();
   const ownedA = isOwned(pair.parent1);
   const ownedB = isOwned(pair.parent2);
   const bothOwned = ownedA && ownedB;
@@ -109,7 +113,7 @@ function PairRow({
         owned={ownedA}
         onNavigate={onNavigate}
       />
-      <span className="shrink-0 px-0.5 font-mono text-[11px] text-ink-faint">&times;</span>
+      <span className="shrink-0 px-0.5 font-mono text-[11px] text-ink-faint">{t("×")}</span>
       <ParentChip
         id={pair.parent2}
         name={label(pair.parent2)}
@@ -130,6 +134,7 @@ export default function ReverseBreeding({
   species: string;
   onNavigate: (id: string) => void;
 }) {
+  useLocale();
   const { roster } = useAppState();
   const [pairs, setPairs] = useState<ReversePair[] | null>(null);
   const [names, setNames] = useState<Map<string, SpeciesEntry>>(new Map());
@@ -205,7 +210,7 @@ export default function ReverseBreeding({
         pair={p}
         childId={species}
         childName={childName}
-        label={label}
+        label={tr(label)}
         isOwned={isOwned}
         onNavigate={onNavigate}
       />
@@ -214,23 +219,19 @@ export default function ReverseBreeding({
   return (
     <section className="overflow-hidden rounded-lg border border-line bg-panel/40">
       <header className="flex items-center justify-between gap-3 border-b border-line bg-raised px-4 py-2.5">
-        <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-dim">
-          Bred from
-          <PalIcon id={species} name={childName} size={16} className="opacity-80" />
+        <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-dim">{t("Bred from")}<PalIcon id={species} name={childName} size={16} className="opacity-80" />
         </span>
         {total > 0 && (
           <span className="font-mono text-[11px] tabular-nums text-ink-faint">
-            {total} {total === 1 ? "pair" : "pairs"}
+            {total} {total === 1 ? t("pair") : t("pairs")}
           </span>
         )}
       </header>
       <div className="p-4">
         {pairs === null ? (
-          <p className="text-[12px] text-ink-faint">Loading breeding recipes&hellip;</p>
+          <p className="text-[12px] text-ink-faint">{t("Loading breeding recipes…")}</p>
         ) : total === 0 ? (
-          <p className="text-[12px] text-ink-faint">
-            No breeding pair produces {childName}&nbsp;&mdash; catch it in the wild.
-          </p>
+          <p className="text-[12px] text-ink-faint">{t("No breeding pair produces ")}{childName}{t(" — catch it in the wild.")}</p>
         ) : (
           <>
             {total > SEARCH_THRESHOLD && (
@@ -238,7 +239,7 @@ export default function ReverseBreeding({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.currentTarget.value)}
-                placeholder="Filter parents&hellip;"
+                placeholder={t("Filter parents…")}
                 className="mb-3 w-full rounded-md border border-line bg-abyss/50 px-3 py-1.5 text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/50 focus:outline-none"
               />
             )}
@@ -246,12 +247,8 @@ export default function ReverseBreeding({
             {unique.length > 0 && (
               <div className="mb-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-amber">
-                    Unique combos
-                  </span>
-                  <span className="rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 text-[10px] font-medium leading-none text-amber">
-                    gender-locked
-                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-amber">{t("Unique combos")}</span>
+                  <span className="rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 text-[10px] font-medium leading-none text-amber">{t("gender-locked")}</span>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">{renderGroup(unique)}</div>
               </div>
@@ -260,17 +257,14 @@ export default function ReverseBreeding({
             {rank.length > 0 && (
               <div>
                 {unique.length > 0 && (
-                  <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
-                    Standard combos
-                  </div>
+                  <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">{t("Standard combos")}</div>
                 )}
                 <div className="grid gap-2 sm:grid-cols-2">{renderGroup(rank)}</div>
               </div>
             )}
 
             {shown === 0 && (
-              <p className="text-[12px] text-ink-faint">
-                No parents match &ldquo;{query}&rdquo;.
+              <p className="text-[12px] text-ink-faint">{t("No parents match “")}{query}&rdquo;.
               </p>
             )}
           </>

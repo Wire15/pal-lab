@@ -1,3 +1,4 @@
+import { matchesText, t, tr, useLocale } from "../../i18n";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SpeciesEntry } from "../../lib/types";
 import { PalIcon } from "../../components/primitives";
@@ -15,9 +16,9 @@ type SortKey = "power" | "cooldown" | "name";
 type SortDir = "asc" | "desc";
 
 const SORTS: { key: SortKey; label: string }[] = [
-  { key: "power", label: "Power" },
-  { key: "cooldown", label: "Cooldown" },
-  { key: "name", label: "Name" },
+  { key: "power", get label() { return t("Power"); } },
+  { key: "cooldown", get label() { return t("Cooldown"); } },
+  { key: "name", get label() { return t("Name"); } },
 ];
 
 /** The 9 canonical element types, in the §2 palette order, for the filter row.
@@ -69,6 +70,7 @@ export default function MovesIndex({
   focusMoveId?: string | null;
   onFocusConsumed?: () => void;
 }) {
+  useLocale();
   const [activeMap, setActiveMap] = useState<ActiveSkills>({});
   const [learners, setLearners] = useState<Map<string, MoveLearner[]>>(
     () => new Map(),
@@ -138,9 +140,7 @@ export default function MovesIndex({
       if (elements.size > 0 && !elements.has(m.skill.element)) return false;
       if (!q) return true;
       return (
-        m.skill.name.toLowerCase().includes(q) ||
-        m.id.toLowerCase().includes(q) ||
-        (m.skill.description ?? "").toLowerCase().includes(q)
+        matchesText(q, m.skill.name, m.id, m.skill.description ?? "")
       );
     });
 
@@ -212,24 +212,19 @@ export default function MovesIndex({
         <div className="flex items-baseline justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-                Pal-dex
-              </div>
-              <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-                Moves
-              </h1>
+              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Pal-dex")}</div>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Moves")}</h1>
             </div>
             <DexTabs tab={tab} onTab={onTab} />
           </div>
           <div className="text-right font-mono text-xs text-ink-dim">
             {query.trim() || elements.size > 0 ? (
               <>
-                <span className="text-ink">{rows.length}</span> of {moves.length}
+                <span className="text-ink">{rows.length}</span>{t(" of ")}{moves.length}
               </>
             ) : (
               <>
-                <span className="text-ink">{moves.length}</span> moves
-              </>
+                <span className="text-ink">{moves.length}</span>{t(" moves")}</>
             )}
           </div>
         </div>
@@ -238,7 +233,7 @@ export default function MovesIndex({
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <input
             className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-            placeholder="Search moves by name or effect..."
+            placeholder={t("Search moves by name or effect...")}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -255,7 +250,7 @@ export default function MovesIndex({
                       : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
                   }`}
                 >
-                  {s.label}
+                  {tr(s.label)}
                   {active && (
                     <span className="ml-1 text-amber">
                       {sortDir === "asc" ? "\u25b2" : "\u25bc"}
@@ -269,9 +264,7 @@ export default function MovesIndex({
 
         {/* Element filter — multi-select, OR semantics */}
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Element
-          </span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Element")}</span>
           <div className="flex items-center gap-1">
             {ELEMENT_KINDS.map((kind) => {
               const active = elements.has(kind);
@@ -279,7 +272,7 @@ export default function MovesIndex({
                 <button
                   key={kind}
                   onClick={() => toggleElement(kind)}
-                  title={kind}
+                  title={tr(kind)}
                   aria-pressed={active}
                   className={`group flex items-center justify-center rounded-sm border p-0.5 transition-colors ${
                     active
@@ -307,9 +300,7 @@ export default function MovesIndex({
                 setElements(new Set());
               }}
               className="font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
-            >
-              Clear
-            </button>
+            >{t("Clear")}</button>
           )}
         </div>
       </header>
@@ -317,19 +308,14 @@ export default function MovesIndex({
       {/* List */}
       {moves.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-          <div className="font-display text-lg text-ink-dim">No moves loaded</div>
-          <p className="max-w-xs text-sm text-ink-faint">
-            The active-skill reference is unavailable. Run inside the app, or
-            regenerate the dev fixtures.
-          </p>
+          <div className="font-display text-lg text-ink-dim">{t("No moves loaded")}</div>
+          <p className="max-w-xs text-sm text-ink-faint">{t("The active-skill reference is unavailable. Run inside the app, or regenerate the dev fixtures.")}</p>
         </div>
       ) : rows.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-          <div className="font-display text-lg text-ink-dim">No moves match</div>
+          <div className="font-display text-lg text-ink-dim">{t("No moves match")}</div>
           <p className="max-w-xs text-sm text-ink-faint">
-            {query.trim()
-              ? `Nothing matches \u201c${query}\u201d. Try a different name or effect.`
-              : "No moves of the selected element. Pick another type."}
+            {query.trim() ? t("Nothing matches “{0}”. Try a different name or effect.", [query]) : t("No moves of the selected element. Pick another type.")}
           </p>
           <button
             onClick={() => {
@@ -337,9 +323,7 @@ export default function MovesIndex({
               setElements(new Set());
             }}
             className="mt-1 rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-          >
-            Clear filters
-          </button>
+          >{t("Clear filters")}</button>
         </div>
       ) : (
         <div className="flex-1 overflow-auto px-6 py-5">
@@ -390,6 +374,7 @@ const MoveRow = memo(function MoveRow({
   highlighted: boolean;
   registerRow: (id: string, el: HTMLDivElement | null) => void;
 }) {
+  useLocale();
   return (
     <div
       ref={(el) => registerRow(id, el)}
@@ -412,9 +397,7 @@ const MoveRow = memo(function MoveRow({
               style={{ transform: open ? "rotate(90deg)" : "none" }}
             >
               {"\u25B8"}
-            </span>
-            Learned by
-            <span className="tabular-nums text-ink-dim">{learners.length}</span>
+            </span>{t("Learned by")}<span className="tabular-nums text-ink-dim">{learners.length}</span>
           </button>
           {open && (
             <div className="mt-1 grid gap-1.5 pl-2.5 [grid-template-columns:repeat(auto-fill,minmax(158px,1fr))]">
@@ -426,10 +409,9 @@ const MoveRow = memo(function MoveRow({
                 >
                   <PalIcon id={l.species.id} name={l.species.name} size={22} />
                   <span className="min-w-0 truncate text-[12px] text-ink group-hover:text-ink">
-                    {l.species.name}
+                    {tr(l.species.name)}
                   </span>
-                  <span className="ml-auto shrink-0 rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">
-                    Lv {l.level}
+                  <span className="ml-auto shrink-0 rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">{t("Lv ")}{l.level}
                   </span>
                 </button>
               ))}

@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // Paldb-style passive-skill card: the in-game passive STRIP as the card header
 // (name + stacked rank chevrons on a tier-colored banner) over structured
 // effect lines and, when the pack carries one, the authored in-game
@@ -14,6 +15,7 @@ import { RankCluster, stripBand, stripTint, type PassiveTier } from "./passive-s
  *  banner carries good/bad valence, so a "lower is better" effect (e.g. SAN Loss
  *  -20% on a beneficial passive) never reads as a red penalty. */
 function EffectLine({ type, value, target }: { type: string; value: number; target: string }) {
+  useLocale();
   const val = formatEffectValue(type, value);
   const scope = effectTarget(target);
   return (
@@ -34,6 +36,7 @@ function EffectLine({ type, value, target }: { type: string; value: number; targ
  * description when present.
  */
 export function PassiveCard({ passive }: { passive: PassiveEntry }) {
+  useLocale();
   const tier = (passive as PassiveEntry & { tier?: PassiveTier }).tier;
   const band = stripBand(passive.rank, tier);
   const tint = stripTint(band);
@@ -47,7 +50,7 @@ export function PassiveCard({ passive }: { passive: PassiveEntry }) {
           className="min-w-0 truncate font-display text-[14px] font-semibold tracking-wide"
           style={{ color: tint.nameColor }}
         >
-          {passive.name}
+          {tr(passive.name)}
         </span>
         <span className="shrink-0" style={{ color: tint.accent }}>
           <RankCluster rank={passive.rank} band={band} size="md" />
@@ -59,11 +62,11 @@ export function PassiveCard({ passive }: { passive: PassiveEntry }) {
             <EffectLine key={i} type={e.type} value={e.value} target={e.target} />
           ))
         ) : (
-          <div className="text-[12px] italic leading-snug text-ink-faint">No stat effects</div>
+          <div className="text-[12px] italic leading-snug text-ink-faint">{t("No stat effects")}</div>
         )}
         {passive.description && (
           <p className="mt-1.5 whitespace-pre-line border-t border-line-soft pt-1.5 text-[11px] leading-relaxed text-ink-faint">
-            {passive.description}
+            {tr(passive.description)}
           </p>
         )}
       </div>

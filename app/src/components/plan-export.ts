@@ -15,6 +15,7 @@
 
 import type { BreedingPlan, PlanNode, SolveRequest } from "../lib/types";
 import { formatDuration } from "../lib/ui";
+import { t } from "../i18n";
 import { palIconUrl, UNKNOWN_ICON } from "../lib/assets";
 import { layoutPlan, NODE_R, NODE_W, type LaidNode } from "./plan-graph-layout";
 
@@ -199,17 +200,17 @@ function drawNode(
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
   const nameY = y + NODE_R + 8;
-  ctx.fillText(ellipsize(ctx, node.species_name, NODE_W), x, nameY);
+  ctx.fillText(ellipsize(ctx, t(node.species_name), NODE_W), x, nameY);
 
   // Status chip cluster.
   const chipTop = nameY + 17;
   if (wild) {
-    const label = `CATCH${wild.captures > 1 ? `\u00a0\u00d7${wild.captures}` : ""}`;
+    const label = `${t("Catch")}${wild.captures > 1 ? `\u00a0\u00d7${wild.captures}` : ""}`;
     if (wild.min_wild_level > 0) {
       // Two pills side by side (CATCH + Lv N+): lay them out around center.
       ctx.font = `600 10px ${FONT_MONO}`;
       const w1 = ctx.measureText(label).width + 12;
-      const lv = `Lv ${wild.min_wild_level}+`;
+      const lv = `${t("Lv")} ${wild.min_wild_level}+`;
       const w2 = ctx.measureText(lv).width + 12;
       const gap = 4;
       const total = w1 + gap + w2;
@@ -221,9 +222,9 @@ function drawNode(
       pill(ctx, x, chipTop, label, C.elLeaf);
     }
   } else if (owned) {
-    pill(ctx, x, chipTop, `Owned \u00b7 ${owned.location}`, C.inkDim, "10");
+    pill(ctx, x, chipTop, `${t("Owned")} \u00b7 ${t(owned.location)}`, C.inkDim, "10");
   } else if (isBred) {
-    pill(ctx, x, chipTop, "Bred", C.amber);
+    pill(ctx, x, chipTop, t("Bred"), C.amber);
   }
 }
 
@@ -340,16 +341,16 @@ export async function renderPlanPng(
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = C.amber;
   ctx.font = `700 22px ${FONT_DISPLAY}`;
-  ctx.fillText(opts.targetName, 20, 34);
+  ctx.fillText(t(opts.targetName), 20, 34);
 
   ctx.fillStyle = C.inkDim;
   ctx.font = `500 12px ${FONT_MONO}`;
   const wild = plan.total_wild_pals;
   const sub =
     `${formatDuration(plan.total_time_secs)}  \u00b7  ` +
-    `${plan.total_steps} steps  \u00b7  ${wild} wild` +
+    `${plan.total_steps} ${t("steps")}  \u00b7  ${wild} ${t("wild")}` +
     (plan.cake && plan.cake !== "Normal"
-      ? `  \u00b7  ${plan.cake_count} ${plan.cake} cake`
+      ? `  \u00b7  ${plan.cake_count} ${t(plan.cake)} ${t("cake")}`
       : "");
   ctx.fillText(sub, 20, 56);
 
@@ -358,7 +359,7 @@ export async function renderPlanPng(
   ctx.font = `600 11px ${FONT_MONO}`;
   ctx.fillText("PAL-LAB", W - 20, 30);
   ctx.font = `500 10px ${FONT_MONO}`;
-  ctx.fillText("breeding plan", W - 20, 46);
+  ctx.fillText(t("Breeding plan"), W - 20, 46);
 
   ctx.strokeStyle = C.line;
   ctx.lineWidth = 1;

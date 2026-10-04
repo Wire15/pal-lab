@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 import { memo, useEffect, useMemo, useState } from "react";
 import type {
   DexReach,
@@ -40,9 +41,9 @@ function bareTargetSpec(name: string): SolveSpec {
 }
 
 const SORTS: { key: SortKey; label: string }[] = [
-  { key: "paldex", label: "Dex #" },
-  { key: "name", label: "Name" },
-  { key: "rank", label: "Combi rank" },
+  { key: "paldex", get label() { return t("Dex #"); } },
+  { key: "name", get label() { return t("Name"); } },
+  { key: "rank", get label() { return t("Combi rank"); } },
 ];
 
 /** The 9 canonical element types, in the §2 palette order, for the filter row. */
@@ -70,6 +71,7 @@ function DexPortrait({
   id: string;
   state: "owned" | "unowned" | "neutral";
 }) {
+  useLocale();
   const [failed, setFailed] = useState(false);
   const src = !failed ? palIconUrl(id) : UNKNOWN_ICON;
   const ring =
@@ -88,7 +90,7 @@ function DexPortrait({
     >
       <img
         src={src}
-        alt=""
+        alt={t("")}
         loading="lazy"
         draggable={false}
         onError={() => setFailed(true)}
@@ -119,12 +121,13 @@ const DexTile = memo(function DexTile({
   reach?: DexReachEntry | null;
   onSelect: (id: string) => void;
 }) {
+  useLocale();
   const total = male + female;
   return (
     <PalHoverCard speciesId={s.id}>
       <button
         onClick={() => onSelect(s.id)}
-        aria-label={`${s.name}, #${String(s.paldex_no).padStart(3, "0")}`}
+        aria-label={t("{0}, #{1}", [s.name, String(s.paldex_no).padStart(3, "0")])}
         className="group flex flex-col items-center gap-2 rounded-2xl px-1 py-2 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-abyss"
       >
         <div className="relative mx-auto aspect-square w-full max-w-[104px]">
@@ -136,13 +139,13 @@ const DexTile = memo(function DexTile({
         </div>
         <div className="flex w-full flex-col items-center gap-0.5">
           <div className="max-w-full truncate text-[13px] font-medium text-ink">
-            {s.name}
+            {tr(s.name)}
           </div>
           <div className="flex items-center gap-1.5 font-mono text-[10px] leading-none tabular-nums text-ink-faint">
             <span>#{String(s.paldex_no).padStart(3, "0")}</span>
-            {s.is_variant && <span className="font-bold text-el-dragon">B</span>}
+            {s.is_variant && <span className="font-bold text-el-dragon">{t("B")}</span>}
             <span className="text-ink-faint/60">{"\u00b7"}</span>
-            <span>rank {s.combi_rank}</span>
+            <span>{t("rank ")}{s.combi_rank}</span>
           </div>
           {total > 0 && (
             <div className="flex items-center gap-1.5 font-mono text-[11px] leading-none tabular-nums">
@@ -155,11 +158,10 @@ const DexTile = memo(function DexTile({
             </div>
           )}
           {state === "unowned" &&
-            reach &&
-            (reach.steps !== null ? (
+            reach && (reach.steps !== null ? (
               <span className="mt-0.5 rounded-sm bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] leading-none tabular-nums text-amber/90">
                 {"\u2248"}
-                {reach.steps} step{reach.steps === 1 ? "" : "s"}
+                {reach.steps} step{reach.steps === 1 ? "" : t("s")}
               </span>
             ) : (
               <span className="mt-0.5 rounded-sm bg-raised px-1.5 py-0.5 font-mono text-[10px] leading-none text-ink-faint">
@@ -193,6 +195,7 @@ export default function PaldexIndex({
   tab: DexTab;
   onTab: (t: DexTab) => void;
 }) {
+  useLocale();
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("paldex");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -339,22 +342,16 @@ export default function PaldexIndex({
         <div className="flex items-baseline justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-                Pal-dex
-              </div>
-              <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-                Reference
-              </h1>
+              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Pal-dex")}</div>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Reference")}</h1>
             </div>
             <DexTabs tab={tab} onTab={onTab} />
           </div>
           <div className="text-right font-mono text-xs text-ink-dim">
-            <span className="text-ink">{species.length}</span> species
-            {roster && (
+            <span className="text-ink">{species.length}</span>{t(" species")}{roster && (
               <>
                 <span className="mx-2 text-ink-faint">/</span>
-                <span className="text-amber">{ownedSpecies}</span> owned
-              </>
+                <span className="text-amber">{ownedSpecies}</span>{t(" owned")}</>
             )}
           </div>
         </div>
@@ -362,31 +359,24 @@ export default function PaldexIndex({
         {/* COMPLETE MY COLLECTION — breed-reachability summary + breed action */}
         {summary && (
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-              owned{" "}
+            <span className="font-mono text-[11px] tabular-nums text-ink-dim">{t("owned")}{" "}
               <span className="text-amber">
                 {summary.owned}/{summary.total}
               </span>
-              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>
-              breedable <span className="text-ink">+{summary.breedable}</span>
-              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>
-              catch only <span className="text-ink-faint">{summary.catchOnly}</span>
+              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>{t("breedable ")}<span className="text-ink">+{summary.breedable}</span>
+              <span className="mx-1.5 text-ink-faint/60">{"\u00b7"}</span>{t("catch only ")}<span className="text-ink-faint">{summary.catchOnly}</span>
             </span>
             {breedMissing.length > 0 && (
               <div className="ml-auto flex items-center gap-2">
                 {breedArmed && (
-                  <span className="text-[11px] text-ink-faint">
-                    queues {breedMissing.length} solves; click again to run
-                  </span>
+                  <span className="text-[11px] text-ink-faint">{t("queues ")}{breedMissing.length}{t(" solves; click again to run")}</span>
                 )}
                 <button
                   type="button"
                   onClick={runBreedMissing}
                   className="select-none rounded-md border border-amber/60 bg-amber/10 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-amber transition-colors hover:bg-amber/20"
                 >
-                  {breedArmed
-                    ? `Breed ${breedMissing.length} missing \u2014 confirm`
-                    : `Breed missing (${breedMissing.length})`}
+                  {breedArmed ? t("Breed {0} missing — confirm", [breedMissing.length]) : t("Breed missing ({0})", [breedMissing.length])}
                 </button>
               </div>
             )}
@@ -397,7 +387,7 @@ export default function PaldexIndex({
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <input
             className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-            placeholder="Search by name, id, or dex number..."
+            placeholder={t("Search by name, id, or dex number...")}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -412,7 +402,7 @@ export default function PaldexIndex({
                     active ? "bg-raised text-amber" : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
                   }`}
                 >
-                  {s.label}
+                  {tr(s.label)}
                   {active && (
                     <span className="ml-1 text-amber">{sortDir === "asc" ? "\u25b2" : "\u25bc"}</span>
                   )}
@@ -426,7 +416,7 @@ export default function PaldexIndex({
                 ? "cursor-pointer border-line bg-panel text-ink-dim hover:text-ink"
                 : "cursor-not-allowed border-line-soft bg-panel/50 text-ink-faint"
             }`}
-            title={roster ? undefined : "Load a save to filter by owned pals"}
+            title={tr(roster ? undefined : "Load a save to filter by owned pals")}
           >
             <input
               type="checkbox"
@@ -434,16 +424,14 @@ export default function PaldexIndex({
               checked={ownedOnly}
               disabled={!roster}
               onChange={(e) => setOwnedOnly(e.currentTarget.checked)}
-            />
-            Owned only
-          </label>
+            />{t("Owned only")}</label>
           <label
             className={`flex select-none items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[12px] transition-colors ${
               roster
                 ? "cursor-pointer border-line bg-panel text-ink-dim hover:text-ink"
                 : "cursor-not-allowed border-line-soft bg-panel/50 text-ink-faint"
             }`}
-            title={roster ? undefined : "Load a save to filter by missing pals"}
+            title={tr(roster ? undefined : "Load a save to filter by missing pals")}
           >
             <input
               type="checkbox"
@@ -451,18 +439,14 @@ export default function PaldexIndex({
               checked={missingOnly}
               disabled={!roster}
               onChange={(e) => setMissingOnly(e.currentTarget.checked)}
-            />
-            Missing
-          </label>
+            />{t("Missing")}</label>
           <label className="flex cursor-pointer select-none items-center gap-1.5 rounded-md border border-line bg-panel px-2.5 py-1.5 text-[12px] text-ink-dim transition-colors hover:text-ink">
             <input
               type="checkbox"
               className="h-3.5 w-3.5 accent-[var(--color-amber)]"
               checked={hideVariants}
               onChange={(e) => setHideVariants(e.currentTarget.checked)}
-            />
-            Hide variants
-          </label>
+            />{t("Hide variants")}</label>
           <DexFilterButton
             filters={filters}
             onChange={setFilters}
@@ -472,17 +456,13 @@ export default function PaldexIndex({
             <button
               onClick={clearAllFilters}
               className="select-none rounded-md border border-line-soft bg-panel px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-faint transition-colors hover:bg-hover hover:text-ink-dim"
-            >
-              Clear filters
-            </button>
+            >{t("Clear filters")}</button>
           )}
         </div>
 
         {/* Element filter — multi-select, OR semantics, ANDed with the rest */}
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Element
-          </span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Element")}</span>
           <div className="flex items-center gap-1">
             {ELEMENT_KINDS.map((kind) => {
               const active = elements.has(kind);
@@ -490,7 +470,7 @@ export default function PaldexIndex({
                 <button
                   key={kind}
                   onClick={() => toggleElement(kind)}
-                  title={kind}
+                  title={tr(kind)}
                   aria-pressed={active}
                   className={`group flex items-center justify-center rounded-sm border p-0.5 transition-colors ${
                     active
@@ -515,9 +495,7 @@ export default function PaldexIndex({
             <button
               onClick={() => setElements(new Set())}
               className="font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
-            >
-              Clear
-            </button>
+            >{t("Clear")}</button>
           )}
         </div>
       </header>
@@ -526,22 +504,16 @@ export default function PaldexIndex({
       {rows.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
           <div className="font-display text-lg text-ink-dim">
-            {ownedOnly && !query && !anyOtherFilter ? "No owned pals" : "No pals match"}
+            {ownedOnly && !query && !anyOtherFilter ? t("No owned pals") : t("No pals match")}
           </div>
           <p className="max-w-xs text-sm text-ink-faint">
-            {ownedOnly && !query && !anyOtherFilter
-              ? "Load a save with owned pals, or turn off the owned-only filter."
-              : query
-                ? `Nothing matches \u201c${query}\u201d. Try a different name or dex number.`
-                : "No pals match the active filters. Loosen a level, tier, or passive."}
+            {ownedOnly && !query && !anyOtherFilter ? t("Load a save with owned pals, or turn off the owned-only filter.") : query ? t("Nothing matches “{0}”. Try a different name or dex number.", [query]) : t("No pals match the active filters. Loosen a level, tier, or passive.")}
           </p>
           {anyFilterActive && (
             <button
               onClick={clearAllFilters}
               className="mt-1 rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-            >
-              Clear filters
-            </button>
+            >{t("Clear filters")}</button>
           )}
         </div>
       ) : (

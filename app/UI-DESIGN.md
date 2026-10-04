@@ -1791,7 +1791,7 @@ load-bearing wild-only message (the old dex-detail fallback was removed).
 
 ## Wave — Pal-dex detail STATS / WORK / DROPS / FIELD sections (`views/paldex/detail-view.tsx`)
 
-Upgrades the dex detail into a full palpedia-grade reference page. Sections slot into the
+Upgrades the dex detail into a comprehensive in-game reference page. Sections slot into the
 existing scroll rhythm: BASE STATS + MOVEMENT (2-col) → FIELD DATA → WORK SUITABILITY → DROPS
 → LEARNABLE MOVES → BRED FROM (see above) → passives/roster → forward BREED WITH. Element
 MATCHUP is deliberately absent — no attacker×defender damage table exists in extractable game
@@ -1823,7 +1823,7 @@ than fabricating a chart from folklore.
 
 ### Work suitability (`Section` "Work suitability")
 
-- Palpedia rec #1 — levels made prominent. Each nonzero kind (zero-kinds hidden) is a
+- Levels made prominent. Each nonzero kind (zero-kinds hidden) is a
   `WorkSuitChip`: 26px bundled work glyph + label, a level pip meter, and the level as a loud
   amber numeral (`Lv N`, `text-[17px] font-bold text-amber`). 2-col grid; right-aligned
   `N jobs` count in the header.

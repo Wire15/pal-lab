@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // In-game ACTIVE-SKILL row — the horizontal strip from Palworld's Pal Stats
 // screen: a block-level, full-width dark bar with an element-colored left
 // accent, the skill name pinned left in bold, and a right-pinned element segment
@@ -45,6 +46,7 @@ export function ActiveSkillRow({
    *  tab; other call sites omit it so their rows are unchanged. */
   showMoveTags?: boolean;
 }) {
+  useLocale();
   const name = skill?.name ?? humanizeWaza(id);
   const key = skill ? elementTokenKey(skill.element) : null;
   // Element color when known, else the neutral brand accent (amber) so the left
@@ -62,8 +64,7 @@ export function ActiveSkillRow({
 
   const levelChip =
     level !== undefined ? (
-      <span className="shrink-0 rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">
-        Lv {level}
+      <span className="shrink-0 rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">{t("Lv ")}{level}
       </span>
     ) : null;
 
@@ -72,19 +73,13 @@ export function ActiveSkillRow({
   const rightCluster = (
     <span className="flex shrink-0 items-center gap-1.5">
       {showMoveTags && skill?.can_inherit && (
-        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
-          Inherit
-        </span>
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">{t("Inherit")}</span>
       )}
       {showMoveTags && skill?.has_skill_fruit && (
-        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">
-          Fruit
-        </span>
+        <span className="rounded-sm border border-line px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-wider text-ink-faint">{t("Fruit")}</span>
       )}
       {hasCt && (
-        <span className="rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">
-          CT {cool_time}s
-        </span>
+        <span className="rounded-sm bg-abyss/70 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none tabular-nums text-ink-dim">{t("CT ")}{cool_time}{t("s")}</span>
       )}
       {hasElement && (
         <span
@@ -118,7 +113,7 @@ export function ActiveSkillRow({
         )}
         {levelChip}
         <span className="min-w-0 truncate font-display font-semibold tracking-wide text-ink">
-          {name}
+          {tr(name)}
         </span>
       </span>
       {rightCluster}
@@ -130,7 +125,7 @@ export function ActiveSkillRow({
 
   const descriptionPanel = description && open && (
     <p className="mt-1 rounded-sm border border-line-soft bg-abyss/40 px-2.5 py-1.5 text-[12px] leading-snug text-ink-dim">
-      {description}
+      {tr(description)}
     </p>
   );
 
@@ -141,7 +136,7 @@ export function ActiveSkillRow({
     return (
       <div className="flex flex-col">
         <div
-          title={id}
+          title={tr(id)}
           className={rowClass}
           style={{ borderLeftWidth: 3, borderLeftColor: accent }}
         >
@@ -150,7 +145,7 @@ export function ActiveSkillRow({
               <button
                 type="button"
                 aria-expanded={open}
-                aria-label={open ? "Hide description" : "Show description"}
+                aria-label={tr(open ? "Hide description" : "Show description")}
                 onClick={() => setOpen((v) => !v)}
                 className="shrink-0 rounded-sm text-[9px] leading-none text-ink-faint transition-transform duration-150 hover:text-ink-dim focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber/70"
                 style={{ transform: open ? "rotate(90deg)" : "none" }}
@@ -161,11 +156,11 @@ export function ActiveSkillRow({
             {levelChip}
             <button
               type="button"
-              title={`View pals that learn ${name}`}
+              title={t("View pals that learn {0}", [name])}
               onClick={() => onOpenMove(id)}
               className="min-w-0 truncate rounded-sm text-left font-display font-semibold tracking-wide text-ink transition-colors hover:text-amber hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber/70"
             >
-              {name}
+              {tr(name)}
             </button>
           </span>
           {rightCluster}
@@ -180,7 +175,7 @@ export function ActiveSkillRow({
       {description ? (
         <button
           type="button"
-          title={id}
+          title={tr(id)}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
           className={`${rowClass} hover:bg-hover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber/70`}
@@ -190,7 +185,7 @@ export function ActiveSkillRow({
         </button>
       ) : (
         <div
-          title={id}
+          title={tr(id)}
           className={rowClass}
           style={{ borderLeftWidth: 3, borderLeftColor: accent }}
         >
@@ -214,8 +209,8 @@ function ElementMark({ element }: { element: string }) {
     return (
       <img
         src={elementIconUrl(element)}
-        alt={element}
-        title={element}
+        alt={tr(element)}
+        title={tr(element)}
         width={15}
         height={15}
         loading="lazy"
@@ -228,8 +223,8 @@ function ElementMark({ element }: { element: string }) {
   return (
     <img
       src={glyph}
-      alt={element}
-      title={element}
+      alt={tr(element)}
+      title={tr(element)}
       width={15}
       height={15}
       loading="lazy"

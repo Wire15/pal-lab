@@ -1,3 +1,4 @@
+import { tr, useLocale } from "../i18n";
 // The "what must this child be" briefing for a BRED pal node in the plan graph.
 // The junction chip's BreedHoverCard already covers HOW likely a step is (odds,
 // eggs, IV gate, parent pool); this card is the complement — it opens off the
@@ -60,6 +61,7 @@ function place(anchor: DOMRect, w: number, h: number): Point {
 
 /** Mono uppercase section label — the shared card row heading idiom. */
 function Label({ children }: { children: React.ReactNode }) {
+  useLocale();
   return (
     <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
       {children}
@@ -81,6 +83,7 @@ export function BredHoverCard({
   node: PlanNode;
   children: ReactElement;
 }) {
+  useLocale();
   const triggerRef = useRef<HTMLElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const timer = useRef<number | null>(null);
@@ -173,8 +176,7 @@ export function BredHoverCard({
   return (
     <>
       {trigger}
-      {open &&
-        createPortal(
+      {open && createPortal(
           <div
             ref={cardRef}
             role="tooltip"
@@ -209,7 +211,7 @@ export function BredHoverCard({
                   className="min-w-0 truncate font-semibold text-ink"
                   title={node.species_name}
                 >
-                  {node.species_name}
+                  {tr(node.species_name)}
                 </span>
                 {hasGender && (
                   <span className={`shrink-0 font-semibold ${g.className}`}>{g.glyph}</span>
@@ -273,7 +275,7 @@ export function BredHoverCard({
                     <>
                       same-species step &mdash; bred to get a{" "}
                       <span className={`font-semibold ${g.className}`}>{g.glyph}</span>{" "}
-                      {node.species_name} (parents can&apos;t pair otherwise)
+                      {tr(node.species_name)} (parents can&apos;t pair otherwise)
                     </>
                   ) : (
                     <>same-species step &mdash; gender/passive consolidation</>

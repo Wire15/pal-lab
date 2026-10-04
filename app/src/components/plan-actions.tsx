@@ -1,3 +1,4 @@
+import { t, tr } from "../i18n";
 // PLAN ACTIONS — the shared single-solve results-header cluster for the Solver
 // and the IV Lab: Save plan (with its inline naming bar), PNG export, Copy code,
 // and the PLANS drawer, plus the "loaded from a saved plan" staleness banner.
@@ -145,7 +146,7 @@ export function usePlanActions({
       downloadBlob(blob, planPngFilename(activePlanObj.root.species_name));
       showFlash("PNG exported");
     } catch (e) {
-      showFlash(`Export failed: ${e instanceof Error ? e.message : e}`);
+      showFlash(t("Export failed: {0}", [e instanceof Error ? e.message : e]));
     } finally {
       setExporting(false);
     }
@@ -180,47 +181,39 @@ export function usePlanActions({
   const headerButtons = (
     <>
       {flash && (
-        <span className="font-mono text-[11px] text-good">{flash}</span>
+        <span className="font-mono text-[11px] text-good">{tr(flash)}</span>
       )}
       <button
         type="button"
         onClick={beginSave}
         disabled={!activePlanObj || !lastRequest}
         className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        Save plan
-      </button>
+      >{t("Save plan")}</button>
       <button
         type="button"
         onClick={exportPng}
         disabled={!activePlanObj || exporting}
         className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {exporting ? "PNG\u2026" : "PNG"}
+        {exporting ? t("PNG…") : t("PNG")}
       </button>
       <button
         type="button"
         onClick={copyCode}
         disabled={!lastRequest}
         className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        Copy code
-      </button>
+      >{t("Copy code")}</button>
       <button
         type="button"
         onClick={copyLink}
         disabled={!lastRequest}
         className="rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        Copy link
-      </button>
+      >{t("Copy link")}</button>
       <button
         type="button"
         onClick={() => setDrawerOpen(true)}
         className="rounded-md border border-amber/40 bg-amber/10 px-2.5 py-1 text-[12px] font-medium text-amber transition-colors hover:bg-amber/20"
-      >
-        Plans
-      </button>
+      >{t("Plans")}</button>
     </>
   );
 
@@ -228,20 +221,14 @@ export function usePlanActions({
     <>
       {restoredFrom && (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-amber/30 bg-amber/[0.07] px-4 py-2">
-          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-amber">
-            Saved {new Date(restoredFrom.created).toLocaleDateString()}
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-amber">{t("Saved ")}{new Date(restoredFrom.created).toLocaleDateString()}
           </span>
-          <span className="text-[12px] leading-relaxed text-ink-dim">
-            Loaded from &ldquo;{restoredFrom.name}&rdquo; &mdash; your roster
-            may have changed since. Re-solve for a fresh plan.
-          </span>
+          <span className="text-[12px] leading-relaxed text-ink-dim">{t("Loaded from “")}{restoredFrom.name}{t("” — your roster may have changed since. Re-solve for a fresh plan.")}</span>
         </div>
       )}
       {naming && activePlanObj && (
         <div className="flex flex-wrap items-center gap-2 border-b border-line bg-raised px-4 py-2">
-          <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Name this plan
-          </span>
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Name this plan")}</span>
           <input
             autoFocus
             value={nameDraft}
@@ -256,16 +243,12 @@ export function usePlanActions({
             type="button"
             onClick={commitSave}
             className="rounded-md bg-amber px-3 py-1 text-[12px] font-semibold text-abyss transition-colors hover:bg-amber-bright"
-          >
-            Save
-          </button>
+          >{t("Save")}</button>
           <button
             type="button"
             onClick={() => setNaming(false)}
             className="rounded-md border border-line bg-raised px-3 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-          >
-            Cancel
-          </button>
+          >{t("Cancel")}</button>
         </div>
       )}
     </>

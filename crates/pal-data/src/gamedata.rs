@@ -72,8 +72,8 @@ impl ElementKind {
 }
 
 /// One item-drop line for a species, from the own-install extraction
-/// (`DT_PalDropItem`, keyed by `CharacterID` = species internal name). Palpedia
-/// shows per-pal rows of `(item, min, max, rate%)`. Emitted only for the base
+/// (`DT_PalDropItem`, keyed by `CharacterID` = species internal name).
+/// Each per-pal row contains `(item, min, max, rate%)`. Emitted only for the base
 /// (lowest-`Level`) drop table per species; empty slots are dropped. Item names
 /// are localized English (`DT_ItemNameText_Common`), falling back to the raw
 /// `item_id` when unlocalized (never fabricated).
@@ -181,7 +181,7 @@ pub struct PalSpecies {
     /// truth from the own-install extraction (`DT_PalMonsterParameter`); every
     /// shipped species carries at least one.
     pub elements: Vec<ElementKind>,
-    // ---- Palpedia gap fields (own-install extraction, build 24181527) ----
+    // ---- Pal-dex reference fields (own-install extraction, build 24181527) ----
     /// Per-pal item drops from `DT_PalDropItem` (base/lowest-`Level` table).
     /// Empty for the handful of variant species with no drop row. See [`ItemDrop`].
     pub drops: Vec<ItemDrop>,

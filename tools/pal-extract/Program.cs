@@ -116,7 +116,7 @@ static class Program
         // fields: CharacterID, Level, then 10 slots of ItemId<N>/Rate<N>/min<N>/Max<N>. Rate is a
         // PERCENT (100 => 100%). DT_PalDropItem and DT_PalDropItem_Common are byte-identical in this
         // build (verified via --discover-drops, 0 differing rows); we use DT_PalDropItem. We pick the
-        // LOWEST-Level row per CharacterID (the base drop table palpedia displays) and emit only the
+        // LOWEST-Level row per CharacterID (the base drop table) and emit only the
         // non-empty slots in order. Item names localize via ITEM_NAME_<ItemId> in DT_ItemNameText_Common
         // (falls back to the raw ItemId — never fabricated). Keyed by species internal name (CharacterID).
         var dropTable = provider.LoadPackageObject<UDataTable>("Pal/Content/Pal/DataTable/Character/DT_PalDropItem");

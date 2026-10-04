@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // Web-mode save loader. The desktop app points the backend at a filesystem
 // path; a browser can't, so this full-pane card takes a dropped `SaveGames`
 // folder (or a File System Access pick, or an <input webkitdirectory>), reads it
@@ -90,10 +91,10 @@ function snapshotAge(savedAt: number): string {
   const secs = Math.max(0, Math.round((Date.now() - savedAt) / 1000));
   if (secs < 60) return "just now";
   const mins = Math.round(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return t("{0}m ago", [mins]);
   const hrs = Math.round(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.round(hrs / 24)}d ago`;
+  if (hrs < 24) return t("{0}h ago", [hrs]);
+  return t("{0}d ago", [Math.round(hrs / 24)]);
 }
 
 /** Snapshot size as MB, one decimal, for the faint UI suffix. */
@@ -135,6 +136,7 @@ async function dirHandleFromDrop(
 }
 
 export default function WebDropZone() {
+  useLocale();
   const { loadSave, saveError, saveLoading, pendingPlanCode } = useAppState();
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -353,12 +355,8 @@ export default function WebDropZone() {
       )}
       <div className="w-full max-w-lg overflow-hidden rounded-lg border border-line bg-panel">
         <div className="border-b border-line px-6 py-5">
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Local save
-          </div>
-          <h2 className="mt-0.5 font-display text-xl font-bold tracking-wide text-ink">
-            Load your Palworld save
-          </h2>
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Local save")}</div>
+          <h2 className="mt-0.5 font-display text-xl font-bold tracking-wide text-ink">{t("Load your Palworld save")}</h2>
         </div>
 
         <div className="px-6 py-6">
@@ -387,26 +385,20 @@ export default function WebDropZone() {
               <DropGlyph />
             </span>
             <div className="text-[14px] font-medium text-ink">
-              {working ? "Reading save\u2026" : "Drop your SaveGames folder or Xbox save store"}
+              {working ? t("Reading save…") : t("Drop your SaveGames folder or Xbox save store")}
             </div>
-            <div className="font-mono text-[11px] text-ink-faint">
-              usually at{" "}
-              <span className="text-ink-dim">
-                AppData\Local\Pal\Saved\SaveGames
-              </span>
+            <div className="font-mono text-[11px] text-ink-faint">{t("usually at")}{" "}
+              <span className="text-ink-dim">{t("AppData\\Local\\Pal\\Saved\\SaveGames")}</span>
             </div>
-            <div className="font-mono text-[11px] text-ink-faint">
-              Xbox / Game Pass:{" "}
-              <span className="text-ink-dim">
-                %LOCALAPPDATA%\Packages\PocketpairInc.Palworld_...\SystemAppData\wgs
-              </span>
+            <div className="font-mono text-[11px] text-ink-faint">{t("Xbox / Game Pass:")}{" "}
+              <span className="text-ink-dim">{t("%LOCALAPPDATA%\\Packages\\PocketpairInc.Palworld_...\\SystemAppData\\wgs")}</span>
             </div>
             <button
               onClick={browse}
               disabled={working}
               className="mt-1 rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {working ? "Loading\u2026" : "Browse"}
+              {working ? t("Loading…") : t("Browse")}
             </button>
             <input
               ref={inputRef}
@@ -418,40 +410,28 @@ export default function WebDropZone() {
                 if (files && files.length) void runLoad(() => acceptInput(files));
               }}
             />
-            {isFsAccessSupported() && (
-              // Chromium's File System Access blocklist refuses picks inside
-              // AppData ("contains system files") — where Palworld saves live.
-              // The classic <input webkitdirectory> dialog has no blocklist, so
-              // surface it as an explicit escape hatch (no live handle, but the
-              // byte snapshot still remembers the save).
-              <div className="font-mono text-[11px] text-ink-faint">
-                Chrome refusing the folder?{" "}
+            {isFsAccessSupported() && (<div className="font-mono text-[11px] text-ink-faint">{t("Chrome refusing the folder?")}{" "}
                 <button
                   onClick={() => inputRef.current?.click()}
                   disabled={working}
                   className="underline decoration-line underline-offset-2 transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  use the classic dialog
-                </button>
-              </div>
-            )}
+                >{t("use the classic dialog")}</button>
+              </div>)}
             {stored ? (
               <div className="mt-2 flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
-                <span>remembered</span>
+                <span>{t("remembered")}</span>
                 <button
                   onClick={reloadStored}
                   disabled={working}
-                  title={`Reload ${stored.name}`}
+                  title={t("Reload {0}", [stored.name])}
                   className="flex items-center gap-1 rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Reload
-                  <span className="max-w-[16ch] truncate">{stored.name}</span>
+                >{t("Reload")}<span className="max-w-[16ch] truncate">{stored.name}</span>
                 </button>
                 <button
                   onClick={forgetStored}
                   disabled={working}
-                  aria-label={`Forget ${stored.name}`}
-                  title="Forget this save"
+                  aria-label={t("Forget {0}", [stored.name])}
+                  title={t("Forget this save")}
                   className="rounded-md p-1 text-ink-faint transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <svg
@@ -473,24 +453,21 @@ export default function WebDropZone() {
             ) : snap ? (
               <div className="mt-2 flex flex-col items-center gap-1">
                 <div className="flex items-center gap-1.5 font-mono text-[11px] text-ink-faint">
-                  <span>remembered</span>
+                  <span>{t("remembered")}</span>
                   <button
                     onClick={restoreSnap}
                     disabled={working}
-                    title={`Restore ${snap.label}`}
+                    title={t("Restore {0}", [snap.label])}
                     className="flex items-center gap-1 rounded-md border border-line bg-raised px-2.5 py-1 text-[11px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Restore
-                    <span className="max-w-[16ch] truncate">{snap.label}</span>
+                  >{t("Restore")}<span className="max-w-[16ch] truncate">{tr(snap.label)}</span>
                   </button>
-                  <span className="whitespace-nowrap text-ink-faint/70">
-                    saved {snapshotAge(snap.savedAt)} · {snapshotSize(snap.bytes)}
+                  <span className="whitespace-nowrap text-ink-faint/70">{t("saved ")}{snapshotAge(snap.savedAt)} · {snapshotSize(snap.bytes)}
                   </span>
                   <button
                     onClick={forgetStored}
                     disabled={working}
-                    aria-label={`Forget ${snap.label}`}
-                    title="Forget this save"
+                    aria-label={t("Forget {0}", [snap.label])}
+                    title={t("Forget this save")}
                     className="rounded-md p-1 text-ink-faint transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     <svg
@@ -509,17 +486,13 @@ export default function WebDropZone() {
                     </svg>
                   </button>
                 </div>
-                <span className="font-mono text-[10px] text-ink-faint/70">
-                  as of last load — re-drop to pick up new progress
-                </span>
+                <span className="font-mono text-[10px] text-ink-faint/70">{t("as of last load — re-drop to pick up new progress")}</span>
               </div>
             ) : null}
           </div>
 
           {pendingPlanCode && (
-            <p className="mt-4 rounded-md border border-line bg-raised/40 px-3 py-2 font-mono text-[11px] text-ink-faint">
-              Breeding plan link detected &mdash; load your save to import it.
-            </p>
+            <p className="mt-4 rounded-md border border-line bg-raised/40 px-3 py-2 font-mono text-[11px] text-ink-faint">{t("Breeding plan link detected — load your save to import it.")}</p>
           )}
 
           {shownError && (
@@ -529,9 +502,7 @@ export default function WebDropZone() {
           )}
 
           <p className="mt-4 flex items-center gap-2 font-mono text-[11px] text-ink-faint">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-good" />
-            parsed locally &mdash; your save never leaves this device
-          </p>
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-good" />{t("parsed locally — your save never leaves this device")}</p>
         </div>
       </div>
     </div>
@@ -559,6 +530,7 @@ function WgsWorldPicker({
   onCancel: () => void;
   busy: boolean;
 }) {
+  useLocale();
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-abyss/70 p-6"
@@ -573,18 +545,13 @@ function WgsWorldPicker({
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="border-b border-line px-5 py-4">
-          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-            Xbox / Game Pass
-          </div>
+          <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Xbox / Game Pass")}</div>
           <h2
             id="wgs-picker-title"
             className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink"
-          >
-            Choose a world
-          </h2>
+          >{t("Choose a world")}</h2>
           <div className="mt-1 font-mono text-[12px] text-ink-dim">
-            {worlds.length} worlds in this save store
-          </div>
+            {worlds.length}{t(" worlds in this save store")}</div>
         </div>
         <div className="max-h-[60vh] overflow-auto p-2">
           {worlds.map((w) => {
@@ -597,11 +564,11 @@ function WgsWorldPicker({
                 className="flex w-full flex-col items-start gap-0.5 rounded-md border border-transparent px-3 py-2.5 text-left transition-colors hover:border-amber/40 hover:bg-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span className="text-[14px] font-medium text-ink">
-                  {w.worldName?.trim() || "Unnamed world"}
+                  {w.worldName?.trim() || t("Unnamed world")}
                 </span>
                 <span className="font-mono text-[11px] text-ink-faint">
-                  {w.playerCount} player{w.playerCount === 1 ? "" : "s"}
-                  {when ? ` \u00b7 ${when}` : ""}
+                  {w.playerCount}{t(" player")}{w.playerCount === 1 ? "" : t("s")}
+                  {when ? t(" · {0}", [when]) : ""}
                 </span>
                 <span className="max-w-full truncate font-mono text-[10px] text-ink-faint/70">
                   {w.saveId}
@@ -615,9 +582,7 @@ function WgsWorldPicker({
             onClick={onCancel}
             disabled={busy}
             className="rounded-md border border-line bg-raised px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:border-amber/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            Cancel
-          </button>
+          >{t("Cancel")}</button>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@
 // records, so components stay declarative and the color rules live in one place.
 
 import type { ContainerKind, Gender } from "./types";
+import { t } from "../i18n";
 
 /** Compact human-readable duration: 2h05m, 9m30s, 45s, or the infinity glyph. */
 export function formatDuration(secs: number): string {
@@ -27,10 +28,10 @@ export interface GenderView {
 /** Mars/Venus glyph + accent color; neutral dash for unresolved gender. */
 export function genderView(gender: Gender | null): GenderView {
   if (gender === "Male")
-    return { glyph: "\u2642", className: "text-el-water", label: "Male" };
+    return { glyph: "\u2642", className: "text-el-water", label: t("Male") };
   if (gender === "Female")
-    return { glyph: "\u2640", className: "text-el-dragon", label: "Female" };
-  return { glyph: "\u2015", className: "text-ink-faint", label: "Any" };
+    return { glyph: "\u2640", className: "text-el-dragon", label: t("Female") };
+  return { glyph: "\u2015", className: "text-ink-faint", label: t("Any") };
 }
 
 export type Quality = "good" | "fair" | "mid" | "low";
@@ -131,19 +132,19 @@ export const PASSIVE_TONE: Record<PassiveTone, string> = {
 export function containerLabel(kind: ContainerKind): string {
   switch (kind) {
     case "Palbox":
-      return "Palbox";
+      return t("Palbox");
     case "Party":
-      return "Party";
+      return t("Party");
     case "Base":
-      return "Base";
+      return t("Base");
     case "ViewingCage":
-      return "Cage";
+      return t("Cage");
     case "GlobalPalStorage":
-      return "Global";
+      return t("Global");
     case "DimensionalPalStorage":
-      return "Dimensional";
+      return t("Dimensional");
     default:
-      return "Unknown";
+      return t("Unknown");
   }
 }
 
@@ -264,11 +265,11 @@ const EFFECT_LABEL: Record<string, string> = {
 
 export function effectLabel(type: string): string {
   const explicit = EFFECT_LABEL[type];
-  if (explicit) return explicit;
+  if (explicit) return t(explicit);
   let m = type.match(/^ElementBoost_(.+)$/);
-  if (m) return `${m[1]} Attack`;
+  if (m) return t("{0} Attack", [t(m[1])]);
   m = type.match(/^(?:ElementResist|TemperatureResist|ResistAdditionalEffect)_(.+)$/);
-  if (m) return `${m[1]} Resistance`;
+  if (m) return t("{0} Resistance", [t(m[1])]);
   // Fallback: humanize the enum (never hide) — drop qualifier suffixes, split
   // underscores + camelCase, then space-normalize.
   return type
@@ -317,7 +318,7 @@ const TARGET_LABEL: Record<string, string> = {
 /** Quiet "(self)"-style scope annotation; null when the effect has no target. */
 export function effectTarget(target: string): string | null {
   if (!target || target === "None") return null;
-  return (
+  return t(
     TARGET_LABEL[target] ??
     target
       .replace(/^To/, "")

@@ -29,7 +29,7 @@ criterion and click **Sort** (Steam "Sorting Palbox", 2024-02).
 
 | Sort key | Meaning | Our field | Source + date |
 |---|---|---|---|
-| **Paldeck No.** | Palpedia/paldex number | species paldex no (`Id.PalDexNo`) | gamepressure 2024-01-30; Steam 2024 |
+| **Paldeck No.** | In-game Paldeck number | species paldex no (`Id.PalDexNo`) | gamepressure 2024-01-30; Steam 2024 |
 | **Level** | Character level | `OwnedPal.level` | gamepressure 2024-01-30; Steam 2024 |
 | **Element** | Groups by element type | `elements` (slice B, incoming) | gamepressure 2024-01-30 |
 | **Alpha status** | Alpha/boss Pals grouped | `OwnedPal.is_boss` | gamepressure 2024-01-30 |
@@ -85,7 +85,7 @@ Always append **physical slot order** as the final tie-break so every sort is fu
   vanilla ("no ability to search for specific passive abilities", Steam). Those exist only via
   mods (Palbox Sorter, Global Palbox Filter).
 
-### Paldeck (Palpedia) — filters live here, NOT in the Palbox
+### Paldeck — filters live here, NOT in the Palbox
 The **element** and **capture-bonus** filters players associate with "filtering Pals" are a
 **Paldeck** feature, not a Palbox feature:
 

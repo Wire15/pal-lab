@@ -1,3 +1,4 @@
+import { t, useLocale } from "../i18n";
 // Per-level partner-skill values. The pack ships partner-skill descriptions as
 // a template with `{0}`..`{N}` slots wherever a number varies across the five
 // partner-skill ranks (constants stay baked into the template text), plus a
@@ -96,6 +97,7 @@ function PartnerValue({
   levels: string[];
   interactive: boolean;
 }) {
+  useLocale();
   const tipId = useId();
   const tokenRef = useRef<HTMLSpanElement | null>(null);
   const tipRef = useRef<HTMLDivElement | null>(null);
@@ -173,7 +175,7 @@ function PartnerValue({
         tabIndex={0}
         role="button"
         aria-describedby={open ? tipId : undefined}
-        aria-label={`Value at level 1: ${lv1}. Scales to ${levels[levels.length - 1]} at level ${levels.length}.`}
+        aria-label={t("Value at level 1: {0}. Scales to {1} at level {2}.", [lv1, levels[levels.length - 1], levels.length])}
         className="mx-px inline-flex cursor-help items-baseline rounded-sm px-1 font-mono font-medium text-el-water outline-none transition-colors hover:bg-[color-mix(in_srgb,var(--color-el-water)_24%,transparent)] focus-visible:ring-1 focus-visible:ring-el-water/70"
         style={{
           backgroundColor: "color-mix(in srgb, var(--color-el-water) 14%, transparent)",
@@ -208,9 +210,7 @@ function PartnerValue({
           }}
           className="overflow-hidden rounded-md border border-line bg-panel/95 ring-1 ring-abyss/70"
         >
-          <div className="border-b border-line-soft px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
-            Per level
-          </div>
+          <div className="border-b border-line-soft px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">{t("Per level")}</div>
           <div className="flex flex-col py-1">
             {levels.map((v, i) => {
               const current = i === 0;
@@ -225,8 +225,7 @@ function PartnerValue({
                     className={`font-mono uppercase tracking-wide ${
                       current ? "text-el-water" : "text-ink-faint"
                     }`}
-                  >
-                    Lv {i + 1}
+                  >{t("Lv ")}{i + 1}
                   </span>
                   <span
                     className={`font-mono tabular-nums ${
@@ -261,7 +260,8 @@ export function PartnerSkillDescription({
   interactive?: boolean;
   className?: string;
 }) {
-  const chunks = parseTemplate(template);
+  useLocale();
+  const chunks = parseTemplate(t(template));
   return (
     <p className={`whitespace-pre-line ${className}`}>
       {chunks.map((c, i) =>

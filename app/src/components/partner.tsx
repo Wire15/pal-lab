@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 // Partner-skill icon chip. Renders the species' bundled partner glyph
 // (public/partner/<textureId>.png) or a neutral fallback mark when the pack has
 // no resolved icon — never a broken <img>. Sourced from the own-install
@@ -30,7 +31,7 @@ export function PartnerIcon({
   return (
     <img
       src={src}
-      alt=""
+      alt={t("")}
       aria-hidden="true"
       loading="lazy"
       draggable={false}

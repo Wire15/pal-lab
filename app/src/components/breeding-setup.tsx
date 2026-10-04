@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The Solver's BREEDING SETUP panel (Wave 2, slice C). Surfaces the three farm
 // knobs that bend a breeding plan's real-world time — the world's egg-hatch
 // setting, the partner/passive breeding boosters you own (or could), and the
@@ -39,11 +40,11 @@ function breedTimeReductionPct(bonus: number): number {
 }
 
 const CAKES: { token: CakeToken; label: string; note: string }[] = [
-  { token: "normal", label: "None", note: "No cake \u2014 base inherit odds." },
-  { token: "mushroom", label: "Mushroom", note: "Raises the inherited IV floor." },
-  { token: "vegetable", label: "Vegetable", note: "Two eggs per breeding cycle." },
-  { token: "deluxe_vegetable", label: "Deluxe Veg", note: "Raises the inherited IV floor." },
-  { token: "special", label: "Special", note: "All parent passives inherit." },
+  { token: "normal", get label() { return t("None"); }, note: "No cake \u2014 base inherit odds." },
+  { token: "mushroom", get label() { return t("Mushroom"); }, note: "Raises the inherited IV floor." },
+  { token: "vegetable", get label() { return t("Vegetable"); }, note: "Two eggs per breeding cycle." },
+  { token: "deluxe_vegetable", get label() { return t("Deluxe Veg"); }, note: "Raises the inherited IV floor." },
+  { token: "special", get label() { return t("Special"); }, note: "All parent passives inherit." },
 ];
 
 const CAKE_LABEL: Record<CakeToken, string> = {
@@ -74,14 +75,14 @@ export function isNeutralSetup(setup: BreedingSetup, cake: CakeToken): boolean {
 export function describeSetup(setup: BreedingSetup, cake: CakeToken): string[] {
   const parts: string[] = [];
   if (setup.farm_speed_bonus > 0)
-    parts.push(`-${breedTimeReductionPct(setup.farm_speed_bonus)}% breed time`);
+    parts.push(t("-{0}% breed time", [breedTimeReductionPct(setup.farm_speed_bonus)]));
   if (setup.extra_egg_chance > 0)
-    parts.push(`+${Math.round(setup.extra_egg_chance * 100)}% eggs`);
+    parts.push(t("+{0}% eggs", [Math.round(setup.extra_egg_chance * 100)]));
   if (setup.incubation_reduction > 0)
-    parts.push(`-${Math.round(setup.incubation_reduction * 100)}% incubation`);
+    parts.push(t("-{0}% incubation", [Math.round(setup.incubation_reduction * 100)]));
   if (setup.egg_hatch_hours !== 72)
-    parts.push(`${+setup.egg_hatch_hours.toFixed(2)}h hatch`);
-  if (cake !== "normal") parts.push(`${CAKE_LABEL[cake]} cake`);
+    parts.push(t("{0}h hatch", [+setup.egg_hatch_hours.toFixed(2)]));
+  if (cake !== "normal") parts.push(t("{0} cake", [CAKE_LABEL[cake]]));
   return parts;
 }
 
@@ -111,9 +112,9 @@ interface Booster {
 function effectSummary(effects: BoosterEffect[]): string {
   return effects
     .map((e) => {
-      if (e.effect === "farm_speed") return `-${breedTimeReductionPct(e.value)}% breed time`;
-      if (e.effect === "incubation_speed") return `-${Math.round(e.value * 100)}% hatch time`;
-      if (e.effect === "extra_egg_chance") return `+${Math.round(e.value * 100)}% eggs`;
+      if (e.effect === "farm_speed") return t("-{0}% breed time", [breedTimeReductionPct(e.value)]);
+      if (e.effect === "incubation_speed") return t("-{0}% hatch time", [Math.round(e.value * 100)]);
+      if (e.effect === "extra_egg_chance") return t("+{0}% eggs", [Math.round(e.value * 100)]);
       return "";
     })
     .filter(Boolean)
@@ -149,6 +150,7 @@ function dedupeResearch(entries: LabResearchEntry[]): ResearchLine[] {
 }
 
 export function BreedingSetupPanel() {
+  useLocale();
   const { saveDir, saveSummary } = useAppState();
   const {
     setup,
@@ -404,30 +406,21 @@ export function BreedingSetupPanel() {
   return (
     <section className="flex flex-col gap-3 border-t border-line-soft pt-4">
       <div>
-        <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-          Breeding setup
-        </div>
-        <p className="mt-1 text-[11px] leading-relaxed text-ink-faint">
-          Farm bonuses that bend plan times. All values are estimates from game
-          data.
-        </p>
+        <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Breeding setup")}</div>
+        <p className="mt-1 text-[11px] leading-relaxed text-ink-faint">{t("Farm bonuses that bend plan times. All values are estimates from game data.")}</p>
       </div>
 
       {/* EGG HATCH TIME */}
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Egg hatch time
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Egg hatch time")}</span>
         {scanned ? (
           <div className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2.5 py-1.5">
             <span className="font-mono text-[15px] font-semibold tabular-nums text-ink">
               {+hatchHours.toFixed(2)}
-              <span className="ml-0.5 text-[11px] font-normal text-ink-faint">h</span>
+              <span className="ml-0.5 text-[11px] font-normal text-ink-faint">{t("h")}</span>
             </span>
             <span className="ml-auto inline-flex items-center gap-1 rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-amber">
-              <span className="h-1 w-1 rounded-full bg-amber" />
-              Scanned from world
-            </span>
+              <span className="h-1 w-1 rounded-full bg-amber" />{t("Scanned from world")}</span>
           </div>
         ) : (
           <>
@@ -440,21 +433,16 @@ export function BreedingSetupPanel() {
                 value={manualHatch}
                 onChange={(e) => setManualHatch(Math.max(0.1, Number(e.currentTarget.value) || 0))}
               />
-              <span className="text-[11px] text-ink-faint">hours per egg</span>
+              <span className="text-[11px] text-ink-faint">{t("hours per egg")}</span>
             </label>
-            <p className="text-[11px] leading-relaxed text-ink-faint">
-              Dedicated servers keep this in PalWorldSettings.ini &mdash; enter
-              your world&rsquo;s Egg Incubation setting.
-            </p>
+            <p className="text-[11px] leading-relaxed text-ink-faint">{t("Dedicated servers keep this in PalWorldSettings.ini — enter your world’s Egg Incubation setting.")}</p>
           </>
         )}
       </div>
 
       {/* BOOSTERS */}
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Boosters
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Boosters")}</span>
         <div className="flex flex-col gap-1">
           {boosters.map((b) => {
             const on = selected.includes(b.source);
@@ -487,9 +475,7 @@ export function BreedingSetupPanel() {
                       {b.displayName}
                     </span>
                     {!b.owned && (
-                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-ink-faint">
-                        not owned
-                      </span>
+                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-ink-faint">{t("not owned")}</span>
                     )}
                   </span>
                   <span
@@ -501,23 +487,12 @@ export function BreedingSetupPanel() {
                   </span>
                 </span>
                 <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">
-                  {b.isPassive ? (
-                    b.owned ? (
-                      "passive"
-                    ) : (
-                      "what\u2011if"
-                    )
-                  ) : b.owned ? (
-                    <>
+                  {b.isPassive ? (b.owned ? (t("passive")) : (t("what‑if"))) : b.owned ? (<>
                       {b.bestRank}
                       <span className="text-amber">&#9733;</span>
-                    </>
-                  ) : (
-                    <>
+                    </>) : (<>
                       {b.maxRank}
-                      <span>&#9733;</span> max
-                    </>
-                  )}
+                      <span>&#9733;</span>{t(" max")}</>)}
                 </span>
               </button>
             );
@@ -548,50 +523,33 @@ export function BreedingSetupPanel() {
                       {b.displayName}
                     </span>
                     {!b.owned && (
-                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-ink-faint">
-                        not owned
-                      </span>
+                      <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-ink-faint">{t("not owned")}</span>
                     )}
                   </span>
                   <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                    +{b.minPct === b.maxPct ? b.minPct : `${b.minPct}\u2013${b.maxPct}`}% Alpha-egg chance
-                  </span>
+                    +{b.minPct === b.maxPct ? b.minPct : t("{0}–{1}", [b.minPct, b.maxPct])}{t("% Alpha-egg chance")}</span>
                 </span>
-                <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">
-                  info
-                </span>
+                <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">{t("info")}</span>
               </div>
             ))}
-            <p className="text-[11px] leading-relaxed text-ink-faint">
-              Raises the chance the hatched Pal is an Alpha (+20% HP, larger
-              size). Doesn&rsquo;t affect breeding steps or passives, so it
-              isn&rsquo;t a toggle.
-            </p>
+            <p className="text-[11px] leading-relaxed text-ink-faint">{t("Raises the chance the hatched Pal is an Alpha (+20% HP, larger size). Doesn’t affect breeding steps or passives, so it isn’t a toggle.")}</p>
           </div>
         )}
         {applied.length > 0 && (
           <div className="rounded-md border border-amber/25 bg-amber/[0.06] px-2.5 py-1.5">
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber/80">
-              Applied
-            </span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-amber/80">{t("Applied")}</span>
             <span className="ml-2 font-mono text-[11px] tabular-nums text-ink-dim">
               {applied.join("  /  ")}
             </span>
           </div>
         )}
-        <p className="text-[11px] leading-relaxed text-ink-faint">
-          Owned boosters use your best condensation rank; others are toggleable
-          what-ifs at max rank. Stacking boosters from mixed sources is untested
-          in-game.
-        </p>
+        <p className="text-[11px] leading-relaxed text-ink-faint">{t("Owned boosters use your best condensation rank; others are toggleable what-ifs at max rank. Stacking boosters from mixed sources is untested in-game.")}</p>
       </div>
 
       {/* LAB RESEARCH */}
       {researchLines.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Lab research
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Lab research")}</span>
           <div className="flex flex-col gap-1.5">
             {researchLines.map((line) => {
               const rank = Math.min(researchRanks[line.key] ?? 0, line.maxRank);
@@ -610,24 +568,23 @@ export function BreedingSetupPanel() {
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span className="truncate text-[13px] font-medium text-ink">
-                        {line.name}
+                        {tr(line.name)}
                       </span>
                       <span
                         className={`font-mono text-[11px] tabular-nums ${
                           rank > 0 ? "text-amber-bright" : "text-ink-faint"
                         }`}
                       >
-                        {rank > 0 ? `-${Math.round(frac * 100)}% hatch time` : "Not researched"}
+                        {rank > 0 ? t("-{0}% hatch time", [Math.round(frac * 100)]) : t("Not researched")}
                       </span>
                     </span>
-                    <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">
-                      Lv&nbsp;{rank}/{line.maxRank}
+                    <span className="shrink-0 text-right font-mono text-[9px] uppercase leading-tight tracking-wider text-ink-faint">{t("Lv ")}{rank}/{line.maxRank}
                     </span>
                   </div>
                   <div
                     className="flex overflow-hidden rounded-md border border-line"
                     role="radiogroup"
-                    aria-label={`${line.name} researched rank`}
+                    aria-label={t("{0} researched rank", [line.name])}
                   >
                     {Array.from({ length: line.maxRank + 1 }, (_, r) => {
                       const active = r === rank;
@@ -637,7 +594,7 @@ export function BreedingSetupPanel() {
                           type="button"
                           role="radio"
                           aria-checked={active}
-                          aria-label={`Rank ${r}`}
+                          aria-label={t("Rank {0}", [r])}
                           onClick={() => setResearchRank(line.key, r)}
                           className={`flex-1 border-r border-line py-1 font-mono text-[11px] tabular-nums transition-colors last:border-r-0 ${
                             active
@@ -654,22 +611,17 @@ export function BreedingSetupPanel() {
               );
             })}
           </div>
-          <p className="text-[11px] leading-relaxed text-ink-faint">
-            Set to your lab&rsquo;s researched rank &mdash; save files don&rsquo;t
-            expose research yet. Each rank speeds egg incubation, up to &minus;30%.
-          </p>
+          <p className="text-[11px] leading-relaxed text-ink-faint">{t("Set to your lab’s researched rank — save files don’t expose research yet. Each rank speeds egg incubation, up to −30%.")}</p>
         </div>
       )}
 
       {/* CAKE */}
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Cake
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Cake")}</span>
         <div
           className="flex flex-col overflow-hidden rounded-md border border-line"
           role="radiogroup"
-          aria-label="Breeding cake fed at the farm"
+          aria-label={t("Breeding cake fed at the farm")}
         >
           {CAKES.map((c) => {
             const active = cake === c.token;
@@ -689,21 +641,19 @@ export function BreedingSetupPanel() {
                 <span
                   className={`h-1.5 w-1.5 shrink-0 rounded-full ${active ? "bg-amber" : "bg-line"}`}
                 />
-                {c.label}
+                {tr(c.label)}
               </button>
             );
           })}
         </div>
         <p className="text-[11px] leading-relaxed text-ink-faint">
-          {CAKES.find((c) => c.token === cake)?.note}
+          {tr(CAKES.find((c) => c.token === cake)?.note)}
         </p>
       </div>
 
       {/* ADVANCED STATIONS */}
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Advanced stations
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Advanced stations")}</span>
 
         {/* Surgery table */}
         <div className="flex flex-col gap-1">
@@ -723,29 +673,25 @@ export function BreedingSetupPanel() {
               &#9877;
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
-              <span className="text-[13px] font-medium text-ink">Surgery table</span>
-              <span className="font-mono text-[11px] text-ink-faint">
-                Implant missing passives onto the final pal
-              </span>
+              <span className="text-[13px] font-medium text-ink">{t("Surgery table")}</span>
+              <span className="font-mono text-[11px] text-ink-faint">{t("Implant missing passives onto the final pal")}</span>
             </span>
             <span
               className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
                 surgery ? "text-amber" : "text-ink-faint"
               }`}
             >
-              {surgery ? "on" : "off"}
+              {surgery ? t("on") : t("off")}
             </span>
           </button>
           {surgery && (
             <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2 py-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                  Max implants
-                </span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Max implants")}</span>
                 <div
                   className="flex overflow-hidden rounded-md border border-line"
                   role="radiogroup"
-                  aria-label="Maximum surgery-table implants"
+                  aria-label={t("Maximum surgery-table implants")}
                 >
                   {[1, 2, 3, 4].map((n) => {
                     const active = surgery.max_implants === n;
@@ -755,7 +701,7 @@ export function BreedingSetupPanel() {
                         type="button"
                         role="radio"
                         aria-checked={active}
-                        aria-label={`${n} implants`}
+                        aria-label={t("{0} implants", [n])}
                         onClick={() => setSurgery({ ...surgery, max_implants: n })}
                         className={`w-7 border-r border-line py-1 font-mono text-[11px] tabular-nums transition-colors last:border-r-0 ${
                           active
@@ -783,19 +729,16 @@ export function BreedingSetupPanel() {
                     })
                   }
                 />
-                <span className="text-[11px] text-ink-faint">
-                  sec per implant ({formatDuration(surgery.cost_secs)})
+                <span className="text-[11px] text-ink-faint">{t("sec per implant (")}{formatDuration(surgery.cost_secs)})
                 </span>
               </label>
-              <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
-                about 30s per use in practice &mdash; tune it if your runs differ.
-              </p>
+              <p className="font-mono text-[11px] leading-relaxed text-ink-faint">{t("about 30s per use in practice — tune it if your runs differ.")}</p>
               <div className="flex flex-col gap-1">
                 <PassivePicker
                   selected={surgery.allowed_passives ?? []}
                   valueMode="id"
-                  label="Implantable passives"
-                  placeholder={"Search passives\u2026"}
+                  label={t("Implantable passives")}
+                  placeholder={tr("Search passives\u2026")}
                   onAdd={(id) =>
                     setSurgery({
                       ...surgery,
@@ -812,9 +755,7 @@ export function BreedingSetupPanel() {
                     });
                   }}
                 />
-                <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
-                  Optional &mdash; leave empty to allow any implantable passive.
-                </p>
+                <p className="font-mono text-[11px] leading-relaxed text-ink-faint">{t("Optional — leave empty to allow any implantable passive.")}</p>
               </div>
             </div>
           )}
@@ -838,17 +779,15 @@ export function BreedingSetupPanel() {
               &#8644;
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
-              <span className="text-[13px] font-medium text-ink">Gender reverser</span>
-              <span className="font-mono text-[11px] text-ink-faint">
-                Breed a same-gender-only pairing by reversing one parent
-              </span>
+              <span className="text-[13px] font-medium text-ink">{t("Gender reverser")}</span>
+              <span className="font-mono text-[11px] text-ink-faint">{t("Breed a same-gender-only pairing by reversing one parent")}</span>
             </span>
             <span
               className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
                 genderReverser ? "text-amber" : "text-ink-faint"
               }`}
             >
-              {genderReverser ? "on" : "off"}
+              {genderReverser ? t("on") : t("off")}
             </span>
           </button>
           {genderReverser && (
@@ -866,8 +805,7 @@ export function BreedingSetupPanel() {
                     })
                   }
                 />
-                <span className="text-[11px] text-ink-faint">
-                  sec per reverse ({formatDuration(genderReverser.cost_secs)})
+                <span className="text-[11px] text-ink-faint">{t("sec per reverse (")}{formatDuration(genderReverser.cost_secs)})
                 </span>
               </label>
             </div>
@@ -892,17 +830,15 @@ export function BreedingSetupPanel() {
               &#10048;
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
-              <span className="text-[13px] font-medium text-ink">Skill Fruits</span>
-              <span className="font-mono text-[11px] text-ink-faint">
-                Teach extra required moves to the final pal
-              </span>
+              <span className="text-[13px] font-medium text-ink">{t("Skill Fruits")}</span>
+              <span className="font-mono text-[11px] text-ink-faint">{t("Teach extra required moves to the final pal")}</span>
             </span>
             <span
               className={`shrink-0 font-mono text-[9px] uppercase tracking-wider ${
                 skillFruit ? "text-amber" : "text-ink-faint"
               }`}
             >
-              {skillFruit ? "on" : "off"}
+              {skillFruit ? t("on") : t("off")}
             </span>
           </button>
           {skillFruit && (
@@ -920,42 +856,25 @@ export function BreedingSetupPanel() {
                     })
                   }
                 />
-                <span className="text-[11px] text-ink-faint">
-                  sec per fruit ({formatDuration(skillFruit.cost_secs)})
+                <span className="text-[11px] text-ink-faint">{t("sec per fruit (")}{formatDuration(skillFruit.cost_secs)})
                 </span>
               </label>
             </div>
           )}
         </div>
 
-        <p className="text-[11px] leading-relaxed text-ink-faint">
-          Costs are your own time-cost estimates &mdash; what a station&rsquo;s step is
-          worth to you in seconds. The solver adds them to a plan&rsquo;s ranking effort,
-          so a cheaper pure-breeding plan still wins.
-        </p>
+        <p className="text-[11px] leading-relaxed text-ink-faint">{t("Costs are your own time-cost estimates — what a station’s step is worth to you in seconds. The solver adds them to a plan’s ranking effort, so a cheaper pure-breeding plan still wins.")}</p>
       </div>
 
       {/* MUTATIONS — honest card: rate is code-verified, outcomes are not */}
       <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Mutations
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Mutations")}</span>
         <div className="flex flex-col gap-1.5 rounded-md border border-line bg-panel px-2.5 py-2">
           <div className="flex items-center gap-2">
-            <span className="rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">
-              ~1% / egg
-            </span>
-            <span className="text-[11px] text-ink-faint">
-              +2pp with Deluxe cake
-            </span>
+            <span className="rounded-sm border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">{t("~1% / egg")}</span>
+            <span className="text-[11px] text-ink-faint">{t("+2pp with Deluxe cake")}</span>
           </div>
-          <p className="text-[11px] leading-relaxed text-ink-faint">
-            Any breeding step can yield a <span className="text-ink">Mutated Egg</span> that
-            hatches a different, stronger species than the pair&rsquo;s normal child. The
-            rate is verified from the game&rsquo;s data; <span className="text-ink">which</span>{" "}
-            species it becomes hasn&rsquo;t been publicly decoded &mdash; so Pal Lab treats
-            mutations as a bonus and never builds plans that depend on one.
-          </p>
+          <p className="text-[11px] leading-relaxed text-ink-faint">{t("Any breeding step can yield a ")}<span className="text-ink">{t("Mutated Egg")}</span>{t(" that hatches a different, stronger species than the pair’s normal child. The rate is verified from the game’s data; ")}<span className="text-ink">{t("which")}</span>{" "}{t("species it becomes hasn’t been publicly decoded — so Pal Lab treats mutations as a bonus and never builds plans that depend on one.")}</p>
         </div>
       </div>
     </section>

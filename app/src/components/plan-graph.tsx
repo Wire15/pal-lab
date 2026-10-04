@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The Solver graph view: a pannable / zoomable breeding-bracket flowchart.
 //
 // Layout is the hand-rolled tidy-tree in plan-graph-layout.ts (leaves left,
@@ -94,6 +95,7 @@ function PalCircle({
    * names) — set ONLY on the plan root; a note, needs no breeding. */
   levelupMoves?: string[];
 }) {
+  useLocale();
   const { node } = laid;
   const g = genderView(node.gender);
   const [failed, setFailed] = useState(false);
@@ -138,7 +140,7 @@ function PalCircle({
       role="button"
       tabIndex={0}
       aria-pressed={selected}
-      aria-label={`${node.species_name}${g.label !== "Any" ? `, ${g.label}` : ""}`}
+      aria-label={t("{0}{1}", [node.species_name, g.label !== "Any" ? `, ${g.label}` : ""])}
       onClick={onSelect}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -156,7 +158,7 @@ function PalCircle({
       >
         <img
           src={src}
-          alt=""
+          alt={t("")}
           width={d}
           height={d}
           loading="lazy"
@@ -167,15 +169,14 @@ function PalCircle({
       </span>
       {node.gender && (
         <span
-          title={g.label}
+          title={tr(g.label)}
           style={{ width: gBadge, height: gBadge, fontSize: gFont }}
           className={`absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full border border-abyss bg-raised font-semibold leading-none ${g.className}`}
         >
           {g.glyph}
         </span>
       )}
-      {status &&
-        (isBred ? (
+      {status && (isBred ? (
           <button
             type="button"
             aria-label={
@@ -212,7 +213,7 @@ function PalCircle({
           </button>
         ) : status.kind === "ready" ? (
           <span
-            title="Owned \u2014 ready to breed"
+            title={t("Owned \\u2014 ready to breed")}
             style={{ width: gBadge, height: gBadge, fontSize: gFont }}
             className="absolute -right-0.5 -top-0.5 flex items-center justify-center rounded-full border border-abyss bg-good font-bold leading-none text-abyss"
           >
@@ -259,87 +260,76 @@ function PalCircle({
       <div className="flex flex-col items-center gap-1 text-center">
         <span
           className="max-w-full truncate text-[12px] font-medium text-ink"
-          title={node.species_name}
+          title={tr(node.species_name)}
         >
-          {node.species_name}
+          {tr(node.species_name)}
         </span>
         {wild ? (
           <div className="flex items-center gap-1">
             <span
               className="rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
-              title="Catch this pal in the wild"
-            >
-              Catch{wild.captures > 1 ? `\u00a0\u00d7${wild.captures}` : ""}
+              title={t("Catch this pal in the wild")}
+            >{t("Catch")}{wild.captures > 1 ? t(" ×{0}", [wild.captures]) : ""}
             </span>
             {wild.min_wild_level ? (
               <span
                 className="rounded-sm border border-el-leaf/35 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
-                title={`Wild spawns from level ${wild.min_wild_level}`}
-              >
-                Lv {wild.min_wild_level}+
+                title={t("Wild spawns from level {0}", [wild.min_wild_level])}
+              >{t("Lv ")}{wild.min_wild_level}+
               </span>
             ) : null}
           </div>
         ) : owned ? (
-          <Tag>Owned &middot; {owned.location}</Tag>
+          <Tag>{t("Owned · ")}{t(owned.location)}</Tag>
         ) : isBred ? (
-          <Tag tone="amber">Bred</Tag>
+          <Tag tone="amber">{t("Bred")}</Tag>
         ) : null}
         {node.gender_reversed && (
           <span
             className="rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
-            title="This parent's gender was reversed with a gender reverser to make the pairing viable"
+            title={t("This parent's gender was reversed with a gender reverser to make the pairing viable")}
           >
-            {"\u21c4"} reversed
-          </span>
+            {"\u21c4"}{t(" reversed")}</span>
         )}
         {surgery && surgery.length > 0 && (
           <span
             className="max-w-full truncate rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
-            title={`Surgery-table implants (your time-cost estimate): ${surgery
+            title={t("Surgery-table implants (your time-cost estimate): {0} · {1}", [surgery
               .map((s) => s.passive_name)
-              .join(", ")} \u00b7 ${formatDuration(
+              .join(", "), formatDuration(
               surgery.reduce((sum, s) => sum + s.cost_secs, 0),
-            )}`}
-          >
-            Implant: {surgery.map((s) => s.passive_name).join(", ")} {"\u00b7"}{" "}
+            )])}
+          >{t("Implant: ")}{surgery.map((s) => s.passive_name).join(", ")} {"\u00b7"}{" "}
             {formatDuration(surgery.reduce((sum, s) => sum + s.cost_secs, 0))}
           </span>
         )}
         {node.inherited_move && (
           <span
             className="max-w-full truncate rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
-            title={`Inherited move (\u226450% per egg, community-measured; from the parents\u2019 equipped slots): ${node.inherited_move}`}
-          >
-            Inherit: {node.inherited_move}
+            title={t("Inherited move (≤50% per egg, community-measured; from the parents’ equipped slots): {0}", [node.inherited_move])}
+          >{t("Inherit: ")}{node.inherited_move}
           </span>
         )}
         {node.washes_passives && (
           <span
             className="max-w-full truncate rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
-            title="This step exists to shed extra passives so later eggs hit the target more often"
-          >
-            Cleans line
-          </span>
+            title={t("This step exists to shed extra passives so later eggs hit the target more often")}
+          >{t("Cleans line")}</span>
         )}
         {fruits && fruits.length > 0 && (
           <span
             className="max-w-full truncate rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
-            title={`Skill Fruit teaches (your time-cost estimate): ${fruits
+            title={t("Skill Fruit teaches (your time-cost estimate): {0} · {1}", [fruits
               .map((f) => f.move_name)
-              .join(", ")} \u00b7 ${formatDuration(
+              .join(", "), formatDuration(
               fruits.reduce((sum, f) => sum + f.cost_secs, 0),
-            )}`}
-          >
-            Fruit: {fruits.map((f) => f.move_name).join(", ")} {"\u00b7"}{" "}
+            )])}
+          >{t("Fruit: ")}{fruits.map((f) => f.move_name).join(", ")} {"\u00b7"}{" "}
             {formatDuration(fruits.reduce((sum, f) => sum + f.cost_secs, 0))}
           </span>
         )}
         {levelupMoves && levelupMoves.length > 0 && (
-          <span className="max-w-full text-[10px] leading-tight text-ink-faint">
-            learns {levelupMoves.join(", ")} by level-up {"\u2014"} no breeding
-            needed
-          </span>
+          <span className="max-w-full text-[10px] leading-tight text-ink-faint">{t("learns ")}{levelupMoves.join(", ")}{t(" by level-up ")}{"\u2014"}{t(" no breeding needed")}</span>
         )}
       </div>
     </div>
@@ -358,12 +348,13 @@ function JunctionChip({
   child: LaidNode;
   resolvePal: (id?: Guid | null) => OwnedPal | undefined;
 }) {
+  useLocale();
   const prob = probBand(child.node.probability);
   const trigger = (
     <div
       role="button"
       tabIndex={0}
-      aria-label={`Breed step into ${child.node.species_name}: ${(child.node.probability * 100).toFixed(0)}% per egg, ${formatDuration(child.node.est_time_secs)}. Hover or focus for details.`}
+      aria-label={t("Breed step into {0}: {1}% per egg, {2}. Hover or focus for details.", [child.node.species_name, (child.node.probability * 100).toFixed(0), formatDuration(child.node.est_time_secs)])}
       onPointerDown={(e) => e.stopPropagation()}
       className="absolute flex -translate-x-1/2 -translate-y-1/2 cursor-help items-center gap-1.5 rounded-md border border-line bg-panel px-2 py-1 outline-none ring-amber transition-shadow focus-visible:ring-2 hover:border-amber/40"
       style={{ left: child.x - COL_W / 2, top: child.y }}
@@ -414,6 +405,7 @@ export function PlanGraph({
   /** Toggle a bred node's manual-done flag by node path. */
   onToggleManual?: (nodePath: string) => void;
 }) {
+  useLocale();
   const layout = useMemo<PlanLayout>(() => layoutPlan(plan.root), [plan.root]);
   // One shared instance resolver for every owned leaf's hover card (memoized
   // Map over the loaded save's roster; rebuilt only when the save reloads).
@@ -626,8 +618,8 @@ export function PlanGraph({
           type="button"
           className={ctrlBtn}
           onClick={() => zoomBy(1.2)}
-          aria-label="Zoom in"
-          title="Zoom in"
+          aria-label={t("Zoom in")}
+          title={t("Zoom in")}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />
@@ -637,8 +629,8 @@ export function PlanGraph({
           type="button"
           className={ctrlBtn}
           onClick={() => zoomBy(1 / 1.2)}
-          aria-label="Zoom out"
-          title="Zoom out"
+          aria-label={t("Zoom out")}
+          title={t("Zoom out")}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
             <path d="M5 12h14" />
@@ -648,8 +640,8 @@ export function PlanGraph({
           type="button"
           className={ctrlBtn}
           onClick={fit}
-          aria-label="Fit to view"
-          title="Fit to view"
+          aria-label={t("Fit to view")}
+          title={t("Fit to view")}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4" />

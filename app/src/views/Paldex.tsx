@@ -1,3 +1,4 @@
+import { useLocale } from "../i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
 import type { DexReach, OwnedPal, SpeciesEntry } from "../lib/types";
@@ -21,6 +22,7 @@ import MovesIndex from "./paldex/moves-view";
  * the Save Inspector rather than the dex index.
  */
 export default function Paldex() {
+  useLocale();
   const {
     roster,
     saveSummary,

@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // A paldb-inspired pal info tooltip in the Pal Lab theme. Hand-rolled
 // positioning (fixed + measured, flips to stay in the viewport, no portal lib),
 // opens after a short hover, never captures the pointer, and closes on
@@ -114,6 +115,7 @@ export function PalHoverCard({
   note?: ReactNode;
   children: ReactElement;
 }) {
+  useLocale();
   const triggerRef = useRef<HTMLElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const timer = useRef<number | null>(null);
@@ -205,14 +207,7 @@ export function PalHoverCard({
     <>
       {trigger}
       {open &&
-        (entry || pal) &&
-        // Portal to <body>: `position: fixed` is resolved against the nearest
-        // transformed/filtered ancestor, not the viewport. On the Solver graph
-        // the trigger lives inside plan-graph's translate+scale canvas div, so
-        // an inline fixed card would offset by the canvas transform. Anchoring
-        // at body escapes any such containing block; the rect math is already
-        // viewport-space, so it stays correct at every pan/zoom.
-        createPortal(
+        (entry || pal) && createPortal(
           <div
             ref={cardRef}
             role="tooltip"
@@ -240,9 +235,10 @@ export function PalHoverCard({
 
 /** Food-meter dots (filled amber up to `amount`, faint remainder) over 10. */
 function FoodDots({ amount }: { amount: number }) {
+  useLocale();
   const n = Math.max(0, Math.min(10, amount));
   return (
-    <span className="inline-flex items-center gap-[2px]" title={`Food ${amount}/10`}>
+    <span className="inline-flex items-center gap-[2px]" title={t("Food {0}/10", [amount])}>
       {Array.from({ length: 10 }, (_, i) => (
         <span
           key={i}
@@ -266,6 +262,7 @@ function HoverCardBody({
   note?: ReactNode;
   tier: RarityTier | null;
 }) {
+  useLocale();
   const work = entry ? nonzeroWork(entry.work_suitability) : [];
   const twoCol = work.length > 6;
   const [minLv, maxLv] = entry?.wild_levels ?? [0, 0];
@@ -287,11 +284,11 @@ function HoverCardBody({
             className="truncate font-display text-[14px] font-semibold leading-tight text-ink"
             style={prized ? { textShadow: `0 0 10px ${rarityColor}` } : undefined}
           >
-            {title}
+            {tr(title)}
           </div>
           {nickname && (
             <div className="truncate text-[10px] leading-tight text-ink-faint">
-              {speciesName}
+              {tr(speciesName)}
             </div>
           )}
           {entry && (
@@ -303,10 +300,10 @@ function HoverCardBody({
                 <span
                   className={`font-semibold uppercase tracking-wide ${RARITY_TEXT[tier.tokenKey]}`}
                 >
-                  {tier.name}
+                  {tr(tier.name)}
                 </span>
               )}
-              {entry.is_variant && <span className="text-el-dragon">Variant</span>}
+              {entry.is_variant && <span className="text-el-dragon">{t("Variant")}</span>}
             </div>
           )}
         </div>
@@ -332,30 +329,27 @@ function HoverCardBody({
       {pal && (
         <div className="space-y-2 border-b border-line-soft bg-abyss/30 px-3 py-2">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] leading-none">
-            <span className="rounded-full border border-line bg-raised px-2 py-1 font-semibold tabular-nums text-ink">
-              Lv {pal.level}
+            <span className="rounded-full border border-line bg-raised px-2 py-1 font-semibold tabular-nums text-ink">{t("Lv ")}{pal.level}
             </span>
             {pal.gender && g && (
               <span className={`flex items-center gap-1 font-semibold ${g.className}`}>
                 <span className="text-[12px] leading-none">{g.glyph}</span>
-                {g.label}
+                {tr(g.label)}
               </span>
             )}
             {isAlpha(pal) && (
               <span className="flex items-center gap-1 font-semibold text-amber-bright">
                 <img
                   src={alphaIconUrl}
-                  alt=""
+                  alt={t("")}
                   width={13}
                   height={13}
                   draggable={false}
                   className="h-[13px] w-[13px] object-contain"
-                />
-                Alpha
-              </span>
+                />{t("Alpha")}</span>
             )}
             {pal.rank > 0 && (
-              <span className="text-amber" title={`Condensation rank ${pal.rank}`}>
+              <span className="text-amber" title={t("Condensation rank {0}", [pal.rank])}>
                 {"\u2605"}
                 {pal.rank}
               </span>
@@ -375,14 +369,12 @@ function HoverCardBody({
       {/* Partner skill (omitted gracefully when the pack has none) */}
       {entry?.partner_skill && (
         <div className="border-b border-line-soft px-3 py-2">
-          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
-            Partner skill
-          </div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">{t("Partner skill")}</div>
           <div className="mt-1 flex items-start gap-2">
             <PartnerIcon iconId={entry.partner_skill_icon} size={26} />
             <div className="min-w-0">
               <div className="text-[12px] font-medium leading-snug text-amber-bright">
-                {entry.partner_skill}
+                {tr(entry.partner_skill)}
               </div>
               {(() => {
                 const levels = partnerLevels(entry);
@@ -398,7 +390,7 @@ function HoverCardBody({
                 return (
                   entry.partner_skill_desc && (
                     <div className="mt-0.5 line-clamp-2 whitespace-pre-line text-[11px] leading-snug text-ink-dim">
-                      {entry.partner_skill_desc}
+                      {tr(entry.partner_skill_desc)}
                     </div>
                   )
                 );
@@ -411,9 +403,7 @@ function HoverCardBody({
       {/* Work suitability — nonzero only, two columns when dense */}
       {work.length > 0 && (
         <div className="px-3 py-2">
-          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
-            Work suitability
-          </div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">{t("Work suitability")}</div>
           <div
             className={`mt-1.5 grid gap-x-4 gap-y-1 ${twoCol ? "grid-cols-2" : "grid-cols-1"}`}
           >
@@ -421,10 +411,9 @@ function HoverCardBody({
               <div key={it.kind} className="flex items-center gap-1.5">
                 <WorkGlyph kind={it.kind} size={16} />
                 <span className="min-w-0 flex-1 truncate text-[11px] text-ink-dim">
-                  {it.label}
+                  {tr(it.label)}
                 </span>
-                <span className="font-mono text-[10px] font-semibold leading-none tabular-nums text-ink">
-                  Lv{it.level}
+                <span className="font-mono text-[10px] font-semibold leading-none tabular-nums text-ink">{t("Lv")}{it.level}
                 </span>
               </div>
             ))}
@@ -436,19 +425,16 @@ function HoverCardBody({
       {entry && (
         <div className="flex items-center justify-between gap-3 border-t border-line-soft bg-abyss/40 px-3 py-2 font-mono text-[10px] leading-none text-ink-faint">
           <span className="flex items-center gap-1.5">
-            <span className="uppercase tracking-wider">Food</span>
+            <span className="uppercase tracking-wider">{t("Food")}</span>
             <FoodDots amount={entry.food_amount} />
           </span>
           <span className="flex items-center gap-3">
             {entry.nocturnal && (
-              <span className="flex items-center gap-1 text-el-dark" title="Nocturnal">
-                <span className="text-[12px] leading-none">{"\u263e"}</span>
-                Nocturnal
-              </span>
+              <span className="flex items-center gap-1 text-el-dark" title={t("Nocturnal")}>
+                <span className="text-[12px] leading-none">{"\u263e"}</span>{t("Nocturnal")}</span>
             )}
             {maxLv > 0 && (
-              <span className="tabular-nums text-ink-dim">
-                Lv {minLv}
+              <span className="tabular-nums text-ink-dim">{t("Lv ")}{minLv}
                 {"\u2013"}
                 {maxLv}
               </span>
@@ -461,7 +447,7 @@ function HoverCardBody({
           only; sits below the species footer as the card's final line. */}
       {pal && location && (
         <div className="flex items-center gap-1.5 border-t border-line-soft bg-abyss/40 px-3 py-2 font-mono text-[10px] leading-none text-ink-faint">
-          <span className="uppercase tracking-wider">Location</span>
+          <span className="uppercase tracking-wider">{t("Location")}</span>
           <span className="truncate text-ink-dim">{location}</span>
         </div>
       )}
@@ -471,6 +457,7 @@ function HoverCardBody({
 
 /** Instance IV readout (talent 0-100), quality-colored; hidden when all zero. */
 function IvRow({ ivs }: { ivs: IvSet }) {
+  useLocale();
   const stats: [string, number][] = [
     ["HP", ivs.hp],
     ["ATK", ivs.attack],
@@ -478,10 +465,10 @@ function IvRow({ ivs }: { ivs: IvSet }) {
   ];
   if (stats.every(([, v]) => v <= 0)) return null;
   return (
-    <span className="ml-auto flex items-center gap-2" title="IVs (talent)">
+    <span className="ml-auto flex items-center gap-2" title={t("IVs (talent)")}>
       {stats.map(([label, v]) => (
         <span key={label} className="flex items-center gap-1">
-          <span className="text-ink-faint">{label}</span>
+          <span className="text-ink-faint">{tr(label)}</span>
           <span className={`font-semibold tabular-nums ${QUALITY_TEXT[ivBand(v)]}`}>
             {v}
           </span>

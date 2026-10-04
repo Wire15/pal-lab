@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 // Crash-safety boundary around the active view outlet. A render error in any one
 // view (Solver, Pal-dex, IV Lab, map, …) is caught here and shown as a friendly
 // recovery panel instead of white-screening the whole app — the nav shell stays
@@ -75,23 +76,13 @@ export default class ErrorBoundary extends Component<Props, State> {
       <div className="flex h-full items-center justify-center bg-abyss p-6 text-ink">
         <div className="w-full max-w-lg overflow-hidden rounded-lg border border-bad/40 bg-panel">
           <div className="border-b border-line bg-bad/10 px-5 py-4">
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-bad">
-              Something broke
-            </div>
-            <h2 className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink">
-              This view hit an error
-            </h2>
-            <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">
-              The rest of Pal Lab is still running — your save is untouched
-              (nothing is ever written). Head back to the Save Inspector, or
-              reload the app.
-            </p>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-bad">{t("Something broke")}</div>
+            <h2 className="mt-0.5 font-display text-lg font-bold tracking-wide text-ink">{t("This view hit an error")}</h2>
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-faint">{t("The rest of Pal Lab is still running — your save is untouched (nothing is ever written). Head back to the Save Inspector, or reload the app.")}</p>
           </div>
 
           <div className="px-5 py-4">
-            <div className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Error
-            </div>
+            <div className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Error")}</div>
             <pre className="max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-md border border-line bg-abyss px-3 py-2 font-mono text-[11px] leading-relaxed text-bad">
               {error.message || String(error)}
             </pre>
@@ -102,20 +93,16 @@ export default class ErrorBoundary extends Component<Props, State> {
               onClick={this.copy}
               className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
             >
-              {copied ? "Copied\u2713" : "Copy details"}
+              {copied ? t("Copied✓") : t("Copy details")}
             </button>
             <button
               onClick={this.back}
               className="rounded-md border border-line bg-raised px-3 py-1.5 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-            >
-              Back to Save Inspector
-            </button>
+            >{t("Back to Save Inspector")}</button>
             <button
               onClick={() => window.location.reload()}
               className="rounded-md bg-amber px-4 py-1.5 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright"
-            >
-              Reload app
-            </button>
+            >{t("Reload app")}</button>
           </div>
         </div>
       </div>

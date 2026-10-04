@@ -153,3 +153,17 @@ ships under the MIT License.
 
 Palworld and all related data, names, and artwork are © Pocketpair, Inc. Pal Lab
 is an unofficial fan tool and is not affiliated with or endorsed by Pocketpair.
+
+
+## French game terminology — Palworld / Pocketpair
+
+The display dictionaries in `app/src/i18n/game-fr.json` and
+`game-ids-fr.json` provide French names and descriptions corresponding to
+Palworld's in-game terminology (reference game data v1.0.4, 2026-09-30).
+
+Entries are matched by stable internal IDs, catalogue IDs or identical species
+slugs. The current pack's English names are retained in all save and solver
+contracts. Ambiguous partner rank templates have manual French translations
+with unchanged numeric slots. Game strings belong to Pocketpair, Inc.
+This reference material is not relicensed as MIT; no endorsement or permission
+to reuse is implied.

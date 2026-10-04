@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The Solver graph's node inspector: a right-side detail panel the graph view
 // mounts when a pal node is clicked. It reads ONLY what a plan node carries
 // (see PlanNode in lib/types.ts) — the solver payload has no IVs, level,
@@ -86,6 +87,7 @@ function Section({
   right?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  useLocale();
   return (
     <section className="overflow-hidden rounded-lg border border-line bg-panel/40">
       <header className="flex items-center justify-between gap-3 border-b border-line bg-raised px-3.5 py-2">
@@ -101,9 +103,10 @@ function Section({
 
 /** A labelled provenance row: mono faint label left, value right. */
 function FactRow({ label, children }: { label: string; children: React.ReactNode }) {
+  useLocale();
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{label}</dt>
+      <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{tr(label)}</dt>
       <dd className="min-w-0 truncate text-right text-[13px] text-ink">{children}</dd>
     </div>
   );
@@ -112,8 +115,9 @@ function FactRow({ label, children }: { label: string; children: React.ReactNode
 /** Passive strips laid out one-per-row; the "(random)" slot renders as the
  *  neutral "random roll" strip like the list renderer. Empty → a quiet note. */
 function Passives({ passives }: { passives: string[] }) {
+  useLocale();
   if (passives.length === 0)
-    return <p className="text-[12px] leading-relaxed text-ink-faint">No passives carried.</p>;
+    return <p className="text-[12px] leading-relaxed text-ink-faint">{t("No passives carried.")}</p>;
   return (
     <div className="flex flex-col gap-1.5">
       {passives.map((p, i) => (
@@ -138,6 +142,7 @@ export function PlanNodePanel({
   onClose: () => void;
   onNavigateDex: (speciesId: string, instanceId?: string) => void;
 }) {
+  useLocale();
   const closeRef = useRef<HTMLButtonElement>(null);
   const { species, speciesName, gender, planIndex, passives, probability, estTimeSecs } =
     selection;
@@ -158,23 +163,22 @@ export function PlanNodePanel({
 
   const eyebrow =
     src.kind === "bred"
-      ? `Plan ${planIndex + 1} \u00b7 bred node`
+      ? t("Plan {0} · bred node", [planIndex + 1])
       : src.kind === "wild"
-        ? `Plan ${planIndex + 1} \u00b7 wild node`
-        : `Plan ${planIndex + 1} \u00b7 owned node`;
+        ? t("Plan {0} · wild node", [planIndex + 1])
+        : t("Plan {0} · owned node", [planIndex + 1]);
 
   const kindChip =
     src.kind === "bred" ? (
-      <Tag tone="amber">Bred</Tag>
+      <Tag tone="amber">{t("Bred")}</Tag>
     ) : src.kind === "wild" ? (
       <span
         className="rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
-        title="Catch this pal in the wild"
-      >
-        Catch{src.captures > 1 ? `\u00a0\u00d7${src.captures}` : ""}
+        title={t("Catch this pal in the wild")}
+      >{t("Catch")}{src.captures > 1 ? t(" ×{0}", [src.captures]) : ""}
       </span>
     ) : (
-      <Tag>Owned</Tag>
+      <Tag>{t("Owned")}</Tag>
     );
 
   const portrait = (
@@ -184,7 +188,7 @@ export function PlanNodePanel({
   return (
     <aside
       role="dialog"
-      aria-label={`${speciesName} plan node detail`}
+      aria-label={t("{0} plan node detail", [speciesName])}
       className="flex h-full w-[340px] shrink-0 flex-col border-l border-line bg-panel"
     >
       {/* eyebrow header + close */}
@@ -195,7 +199,7 @@ export function PlanNodePanel({
         <button
           ref={closeRef}
           onClick={onClose}
-          aria-label="Close node detail"
+          aria-label={t("Close node detail")}
           className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-line text-ink-faint transition-colors hover:bg-hover hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/60"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -213,7 +217,7 @@ export function PlanNodePanel({
               <button
                 onClick={() => onNavigateDex(species)}
                 className="shrink-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/60"
-                aria-label={`Open ${speciesName} in the Pal-dex`}
+                aria-label={t("Open {0} in the Pal-dex", [speciesName])}
               >
                 {portrait}
               </button>
@@ -224,9 +228,9 @@ export function PlanNodePanel({
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h2 className="truncate font-display text-lg font-bold tracking-wide text-ink">
-                {speciesName}
+                {tr(speciesName)}
               </h2>
-              <span className={`text-base leading-none ${g.className}`} title={g.label}>
+              <span className={`text-base leading-none ${g.className}`} title={tr(g.label)}>
                 {g.glyph}
               </span>
             </div>
@@ -235,18 +239,15 @@ export function PlanNodePanel({
               {genderReversed && (
                 <span
                   className="rounded-sm border border-el-ice/50 bg-el-ice/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-ice"
-                  title="This parent's gender was reversed with a gender reverser to make the pairing viable"
+                  title={t("This parent's gender was reversed with a gender reverser to make the pairing viable")}
                 >
-                  {"\u21c4"} reversed
-                </span>
+                  {"\u21c4"}{t(" reversed")}</span>
               )}
               {washesPassives && (
                 <span
                   className="rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
-                  title="This step exists to shed extra passives so later eggs hit the target more often"
-                >
-                  Cleans line
-                </span>
+                  title={t("This step exists to shed extra passives so later eggs hit the target more often")}
+                >{t("Cleans line")}</span>
               )}
             </div>
           </div>
@@ -260,7 +261,7 @@ export function PlanNodePanel({
               <span
                 className={`rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${prob.text} ${prob.ring}`}
                 title={
-                  odds ? "per-egg acceptance \u2014 see breakdown" : `${prob.label} odds`
+                  tr(odds ? "per-egg acceptance \u2014 see breakdown" : `${prob.label} odds`)
                 }
               >
                 {(probability * 100).toFixed(0)}%
@@ -268,13 +269,13 @@ export function PlanNodePanel({
             }
           >
             <dl className="flex flex-col gap-2">
-              <FactRow label="Odds">
-                <span className={prob.text}>{prob.label}</span>
+              <FactRow label={t("Odds")}>
+                <span className={prob.text}>{tr(prob.label)}</span>
                 <span className="ml-1.5 font-mono tabular-nums text-ink-dim">
                   {(probability * 100).toFixed(0)}%
                 </span>
               </FactRow>
-              <FactRow label="Est. time">
+              <FactRow label={t("Est. time")}>
                 <span className="font-mono tabular-nums">{formatDuration(estTimeSecs)}</span>
               </FactRow>
             </dl>
@@ -283,7 +284,7 @@ export function PlanNodePanel({
                 {buildOddsRows(odds).map((r) => (
                   <div key={r.label} className="flex items-baseline justify-between gap-3">
                     <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      {r.label}
+                      {tr(r.label)}
                     </dt>
                     <dd className="font-mono text-[13px] tabular-nums text-ink">{r.value}</dd>
                   </div>
@@ -296,11 +297,7 @@ export function PlanNodePanel({
               </dl>
             )}
             {washesPassives && (
-              <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-                This step exists to shed extra passives: the child&rsquo;s pool is
-                smaller than its parents&rsquo;, so later eggs hit the target more
-                often.
-              </p>
+              <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t("This step exists to shed extra passives: the child’s pool is smaller than its parents’, so later eggs hit the target more often.")}</p>
             )}
           </Section>
         )}
@@ -308,9 +305,9 @@ export function PlanNodePanel({
         {src.kind === "owned" && (
           <Section eyebrow="Owned pal">
             <dl className="flex flex-col gap-2">
-              <FactRow label="Location">{src.location ?? "\u2014"}</FactRow>
-              <FactRow label="Ready">
-                <span className="text-good">{"In your box \u2014 no breeding"}</span>
+              <FactRow label={t("Location")}>{src.location ?? "\u2014"}</FactRow>
+              <FactRow label={t("Ready")}>
+                <span className="text-good">{t("In your box — no breeding")}</span>
               </FactRow>
             </dl>
           </Section>
@@ -323,30 +320,27 @@ export function PlanNodePanel({
               src.minWildLevel ? (
                 <span
                   className="rounded-sm border border-el-leaf/35 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
-                  title={`Wild spawns from level ${src.minWildLevel}`}
-                >
-                  Lv {src.minWildLevel}+
+                  title={t("Wild spawns from level {0}", [src.minWildLevel])}
+                >{t("Lv ")}{src.minWildLevel}+
                 </span>
               ) : undefined
             }
           >
             <dl className="flex flex-col gap-2">
-              <FactRow label="Catches">
+              <FactRow label={t("Catches")}>
                 <span className="font-mono tabular-nums text-el-leaf">
-                  {"\u00d7"}
+                  {t("×")}
                   {src.captures}
                 </span>
               </FactRow>
               {src.minWildLevel ? (
-                <FactRow label="Min level">
+                <FactRow label={t("Min level")}>
                   <span className="font-mono tabular-nums text-el-leaf">{src.minWildLevel}</span>
                 </FactRow>
               ) : null}
             </dl>
             <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-              {src.minWildLevel
-                ? `Catch in the wild at level ${src.minWildLevel} or higher.`
-                : "Catch this pal in the wild."}
+              {src.minWildLevel ? t("Catch in the wild at level {0} or higher.", [src.minWildLevel]) : t("Catch this pal in the wild.")}
             </p>
           </Section>
         )}
@@ -355,9 +349,7 @@ export function PlanNodePanel({
         <Section eyebrow="Passives">
           <Passives passives={passives} />
           {hasRandomRoll && (
-            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-              One passive slot rolls at random each time this pair breeds.
-            </p>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t("One passive slot rolls at random each time this pair breeds.")}</p>
           )}
         </Section>
 
@@ -368,7 +360,7 @@ export function PlanNodePanel({
             right={
               <span
                 className="rounded-sm border border-el-ice/40 bg-el-ice/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-ice"
-                title="Your time-cost estimate for the implants"
+                title={t("Your time-cost estimate for the implants")}
               >
                 {formatDuration(surgeryCost)}
               </span>
@@ -379,10 +371,7 @@ export function PlanNodePanel({
                 <PassiveStrip key={`${s.passive_id}-${i}`} id={s.passive_id} size="sm" />
               ))}
             </div>
-            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-              Implanted from the surgery table onto the final pal — not bred in. Cost
-              is your time-cost estimate.
-            </p>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t("Implanted from the surgery table onto the final pal — not bred in. Cost is your time-cost estimate.")}</p>
           </Section>
         )}
 
@@ -392,11 +381,7 @@ export function PlanNodePanel({
             <span className="inline-flex max-w-full items-center rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-amber">
               {inheritedMove}
             </span>
-            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-              One move can pass down per breeding line, from the parents&rsquo;
-              equipped slots. The inherit rate (&le;50% per egg) is
-              community-measured, not code-verified.
-            </p>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t("One move can pass down per breeding line, from the parents’ equipped slots. The inherit rate (≤50% per egg) is community-measured, not code-verified.")}</p>
           </Section>
         )}
 
@@ -407,7 +392,7 @@ export function PlanNodePanel({
             right={
               <span
                 className="rounded-sm border border-el-leaf/40 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
-                title="Your time-cost estimate for the Skill Fruit teaches"
+                title={t("Your time-cost estimate for the Skill Fruit teaches")}
               >
                 {formatDuration(fruitCost)}
               </span>
@@ -423,10 +408,7 @@ export function PlanNodePanel({
                 </span>
               ))}
             </div>
-            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
-              Taught to the final pal with a Skill Fruit — not bred in. Cost is your
-              time-cost estimate.
-            </p>
+            <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">{t("Taught to the final pal with a Skill Fruit — not bred in. Cost is your time-cost estimate.")}</p>
           </Section>
         )}
 
@@ -435,9 +417,7 @@ export function PlanNodePanel({
           <button
             onClick={() => onNavigateDex(species)}
             className="mt-auto flex items-center justify-center gap-1.5 rounded-md border border-line bg-raised px-3 py-2 text-[13px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/60"
-          >
-            View in Pal-dex
-            <span aria-hidden>{"\u2192"}</span>
+          >{t("View in Pal-dex")}<span aria-hidden>{"\u2192"}</span>
           </button>
         )}
       </div>

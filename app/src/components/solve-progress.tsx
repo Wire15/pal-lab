@@ -1,3 +1,4 @@
+import { t, useLocale } from "../i18n";
 // SOLVE PROGRESS — the in-flight panel that replaces the results area while a
 // solve or queue-solve runs. It renders the FROZEN `solve-progress` stream
 // (via `useSolve().progress`): the current phase, an animated per-step progress
@@ -42,7 +43,7 @@ function phaseLabel(p: SolveProgressEvent): string {
     case "seeding":
       return "Seeding working set\u2026";
     case "step":
-      return `Breeding step ${p.step} of ${p.max_steps}`;
+      return t("Breeding step {0} of {1}", [p.step, p.max_steps]);
     case "catch_fallback":
       return "Retrying with catching allowed\u2026";
     case "finalizing":
@@ -64,6 +65,7 @@ export function SolveProgress({
   onCancel,
   queueTargets,
 }: SolveProgressProps) {
+  useLocale();
   // Elapsed ticks client-side, resyncing to each event's authoritative
   // `elapsed_ms` so the timer stays honest between ~100ms emits.
   const [displayMs, setDisplayMs] = useState(0);
@@ -122,7 +124,7 @@ export function SolveProgress({
   let remainLabel = "";
   if (hasPairs) {
     if (rate > 0) {
-      remainLabel = `~${formatRemain((total - done) / rate)} left in this step`;
+      remainLabel = t("~{0} left in this step", [formatRemain((total - done) / rate)]);
     } else {
       remainLabel = "step est.\u2026";
     }
@@ -137,12 +139,9 @@ export function SolveProgress({
     <div className="m-6 flex flex-col gap-4 rounded-lg border border-line bg-panel p-5">
       {isQueue && qLen > 0 && (
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber">
-            Queue
-          </span>
-          <span className="text-[13px] text-ink-dim">
-            Target {qIndex + 1} of {qLen}
-            {qName ? ` \u2014 ${qName}` : ""}
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber">{t("Queue")}</span>
+          <span className="text-[13px] text-ink-dim">{t("Target ")}{qIndex + 1}{t(" of ")}{qLen}
+            {qName ? t(" — {0}", [qName]) : ""}
           </span>
         </div>
       )}
@@ -151,7 +150,7 @@ export function SolveProgress({
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-amber" />
           <span className="font-display text-base font-semibold tracking-wide text-ink">
-            {progress ? phaseLabel(progress) : "Seeding working set\u2026"}
+            {progress ? phaseLabel(progress) : t("Seeding working set…")}
           </span>
         </div>
         <span className="font-mono text-[12px] tabular-nums text-ink-dim">
@@ -161,31 +160,21 @@ export function SolveProgress({
 
       <div className="flex flex-col gap-1.5">
         <div className="h-2 overflow-hidden rounded-full bg-abyss">
-          {hasPairs ? (
-            <div
+          {hasPairs ? (<div
               className="h-full rounded-full bg-amber transition-[width] duration-200 ease-out"
               style={{ width: `${pct}%` }}
-            />
-          ) : (
-            // Seeding / finalizing: no pair batch to measure — indeterminate.
-            <div className="h-full w-full animate-pulse rounded-full bg-amber/40" />
-          )}
+            />) : (<div className="h-full w-full animate-pulse rounded-full bg-amber/40" />)}
         </div>
         <div className="flex items-center justify-between gap-3 font-mono text-[11px] tabular-nums text-ink-faint">
           <span>
-            {hasPairs
-              ? `${humanCount(done)} / ${humanCount(total)} pairs${
-                  rate > 0 ? ` \u00b7 ${humanCount(rate)} pairs/s` : ""
-                }`
-              : "\u2014"}
+            {hasPairs ? t("{0} / {1} pairs{2}", [humanCount(done), humanCount(total), rate > 0 ? ` \u00b7 ${humanCount(rate)} pairs/s` : ""]) : "\u2014"}
           </span>
           <span className="text-ink-dim">{remainLabel}</span>
         </div>
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-          Working set:{" "}
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Working set:")}{" "}
           <span className="tabular-nums text-ink-dim">
             {humanCount(workingSet)}
           </span>
@@ -194,9 +183,7 @@ export function SolveProgress({
           type="button"
           onClick={onCancel}
           className="rounded-md border border-bad/50 px-3 py-1 text-[12px] font-medium text-bad transition-colors hover:bg-bad/10"
-        >
-          Cancel
-        </button>
+        >{t("Cancel")}</button>
       </div>
     </div>
   );

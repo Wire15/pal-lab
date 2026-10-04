@@ -1,3 +1,4 @@
+import { tr, useLocale } from "../i18n";
 // Shared visual primitives built on the index.css token system. These are the
 // reusable building blocks the design contract (UI-DESIGN.md) commits to; round
 // 2 (pal-dex, breeding tree) composes the same set.
@@ -23,7 +24,7 @@ export function PalIcon({
   return (
     <img
       src={src}
-      alt={name ?? id ?? "unknown pal"}
+      alt={tr(name ?? id ?? "unknown pal")}
       width={size}
       height={size}
       loading="lazy"
@@ -38,6 +39,7 @@ export function PalIcon({
 /** A single passive. Thin alias of the in-game {@link PassiveStrip} (dense
  *  `sm` size) so every legacy callsite renders the new strip look. */
 export function PassiveChip({ id }: { id: string }) {
+  useLocale();
   return <PassiveStrip id={id} size="sm" />;
 }
 
@@ -51,6 +53,7 @@ export function Tag({
   tone?: "neutral" | "amber" | "boss";
   className?: string;
 }) {
+  useLocale();
   const tones = {
     neutral: "border-line bg-raised text-ink-dim",
     amber: "border-amber/40 bg-amber/10 text-amber",

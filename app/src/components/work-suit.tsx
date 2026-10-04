@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // Work-suitability rendering: the 12 kinds in canonical order (matching
 // pal_data::gamedata::WORK_KINDS and the SpeciesEntry.work_suitability array),
 // the bundled palcalc glyphs in /public/work, and the compact card/tooltip
@@ -18,18 +19,18 @@ interface WorkMeta {
  * of the `work_suitability` array served by `paldex_species`.
  */
 export const WORK_META: WorkMeta[] = [
-  { kind: "Kindling", label: "Kindling", code: "KI" },
-  { kind: "Watering", label: "Watering", code: "WA" },
-  { kind: "Planting", label: "Planting", code: "PL" },
-  { kind: "GenerateElectricity", label: "Electricity", code: "EL" },
-  { kind: "Handiwork", label: "Handiwork", code: "HW" },
-  { kind: "Gathering", label: "Gathering", code: "GA" },
-  { kind: "Lumbering", label: "Lumbering", code: "LU" },
-  { kind: "Mining", label: "Mining", code: "MI" },
-  { kind: "MedicineProduction", label: "Medicine", code: "MD" },
-  { kind: "Cooling", label: "Cooling", code: "CO" },
-  { kind: "Transporting", label: "Transporting", code: "TR" },
-  { kind: "Farming", label: "Farming", code: "FA" },
+  { kind: "Kindling", get label() { return t("Kindling"); }, code: "KI" },
+  { kind: "Watering", get label() { return t("Watering"); }, code: "WA" },
+  { kind: "Planting", get label() { return t("Planting"); }, code: "PL" },
+  { kind: "GenerateElectricity", get label() { return t("GenerateElectricity"); }, code: "EL" },
+  { kind: "Handiwork", get label() { return t("Handiwork"); }, code: "HW" },
+  { kind: "Gathering", get label() { return t("Gathering"); }, code: "GA" },
+  { kind: "Lumbering", get label() { return t("Lumbering"); }, code: "LU" },
+  { kind: "Mining", get label() { return t("Mining"); }, code: "MI" },
+  { kind: "MedicineProduction", get label() { return t("Medicine"); }, code: "MD" },
+  { kind: "Cooling", get label() { return t("Cooling"); }, code: "CO" },
+  { kind: "Transporting", get label() { return t("Transporting"); }, code: "TR" },
+  { kind: "Farming", get label() { return t("Farming"); }, code: "FA" },
 ];
 
 /** Bundled work-suitability glyph URL (palcalc art; see vendor/NOTICE). */
@@ -48,7 +49,8 @@ export interface WorkLevel extends WorkMeta {
  */
 export function nonzeroWork(work: number[] | undefined): WorkLevel[] {
   if (!work) return [];
-  return WORK_META.map((m, i) => ({ ...m, level: work[i] ?? 0 }))
+  return WORK_META.map((m, i) => ({ kind: m.kind, code: m.code,
+    get label() { return m.label; }, level: work[i] ?? 0 }))
     .filter((w) => w.level > 0)
     .sort((a, b) => b.level - a.level);
 }
@@ -66,14 +68,15 @@ export function WorkGlyph({
   size?: number;
   className?: string;
 }) {
+  useLocale();
   const [failed, setFailed] = useState(false);
   const meta = WORK_META.find((m) => m.kind === kind);
 
   if (failed || !meta) {
     return (
       <span
-        title={meta?.label ?? kind}
-        aria-label={meta?.label ?? kind}
+        title={tr(meta?.label ?? kind)}
+        aria-label={tr(meta?.label ?? kind)}
         className={`inline-flex shrink-0 items-center justify-center rounded-xs bg-raised font-mono font-semibold leading-none text-ink-dim ${className}`}
         style={{ width: size, height: size, fontSize: Math.round(size * 0.42) }}
       >
@@ -84,7 +87,7 @@ export function WorkGlyph({
   return (
     <img
       src={workIconUrl(kind)}
-      alt={meta.label}
+      alt={tr(meta.label)}
       width={size}
       height={size}
       loading="lazy"
@@ -109,6 +112,7 @@ export function CardWorkBadges({
   work: number[] | undefined;
   max?: number;
 }) {
+  useLocale();
   const items = nonzeroWork(work);
   if (items.length === 0) return null;
   const shown = items.slice(0, max);
@@ -118,7 +122,7 @@ export function CardWorkBadges({
       {shown.map((it) => (
         <span
           key={it.kind}
-          title={`${it.label} Lv ${it.level}`}
+          title={t("{0} Lv {1}", [it.label, it.level])}
           className="inline-flex items-center gap-0.5 rounded-sm bg-abyss/70 px-1 py-0.5"
         >
           <WorkGlyph kind={it.kind} size={13} />

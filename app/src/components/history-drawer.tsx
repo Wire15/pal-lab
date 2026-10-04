@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The SOLVE HISTORY drawer: a right-slide panel listing the last successful
 // solves, so a solve survives an app restart and can be re-opened as the current
 // session. Sibling to the PLANS drawer (plans-drawer.tsx) — same slide-panel
@@ -85,12 +86,12 @@ function relTime(ms: number): string {
   const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
   if (s < 45) return "just now";
   const m = Math.round(s / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return t("{0}m ago", [m]);
   const h = Math.round(m / 60);
-  if (h < 24) return `${h}h ago`;
+  if (h < 24) return t("{0}h ago", [h]);
   const d = Math.round(h / 24);
-  if (d < 7) return `${d}d ago`;
-  return `${Math.round(d / 7)}w ago`;
+  if (d < 7) return t("{0}d ago", [d]);
+  return t("{0}w ago", [Math.round(d / 7)]);
 }
 
 function CloseGlyph() {
@@ -111,9 +112,9 @@ function CloseGlyph() {
 function ivFloorLabel(ivs?: IvThresholds): string | null {
   if (!ivs) return null;
   const parts: string[] = [];
-  if (ivs.hp > 0) parts.push(`HP\u2265${ivs.hp}`);
-  if (ivs.attack > 0) parts.push(`ATK\u2265${ivs.attack}`);
-  if (ivs.defense > 0) parts.push(`DEF\u2265${ivs.defense}`);
+  if (ivs.hp > 0) parts.push(t("HP≥{0}", [ivs.hp]));
+  if (ivs.attack > 0) parts.push(t("ATK≥{0}", [ivs.attack]));
+  if (ivs.defense > 0) parts.push(t("DEF≥{0}", [ivs.defense]));
   return parts.length > 0 ? parts.join(" \u00b7 ") : null;
 }
 
@@ -145,6 +146,7 @@ export function HistoryDrawer({
   ariaLabel,
   variant,
 }: HistoryDrawerProps) {
+  useLocale();
   const [entries, setEntries] = useState<SolveHistoryEntry[]>([]);
 
   const reload = () => setEntries(listSolveHistory(storageKey));
@@ -182,7 +184,7 @@ export function HistoryDrawer({
       />
       <aside
         role="dialog"
-        aria-label={ariaLabel}
+        aria-label={tr(ariaLabel)}
         aria-hidden={!open}
         className={`fixed right-0 top-0 z-50 flex h-full w-[400px] max-w-full flex-col border-l border-line bg-panel transition-transform duration-200 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
@@ -191,11 +193,9 @@ export function HistoryDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-line bg-raised px-4 py-3">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-amber">
-              History
-            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-amber">{t("History")}</div>
             <h2 className="font-display text-base font-bold tracking-wide text-ink">
-              {title}
+              {tr(title)}
             </h2>
           </div>
           <div className="flex items-center gap-1.5">
@@ -204,14 +204,12 @@ export function HistoryDrawer({
                 type="button"
                 onClick={clearAll}
                 className="rounded-md border border-line bg-raised px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad"
-              >
-                Clear all
-              </button>
+              >{t("Clear all")}</button>
             )}
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close history drawer"
+              aria-label={t("Close history drawer")}
               className="flex h-8 w-8 items-center justify-center rounded-md text-ink-dim transition-colors hover:bg-hover hover:text-ink"
             >
               <CloseGlyph />
@@ -223,13 +221,8 @@ export function HistoryDrawer({
         <div className="min-h-0 flex-1 overflow-auto">
           {entries.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 px-8 text-center">
-              <div className="font-display text-sm text-ink-dim">
-                No solves yet
-              </div>
-              <p className="text-[12px] leading-relaxed text-ink-faint">
-                Every successful solve is recorded here so you can jump back to a
-                previous plan.
-              </p>
+              <div className="font-display text-sm text-ink-dim">{t("No solves yet")}</div>
+              <p className="text-[12px] leading-relaxed text-ink-faint">{t("Every successful solve is recorded here so you can jump back to a previous plan.")}</p>
             </div>
           ) : (
             <ul className="flex flex-col">
@@ -254,9 +247,9 @@ export function HistoryDrawer({
                       <div className="flex items-center gap-1.5">
                         <span
                           className="truncate text-[13px] font-medium text-ink"
-                          title={r.target_species}
+                          title={tr(r.target_species)}
                         >
-                          {r.target_species}
+                          {tr(r.target_species)}
                         </span>
                         <span className="shrink-0 font-mono text-[10px] text-ink-faint">
                           {relTime(e.timestamp)}
@@ -281,24 +274,20 @@ export function HistoryDrawer({
                               {formatDuration(plan.total_time_secs)}
                             </span>
                             <span>
-                              <span className="text-ink">{plan.total_steps}</span> steps
-                            </span>
+                              <span className="text-ink">{plan.total_steps}</span>{t(" steps")}</span>
                             {plan.total_wild_pals > 0 && (
                               <span>
                                 <span className="text-el-leaf">
                                   {plan.total_wild_pals}
-                                </span>{" "}
-                                wild
-                              </span>
+                                </span>{" "}{t("wild")}</span>
                             )}
                           </>
                         )}
                         <span className="text-ink-faint">
-                          {(r.max_steps ?? 5)} step cap
-                        </span>
+                          {(r.max_steps ?? 5)}{t(" step cap")}</span>
                         {variant === "solver" && (
                           <span className="text-ink-faint">
-                            {r.include_wild ? "owned + wild" : "owned"}
+                            {r.include_wild ? t("owned + wild") : t("owned")}
                           </span>
                         )}
                         {variant === "ivlab" && ivFloorLabel(r.ivs) && (
@@ -307,7 +296,7 @@ export function HistoryDrawer({
                           </span>
                         )}
                         {(r.cake ?? "normal") !== "normal" && (
-                          <span className="text-ink-faint">{r.cake} cake</span>
+                          <span className="text-ink-faint">{r.cake}{t(" cake")}</span>
                         )}
                       </div>
                       <div className="mt-2 flex items-center gap-1.5">
@@ -318,9 +307,7 @@ export function HistoryDrawer({
                             onClose();
                           }}
                           className="rounded-md bg-amber/10 border border-amber/40 px-2.5 py-1 text-[11px] font-medium text-amber transition-colors hover:bg-amber/20"
-                        >
-                          Restore
-                        </button>
+                        >{t("Restore")}</button>
                       </div>
                     </div>
                   </li>

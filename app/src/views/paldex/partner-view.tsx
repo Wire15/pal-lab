@@ -1,3 +1,4 @@
+import { matchesText, t, tr, useLocale } from "../../i18n";
 import { useMemo, useState } from "react";
 import type { SpeciesEntry } from "../../lib/types";
 import { DexTabs, type DexTab } from "../../components/dex-tabs";
@@ -21,6 +22,7 @@ function PartnerCard({
   s: SpeciesEntry;
   onSelect: (id: string) => void;
 }) {
+  useLocale();
   const levels = partnerLevels(s);
   return (
     <div className="flex flex-col overflow-hidden rounded-md border border-line bg-panel">
@@ -28,14 +30,14 @@ function PartnerCard({
         <PartnerIcon iconId={s.partner_skill_icon} size={26} className="mt-0.5" />
         <div className="min-w-0 flex-1">
           <div className="truncate font-display text-[14px] font-semibold tracking-wide text-amber-bright">
-            {s.partner_skill}
+            {tr(s.partner_skill)}
           </div>
           <button
             onClick={() => onSelect(s.id)}
             className="group mt-0.5 flex items-baseline gap-1.5 text-left"
           >
             <span className="truncate text-[12px] text-ink-dim transition-colors group-hover:text-ink">
-              {s.name}
+              {tr(s.name)}
             </span>
             <span className="shrink-0 font-mono text-[10px] tabular-nums text-amber">
               #{String(s.paldex_no).padStart(3, "0")}
@@ -52,12 +54,10 @@ function PartnerCard({
           />
         ) : s.partner_skill_desc ? (
           <p className="whitespace-pre-line text-[12px] leading-relaxed text-ink-dim">
-            {s.partner_skill_desc}
+            {tr(s.partner_skill_desc)}
           </p>
         ) : (
-          <div className="text-[12px] italic leading-snug text-ink-faint">
-            No description
-          </div>
+          <div className="text-[12px] italic leading-snug text-ink-faint">{t("No description")}</div>
         )}
       </div>
     </div>
@@ -82,6 +82,7 @@ export default function PartnerIndex({
   onTab: (t: DexTab) => void;
   onSelectPal: (id: string) => void;
 }) {
+  useLocale();
   const [query, setQuery] = useState("");
 
   // Only species with a partner skill, in paldex order (then name for ties).
@@ -96,7 +97,7 @@ export default function PartnerIndex({
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return withPartner;
-    return withPartner.filter((s) => haystack(s).includes(q));
+    return withPartner.filter((s) => matchesText(q, s.name, s.partner_skill ?? "", s.partner_skill_desc ?? "", haystack(s)));
   }, [withPartner, query]);
 
   return (
@@ -105,12 +106,8 @@ export default function PartnerIndex({
         <div className="flex items-baseline justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-                Pal-dex
-              </div>
-              <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-                Partner skills
-              </h1>
+              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Pal-dex")}</div>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Partner skills")}</h1>
             </div>
             <DexTabs tab={tab} onTab={onTab} />
           </div>
@@ -121,17 +118,14 @@ export default function PartnerIndex({
                 <span className="mx-1 text-ink-faint">/</span>
               </>
             ) : null}
-            <span className={query.trim() ? "" : "text-ink"}>{withPartner.length}</span> partner
-            skills
-            <span className="mx-1 text-ink-faint">/</span>
-            <span className="text-ink-dim">{species.length}</span> species
-          </div>
+            <span className={query.trim() ? "" : "text-ink"}>{withPartner.length}</span>{t(" partner skills")}<span className="mx-1 text-ink-faint">/</span>
+            <span className="text-ink-dim">{species.length}</span>{t(" species")}</div>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <input
             className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-            placeholder="Search by skill, species, or effect..."
+            placeholder={t("Search by skill, species, or effect...")}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -139,21 +133,17 @@ export default function PartnerIndex({
             onClick={() => setQuery("")}
             disabled={!query}
             className="select-none rounded-md border border-line bg-panel px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Reset
-          </button>
+          >{t("Reset")}</button>
         </div>
       </header>
 
       {rows.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
           <div className="font-display text-lg text-ink-dim">
-            {species.length === 0 ? "Loading partner skills\u2026" : "No partner skills match"}
+            {species.length === 0 ? t("Loading partner skills…") : t("No partner skills match")}
           </div>
           {species.length > 0 && (
-            <p className="max-w-xs text-sm text-ink-faint">
-              Nothing matches &ldquo;{query}&rdquo;. Try a different name or effect.
-            </p>
+            <p className="max-w-xs text-sm text-ink-faint">{t("Nothing matches “")}{query}{t("”. Try a different name or effect.")}</p>
           )}
         </div>
       ) : (

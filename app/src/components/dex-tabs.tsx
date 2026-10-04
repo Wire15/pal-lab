@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The Pal-dex section switcher: a segmented [Pals | Passives | Partner | Moves]
 // control shared by the reference browsers (species grid, passive-skill grid,
 // partner-skill grid, active-skill/moves reference). Matches the sort-control
@@ -6,13 +7,14 @@
 export type DexTab = "pals" | "passives" | "partner" | "moves";
 
 const TABS: { key: DexTab; label: string }[] = [
-  { key: "pals", label: "Pals" },
-  { key: "passives", label: "Passives" },
-  { key: "partner", label: "Partner" },
-  { key: "moves", label: "Moves" },
+  { key: "pals", get label() { return t("Pals"); } },
+  { key: "passives", get label() { return t("Passives"); } },
+  { key: "partner", get label() { return t("Partner"); } },
+  { key: "moves", get label() { return t("Moves"); } },
 ];
 
 export function DexTabs({ tab, onTab }: { tab: DexTab; onTab: (t: DexTab) => void }) {
+  useLocale();
   return (
     <div className="flex items-center overflow-hidden rounded-md border border-line">
       {TABS.map((t) => {
@@ -28,7 +30,7 @@ export function DexTabs({ tab, onTab }: { tab: DexTab; onTab: (t: DexTab) => voi
                 : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
             }`}
           >
-            {t.label}
+            {tr(t.label)}
           </button>
         );
       })}

@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // Circular game-style Palbox slot: a cel-shaded portrait clipped to a circle
 // with a level pill, gender dot, alpha marker, condensation stars, and an amber
 // selection ring. Empty slots render as a faint dashed circle (physical layout
@@ -14,6 +15,7 @@ import { useState } from "react";
 
 /** An empty slot: faint dashed circle, non-interactive. */
 export function EmptySlot({ size = 60 }: { size?: number }) {
+  useLocale();
   return (
     <div
       aria-hidden
@@ -26,6 +28,7 @@ export function EmptySlot({ size = 60 }: { size?: number }) {
 /** Neutral humanoid silhouette for a captured human entity (not a pal). Shared
  *  by the palbox slot fallback, the roster icon, and the human card portrait. */
 export function HumanGlyph() {
+  useLocale();
   return (
     <span className="flex h-full w-full items-center justify-center text-ink-faint">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-[52%] w-[52%]">
@@ -57,6 +60,7 @@ export function Slot({
   onPointerEnter,
   onPointerLeave,
 }: SlotProps) {
+  useLocale();
   const [failed, setFailed] = useState(false);
   const g = genderView(pal.gender);
   const human = isHuman(pal);
@@ -75,7 +79,7 @@ export function Slot({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       aria-pressed={selected}
-      aria-label={`${human ? humanName : name}, level ${pal.level}${isAlpha(pal) ? ", alpha" : ""}`}
+      aria-label={t("{0}, level {1}{2}", [human ? humanName : name, pal.level, isAlpha(pal) ? ", alpha" : ""])}
       className="group relative shrink-0 rounded-full"
       style={{ width: size, height: size }}
     >
@@ -97,7 +101,7 @@ export function Slot({
           humanInfo && !failed ? (
             <img
               src={humanIconUrl(humanInfo)}
-              alt=""
+              alt={t("")}
               width={size}
               height={size}
               loading="lazy"
@@ -111,7 +115,7 @@ export function Slot({
         ) : (
           <img
             src={src}
-            alt=""
+            alt={t("")}
             width={size}
             height={size}
             loading="lazy"
@@ -127,8 +131,8 @@ export function Slot({
       {isAlpha(pal) && (
         <img
           src={alphaIconUrl}
-          alt=""
-          title="Alpha"
+          alt={t("")}
+          title={t("Alpha")}
           draggable={false}
           className="absolute -left-1 -top-1 h-[30%] max-h-6 min-h-4 w-[30%] max-w-6 min-w-4 object-contain drop-shadow"
         />
@@ -137,7 +141,7 @@ export function Slot({
       {/* Condensation stars — top-right. */}
       {pal.rank > 0 && (
         <span
-          title={`Condensation rank ${pal.rank}`}
+          title={t("Condensation rank {0}", [pal.rank])}
           className="absolute -right-1 -top-1 rounded-full border border-line bg-abyss px-1 py-px font-mono text-[9px] font-semibold leading-none text-amber"
         >
           {"\u2605"}
@@ -154,7 +158,7 @@ export function Slot({
           circular chip for contrast; omitted for genderless entities. */}
       {pal.gender && (
         <span
-          title={g.label}
+          title={tr(g.label)}
           style={{ width: genderBadge, height: genderBadge, fontSize: genderFont }}
           className={`absolute -bottom-0.5 -right-0.5 flex items-center justify-center rounded-full border border-abyss bg-raised font-semibold leading-none ${g.className}`}
         >

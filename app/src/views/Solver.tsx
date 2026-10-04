@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   BreedingPlan,
@@ -113,6 +114,7 @@ function TreeNode({
   nameToId: Map<string, string>;
   isRoot?: boolean;
 }) {
+  useLocale();
   const g = genderView(node.gender);
   const isBred = node.source === "Bred";
   // Externally-tagged serde: read the source object's variant directly.
@@ -156,8 +158,8 @@ function TreeNode({
         {!hasChildren && <span className="w-3 shrink-0" />}
         <PalIcon id={nameToId.get(node.species_name) ?? null} name={node.species_name} size={30} />
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className="truncate font-medium text-ink">{node.species_name}</span>
-          <span className={`text-sm leading-none ${g.className}`} title={g.label}>
+          <span className="truncate font-medium text-ink">{tr(node.species_name)}</span>
+          <span className={`text-sm leading-none ${g.className}`} title={tr(g.label)}>
             {g.glyph}
           </span>
         </div>
@@ -167,40 +169,36 @@ function TreeNode({
             <>
               <span
                 className="rounded-sm border border-el-leaf/50 bg-el-leaf/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-el-leaf"
-                title="Catch this pal in the wild"
-              >
-                Catch{wild.captures > 1 ? `\u00a0\u00d7${wild.captures}` : ""}
+                title={t("Catch this pal in the wild")}
+              >{t("Catch")}{wild.captures > 1 ? t(" ×{0}", [wild.captures]) : ""}
               </span>
               {wild.min_wild_level ? (
                 <span
                   className="rounded-sm border border-el-leaf/35 bg-el-leaf/[0.08] px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums text-el-leaf"
-                  title={`Wild spawns from level ${wild.min_wild_level}`}
-                >
-                  Lv {wild.min_wild_level}+
+                  title={t("Wild spawns from level {0}", [wild.min_wild_level])}
+                >{t("Lv ")}{wild.min_wild_level}+
                 </span>
               ) : null}
             </>
           ) : owned ? (
-            <Tag>Owned &middot; {owned.location}</Tag>
+            <Tag>{t("Owned · ")}{t(owned.location)}</Tag>
           ) : isBred ? (
-            <Tag tone="amber">Bred</Tag>
+            <Tag tone="amber">{t("Bred")}</Tag>
           ) : null}
           {isBred && (
             <>
               {node.washes_passives && (
                 <span
                   className="rounded-sm border border-amber/50 bg-amber/12 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase leading-none tracking-wider text-amber"
-                  title="This step exists to shed extra passives so later eggs hit the target more often"
-                >
-                  Cleans line
-                </span>
+                  title={t("This step exists to shed extra passives so later eggs hit the target more often")}
+                >{t("Cleans line")}</span>
               )}
               <span
                 className={`rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${prob.text} ${prob.ring}`}
                 title={
-                  node.odds
+                  tr(node.odds
                     ? "per-egg acceptance \u2014 see breakdown"
-                    : `${prob.label} odds`
+                    : `${prob.label} odds`)
                 }
               >
                 {(node.probability * 100).toFixed(0)}%
@@ -225,7 +223,7 @@ function TreeNode({
         <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 pl-[3.6rem] font-mono text-[10px] tabular-nums text-ink-faint">
           {buildOddsRows(node.odds).map((r) => (
             <span key={r.label}>
-              <span className="text-ink-dim">{r.label}</span> {r.value}
+              <span className="text-ink-dim">{tr(r.label)}</span> {r.value}
             </span>
           ))}
           {node.expected_eggs != null && (
@@ -258,14 +256,11 @@ function TreeNode({
 /** Warn banner shown when `pinned_parents` eliminated every otherwise-valid
  *  plan (single solve or a queue item). */
 function PinsUnsatisfiedBanner() {
+  useLocale();
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-y border-warn/30 bg-warn/[0.08] px-4 py-2.5">
-      <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-warn">
-        Pins unsatisfied
-      </span>
-      <span className="text-[12.5px] leading-relaxed text-ink-dim">
-        No plan uses all pinned parents &mdash; unpin or raise Max steps.
-      </span>
+      <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-warn">{t("Pins unsatisfied")}</span>
+      <span className="text-[12.5px] leading-relaxed text-ink-dim">{t("No plan uses all pinned parents — unpin or raise Max steps.")}</span>
     </div>
   );
 }
@@ -313,6 +308,7 @@ function PlanResults({
   headerRight,
   tracking,
 }: PlanResultsProps) {
+  useLocale();
   const { setup, cake } = useBreedingSetup();
 
   const fastestIdx = useMemo(
@@ -354,7 +350,7 @@ function PlanResults({
         <div
           className="flex flex-wrap items-center gap-1"
           role="tablist"
-          aria-label="Breeding plans"
+          aria-label={t("Breeding plans")}
         >
           {plans.map((_plan, i) => {
             const active = i === activePlan;
@@ -370,16 +366,13 @@ function PlanResults({
                     ? "border-amber/50 bg-amber/10 text-amber"
                     : "border-line bg-panel text-ink-dim hover:bg-hover hover:text-ink"
                 }`}
-              >
-                Plan {i + 1}
+              >{t("Plan ")}{i + 1}
                 {i === fastestIdx && (
                   <span
                     className={`rounded-sm px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wider ${
                       active ? "bg-amber/20 text-amber" : "bg-raised text-amber/80"
                     }`}
-                  >
-                    Fastest
-                  </span>
+                  >{t("Fastest")}</span>
                 )}
               </button>
             );
@@ -389,7 +382,7 @@ function PlanResults({
         <div
           className="flex overflow-hidden rounded-md border border-line"
           role="radiogroup"
-          aria-label="Result view"
+          aria-label={t("Result view")}
         >
           {(["graph", "list"] as const).map((m) => {
             const active = viewMode === m;
@@ -406,7 +399,7 @@ function PlanResults({
                     : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
                 }`}
               >
-                {m}
+                {t(m)}
               </button>
             );
           })}
@@ -415,26 +408,18 @@ function PlanResults({
       {showCatchCallout && activePlanObj && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-el-leaf/25 bg-el-leaf/[0.06] px-4 py-2.5">
           <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-el-leaf">
-            {catchOnly ? "Catch only" : "Needs catching"}
+            {catchOnly ? t("Catch only") : t("Needs catching")}
           </span>
           {catchOnly ? (
             <span className="text-[12.5px] leading-relaxed text-ink-dim">
               <span className="font-medium text-ink">
-                {activePlanObj.root.species_name}
-              </span>{" "}
-              can&rsquo;t be bred from any other species &mdash; catch it in the
-              wild
-              {activeRootWild && activeRootWild.min_wild_level
-                ? ` (Lv ${activeRootWild.min_wild_level}+)`
-                : ""}
+                {tr(activePlanObj.root.species_name)}
+              </span>{" "}{t("can’t be bred from any other species — catch it in the wild")}{activeRootWild && activeRootWild.min_wild_level ? t(" (Lv {0}+)", [activeRootWild.min_wild_level]) : ""}
               .
             </span>
           ) : (
             <>
-              <span className="text-[12.5px] leading-relaxed text-ink-dim">
-                No pure-breeding path from your pals &mdash; this plan needs
-                catches:
-              </span>
+              <span className="text-[12.5px] leading-relaxed text-ink-dim">{t("No pure-breeding path from your pals — this plan needs catches:")}</span>
               <div className="flex flex-wrap items-center gap-1.5">
                 {catchAgg.map((c) => (
                   <span
@@ -443,12 +428,11 @@ function PlanResults({
                   >
                     <PalIcon id={c.id} name={c.name} size={16} />
                     <span className="font-medium">
-                      {c.name}
-                      {c.captures > 1 ? `\u00a0\u00d7${c.captures}` : ""}
+                      {tr(c.name)}
+                      {c.captures > 1 ? t(" ×{0}", [c.captures]) : ""}
                     </span>
                     {c.minLevel > 0 && (
-                      <span className="font-mono tabular-nums text-el-leaf/90">
-                        &middot; Lv {c.minLevel}+
+                      <span className="font-mono tabular-nums text-el-leaf/90">{t("· Lv ")}{c.minLevel}+
                       </span>
                     )}
                   </span>
@@ -460,50 +444,37 @@ function PlanResults({
       )}
       {!isNeutralSetup(setup, cake) && (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-amber/20 bg-amber/[0.05] px-4 py-1.5">
-          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-amber">
-            Setup
-          </span>
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-amber">{t("Setup")}</span>
           <span className="font-mono text-[11px] tabular-nums text-ink-dim">
             {describeSetup(setup, cake).join("\u00a0\u00a0/\u00a0\u00a0")}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            &middot; est.
-          </span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("· est.")}</span>
         </div>
       )}
 
       {tracking && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-good/25 bg-good/[0.05] px-4 py-1.5">
-          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-good">
-            Tracking
-          </span>
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-good">{t("Tracking")}</span>
           <span className="font-mono text-[11px] tabular-nums text-ink-dim">
             <span className="text-good">
               {tracking.report.doneSteps}/{tracking.report.totalSteps}
-            </span>{" "}
-            steps &middot;{" "}
-            {tracking.report.totalSteps > 0
-              ? Math.round(
+            </span>{" "}{t("steps ·")}{" "}
+            {tracking.report.totalSteps > 0 ? Math.round(
                   (tracking.report.doneSteps / tracking.report.totalSteps) * 100,
-                )
-              : 100}
+                ) : 100}
             %
           </span>
           {tracking.report.stale && (
             <span
               className="font-mono text-[10px] uppercase tracking-wider text-amber"
-              title="An owned parent is gone from your save with no substitute"
-            >
-              &middot; stale
-            </span>
+              title={t("An owned parent is gone from your save with no substitute")}
+            >{t("· stale")}</span>
           )}
           <button
             type="button"
             onClick={tracking.onUntrack}
             className="ml-auto rounded-md border border-line bg-raised px-2.5 py-0.5 text-[11px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-          >
-            Untrack
-          </button>
+          >{t("Untrack")}</button>
         </div>
       )}
       {viewMode === "graph" ? (
@@ -515,22 +486,18 @@ function PlanResults({
               </span>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
                 <span>
-                  <span className="text-ink">{activePlanObj.total_steps}</span> steps
-                </span>
+                  <span className="text-ink">{activePlanObj.total_steps}</span>{t(" steps")}</span>
                 <span className="text-line">|</span>
                 <span>
                   <span className="text-el-leaf">
                     {activePlanObj.total_wild_pals || countWild(activePlanObj.root)}
-                  </span>{" "}
-                  wild
-                </span>
+                  </span>{" "}{t("wild")}</span>
                 {activePlanObj.cake && activePlanObj.cake !== "Normal" && (
                   <>
                     <span className="text-line">|</span>
                     <span>
                       <span className="text-ink">{activePlanObj.cake_count}</span>{" "}
-                      {activePlanObj.cake} cake
-                    </span>
+                      {activePlanObj.cake}{t(" cake")}</span>
                   </>
                 )}
               </div>
@@ -567,35 +534,29 @@ function PlanResults({
               return (
                 <article key={i} className="overflow-hidden rounded-lg border border-line bg-panel/40">
                   <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-raised px-4 py-3">
-                    <span className="font-display text-sm font-bold tracking-wide text-ink">
-                      Plan {i + 1}
+                    <span className="font-display text-sm font-bold tracking-wide text-ink">{t("Plan ")}{i + 1}
                     </span>
-                    {i === fastestIdx && <Tag tone="amber">Fastest</Tag>}
+                    {i === fastestIdx && <Tag tone="amber">{t("Fastest")}</Tag>}
                     <span className="font-mono text-lg font-semibold tabular-nums text-amber">
                       {formatDuration(plan.total_time_secs)}
                     </span>
                     <div className="ml-auto flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
                       <span>
-                        <span className="text-ink">{plan.total_steps}</span> steps
-                      </span>
+                        <span className="text-ink">{plan.total_steps}</span>{t(" steps")}</span>
                       <span className="text-line">|</span>
                       <span>
-                        <span className="text-el-leaf">{plan.total_wild_pals || wildNodes}</span> wild
-                      </span>
+                        <span className="text-el-leaf">{plan.total_wild_pals || wildNodes}</span>{t(" wild")}</span>
                       {plan.cake && plan.cake !== "Normal" && (
                         <>
                           <span className="text-line">|</span>
                           <span>
-                            <span className="text-ink">{plan.cake_count}</span> {plan.cake} cake
-                          </span>
+                            <span className="text-ink">{plan.cake_count}</span> {plan.cake}{t(" cake")}</span>
                         </>
                       )}
                     </div>
                   </header>
                   <div className="p-3 text-sm">
-                    <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      Target
-                    </div>
+                    <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Target")}</div>
                     <TreeNode node={plan.root} nameToId={nameToId} isRoot />
                   </div>
                 </article>
@@ -630,6 +591,7 @@ function QueueItemView({
   nameToId: Map<string, string>;
   requestDex: (speciesId: string, instanceId?: string) => void;
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const [activePlan, setActivePlan] = useState(0);
   const [selection, setSelection] = useState<NodeSelection | null>(null);
@@ -637,11 +599,11 @@ function QueueItemView({
 
   const best = item.plans[0] ?? null;
   const status = !item.pins_satisfied
-    ? { tone: "bad", label: "Pins unsatisfied" }
+    ? { tone: "bad", get label() { return t("Pins unsatisfied"); } }
     : item.plans.length === 0
-      ? { tone: "faint", label: "No plan" }
+      ? { tone: "faint", get label() { return t("No plan"); } }
       : item.fallback_used
-        ? { tone: "leaf", label: "Needs catching" }
+        ? { tone: "leaf", get label() { return t("Needs catching"); } }
         : { tone: "amber", label: best ? formatDuration(best.total_time_secs) : "" };
   const hasPlans = item.plans.length > 0;
 
@@ -675,16 +637,15 @@ function QueueItemView({
           size={26}
         />
         <span className="min-w-0 flex-1 truncate font-medium text-ink">
-          {item.target_species}
+          {tr(item.target_species)}
         </span>
         <span
           className={`shrink-0 rounded-sm border px-1.5 py-0.5 font-mono text-[11px] font-semibold leading-none tabular-nums ${QUEUE_STATUS_CLASS[status.tone]}`}
         >
-          {status.label}
+          {tr(status.label)}
         </span>
       </button>
-      {open &&
-        (hasPlans ? (
+      {open && (hasPlans ? (
           <div className="flex h-[540px] flex-col overflow-hidden border-t border-line">
             <PlanResults
               plans={item.plans}
@@ -724,34 +685,26 @@ function QueueResults({
   requestDex: (speciesId: string, instanceId?: string) => void;
   onBack: () => void;
 }) {
+  useLocale();
   return (
     <>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line bg-panel px-4 py-2.5">
-        <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.2em] text-amber">
-          Queue
-        </span>
-        <span className="font-mono text-[13px] tabular-nums text-ink-dim">
-          combined ~
-          <span className="font-semibold text-amber">
+        <span className="shrink-0 font-mono text-[11px] uppercase tracking-[0.2em] text-amber">{t("Queue")}</span>
+        <span className="font-mono text-[13px] tabular-nums text-ink-dim">{t("combined ~")}<span className="font-semibold text-amber">
             {formatDuration(result.combined_effort_secs)}
           </span>
         </span>
         <span className="text-line">|</span>
         <span className="font-mono text-[13px] tabular-nums text-ink-dim">
-          <span className="text-ink">{result.items.length}</span> targets
-        </span>
+          <span className="text-ink">{result.items.length}</span>{t(" targets")}</span>
         <button
           type="button"
           onClick={onBack}
           className="ml-auto rounded-md border border-line bg-raised px-2.5 py-1 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-        >
-          &larr; Back to single solve
-        </button>
+        >{t("← Back to single solve")}</button>
       </div>
       <div className="border-b border-line-soft bg-abyss/40 px-4 py-1.5">
-        <span className="text-[12px] leading-relaxed text-ink-faint">
-          Each target&rsquo;s plan assumes the previous targets were bred first.
-        </span>
+        <span className="text-[12px] leading-relaxed text-ink-faint">{t("Each target’s plan assumes the previous targets were bred first.")}</span>
       </div>
       <div className="flex-1 overflow-auto px-4 py-4">
         <div className="flex flex-col gap-2">
@@ -771,6 +724,7 @@ function QueueResults({
 }
 
 export default function Solver() {
+  useLocale();
   const {
     saveDir,
     saveSummary,
@@ -1145,43 +1099,33 @@ export default function Solver() {
       <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-auto border-r border-line bg-panel px-5 pb-6 pt-5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              Solver
-            </div>
-            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-              Breeding plan
-            </h1>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Solver")}</div>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Breeding plan")}</h1>
           </div>
           <div className="mt-0.5 flex shrink-0 items-center gap-1.5">
             <button
               type="button"
               onClick={() => setHistoryOpen(true)}
-              title="Recent solves — reopen a previous plan"
+              title={t("Recent solves — reopen a previous plan")}
               className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/50 hover:text-amber focus-visible:border-amber/50 focus-visible:text-amber"
-            >
-              History
-            </button>
+            >{t("History")}</button>
             <button
               type="button"
               onClick={resetForm}
-              title="Clear target, passives, pins and results (keeps breeding setup & queue)"
+              title={t("Clear target, passives, pins and results (keeps breeding setup & queue)")}
               className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
-            >
-              Reset
-            </button>
+            >{t("Reset")}</button>
           </div>
         </div>
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Target species
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Target species")}</span>
           <div className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2 py-1 focus-within:border-amber/60">
             <PalIcon id={targetId} name={species || "target"} size={26} />
             <input
               className="min-w-0 flex-1 bg-transparent py-0.5 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
               list="species-options"
-              placeholder="e.g. Anubis"
+              placeholder={t("e.g. Anubis")}
               value={species}
               onChange={(e) => setSpecies(e.currentTarget.value)}
             />
@@ -1200,13 +1144,11 @@ export default function Solver() {
         />
 
         <div className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Extra passives
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Extra passives")}</span>
           <div
             className="flex overflow-hidden rounded-md border border-line"
             role="radiogroup"
-            aria-label="How many off-target passives the solver may keep on intermediate parents"
+            aria-label={t("How many off-target passives the solver may keep on intermediate parents")}
           >
             {EXTRA_PASSIVES_OPTIONS.map((o) => {
               const active = extraIrrelevant === o.value;
@@ -1223,15 +1165,12 @@ export default function Solver() {
                       : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
                   }`}
                 >
-                  {o.label}
+                  {tr(o.label)}
                 </button>
               );
             })}
           </div>
-          <p className="font-mono text-[11px] leading-relaxed text-ink-faint">
-            Children inherit from BOTH parents&rsquo; combined passives. Stricter =
-            cleaner pal, more eggs. &ldquo;Any&rdquo; never adds cleanup steps.
-          </p>
+          <p className="font-mono text-[11px] leading-relaxed text-ink-faint">{t("Children inherit from BOTH parents’ combined passives. Stricter = cleaner pal, more eggs. “Any” never adds cleanup steps.")}</p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -1240,10 +1179,7 @@ export default function Solver() {
             onAdd={(id) => setMoves((m) => (m.includes(id) ? m : [...m, id]))}
             onRemove={removeMove}
           />
-          <p className="text-[11px] leading-relaxed text-ink-faint">
-            &le;50% per egg (community-measured); inherited from the parents&rsquo;
-            equipped slots (1.0 rule)
-          </p>
+          <p className="text-[11px] leading-relaxed text-ink-faint">{t("≤50% per egg (community-measured); inherited from the parents’ equipped slots (1.0 rule)")}</p>
           {moveWarnings.map((w, i) => (
             <p
               key={`${w.kind}-${i}`}
@@ -1274,9 +1210,7 @@ export default function Solver() {
 
         <div className="flex flex-col gap-3">
           <label className="flex items-center gap-2 text-[13px] text-ink-dim">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Max steps
-            </span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Max steps")}</span>
             <input
               type="number"
               min={1}
@@ -1289,17 +1223,15 @@ export default function Solver() {
           </label>
 
           <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-              Source pool
-            </span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Source pool")}</span>
             <div
               className="flex flex-col overflow-hidden rounded-md border border-line"
               role="radiogroup"
-              aria-label="Which pals the solver may draw from"
+              aria-label={t("Which pals the solver may draw from")}
             >
               {[
-                { wild: false, label: "Only pals I own" },
-                { wild: true, label: "Include pals I don\u2019t own" },
+                { wild: false, get label() { return t("Only pals I own"); } },
+                { wild: true, get label() { return t("Include pals I don’t own"); } },
               ].map((m) => {
                 const active = includeWild === m.wild;
                 return (
@@ -1320,30 +1252,26 @@ export default function Solver() {
                         active ? "bg-amber" : "bg-line"
                       }`}
                     />
-                    {m.label}
+                    {tr(m.label)}
                   </button>
                 );
               })}
             </div>
             {includeWild && (
-              <p className="text-[12px] leading-relaxed text-ink-faint">
-                Also considers wild-catchable species you don&rsquo;t own yet.
-              </p>
+              <p className="text-[12px] leading-relaxed text-ink-faint">{t("Also considers wild-catchable species you don’t own yet.")}</p>
             )}
           </div>
           {includeWild && (
             <div className="flex flex-col gap-1.5">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                Catching
-              </span>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Catching")}</span>
               <div
                 className="flex flex-col overflow-hidden rounded-md border border-line"
                 role="radiogroup"
-                aria-label="Whether the solver may use wild catches"
+                aria-label={t("Whether the solver may use wild catches")}
               >
                 {[
-                  { mode: "breeding_only" as const, label: "Breeding only" },
-                  { mode: "allowed" as const, label: "Catching allowed" },
+                  { mode: "breeding_only" as const, get label() { return t("Breeding only"); } },
+                  { mode: "allowed" as const, get label() { return t("Catching allowed"); } },
                 ].map((m) => {
                   const active = catching === m.mode;
                   return (
@@ -1364,15 +1292,13 @@ export default function Solver() {
                           active ? "bg-amber" : "bg-line"
                         }`}
                       />
-                      {m.label}
+                      {tr(m.label)}
                     </button>
                   );
                 })}
               </div>
               <p className="text-[12px] leading-relaxed text-ink-faint">
-                {catching === "breeding_only"
-                  ? "Pure breeding from your pals. Falls back to catches only when no breeding path exists."
-                  : "Wild catches may fill ingredient gaps anywhere in the chain."}
+                {catching === "breeding_only" ? t("Pure breeding from your pals. Falls back to catches only when no breeding path exists.") : t("Wild catches may fill ingredient gaps anywhere in the chain.")}
               </p>
             </div>
           )}
@@ -1385,12 +1311,10 @@ export default function Solver() {
           onClick={runSolve}
           disabled={!canSolve}
         >
-          {solving ? "Solving\u2026" : "Solve breeding path"}
+          {solving ? t("Solving…") : t("Solve breeding path")}
         </button>
         {!saveDir.trim() && (
-          <p className="-mt-2 text-[12px] leading-relaxed text-ink-faint">
-            Load a save from the sidebar to solve for a target.
-          </p>
+          <p className="-mt-2 text-[12px] leading-relaxed text-ink-faint">{t("Load a save from the sidebar to solve for a target.")}</p>
         )}
 
         <QueuePanel
@@ -1418,9 +1342,7 @@ export default function Solver() {
         ) : (
           <>
             {cancelled && !plans && !queueResult && (
-              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">
-                Solve cancelled.
-              </div>
+              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">{t("Solve cancelled.")}</div>
             )}
         {queueError && (
           <div className="m-6 rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
@@ -1449,12 +1371,9 @@ export default function Solver() {
                 <NoPathPanel
                   diagnosis={diagnosis}
                   maxSteps={maxSteps}
-                  title="No path found"
+                  title={t("No path found")}
                   fallback={
-                    <p className="max-w-xs text-sm text-ink-faint">
-                      No breeding chain reaches that target within {maxSteps} steps. Try
-                      raising max steps or including pals you don&rsquo;t own.
-                    </p>
+                    <p className="max-w-xs text-sm text-ink-faint">{t("No breeding chain reaches that target within ")}{maxSteps}{t(" steps. Try raising max steps or including pals you don’t own.")}</p>
                   }
                 />
               </>
@@ -1465,9 +1384,7 @@ export default function Solver() {
                 {banners}
                 {searchTruncated && (
                   <div className="border-b border-line-soft bg-abyss/40 px-4 py-1.5">
-                    <span className="font-mono text-[11px] tabular-nums text-ink-faint">
-                      search truncated at time budget &mdash; plans shown may not be optimal
-                    </span>
+                    <span className="font-mono text-[11px] tabular-nums text-ink-faint">{t("search truncated at time budget — plans shown may not be optimal")}</span>
                   </div>
                 )}
                 <PlanResults
@@ -1497,12 +1414,8 @@ export default function Solver() {
 
             {!plans && !error && (
               <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-                <div className="font-display text-lg text-ink-dim">Plan a breeding path</div>
-                <p className="max-w-sm text-sm text-ink-faint">
-                  Pick a save, choose a target species and the passives you want, then
-                  solve. Each plan shows the full lineage from wild and owned pals up
-                  to your target.
-                </p>
+                <div className="font-display text-lg text-ink-dim">{t("Plan a breeding path")}</div>
+                <p className="max-w-sm text-sm text-ink-faint">{t("Pick a save, choose a target species and the passives you want, then solve. Each plan shows the full lineage from wild and owned pals up to your target.")}</p>
               </div>
             )}
           </>
@@ -1517,7 +1430,7 @@ export default function Solver() {
           nameToId={nameToId}
           onRestore={restoreFromHistory}
           storageKey="pal-lab.solveHistory"
-          title="Recent solves"
+          title={t("Recent solves")}
           ariaLabel="Solve history"
           variant="solver"
         />

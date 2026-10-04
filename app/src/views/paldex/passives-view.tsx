@@ -1,3 +1,4 @@
+import { matchesText, t, useLocale } from "../../i18n";
 import { useEffect, useMemo, useState } from "react";
 import { invoke } from "../../lib/tauri";
 import type { PassiveEntry } from "../../lib/types";
@@ -28,6 +29,7 @@ export default function PassivesIndex({
   tab: DexTab;
   onTab: (t: DexTab) => void;
 }) {
+  useLocale();
   const [passives, setPassives] = useState<PassiveEntry[]>([]);
   const [query, setQuery] = useState("");
 
@@ -47,7 +49,7 @@ export default function PassivesIndex({
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return palFacing;
-    return palFacing.filter((p) => haystack(p).includes(q));
+    return palFacing.filter((p) => matchesText(q, p.name, p.id, p.description ?? "", haystack(p)));
   }, [palFacing, query]);
 
   return (
@@ -56,12 +58,8 @@ export default function PassivesIndex({
         <div className="flex items-baseline justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-                Pal-dex
-              </div>
-              <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-                Passive skills
-              </h1>
+              <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Pal-dex")}</div>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Passive skills")}</h1>
             </div>
             <DexTabs tab={tab} onTab={onTab} />
           </div>
@@ -72,15 +70,13 @@ export default function PassivesIndex({
                 <span className="mx-1 text-ink-faint">/</span>
               </>
             ) : null}
-            <span className={query.trim() ? "" : "text-ink"}>{palFacing.length}</span> pal
-            passives
-          </div>
+            <span className={query.trim() ? "" : "text-ink"}>{palFacing.length}</span>{t(" pal passives")}</div>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <input
             className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-3 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-amber/60"
-            placeholder="Search by name or effect..."
+            placeholder={t("Search by name or effect...")}
             value={query}
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
@@ -88,21 +84,17 @@ export default function PassivesIndex({
             onClick={() => setQuery("")}
             disabled={!query}
             className="select-none rounded-md border border-line bg-panel px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Reset
-          </button>
+          >{t("Reset")}</button>
         </div>
       </header>
 
       {rows.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
           <div className="font-display text-lg text-ink-dim">
-            {passives.length === 0 ? "Loading passives\u2026" : "No passives match"}
+            {passives.length === 0 ? t("Loading passives…") : t("No passives match")}
           </div>
           {passives.length > 0 && (
-            <p className="max-w-xs text-sm text-ink-faint">
-              Nothing matches &ldquo;{query}&rdquo;. Try a different name or effect.
-            </p>
+            <p className="max-w-xs text-sm text-ink-faint">{t("Nothing matches “")}{query}{t("”. Try a different name or effect.")}</p>
           )}
         </div>
       ) : (

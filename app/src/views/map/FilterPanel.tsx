@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // The map filter popover (the in-game "Filter" equivalent): one row per overlay
 // layer with a toggle and a live count, plus the "show hidden" spoiler override.
 // MapView owns the filter state (persisted to localStorage); this is the
@@ -23,6 +24,7 @@ function Row({
   countTitle?: string;
   dimCount?: boolean;
 }) {
+  useLocale();
   return (
     <button
       type="button"
@@ -45,11 +47,11 @@ function Row({
       <span
         className={`flex-1 font-mono text-[12px] tracking-wide ${on ? "text-ink" : "text-ink-faint"}`}
       >
-        {label}
+        {tr(label)}
       </span>
       {count && (
         <span
-          title={countTitle}
+          title={tr(countTitle)}
           className={`font-mono text-[11px] tabular-nums ${dimCount ? "text-ink-faint italic" : "text-ink-dim"}`}
         >
           {count}
@@ -84,20 +86,19 @@ export default function FilterPanel({
   showHidden: boolean;
   setShowHidden: (on: boolean) => void;
 }) {
+  useLocale();
   const ft = counts.fastTravel;
   const ef = counts.effigies;
   const tw = counts.towers;
   const hideUnfound = filters.hideUnfoundEffigies;
-  const effigyCount = hideUnfound ? `${ef.found} found` : `${ef.found}/${ef.total}`;
+  const effigyCount = hideUnfound ? t("{0} found", [ef.found]) : `${ef.found}/${ef.total}`;
   return (
     <div className="absolute right-0 top-full z-20 mt-2 w-60 rounded-md border border-line bg-panel/95 p-1.5 shadow-lg backdrop-blur">
-      <div className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-        Layers
-      </div>
+      <div className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">{t("Layers")}</div>
       <Row
         on={filters.fastTravel}
         onToggle={() => setFilter("fastTravel", !filters.fastTravel)}
-        label="Fast Travel"
+        label={t("Fast Travel")}
         count={`${ft.found}/${ft.total}`}
         countTitle={counts.joined ? "Unlocked / total" : "Unlocked (per-pin match unavailable)"}
         dimCount={!counts.joined}
@@ -105,13 +106,13 @@ export default function FilterPanel({
       <Row
         on={filters.alpha}
         onToggle={() => setFilter("alpha", !filters.alpha)}
-        label="Alpha Pals"
+        label={t("Alpha Pals")}
         count={String(counts.alphas)}
       />
       <Row
         on={filters.effigies}
         onToggle={() => setFilter("effigies", !filters.effigies)}
-        label="Effigies"
+        label={t("Effigies")}
         count={effigyCount}
         countTitle={
           hideUnfound
@@ -142,20 +143,16 @@ export default function FilterPanel({
                 </svg>
               )}
             </span>
-            <span className={`flex-1 font-mono text-[11px] tracking-wide ${hideUnfound ? "text-ink" : "text-ink-faint"}`}>
-              Hide unfound
-            </span>
+            <span className={`flex-1 font-mono text-[11px] tracking-wide ${hideUnfound ? "text-ink" : "text-ink-faint"}`}>{t("Hide unfound")}</span>
           </button>
-          <p className="px-2 pb-0.5 font-mono text-[9px] leading-relaxed tracking-wide text-ink-faint">
-            Spoiler-safe — hides effigies you haven't collected yet.
-          </p>
+          <p className="px-2 pb-0.5 font-mono text-[9px] leading-relaxed tracking-wide text-ink-faint">{t("Spoiler-safe — hides effigies you haven't collected yet.")}</p>
         </div>
       )}
       {hasBounties && (
         <Row
           on={filters.bounties}
           onToggle={() => setFilter("bounties", !filters.bounties)}
-          label="Bounties"
+          label={t("Bounties")}
           count={String(counts.bounties)}
         />
       )}
@@ -163,35 +160,35 @@ export default function FilterPanel({
         <Row
           on={filters.towers}
           onToggle={() => setFilter("towers", !filters.towers)}
-          label="Towers"
+          label={t("Towers")}
           count={tw.joined ? `${tw.found}/${tw.total}` : String(tw.total)}
-          countTitle={tw.joined ? "Reached / tracked towers" : "Syndicate towers"}
+          countTitle={tw.joined ? t("{0}/{1} tracked towers reached", [tw.found, tw.total]) : "Syndicate towers"}
         />
       )}
       <Row
         on={filters.spawns}
         onToggle={() => setFilter("spawns", !filters.spawns)}
-        label="Spawns"
+        label={t("Spawns")}
         count={spawnLabel ?? "—"}
-        countTitle={spawnLabel ? `Showing ${spawnLabel}` : "Search a species below"}
+        countTitle={spawnLabel ? t("Showing {0}", [spawnLabel]) : "Search a species below"}
       />
       <Row
         on={filters.players}
         onToggle={() => setFilter("players", !filters.players)}
-        label="Players"
+        label={t("Players")}
         count={String(playerCount)}
       />
       <Row
         on={filters.markers}
         onToggle={() => setFilter("markers", !filters.markers)}
-        label="Markers"
+        label={t("Markers")}
         count={String(markerCount)}
       />
       {basesCount > 0 && (
         <Row
           on={filters.bases}
           onToggle={() => setFilter("bases", !filters.bases)}
-          label="Bases"
+          label={t("Bases")}
           count={String(basesCount)}
           countTitle="Your base camps"
         />
@@ -202,12 +199,10 @@ export default function FilterPanel({
           <Row
             on={showHidden}
             onToggle={() => setShowHidden(!showHidden)}
-            label="Show hidden"
+            label={t("Show hidden")}
           />
           <p className="px-2 pb-1 pt-0.5 font-mono text-[9px] leading-relaxed tracking-wide text-warn/80">
-            {showHidden
-              ? "Revealing pins in unexplored areas — spoilers."
-              : "Pins under fog are hidden to avoid spoilers."}
+            {showHidden ? t("Revealing pins in unexplored areas — spoilers.") : t("Pins under fog are hidden to avoid spoilers.")}
           </p>
         </div>
       )}

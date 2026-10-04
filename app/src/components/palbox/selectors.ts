@@ -8,6 +8,7 @@
 
 import { isAlpha, type OwnedPal, type SaveSummary, type SpeciesEntry } from "../../lib/types";
 import { getHuman } from "../../lib/humans";
+import { matchesText } from "../../i18n";
 
 /** Slots per Palbox / Dimensional page (6x5), matching the game. */
 export const PAGE_SIZE = 30;
@@ -166,7 +167,7 @@ export function matchesQuery(
     ]
       .join(" ")
       .toLowerCase();
-    if (!hay.includes(s)) return false;
+    if (!matchesText(s, hay, speciesName(pal, names), pal.nickname ?? "")) return false;
   }
 
   if (q.elements.length > 0) {

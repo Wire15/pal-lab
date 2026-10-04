@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // The POI pin overlay: a screen-space DOM layer above the map canvas. Pins are
 // positioned in *content* px (`worldToPx · k`) inside a container that carries
 // only the pan translate, so a pan updates one transform (GPU-composited) and
@@ -136,6 +137,7 @@ function Glyph({
   dim?: number;
   grayscale?: boolean;
 }) {
+  useLocale();
   if (mono) {
     return (
       <span
@@ -160,7 +162,7 @@ function Glyph({
   return (
     <img
       src={src}
-      alt=""
+      alt={t("")}
       aria-hidden
       draggable={false}
       width={size}
@@ -199,12 +201,13 @@ function GlyphChip({
   glow?: string;
   title?: string;
 }) {
+  useLocale();
   if (!src) return null;
   const shadow =
     "drop-shadow(0 1px 1.5px rgba(0,0,0,0.9)) drop-shadow(0 0 1px rgba(0,0,0,0.85))";
   return (
     <span
-      title={title}
+      title={tr(title)}
       className="relative flex items-center justify-center"
       style={{
         width: size,
@@ -226,6 +229,7 @@ function PinTypeIcon({
   pin: PoiPin;
   icons: IconManifest | null;
 }) {
+  useLocale();
   if (pin.kind === "fast_travel") {
     const tint = pin.found ? CYAN : DIM;
     const entry = icons?.fast_travel ?? null;
@@ -237,7 +241,7 @@ function PinTypeIcon({
         size={56}
         dim={pin.found ? 1 : 0.7}
         grayscale={!pin.found}
-        title={pin.found ? "Fast travel · unlocked" : "Fast travel · locked"}
+        title={tr(pin.found ? "Fast travel · unlocked" : "Fast travel · locked")}
       />
     );
   }
@@ -255,7 +259,7 @@ function PinTypeIcon({
         grayscale={pin.found}
         dim={pin.found ? 0.45 : 1}
         glow={pin.found ? undefined : GREEN}
-        title={pin.found ? "Lifmunk Effigy · collected" : "Lifmunk Effigy"}
+        title={pin.found ? t("{0} · collected", [tr(pin.name ?? "Lifmunk Effigy")]) : tr(pin.name ?? "Lifmunk Effigy")}
       />
     );
   }
@@ -277,11 +281,11 @@ function PinTypeIcon({
         dim={pin.found ? 0.8 : 1}
         glow={pin.found ? undefined : TOWER}
         title={
-          pin.found
-            ? `Tower · reached${pin.name ? ` · ${pin.name}` : ""}`
-            : pin.name
-              ? `Tower · ${pin.name}`
-              : "Syndicate Tower"
+          pin.name
+            ? pin.found
+              ? t("Tower · reached · {0}", [tr(pin.name)])
+              : t("Tower · {0}", [tr(pin.name)])
+            : t("Syndicate Tower")
         }
       />
     );
@@ -294,7 +298,7 @@ function PinTypeIcon({
       mono={isMonoIcon(icons, "bounty")}
       tint={PURPLE}
       size={56}
-      title={pin.name ? `Bounty · ${pin.name}` : "Bounty"}
+      title={pin.name ? t(pin.found ? "Bounty · defeated · {0}" : "Bounty · {0}", [tr(pin.name)]) : t("Bounty")}
     />
   );
 }
@@ -308,6 +312,7 @@ function AlphaPortrait({
   speciesId: string | null;
   size: number;
 }) {
+  useLocale();
   const [failed, setFailed] = useState(false);
   const src = speciesId && !failed ? palIconUrl(speciesId) : UNKNOWN_ICON;
   return (
@@ -317,7 +322,7 @@ function AlphaPortrait({
     >
       <img
         src={src}
-        alt=""
+        alt={t("")}
         aria-hidden
         draggable={false}
         width={size}
@@ -331,23 +336,25 @@ function AlphaPortrait({
 }
 
 /** The species-mode PalHoverCard context strip for an alpha pin. */
-function AlphaNote({ level }: { level?: number }) {
+function AlphaNote({ level, found }: { level?: number; found: boolean }) {
+  useLocale();
   return (
     <span className="flex items-center gap-1.5">
       <img
         src={alphaIconUrl}
-        alt=""
+        alt={t("")}
         aria-hidden
         draggable={false}
         width={13}
         height={13}
         className="h-[13px] w-[13px] shrink-0 object-contain"
       />
-      <span className="font-semibold text-amber-bright">Alpha Pal</span>
+      <span className="font-semibold text-amber-bright">{t("Alpha Pal")}</span>
+      {found && <span className="text-ink">· {t("Defeated")}</span>}
       {level != null && (
         <>
           <span className="text-ink-faint">·</span>
-          <span className="tabular-nums text-ink">Lv {level}</span>
+          <span className="tabular-nums text-ink">{t("Lv ")}{level}</span>
         </>
       )}
     </span>
@@ -369,6 +376,7 @@ function AlphaPin({
   icons: IconManifest | null;
   onOpenSpecies: (id: string) => void;
 }) {
+  useLocale();
   const badgeSrc = icons?.alpha_badge
     ? iconUrl(icons.alpha_badge)
     : fallbackIcon("alpha_badge", AMBER);
@@ -379,7 +387,7 @@ function AlphaPin({
       onClick={() => pin.speciesId && onOpenSpecies(pin.speciesId)}
       className="group pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber"
       style={{ left, top }}
-      aria-label={`Alpha Pal${pin.level != null ? `, level ${pin.level}` : ""}`}
+      aria-label={t("Alpha Pal{0}", [pin.level != null ? t(", level {0}", [pin.level]) : ""]) + (pin.found ? ` · ${t("Defeated")}` : "")}
     >
       <span className="relative block transition-transform duration-150 ease-out" style={ZOOM_STYLE}>
         <AlphaPortrait speciesId={pin.speciesId ?? null} size={ALPHA_SIZE} />
@@ -403,7 +411,7 @@ function AlphaPin({
   // bare (still clickable) pin if it is somehow missing rather than crash.
   if (!pin.speciesId) return button;
   return (
-    <PalHoverCard speciesId={pin.speciesId} note={<AlphaNote level={pin.level} />}>
+    <PalHoverCard speciesId={pin.speciesId} note={<AlphaNote level={pin.level} found={pin.found} />}>
       {button}
     </PalHoverCard>
   );
@@ -451,6 +459,7 @@ function PinLayer({
    *  so this layer never re-renders per tick. Optional/additive. */
   containerRef?: RefObject<HTMLDivElement | null>;
 }) {
+  useLocale();
   const [W, H] = entry.px;
   // Coarse pan bucket: the cull set only recomputes when the pan crosses a
   // bucket boundary; within a bucket the container transform does the work.
@@ -561,7 +570,7 @@ function PinLayer({
                   mono={entryIcon ? isMonoIcon(icons, key) : false}
                   tint={MARKER}
                   size={28}
-                  title="Custom marker"
+                  title={t("Custom marker")}
                 />
               </span>
             </div>
@@ -582,7 +591,7 @@ function PinLayer({
                   mono={isMonoIcon(icons, "base")}
                   tint={AMBER}
                   size={32}
-                  title="Base camp"
+                  title={t("Base camp")}
                 />
               </span>
             </div>
@@ -613,7 +622,7 @@ function PinLayer({
               </span>
               {pin.name && (
                 <span className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-xs border border-line bg-panel/90 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-ink opacity-0 transition-opacity group-hover:opacity-100">
-                  {pin.name}
+                  {tr(pin.name)}
                 </span>
               )}
             </div>
@@ -632,7 +641,7 @@ function PinLayer({
             />
             {p.label && (
               <span className="mt-1 whitespace-nowrap rounded-xs border border-line bg-panel/90 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-ink">
-                {p.label}
+                {tr(p.label)}
               </span>
             )}
           </div>

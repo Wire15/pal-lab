@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 import { memo, useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "../lib/tauri";
 import { isAlpha, type NamedEntry, type OwnedPal, type SpeciesEntry } from "../lib/types";
@@ -41,6 +42,7 @@ const SURFACE_LABEL: Record<BoxSurface, string> = {
 
 /** One IV talent for the list table: mono numeral tinted by band + quality bar. */
 function IvCell({ value }: { value: number }) {
+  useLocale();
   const band = ivBand(value);
   return (
     <div className="flex flex-col items-end gap-1">
@@ -77,6 +79,7 @@ const RosterRow = memo(function RosterRow({
   selected: boolean;
   onSelect: (pal: OwnedPal) => void;
 }) {
+  useLocale();
   const g = genderView(pal.gender);
   const human = isHuman(pal);
   const info = human ? getHuman(pal.character_id) : null;
@@ -102,25 +105,25 @@ const RosterRow = memo(function RosterRow({
           )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="truncate font-medium text-ink">{displayName}</span>
-              {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
+              <span className="truncate font-medium text-ink">{tr(displayName)}</span>
+              {isAlpha(pal) && <Tag tone="boss">{t("Alpha")}</Tag>}
               {pal.rank > 0 && (
                 <span
                   className="font-mono text-[11px] text-amber"
-                  title={`Condensation rank ${pal.rank}`}
+                  title={t("Condensation rank {0}", [pal.rank])}
                 >
                   {"\u2605".repeat(pal.rank)}
                 </span>
               )}
             </div>
             <div className="truncate font-mono text-[11px] text-ink-faint">
-              {pal.nickname ? `"${pal.nickname}"` : pal.character_id}
+              {pal.nickname ? t("\"{0}\"", [pal.nickname]) : pal.character_id}
             </div>
           </div>
         </div>
       </td>
       <td className="px-4 py-2">
-        <span className={`text-base leading-none ${g.className}`} title={g.label}>
+        <span className={`text-base leading-none ${g.className}`} title={tr(g.label)}>
           {g.glyph}
         </span>
       </td>
@@ -187,6 +190,7 @@ function RosterTable({
   selectedKey: string | null;
   onSelect: (pal: OwnedPal) => void;
 }) {
+  useLocale();
   const header = (label: string, key: SortKey | null, align?: "right") => {
     const sortable = key !== null && SORTABLE_COLUMNS[key];
     const active = sortable && sortKey === key;
@@ -199,7 +203,7 @@ function RosterTable({
           active ? "text-amber" : "text-ink-faint"
         }`}
       >
-        {label}
+        {tr(label)}
         {sortable && (
           <span className="ml-1 inline-block w-2 text-amber">
             {active ? (sortDir === "asc" ? "\u25b2" : "\u25bc") : ""}
@@ -242,6 +246,7 @@ function RosterTable({
 }
 
 export default function SaveInspector() {
+  useLocale();
   const { saveSummary, saveLoading, saveError, requestDex } = useAppState();
   const { storedPlayer, setStoredPlayer, mode, setMode, query, patchQuery } =
     usePalboxState();
@@ -535,22 +540,18 @@ export default function SaveInspector() {
       <header className="shrink-0 border-b border-line bg-panel/60 px-6 pb-3 pt-5">
         <div className="flex items-baseline justify-between gap-4">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              Save Inspector
-            </div>
-            <h1 className="font-display text-xl font-bold tracking-wide text-ink">Palbox</h1>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Save Inspector")}</div>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Palbox")}</h1>
           </div>
           {saveSummary && (
             <div className="flex items-center gap-4">
               <div className="text-right font-mono text-xs text-ink-dim">
                 <span className="text-ink">{saveSummary.world_name}</span>
                 <span className="mx-2 text-ink-faint">/</span>
-                <span className="text-amber">{palCount}</span> pals
-                {humanCount > 0 && (
+                <span className="text-amber">{palCount}</span>{t(" pals")}{humanCount > 0 && (
                   <>
                     <span className="mx-1.5 text-ink-faint">&middot;</span>
-                    <span className="text-amber">{humanCount}</span> humans
-                  </>
+                    <span className="text-amber">{humanCount}</span>{t(" humans")}</>
                 )}
               </div>
               {/* Mode toggle */}
@@ -566,7 +567,7 @@ export default function SaveInspector() {
                         : "bg-abyss text-ink-dim hover:bg-hover hover:text-ink"
                     }`}
                   >
-                    {m === "grid" ? "Palbox" : "List"}
+                    {m === "grid" ? t("Palbox") : t("List")}
                   </button>
                 ))}
               </div>
@@ -578,10 +579,9 @@ export default function SaveInspector() {
           <div className="mt-2 text-xs">
             <span
               className="text-warn"
-              title={saveSummary.warnings.slice(0, 20).join("\n")}
+              title={tr(saveSummary.warnings.slice(0, 20).join("\n"))}
             >
-              {saveSummary.warnings.length} parser warnings
-            </span>
+              {saveSummary.warnings.length}{t(" parser warnings")}</span>
           </div>
         )}
       </header>
@@ -602,7 +602,7 @@ export default function SaveInspector() {
                     : "border-transparent text-ink-dim hover:text-ink"
                 }`}
               >
-                {p.name || "Unnamed"}
+                {p.name || t("Unnamed")}
               </button>
             );
           })}
@@ -669,11 +669,11 @@ export default function SaveInspector() {
                       size={slotSize}
                       onClear={active ? clearFilters : undefined}
                       emptyHint={
-                        active
+                        tr(active
                           ? "No pals match your filters."
                           : surface === "palbox"
                             ? "This player has no boxed pals."
-                            : `No ${SURFACE_LABEL[surface].toLowerCase()} pals.`
+                            : `No ${SURFACE_LABEL[surface].toLowerCase()} pals.`)
                       }
                     />
                   </div>
@@ -691,14 +691,12 @@ export default function SaveInspector() {
             </div>
           ) : rows.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-3 text-sm text-ink-faint">
-              <span>No pals match your filters.</span>
+              <span>{t("No pals match your filters.")}</span>
               {active && (
                 <button
                   onClick={clearFilters}
                   className="rounded-md border border-line bg-raised px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-ink-dim transition-colors hover:bg-hover hover:text-ink"
-                >
-                  Clear filters
-                </button>
+                >{t("Clear filters")}</button>
               )}
             </div>
           ) : (
@@ -722,16 +720,11 @@ export default function SaveInspector() {
           )}
         </div>
       ) : saveLoading ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
-          Loading save&hellip;
-        </div>
+        <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">{t("Loading save…")}</div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-          <div className="font-display text-lg text-ink-dim">No save loaded</div>
-          <p className="max-w-xs text-sm text-ink-faint">
-            Load a Palworld save from the sidebar to inspect every player&rsquo;s
-            party, boxes, dimensional storage, and base pals.
-          </p>
+          <div className="font-display text-lg text-ink-dim">{t("No save loaded")}</div>
+          <p className="max-w-xs text-sm text-ink-faint">{t("Load a Palworld save from the sidebar to inspect every player’s party, boxes, dimensional storage, and base pals.")}</p>
         </div>
       )}
 

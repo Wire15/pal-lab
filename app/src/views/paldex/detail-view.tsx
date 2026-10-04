@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 import { useEffect, useMemo, useState } from "react";
 import { invoke } from "../../lib/tauri";
 import type {
@@ -59,6 +60,7 @@ function SpeciesCell({
   onNavigate: (id: string) => void;
   size?: number;
 }) {
+  useLocale();
   return (
     <PalHoverCard speciesId={sp.id}>
       <button
@@ -67,7 +69,7 @@ function SpeciesCell({
       >
         <PalIcon id={sp.id} name={sp.name} size={size} />
         <div className="min-w-0">
-          <div className="truncate text-[12px] text-ink">{sp.name}</div>
+          <div className="truncate text-[12px] text-ink">{tr(sp.name)}</div>
           <div className="font-mono text-[10px] tabular-nums text-ink-faint">
             #{String(sp.paldex_no).padStart(3, "0")}
           </div>
@@ -87,6 +89,7 @@ function Section({
   right?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  useLocale();
   return (
     <section className="overflow-hidden rounded-lg border border-line bg-panel/40">
       <header className="flex items-center justify-between gap-3 border-b border-line bg-raised px-4 py-2.5">
@@ -115,10 +118,11 @@ const RARITY_TEXT: Record<string, string> = {
 
 /** Rarity tier as a token-tinted badge (name loud, raw number as a quiet tooltip). */
 function RarityBadge({ rarity }: { rarity: number }) {
+  useLocale();
   const tier = rarityTier(rarity);
   return (
     <span
-      title={`Rarity ${rarity}`}
+      title={t("Rarity {0}", [rarity])}
       className={`inline-flex items-center gap-1.5 rounded-sm border px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider ${RARITY_TEXT[tier.tokenKey]}`}
       style={{
         borderColor: "color-mix(in srgb, currentColor 45%, transparent)",
@@ -126,7 +130,7 @@ function RarityBadge({ rarity }: { rarity: number }) {
       }}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
-      {tier.name}
+      {tr(tier.name)}
     </span>
   );
 }
@@ -141,12 +145,13 @@ function StatRow({
   value: number;
   max: number;
 }) {
+  useLocale();
   const pct = Math.max(4, Math.min(100, Math.round((value / max) * 100)));
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between">
         <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          {label}
+          {tr(label)}
         </span>
         <span className="font-mono text-[15px] font-semibold tabular-nums text-ink">
           {value}
@@ -161,6 +166,7 @@ function StatRow({
 
 /** The game-style food demand meter: `amount` filled pips out of {@link FOOD_PIPS}. */
 function FoodMeter({ amount }: { amount: number }) {
+  useLocale();
   return (
     <div className="flex items-center gap-1.5">
       <div className="flex gap-0.5">
@@ -179,7 +185,7 @@ function FoodMeter({ amount }: { amount: number }) {
 }
 
 /** One work suitability as a prominent chip: glyph, label, a level pip meter,
- * and the level as the loud amber numeral (palpedia rec #1 — levels prominent). */
+ * and the level as the loud amber numeral (levels prominent). */
 function WorkSuitChip({
   kind,
   label,
@@ -189,6 +195,7 @@ function WorkSuitChip({
   label: string;
   level: number;
 }) {
+  useLocale();
   // Pip meter denominator: the highest work-suitability level observed in the
   // pack (Bastigor's Lv8). Keeps a common Lv1-4 worker's bar readable while
   // never truncating the rare high-tier pals; the numeral is the source of truth.
@@ -197,7 +204,7 @@ function WorkSuitChip({
     <div className="flex items-center gap-2.5 rounded-md border border-line-soft bg-abyss/40 px-2.5 py-2">
       <WorkGlyph kind={kind} size={26} />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <span className="truncate text-[12px] leading-none text-ink-dim">{label}</span>
+        <span className="truncate text-[12px] leading-none text-ink-dim">{tr(label)}</span>
         <div className="flex gap-0.5">
           {Array.from({ length: WORK_MAX }, (_, i) => (
             <span
@@ -208,7 +215,7 @@ function WorkSuitChip({
         </div>
       </div>
       <span className="flex items-baseline gap-0.5 font-mono tabular-nums">
-        <span className="text-[9px] uppercase tracking-wider text-ink-faint">Lv</span>
+        <span className="text-[9px] uppercase tracking-wider text-ink-faint">{t("Lv")}</span>
         <span className="text-[17px] font-bold leading-none text-amber">{level}</span>
       </span>
     </div>
@@ -227,13 +234,14 @@ function MoveRow({
   value: number;
   max: number;
 }) {
+  useLocale();
   const na = value < 0;
   const pct = na ? 0 : Math.max(4, Math.min(100, Math.round((value / max) * 100)));
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between">
         <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          {label}
+          {tr(label)}
         </span>
         <span className="font-mono text-[13px] font-semibold tabular-nums text-ink">
           {na ? "\u2014" : value}
@@ -258,10 +266,11 @@ function StatValue({
   label: string;
   children: React.ReactNode;
 }) {
+  useLocale();
   return (
     <div className="flex items-baseline justify-between gap-3">
       <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        {label}
+        {tr(label)}
       </span>
       <span className="font-mono text-[14px] font-semibold tabular-nums text-ink">
         {children}
@@ -279,21 +288,22 @@ function fmtNum(n: number, decimals = 2): string {
 /** The item-drop table: item name, min-max quantity, and drop rate (a percent
  * 0..100 straight from the pack). Rendered only when the species has drops. */
 function DropsTable({ drops }: { drops: ItemDrop[] }) {
+  useLocale();
   return (
     <div className="flex flex-col">
       <div className="grid grid-cols-[1fr_auto_auto] gap-x-6 border-b border-line pb-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        <span>Item</span>
-        <span className="text-right">Qty</span>
-        <span className="text-right">Rate</span>
+        <span>{t("Item")}</span>
+        <span className="text-right">{t("Qty")}</span>
+        <span className="text-right">{t("Rate")}</span>
       </div>
       {drops.map((d, i) => (
         <div
           key={`${d.item_id}-${i}`}
           className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-6 border-b border-line-soft py-1.5 last:border-b-0"
         >
-          <span className="min-w-0 truncate text-[13px] text-ink">{d.item_name}</span>
+          <span className="min-w-0 truncate text-[13px] text-ink">{tr(d.item_name)}</span>
           <span className="text-right font-mono text-[13px] tabular-nums text-ink-dim">
-            {d.min === d.max ? d.min : `${d.min}\u2013${d.max}`}
+            {d.min === d.max ? d.min : t("{0}–{1}", [d.min, d.max])}
           </span>
           <span className="text-right font-mono text-[13px] tabular-nums text-amber">
             {fmtNum(d.rate)}%
@@ -313,10 +323,11 @@ function FactCell({
   label: string;
   children: React.ReactNode;
 }) {
+  useLocale();
   return (
     <div className="flex flex-col gap-1">
       <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        {label}
+        {tr(label)}
       </span>
       <div className="flex items-baseline gap-1.5 text-[13px] text-ink">{children}</div>
     </div>
@@ -325,12 +336,13 @@ function FactCell({
 
 /** One best-IV talent: mono numeral tinted by quality with a thin bar. */
 function BestIv({ label, value }: { label: string; value: number }) {
+  useLocale();
   const band = ivBand(value);
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between">
         <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          {label}
+          {tr(label)}
         </span>
         <span className={`font-mono text-[13px] font-semibold tabular-nums ${QUALITY_TEXT[band]}`}>
           {value}
@@ -352,10 +364,11 @@ function InstanceRow({
   label: string;
   children: React.ReactNode;
 }) {
+  useLocale();
   return (
     <div className="flex items-baseline justify-between gap-3">
       <dt className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        {label}
+        {tr(label)}
       </dt>
       <dd className="min-w-0 truncate text-right text-[13px] text-ink">{children}</dd>
     </div>
@@ -378,6 +391,7 @@ function YourPalSection({
   players: PlayerRef[];
   speciesName: string;
 }) {
+  useLocale();
   const g = genderView(pal.gender);
   const ownerHex = pal.owner_player_uid ? hexGuid(pal.owner_player_uid) : null;
   const owner = ownerHex
@@ -406,16 +420,14 @@ function YourPalSection({
   return (
     <section className="overflow-hidden rounded-lg border border-amber/40 bg-amber/[0.05]">
       <header className="flex items-center justify-between gap-3 border-b border-amber/25 bg-amber/[0.06] px-4 py-2.5">
-        <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-          Your pal
-        </span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Your pal")}</span>
         <div className="flex items-center gap-3 font-mono text-[12px] tabular-nums">
           <span className="text-ink-dim">
-            <span className="text-ink-faint">Lv </span>
+            <span className="text-ink-faint">{t("Lv ")}</span>
             <span className="text-ink">{pal.level}</span>
           </span>
           {pal.rank > 0 && (
-            <span className="text-amber" title={`Condensation rank ${pal.rank}`}>
+            <span className="text-amber" title={t("Condensation rank {0}", [pal.rank])}>
               {"\u2605".repeat(pal.rank)}
             </span>
           )}
@@ -426,49 +438,47 @@ function YourPalSection({
         {/* Identity + vitals */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <h2 className="min-w-0 truncate font-display text-xl font-bold tracking-wide text-ink">
-            {title}
+            {tr(title)}
           </h2>
-          {isAlpha(pal) && <Tag tone="boss">Alpha</Tag>}
-          <span className="flex items-center gap-1.5 text-[13px]" title={g.label}>
+          {isAlpha(pal) && <Tag tone="boss">{t("Alpha")}</Tag>}
+          <span className="flex items-center gap-1.5 text-[13px]" title={tr(g.label)}>
             <span className={`text-base leading-none ${g.className}`}>{g.glyph}</span>
-            <span className="text-ink-dim">{g.label}</span>
+            <span className="text-ink-dim">{tr(g.label)}</span>
           </span>
           {pal.nickname?.trim() && (
-            <span className="font-mono text-[12px] text-ink-faint">{speciesName}</span>
+            <span className="font-mono text-[12px] text-ink-faint">{tr(speciesName)}</span>
           )}
         </div>
 
         {/* IVs + provenance, two-up on wide */}
         <div className="grid gap-5 sm:grid-cols-[1fr_1fr]">
           <div className="flex flex-col gap-2">
-            <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-              IV talents
-            </span>
+            <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("IV talents")}</span>
             <div className="grid grid-cols-3 gap-4">
-              <BestIv label="HP" value={pal.ivs.hp} />
-              <BestIv label="ATK" value={pal.ivs.attack} />
-              <BestIv label="DEF" value={pal.ivs.defense} />
+              <BestIv label={t("HP")} value={pal.ivs.hp} />
+              <BestIv label={t("ATK")} value={pal.ivs.attack} />
+              <BestIv label={t("DEF")} value={pal.ivs.defense} />
             </div>
           </div>
           <dl className="flex flex-col gap-1.5">
-            <InstanceRow label="Owner">{owner ?? "\u2014"}</InstanceRow>
-            <InstanceRow label="Location">
+            <InstanceRow label={t("Owner")}>{owner ?? "\u2014"}</InstanceRow>
+            <InstanceRow label={t("Location")}>
               <Tag>{containerLabel(pal.container_kind)}</Tag>
             </InstanceRow>
             {pal.slot_index !== null && (
-              <InstanceRow label="Slot">
+              <InstanceRow label={t("Slot")}>
                 <span className="font-mono tabular-nums text-ink-dim">
                   {pal.slot_index}
                 </span>
               </InstanceRow>
             )}
-            <InstanceRow label="Instance">
+            <InstanceRow label={t("Instance")}>
               <button
                 onClick={copyId}
-                title="Copy instance id"
+                title={t("Copy instance id")}
                 className="max-w-[20ch] truncate font-mono text-[11px] text-ink-dim transition-colors hover:text-amber"
               >
-                {copied ? "Copied!" : instanceHex}
+                {copied ? t("Copied!") : instanceHex}
               </button>
             </InstanceRow>
           </dl>
@@ -476,9 +486,7 @@ function YourPalSection({
 
         {/* Equipped passives */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Equipped passives
-          </span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Equipped passives")}</span>
           {pal.passives.length > 0 ? (
             <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
               {pal.passives.map((p, i) => (
@@ -486,15 +494,13 @@ function YourPalSection({
               ))}
             </div>
           ) : (
-            <span className="text-[13px] text-ink-faint">No passives.</span>
+            <span className="text-[13px] text-ink-faint">{t("No passives.")}</span>
           )}
         </div>
 
         {/* Equipped active skills, resolved to real name + element/power/CT/desc */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Equipped active skills
-          </span>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Equipped active skills")}</span>
           {skills.length > 0 ? (
             <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
               {skills.map((s, i) => (
@@ -502,7 +508,7 @@ function YourPalSection({
               ))}
             </div>
           ) : (
-            <span className="text-[13px] text-ink-faint">Not recorded.</span>
+            <span className="text-[13px] text-ink-faint">{t("Not recorded.")}</span>
           )}
         </div>
       </div>
@@ -530,6 +536,7 @@ export default function PaldexDetail({
   /** Jump to the MOVES tab focused on a waza id — a LEARNABLE MOVES name link. */
   onOpenMove: (wazaId: string) => void;
 }) {
+  useLocale();
   const { requestSolve, setView, requestMapSpawn } = useAppState();
   const [detail, setDetail] = useState<SpeciesDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -600,9 +607,7 @@ export default function PaldexDetail({
     return (
       <div className="flex h-full flex-col">
         <DetailBar onBack={onBack} />
-        <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">
-          Loading&#8230;
-        </div>
+        <div className="flex flex-1 items-center justify-center text-sm text-ink-faint">{t("Loading…")}</div>
       </div>
     );
   }
@@ -639,18 +644,17 @@ export default function PaldexDetail({
                 </span>
                 <RarityBadge rarity={detail.stats.rarity} />
                 <span className="inline-flex items-center gap-1.5 rounded-sm border border-line bg-raised px-2 py-0.5">
-                  <span className="text-ink-faint">Size</span>
+                  <span className="text-ink-faint">{t("Size")}</span>
                   <span className="text-ink">{s.size}</span>
                 </span>
-                {detail.is_variant && <Tag tone="boss">Variant</Tag>}
+                {detail.is_variant && <Tag tone="boss">{t("Variant")}</Tag>}
                 {detail.nocturnal && (
                   <span className="inline-flex items-center gap-1 rounded-sm border border-el-dark/45 bg-el-dark/12 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-el-dark">
-                    {"\u263e"} Nocturnal
-                  </span>
+                    {"\u263e"}{t(" Nocturnal")}</span>
                 )}
               </div>
               <h1 className="font-display text-3xl font-bold tracking-wide text-ink">
-                {detail.name}
+                {tr(detail.name)}
               </h1>
               <ElementBanners elements={detail.elements} />
               {/* Gender ratio bar */}
@@ -668,9 +672,7 @@ export default function PaldexDetail({
             <button
               onClick={() => requestSolve(detail.name)}
               className="rounded-md bg-amber px-4 py-2 text-[13px] font-semibold text-abyss transition-colors hover:bg-amber-bright"
-            >
-              Solve for this pal
-            </button>
+            >{t("Solve for this pal")}</button>
           </div>
 
           {/* Your pal — save-data enrichment for the opened owned instance. */}
@@ -689,7 +691,7 @@ export default function PaldexDetail({
                 <PartnerIcon iconId={detail.partner_skill_icon} size={96} />
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <span className="font-display text-lg font-semibold tracking-wide text-amber-bright">
-                    {detail.partner_skill}
+                    {tr(detail.partner_skill)}
                   </span>
                   {(() => {
                     const levels = partnerLevels(detail);
@@ -704,7 +706,7 @@ export default function PaldexDetail({
                     return (
                       detail.partner_skill_desc && (
                         <p className="max-w-3xl whitespace-pre-line text-[13px] leading-relaxed text-ink-dim">
-                          {detail.partner_skill_desc}
+                          {tr(detail.partner_skill_desc)}
                         </p>
                       )
                     );
@@ -718,24 +720,24 @@ export default function PaldexDetail({
           <div className="grid gap-5 lg:grid-cols-2">
             <Section eyebrow="Base stats">
               <div className="flex flex-col gap-3.5">
-                <StatRow label="Health" value={s.hp} max={STAT_MAX.hp} />
-                <StatRow label="Attack" value={s.attack} max={STAT_MAX.attack} />
-                <StatRow label="Defense" value={s.defense} max={STAT_MAX.defense} />
+                <StatRow label={t("Health")} value={s.hp} max={STAT_MAX.hp} />
+                <StatRow label={t("Attack")} value={s.attack} max={STAT_MAX.attack} />
+                <StatRow label={t("Defense")} value={s.defense} max={STAT_MAX.defense} />
                 <div className="mt-0.5 flex flex-col gap-2 border-t border-line-soft pt-3">
-                  <StatValue label="Support">{s.support}</StatValue>
-                  <StatValue label="Stamina">{s.stamina}</StatValue>
-                  <StatValue label="Craft speed">{s.craft_speed}</StatValue>
+                  <StatValue label={t("Support")}>{s.support}</StatValue>
+                  <StatValue label={t("Stamina")}>{s.stamina}</StatValue>
+                  <StatValue label={t("Craft speed")}>{s.craft_speed}</StatValue>
                 </div>
               </div>
             </Section>
 
             <Section eyebrow="Movement">
               <div className="flex flex-col gap-3">
-                <MoveRow label="Walk" value={s.walk_speed} max={MOVE_MAX.walk} />
-                <MoveRow label="Run" value={s.run_speed} max={MOVE_MAX.run} />
-                <MoveRow label="Ride sprint" value={s.ride_sprint_speed} max={MOVE_MAX.sprint} />
-                <MoveRow label="Transport" value={s.transport_speed} max={MOVE_MAX.transport} />
-                <MoveRow label="Slow walk" value={s.slow_walk_speed} max={MOVE_MAX.slow} />
+                <MoveRow label={t("Walk")} value={s.walk_speed} max={MOVE_MAX.walk} />
+                <MoveRow label={t("Run")} value={s.run_speed} max={MOVE_MAX.run} />
+                <MoveRow label={t("Ride sprint")} value={s.ride_sprint_speed} max={MOVE_MAX.sprint} />
+                <MoveRow label={t("Transport")} value={s.transport_speed} max={MOVE_MAX.transport} />
+                <MoveRow label={t("Slow walk")} value={s.slow_walk_speed} max={MOVE_MAX.slow} />
               </div>
             </Section>
           </div>
@@ -748,61 +750,55 @@ export default function PaldexDetail({
                 <button
                   onClick={() => requestMapSpawn(detail.id)}
                   className="inline-flex items-center gap-1.5 rounded-sm border border-el-leaf/45 bg-el-leaf/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-el-leaf transition-colors hover:bg-el-leaf/20"
-                  title={`Show ${detail.name} spawn locations on the world map`}
+                  title={t("Show {0} spawn locations on the world map", [detail.name])}
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 3 3 5v16l6-2 6 2 6-2V3l-6 2-6-2zM9 3v16M15 5v16" />
-                  </svg>
-                  Show on map
-                </button>
+                  </svg>{t("Show on map")}</button>
               ) : undefined
             }
           >
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
               <div className="col-span-2 sm:col-span-3">
-                <FactCell label="Food">
+                <FactCell label={t("Food")}>
                   <FoodMeter amount={detail.food_amount} />
                 </FactCell>
               </div>
-              <FactCell label="Rarity">
+              <FactCell label={t("Rarity")}>
                 <span className="font-mono font-semibold uppercase tracking-wider">
                   {rarityTier(s.rarity).name}
                 </span>
               </FactCell>
-              <FactCell label="Size">
+              <FactCell label={t("Size")}>
                 <span className="font-mono font-semibold tabular-nums">{s.size}</span>
               </FactCell>
-              <FactCell label="Price">
+              <FactCell label={t("Price")}>
                 <span className="font-mono font-semibold tabular-nums text-amber">
                   {s.price.toLocaleString()}
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                  gold
-                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("gold")}</span>
               </FactCell>
-              <FactCell label="Capture rate">
+              <FactCell label={t("Capture rate")}>
                 <span className="font-mono font-semibold tabular-nums">
-                  {fmtNum(s.capture_rate_correct)}&times;
-                </span>
+                  {fmtNum(s.capture_rate_correct)}{t("×")}</span>
               </FactCell>
-              <FactCell label="EXP ratio">
+              <FactCell label={t("EXP ratio")}>
                 <span className="font-mono font-semibold tabular-nums">
-                  {fmtNum(s.exp_ratio)}&times;
-                </span>
+                  {fmtNum(s.exp_ratio)}{t("×")}</span>
               </FactCell>
-              <FactCell label="Breeding power">
+              <FactCell label={t("Breeding power")}>
                 <span className="font-mono font-semibold tabular-nums">{detail.combi_rank}</span>
               </FactCell>
               {wildCatchable && (
-                <FactCell label="Wild level">
+                <FactCell label={t("Wild level")}>
                   <span className="font-mono tabular-nums">
-                    {wildMin === wildMax ? wildMin : `${wildMin}\u2013${wildMax}`}
+                    {wildMin === wildMax ? wildMin : t("{0}–{1}", [wildMin, wildMax])}
                   </span>
                 </FactCell>
               )}
-              <FactCell label="Activity">
+              <FactCell label={t("Activity")}>
                 <span className={detail.nocturnal ? "text-el-dark" : "text-ink-dim"}>
-                  {detail.nocturnal ? "\u263e Nocturnal" : "\u2600 Diurnal"}
+                  {detail.nocturnal ? t("☾ Nocturnal") : t("☀ Diurnal")}
                 </span>
               </FactCell>
             </div>
@@ -814,7 +810,7 @@ export default function PaldexDetail({
             right={
               work.length > 0 ? (
                 <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                  {work.length} {work.length === 1 ? "job" : "jobs"}
+                  {work.length} {work.length === 1 ? t("job") : t("jobs")}
                 </span>
               ) : undefined
             }
@@ -822,13 +818,11 @@ export default function PaldexDetail({
             {work.length > 0 ? (
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {work.map((w) => (
-                  <WorkSuitChip key={w.kind} kind={w.kind} label={w.label} level={w.level} />
+                  <WorkSuitChip key={w.kind} kind={w.kind} label={tr(w.label)} level={w.level} />
                 ))}
               </div>
             ) : (
-              <p className="text-[13px] text-ink-faint">
-                No work suitability &mdash; not a base worker.
-              </p>
+              <p className="text-[13px] text-ink-faint">{t("No work suitability — not a base worker.")}</p>
             )}
           </Section>
 
@@ -838,7 +832,7 @@ export default function PaldexDetail({
               eyebrow="Drops"
               right={
                 <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                  {detail.drops.length} {detail.drops.length === 1 ? "item" : "items"}
+                  {detail.drops.length} {detail.drops.length === 1 ? t("item") : t("items")}
                 </span>
               }
             >
@@ -854,7 +848,7 @@ export default function PaldexDetail({
               eyebrow="Learnable moves"
               right={
                 <span className="font-mono text-[11px] tabular-nums text-ink-dim">
-                  {learnset.length} {learnset.length === 1 ? "move" : "moves"}
+                  {learnset.length} {learnset.length === 1 ? t("move") : t("moves")}
                 </span>
               }
             >
@@ -885,9 +879,7 @@ export default function PaldexDetail({
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-ink-faint">
-                  No guaranteed passives &mdash; every roll is random.
-                </p>
+                <p className="text-[13px] text-ink-faint">{t("No guaranteed passives — every roll is random.")}</p>
               )}
             </Section>
 
@@ -898,9 +890,7 @@ export default function PaldexDetail({
                   <button
                     onClick={() => setView("save")}
                     className="font-mono text-[10px] uppercase tracking-wider text-amber transition-colors hover:text-amber-bright"
-                  >
-                    View in Roster &rarr;
-                  </button>
+                  >{t("View in Roster →")}</button>
                 ) : undefined
               }
             >
@@ -908,34 +898,28 @@ export default function PaldexDetail({
                 <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
                   <div className="flex items-center gap-5">
                     <div className="flex flex-col">
-                      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                        Owned
-                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Owned")}</span>
                       <span className="font-mono text-2xl font-semibold tabular-nums text-ink">
                         {ownedTotal}
                       </span>
                     </div>
                     <div className="flex flex-col gap-1 font-mono text-[13px] tabular-nums">
-                      <span className="text-el-water">{"\u2642"} {owned!.male} male</span>
-                      <span className="text-el-dragon">{"\u2640"} {owned!.female} female</span>
+                      <span className="text-el-water">{"\u2642"} {owned!.male}{t(" male")}</span>
+                      <span className="text-el-dragon">{"\u2640"} {owned!.female}{t(" female")}</span>
                     </div>
                   </div>
                   <div className="flex min-w-[220px] flex-1 flex-col gap-1.5">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                      Best IVs owned
-                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Best IVs owned")}</span>
                     <div className="grid grid-cols-3 gap-4">
-                      <BestIv label="HP" value={owned!.best_ivs.hp} />
-                      <BestIv label="ATK" value={owned!.best_ivs.atk} />
-                      <BestIv label="DEF" value={owned!.best_ivs.def} />
+                      <BestIv label={t("HP")} value={owned!.best_ivs.hp} />
+                      <BestIv label={t("ATK")} value={owned!.best_ivs.atk} />
+                      <BestIv label={t("DEF")} value={owned!.best_ivs.def} />
                     </div>
                   </div>
                 </div>
               ) : (
                 <p className="text-[13px] text-ink-faint">
-                  {roster
-                    ? `You don't own any ${detail.name} yet.`
-                    : "Load a save in the Roster view to see how many you own and their best IVs."}
+                  {roster ? t("You don't own any {0} yet.", [detail.name]) : t("Load a save in the Roster view to see how many you own and their best IVs.")}
                 </p>
               )}
             </Section>
@@ -950,7 +934,7 @@ export default function PaldexDetail({
                   <input
                     className="min-w-0 flex-1 bg-transparent py-0.5 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
                     list="breed-partner-options"
-                    placeholder="Pick a second parent"
+                    placeholder={t("Pick a second parent")}
                     value={secondName}
                     onChange={(e) => {
                       const v = e.currentTarget.value;
@@ -977,13 +961,12 @@ export default function PaldexDetail({
                   ) : child?.child ? (
                     <SpeciesCell sp={child.child} onNavigate={onNavigate} size={30} />
                   ) : nameToId.get(secondName) ? (
-                    <span className="text-[12px] text-ink-faint">No known result</span>
+                    <span className="text-[12px] text-ink-faint">{t("No known result")}</span>
                   ) : (
                     <PalIcon id={null} name="child" size={30} />
                   )}
                 </div>
-                <p className="text-[12px] text-ink-faint">
-                  Choose any pal to see what it produces with {detail.name}.
+                <p className="text-[12px] text-ink-faint">{t("Choose any pal to see what it produces with ")}{tr(detail.name)}.
                 </p>
               </div>
             </Section>
@@ -996,17 +979,15 @@ export default function PaldexDetail({
 
 /** Sticky back bar shared by every detail state (loading / error / loaded). */
 function DetailBar({ onBack }: { onBack: () => void }) {
+  useLocale();
   return (
     <header className="flex shrink-0 items-center gap-3 border-b border-line bg-panel/60 px-6 py-3">
       <button
         onClick={onBack}
         className="flex items-center gap-1.5 rounded-md border border-line bg-raised px-2.5 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink"
       >
-        <span className="text-[14px] leading-none">&larr;</span> All pals
-      </button>
-      <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-        Pal-dex
-      </span>
+        <span className="text-[14px] leading-none">&larr;</span>{t(" All pals")}</button>
+      <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Pal-dex")}</span>
     </header>
   );
 }

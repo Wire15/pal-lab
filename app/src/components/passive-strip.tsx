@@ -1,3 +1,4 @@
+import { tr, useLocale } from "../i18n";
 // In-game passive-skill STRIP — the horizontal banner from Palworld's Pal Stats
 // screen: bold name on the left, the game's own rank-glyph texture (masked in
 // currentColor) on the right edge, a tier-colored border + dark fill. Rank 1
@@ -128,6 +129,7 @@ export function stripTint(band: StripBand): StripTint {
  * Rank 0 → nothing.
  */
 function RankGlyph({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) {
+  useLocale();
   if (rank === 0) return null;
   const px = size === "sm" ? 14 : 17;
   const url = passiveRankGlyphUrl(rank);
@@ -188,6 +190,7 @@ export function RankCluster({
   size?: "sm" | "md";
   className?: string;
 }) {
+  useLocale();
   return (
     <span className={`inline-flex items-center ${size === "sm" ? "gap-1" : "gap-1.5"} ${className}`}>
       {band === "worldtree" && <TreeGlyph size={size} />}
@@ -266,6 +269,7 @@ export function resolvePassive(
  * cluster anatomy from tier/rank.
  */
 export function PassiveStrip({ id, size = "md" }: { id: string; size?: "sm" | "md" }) {
+  useLocale();
   const row = usePassiveRow(id);
   const { name, rank, tier } = resolvePassive(id, row);
   const band = stripBand(rank, tier);
@@ -273,7 +277,7 @@ export function PassiveStrip({ id, size = "md" }: { id: string; size?: "sm" | "m
   const sm = size === "sm";
   return (
     <div
-      title={id}
+      title={tr(id)}
       className={`flex w-full min-w-0 items-center justify-between rounded-sm border font-semibold leading-tight ${
         sm ? "min-h-[22px] gap-2 px-2 text-[11px]" : "min-h-[30px] gap-2.5 px-3 text-[13px] tracking-wide"
       }`}
@@ -283,7 +287,7 @@ export function PassiveStrip({ id, size = "md" }: { id: string; size?: "sm" | "m
         borderLeftWidth: sm ? 2 : 3,
       }}
     >
-      <span className="min-w-0 truncate">{name}</span>
+      <span className="min-w-0 truncate">{tr(name)}</span>
       <span className="shrink-0" style={{ color: tint.accent }}>
         <RankCluster rank={rank} band={band} size={size} />
       </span>

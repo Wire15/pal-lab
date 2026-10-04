@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // The World Map view: a pannable / zoomable render of the Palworld world map
 // with a spoiler-proof fog-of-war overlay, an in-game-style POI pin system
 // (fast travel / alpha pals / effigies / bounties / custom markers / players),
@@ -47,8 +48,8 @@ import SpawnSearch, { type SpawnLegend } from "./SpawnSearch";
 type LayerKey = "MainMap" | "Tree";
 
 const LAYERS: { key: LayerKey; label: string; hint: string }[] = [
-  { key: "MainMap", label: "Palpagos", hint: "Overworld" },
-  { key: "Tree", label: "World Tree", hint: "Sanctuary" },
+  { key: "MainMap", get label() { return t("Palpagos"); }, get hint() { return t("Overworld"); } },
+  { key: "Tree", get label() { return t("World Tree"); }, get hint() { return t("Sanctuary"); } },
 ];
 
 // Zoom range: the map image is ~8192px, so a viewport-fit lands near k=0.12.
@@ -112,6 +113,7 @@ interface SpawnDot {
 }
 
 export default function MapView() {
+  useLocale();
   const {
     saveDir,
     saveSummary,
@@ -728,11 +730,9 @@ export default function MapView() {
       <header className="flex shrink-0 items-center justify-between gap-4 border-b border-line bg-panel/60 px-6 pb-4 pt-5">
         <div className="flex items-center gap-4">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              World Map
-            </div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("World Map")}</div>
             <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-              {LAYERS.find((l) => l.key === layer)?.label}
+              {tr(LAYERS.find((l) => l.key === layer)?.label)}
             </h1>
           </div>
           <div className="flex items-center overflow-hidden rounded-md border border-line">
@@ -743,14 +743,14 @@ export default function MapView() {
                   key={l.key}
                   onClick={() => setLayer(l.key)}
                   aria-pressed={active}
-                  title={l.hint}
+                  title={tr(l.hint)}
                   className={`select-none border-l border-line px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors first:border-l-0 ${
                     active
                       ? "bg-raised text-amber"
                       : "bg-panel text-ink-faint hover:bg-hover hover:text-ink-dim"
                   }`}
                 >
-                  {l.label}
+                  {tr(l.label)}
                 </button>
               );
             })}
@@ -777,7 +777,7 @@ export default function MapView() {
               <button
                 onClick={() => setFilterOpen((o) => !o)}
                 aria-expanded={filterOpen}
-                title="Filter map layers"
+                title={t("Filter map layers")}
                 className={`flex select-none items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors ${
                   filterOpen
                     ? "border-amber/50 bg-raised text-amber"
@@ -786,9 +786,7 @@ export default function MapView() {
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 5h18M6 12h12M10 19h4" />
-                </svg>
-                Filter
-              </button>
+                </svg>{t("Filter")}</button>
               {filterOpen && (
                 <>
                   <div
@@ -819,12 +817,12 @@ export default function MapView() {
               {fogAvailable && activeFog && (
                 <span
                   className="rounded-xs border border-line bg-abyss/60 px-2 py-1 font-mono text-[11px] tabular-nums text-ink-dim"
-                  title="Share of this map you have revealed"
+                  title={t("Share of this map you have revealed")}
                 >
                   <span className="text-amber">
                     {activeFog.revealed_pct.toFixed(1)}%
                   </span>{" "}
-                  <span className="text-ink-faint">revealed</span>
+                  <span className="text-ink-faint">{t("revealed")}</span>
                 </span>
               )}
               <button
@@ -832,9 +830,9 @@ export default function MapView() {
                 disabled={!fogAvailable}
                 aria-pressed={fogAvailable && fogOn}
                 title={
-                  fogAvailable
+                  tr(fogAvailable
                     ? "Toggle fog of war"
-                    : "No local map data found for this world"
+                    : "No local map data found for this world")
                 }
                 className={`select-none rounded-md border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors ${
                   !fogAvailable
@@ -843,13 +841,9 @@ export default function MapView() {
                       ? "border-amber/50 bg-raised text-amber"
                       : "border-line bg-raised text-ink-dim hover:bg-hover hover:text-ink"
                 }`}
-              >
-                Fog
-              </button>
+              >{t("Fog")}</button>
               {!fogAvailable && (
-                <span className="font-mono text-[10px] tracking-wider text-ink-faint">
-                  No local map data found for this world
-                </span>
+                <span className="font-mono text-[10px] tracking-wider text-ink-faint">{t("No local map data found for this world")}</span>
               )}
             </>
           )}
@@ -867,7 +861,7 @@ export default function MapView() {
             if (readoutYRef.current) readoutYRef.current.textContent = "\u2014";
             setSpawnHover(null);
           }}
-          aria-label={`World map, ${LAYERS.find((l) => l.key === layer)?.label} layer`}
+          aria-label={t("World map, {0} layer", [LAYERS.find((l) => l.key === layer)?.label])}
           className={`absolute inset-0 h-full w-full touch-none select-none ${
             dragging ? "cursor-grabbing" : "cursor-grab"
           }`}
@@ -903,22 +897,16 @@ export default function MapView() {
             className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full rounded-md border border-line bg-panel/95 px-2 py-1 font-mono text-[10px] leading-relaxed text-ink shadow-lg"
             style={{ left: spawnHover.sx, top: spawnHover.sy - 10 }}
           >
-            <div className="tabular-nums">
-              Lv{" "}
+            <div className="tabular-nums">{t("Lv")}{" "}
               <span className="text-amber">
-                {spawnHover.dot.lv[0] === spawnHover.dot.lv[1]
-                  ? spawnHover.dot.lv[0]
-                  : `${spawnHover.dot.lv[0]}\u2013${spawnHover.dot.lv[1]}`}
+                {spawnHover.dot.lv[0] === spawnHover.dot.lv[1] ? spawnHover.dot.lv[0] : t("{0}–{1}", [spawnHover.dot.lv[0], spawnHover.dot.lv[1]])}
               </span>
             </div>
-            <div className="tabular-nums text-ink-dim">
-              Pack{" "}
-              {spawnHover.dot.n[0] === spawnHover.dot.n[1]
-                ? spawnHover.dot.n[0]
-                : `${spawnHover.dot.n[0]}\u2013${spawnHover.dot.n[1]}`}
+            <div className="tabular-nums text-ink-dim">{t("Pack")}{" "}
+              {spawnHover.dot.n[0] === spawnHover.dot.n[1] ? spawnHover.dot.n[0] : t("{0}–{1}", [spawnHover.dot.n[0], spawnHover.dot.n[1]])}
             </div>
             <div className={spawnHover.dot.night ? "text-el-dark" : "text-ink-faint"}>
-              {spawnHover.dot.night ? "\u263e Night" : "\u2600 Anytime"}
+              {spawnHover.dot.night ? t("☾ Night") : t("☀ Anytime")}
             </div>
           </div>
         )}
@@ -928,11 +916,11 @@ export default function MapView() {
           <div className="absolute inset-0 flex items-center justify-center bg-abyss/80">
             <div className="flex flex-col items-center gap-2 font-mono text-[11px] uppercase tracking-[0.24em]">
               {dataError || imgError ? (
-                <span className="text-bad">Map failed to load</span>
+                <span className="text-bad">{t("Map failed to load")}</span>
               ) : (
                 <>
                   <span className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-amber" />
-                  <span className="text-ink-faint">Loading map…</span>
+                  <span className="text-ink-faint">{t("Loading map…")}</span>
                 </>
               )}
             </div>
@@ -942,18 +930,18 @@ export default function MapView() {
         {/* HUD: coordinate readout + zoom %. */}
         <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2">
           <div className="rounded-md border border-line bg-panel/85 px-2.5 py-1.5 font-mono text-[11px] tabular-nums">
-            <span className="text-ink-faint">X</span>{" "}
+            <span className="text-ink-faint">{t("X")}</span>{" "}
             <span ref={readoutXRef} className="text-ink">
               —
             </span>
             <span className="mx-1.5 text-line">·</span>
-            <span className="text-ink-faint">Y</span>{" "}
+            <span className="text-ink-faint">{t("Y")}</span>{" "}
             <span ref={readoutYRef} className="text-ink">
               —
             </span>
           </div>
           <div className="rounded-md border border-line bg-panel/85 px-2.5 py-1.5 font-mono text-[11px] tabular-nums text-ink-dim">
-            <span ref={zoomPctRef}>{`${Math.round(view.k * 100)}%`}</span>
+            <span ref={zoomPctRef}>{t("{0}%", [Math.round(view.k * 100)])}</span>
           </div>
         </div>
 
@@ -963,8 +951,8 @@ export default function MapView() {
             type="button"
             className={ctrlBtn}
             onClick={() => zoomBy(1.2)}
-            aria-label="Zoom in"
-            title="Zoom in"
+            aria-label={t("Zoom in")}
+            title={t("Zoom in")}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
@@ -974,8 +962,8 @@ export default function MapView() {
             type="button"
             className={ctrlBtn}
             onClick={() => zoomBy(1 / 1.2)}
-            aria-label="Zoom out"
-            title="Zoom out"
+            aria-label={t("Zoom out")}
+            title={t("Zoom out")}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M5 12h14" />
@@ -985,8 +973,8 @@ export default function MapView() {
             type="button"
             className={ctrlBtn}
             onClick={fit}
-            aria-label="Fit to view"
-            title="Fit to view"
+            aria-label={t("Fit to view")}
+            title={t("Fit to view")}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4" />

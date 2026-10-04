@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // Detail panel for a captured human NPC (merchant / hunter / villager). Humans
 // are presentation-only — they carry no species, gender, or breeding role — so
 // this card intentionally has NO species lookup, IVs, or Pal-dex link. It shows
@@ -37,6 +38,7 @@ export function HumanPortrait({
   size?: number;
   shape?: "circle" | "rounded";
 }) {
+  useLocale();
   const info = getHuman(id);
   const round = shape === "circle" ? "rounded-full" : "rounded-md";
   return (
@@ -47,7 +49,7 @@ export function HumanPortrait({
       {info ? (
         <img
           src={humanIconUrl(info)}
-          alt=""
+          alt={t("")}
           width={size}
           height={size}
           draggable={false}
@@ -73,11 +75,11 @@ export function HumanPortrait({
 
 /** One work-suitability row: label + a compact "Lv N" numeral (icon-free). */
 function WorkRow({ kind, level }: { kind: string; level: number }) {
+  useLocale();
   return (
     <div className="flex items-center justify-between gap-3 py-0.5">
       <span className="text-[13px] text-ink-dim">{WORK_LABEL[kind] ?? kind}</span>
-      <span className="font-mono text-[12px] font-semibold tabular-nums text-amber">
-        Lv {level}
+      <span className="font-mono text-[12px] font-semibold tabular-nums text-amber">{t("Lv ")}{level}
       </span>
     </div>
   );
@@ -85,10 +87,11 @@ function WorkRow({ kind, level }: { kind: string; level: number }) {
 
 /** One stat cell (HP / ATK / DEF). */
 function StatCell({ label, value }: { label: string; value: number }) {
+  useLocale();
   return (
     <div className="flex flex-col items-center gap-0.5">
       <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        {label}
+        {tr(label)}
       </span>
       <span className="font-mono text-[15px] font-semibold tabular-nums text-ink">
         {value}
@@ -110,6 +113,7 @@ export function HumanCard({
   pal: OwnedPal | null;
   onClose: () => void;
 }) {
+  useLocale();
   useEffect(() => {
     if (!pal) return;
     const onKey = (e: KeyboardEvent) => {
@@ -140,23 +144,20 @@ export function HumanCard({
         <div className="flex items-start gap-4 border-b border-line px-5 py-4">
           <HumanPortrait id={pal.character_id} size={64} />
           <div className="min-w-0 flex-1">
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              Captured human
-            </div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("Captured human")}</div>
             <h2
               id="human-card-title"
               className="mt-0.5 truncate font-display text-lg font-bold tracking-wide text-ink"
             >
-              {name}
+              {tr(name)}
             </h2>
             <div className="mt-0.5 truncate text-[12px] text-ink-dim">{faction}</div>
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-              <Tag>Lv {pal.level}</Tag>
-              {info?.bounty && <Tag tone="amber">Bounty</Tag>}
+              <Tag>{t("Lv ")}{pal.level}</Tag>
+              {info?.bounty && <Tag tone="amber">{t("Bounty")}</Tag>}
               {info?.bounty && info.price != null && (
                 <span className="font-mono text-[11px] tabular-nums text-ink-faint">
-                  {info.price.toLocaleString()}g
-                </span>
+                  {info.price.toLocaleString()}{t("g")}</span>
               )}
               {pal.nickname && (
                 <span className="truncate font-mono text-[11px] text-ink-faint">
@@ -170,18 +171,16 @@ export function HumanCard({
         {/* Stats — omitted entirely for an unknown human (honest empty). */}
         {info && (
           <div className="grid grid-cols-3 gap-2 border-b border-line px-5 py-3">
-            <StatCell label="HP" value={info.stats.hp} />
-            <StatCell label="ATK" value={info.stats.attack} />
-            <StatCell label="DEF" value={info.stats.defense} />
+            <StatCell label={t("HP")} value={info.stats.hp} />
+            <StatCell label={t("ATK")} value={info.stats.attack} />
+            <StatCell label={t("DEF")} value={info.stats.defense} />
           </div>
         )}
 
         {/* Work suitability — nonzero rows only; omitted when none. */}
         {work.length > 0 && (
           <div className="px-5 py-3">
-            <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-faint">
-              Work suitability
-            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-faint">{t("Work suitability")}</div>
             <div className="mt-1.5">
               {work.map(([kind, lv]) => (
                 <WorkRow key={kind} kind={kind} level={lv} />
@@ -191,9 +190,7 @@ export function HumanCard({
         )}
 
         {/* Footer: the load-bearing reminder that humans never breed. */}
-        <div className="border-t border-line bg-raised/40 px-5 py-2.5 text-center font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          Captured human — cannot breed
-        </div>
+        <div className="border-t border-line bg-raised/40 px-5 py-2.5 text-center font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Captured human — cannot breed")}</div>
       </div>
     </div>
   );

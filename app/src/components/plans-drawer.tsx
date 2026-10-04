@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The PLANS drawer: a right-slide panel listing saved breeding plans, with
 // load / rename / delete / compare-two per row plus an import-code field. The
 // saved-plan localStorage layer (contract `pal-lab.savedPlans`, cap 50, LRU
@@ -45,9 +46,9 @@ export interface SavedPlan {
 
 /** Default plan name: "<Target> - <steps> steps - <time>". */
 export function defaultPlanName(targetName: string, plan: BreedingPlan): string {
-  return `${targetName} - ${plan.total_steps} steps - ${formatDuration(
+  return t("{0} - {1} steps - {2}", [targetName, plan.total_steps, formatDuration(
     plan.total_time_secs,
-  )}`;
+  )]);
 }
 
 function readAll(): SavedPlan[] {
@@ -159,16 +160,16 @@ function relTime(ms: number): string {
   const s = Math.max(0, Math.round((Date.now() - ms) / 1000));
   if (s < 45) return "just now";
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return t("{0}m ago", [m]);
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
+  if (h < 24) return t("{0}h ago", [h]);
   const d = Math.floor(h / 24);
-  if (d < 7) return `${d}d ago`;
+  if (d < 7) return t("{0}d ago", [d]);
   const w = Math.floor(d / 7);
-  if (w < 5) return `${w}w ago`;
+  if (w < 5) return t("{0}w ago", [w]);
   const mo = Math.floor(d / 30);
-  if (mo < 12) return `${mo}mo ago`;
-  return `${Math.floor(d / 365)}y ago`;
+  if (mo < 12) return t("{0}mo ago", [mo]);
+  return t("{0}y ago", [Math.floor(d / 365)]);
 }
 
 /** Breed-step probabilities of a plan tree, root-first (the odds chain). */
@@ -235,6 +236,7 @@ function StatRow({
   aBetter: boolean;
   bBetter: boolean;
 }) {
+  useLocale();
   const cell = (better: boolean) =>
     `text-right font-mono text-[12px] tabular-nums ${
       better ? "text-good" : "text-ink"
@@ -242,7 +244,7 @@ function StatRow({
   return (
     <>
       <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-        {label}
+        {tr(label)}
       </span>
       <span className={cell(aBetter)}>{a}</span>
       <span className={cell(bBetter)}>{b}</span>
@@ -252,9 +254,10 @@ function StatRow({
 
 /** Per-step odds chain: one pill per breed step, colored by `probBand`. */
 function OddsChain({ root }: { root: PlanNode }) {
+  useLocale();
   const probs = breedProbs(root);
   if (probs.length === 0)
-    return <span className="text-[11px] text-ink-faint">no breed steps</span>;
+    return <span className="text-[11px] text-ink-faint">{t("no breed steps")}</span>;
   return (
     <div className="flex flex-wrap gap-1">
       {probs.map((p, i) => {
@@ -281,6 +284,7 @@ function ComparePanel({
   b: SavedPlan;
   onClear: () => void;
 }) {
+  useLocale();
   const pa = savedActivePlan(a);
   const pb = savedActivePlan(b);
   if (!pa || !pb) return null;
@@ -291,16 +295,12 @@ function ComparePanel({
   return (
     <div className="border-b border-line bg-abyss/40 px-4 py-3">
       <div className="mb-2 flex items-center justify-between">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber">
-          Compare
-        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber">{t("Compare")}</span>
         <button
           type="button"
           onClick={onClear}
           className="font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:text-ink-dim"
-        >
-          Clear
-        </button>
+        >{t("Clear")}</button>
       </div>
       <div className="grid grid-cols-[auto_1fr_1fr] items-center gap-x-3 gap-y-2">
         {/* Header row: plan names. */}
@@ -313,28 +313,28 @@ function ComparePanel({
         </span>
 
         <StatRow
-          label="Time"
+          label={t("Time")}
           a={formatDuration(pa.total_time_secs)}
           b={formatDuration(pb.total_time_secs)}
           aBetter={pa.total_time_secs < pb.total_time_secs}
           bBetter={pb.total_time_secs < pa.total_time_secs}
         />
         <StatRow
-          label="Steps"
+          label={t("Steps")}
           a={String(pa.total_steps)}
           b={String(pb.total_steps)}
           aBetter={pa.total_steps < pb.total_steps}
           bBetter={pb.total_steps < pa.total_steps}
         />
         <StatRow
-          label="Wild"
+          label={t("Wild")}
           a={String(pa.total_wild_pals)}
           b={String(pb.total_wild_pals)}
           aBetter={pa.total_wild_pals < pb.total_wild_pals}
           bBetter={pb.total_wild_pals < pa.total_wild_pals}
         />
         <StatRow
-          label="Overall"
+          label={t("Overall")}
           a={`${(oddsA * 100).toFixed(oddsA < 0.1 ? 1 : 0)}%`}
           b={`${(oddsB * 100).toFixed(oddsB < 0.1 ? 1 : 0)}%`}
           aBetter={oddsA > oddsB}
@@ -352,10 +352,7 @@ function ComparePanel({
           <OddsChain root={pb.root} />
         </div>
       </div>
-      <p className="mt-2.5 text-[10.5px] leading-relaxed text-ink-faint">
-        Lower time/steps/wild and higher overall odds are tinted green per row.
-        No winner is picked &mdash; a faster plan may carry worse odds.
-      </p>
+      <p className="mt-2.5 text-[10.5px] leading-relaxed text-ink-faint">{t("Lower time/steps/wild and higher overall odds are tinted green per row. No winner is picked — a faster plan may carry worse odds.")}</p>
     </div>
   );
 }
@@ -387,6 +384,7 @@ export function PlansDrawer({
   onImport,
   currentPals,
 }: PlansDrawerProps) {
+  useLocale();
   const [plans, setPlans] = useState<SavedPlan[]>([]);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
@@ -479,7 +477,7 @@ export function PlansDrawer({
       />
       <aside
         role="dialog"
-        aria-label="Saved breeding plans"
+        aria-label={t("Saved breeding plans")}
         aria-hidden={!open}
         className={`fixed right-0 top-0 z-50 flex h-full w-[400px] max-w-full flex-col border-l border-line bg-panel transition-transform duration-200 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
@@ -488,17 +486,13 @@ export function PlansDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-line bg-raised px-4 py-3">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-amber">
-              Plans
-            </div>
-            <h2 className="font-display text-base font-bold tracking-wide text-ink">
-              Saved plans
-            </h2>
+            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-amber">{t("Plans")}</div>
+            <h2 className="font-display text-base font-bold tracking-wide text-ink">{t("Saved plans")}</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close plans drawer"
+            aria-label={t("Close plans drawer")}
             className="flex h-8 w-8 items-center justify-center rounded-md text-ink-dim transition-colors hover:bg-hover hover:text-ink"
           >
             <CloseGlyph />
@@ -507,9 +501,7 @@ export function PlansDrawer({
 
         {/* Import code */}
         <div className="border-b border-line px-4 py-3">
-          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Import plan code
-          </label>
+          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Import plan code")}</label>
           <div className="flex gap-2">
             <input
               value={importCode}
@@ -520,7 +512,7 @@ export function PlansDrawer({
               onKeyDown={(e) => {
                 if (e.key === "Enter") doImport();
               }}
-              placeholder={"Paste a plan code\u2026"}
+              placeholder={tr("Paste a plan code\u2026")}
               className="min-w-0 flex-1 rounded-md border border-line bg-abyss px-2.5 py-1.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-amber/60 focus:outline-none"
             />
             <button
@@ -528,15 +520,10 @@ export function PlansDrawer({
               onClick={doImport}
               disabled={!importCode.trim()}
               className="shrink-0 rounded-md bg-raised border border-line px-3 py-1.5 text-[12px] font-medium text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Import
-            </button>
+            >{t("Import")}</button>
           </div>
           {importErr && <p className="mt-1.5 text-[11px] text-bad">{importErr}</p>}
-          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-faint">
-            Imported codes re-solve against your current save &mdash; the tree
-            reflects the pals you own now.
-          </p>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-ink-faint">{t("Imported codes re-solve against your current save — the tree reflects the pals you own now.")}</p>
         </div>
 
         {/* Compare panel */}
@@ -552,13 +539,8 @@ export function PlansDrawer({
         <div className="min-h-0 flex-1 overflow-auto">
           {plans.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 px-8 text-center">
-              <div className="font-display text-sm text-ink-dim">
-                No saved plans yet
-              </div>
-              <p className="text-[12px] leading-relaxed text-ink-faint">
-                Solve a breeding path, then hit <span className="text-ink-dim">Save plan</span>{" "}
-                to keep it here for later or to compare options.
-              </p>
+              <div className="font-display text-sm text-ink-dim">{t("No saved plans yet")}</div>
+              <p className="text-[12px] leading-relaxed text-ink-faint">{t("Solve a breeding path, then hit ")}<span className="text-ink-dim">{t("Save plan")}</span>{" "}{t("to keep it here for later or to compare options.")}</p>
             </div>
           ) : (
             <ul className="flex flex-col">
@@ -595,7 +577,7 @@ export function PlansDrawer({
                       checked={selected}
                       disabled={compareDisabled}
                       onChange={() => toggleCompare(p.id)}
-                      aria-label={`Compare ${p.name}`}
+                      aria-label={t("Compare {0}", [p.name])}
                       className="mt-1 h-3.5 w-3.5 shrink-0 accent-amber disabled:opacity-30"
                     />
                     <PalIcon
@@ -625,7 +607,7 @@ export function PlansDrawer({
                           {mismatch && (
                             <span
                               className="shrink-0 text-warn"
-                              title="Saved against a different save folder"
+                              title={t("Saved against a different save folder")}
                             >
                               <WarnGlyph />
                             </span>
@@ -639,12 +621,10 @@ export function PlansDrawer({
                               {formatDuration(plan.total_time_secs)}
                             </span>
                             <span>
-                              <span className="text-ink">{plan.total_steps}</span> steps
-                            </span>
+                              <span className="text-ink">{plan.total_steps}</span>{t(" steps")}</span>
                             {plan.total_wild_pals > 0 && (
                               <span>
-                                <span className="text-el-leaf">{plan.total_wild_pals}</span> wild
-                              </span>
+                                <span className="text-el-leaf">{plan.total_wild_pals}</span>{t(" wild")}</span>
                             )}
                           </>
                         )}
@@ -653,16 +633,15 @@ export function PlansDrawer({
                       {report && (
                         <div className="mt-1 flex items-center gap-1.5 font-mono text-[10.5px]">
                           <span className="text-good">
-                            {report.doneSteps}/{report.totalSteps} steps
-                          </span>
+                            {report.doneSteps}/{report.totalSteps}{t(" steps")}</span>
                           <span className="text-ink-faint">&middot; {pct}%</span>
                           {report.stale && (
                             <span
                               className="inline-flex items-center gap-1 text-amber"
-                              title="An owned parent is gone from your save with no substitute"
+                              title={t("An owned parent is gone from your save with no substitute")}
                             >
                               <WarnGlyph />
-                              <span className="uppercase tracking-wider">stale</span>
+                              <span className="uppercase tracking-wider">{t("stale")}</span>
                             </span>
                           )}
                         </div>
@@ -672,9 +651,7 @@ export function PlansDrawer({
                           type="button"
                           onClick={() => onLoad(p)}
                           className="rounded-md bg-amber/10 border border-amber/40 px-2.5 py-1 text-[11px] font-medium text-amber transition-colors hover:bg-amber/20"
-                        >
-                          Load
-                        </button>
+                        >{t("Load")}</button>
                         <button
                           type="button"
                           onClick={() => {
@@ -688,13 +665,13 @@ export function PlansDrawer({
                               : "border-line bg-raised text-ink-dim hover:bg-hover hover:text-ink"
                           }`}
                         >
-                          {p.tracking ? "Untrack" : "Track"}
+                          {p.tracking ? t("Untrack") : t("Track")}
                         </button>
                         <button
                           type="button"
                           onClick={() => startRename(p)}
-                          aria-label="Rename plan"
-                          title="Rename"
+                          aria-label={t("Rename plan")}
+                          title={t("Rename")}
                           className={actionBtn}
                         >
                           <PencilGlyph />
@@ -702,8 +679,8 @@ export function PlansDrawer({
                         <button
                           type="button"
                           onClick={() => remove(p.id)}
-                          aria-label="Delete plan"
-                          title="Delete"
+                          aria-label={t("Delete plan")}
+                          title={t("Delete")}
                           className={`${actionBtn} hover:border-bad/40 hover:text-bad`}
                         >
                           <TrashGlyph />

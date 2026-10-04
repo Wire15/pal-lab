@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // Element-type rendering: the 9 canonical Palworld types as compact,
 // self-tinted badge chips. The bundled icons (public/elements/<Kind>.png) are
 // already full-color type tiles, so the icon carries the categorical color; the
@@ -19,8 +20,8 @@ export function ElementIcon({
   return (
     <img
       src={elementIconUrl(element)}
-      alt={element}
-      title={element}
+      alt={tr(element)}
+      title={tr(element)}
       width={size}
       height={size}
       loading="lazy"
@@ -46,6 +47,7 @@ export function ElementChip({
   label?: boolean;
   size?: number;
 }) {
+  useLocale();
   if (!label) return <ElementIcon element={element} size={size} />;
   const key = elementTokenKey(element);
   const color = key ? `var(--color-el-${key})` : "var(--color-ink-dim)";
@@ -56,7 +58,7 @@ export function ElementChip({
         className="font-mono text-[10px] font-semibold uppercase leading-none tracking-wider"
         style={{ color }}
       >
-        {element}
+        {tr(element)}
       </span>
     </span>
   );
@@ -78,11 +80,12 @@ export function ElementBadges({
   size?: number;
   className?: string;
 }) {
+  useLocale();
   if (!elements || elements.length === 0) return null;
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       {elements.map((e) => (
-        <ElementChip key={e} element={e} label={label} size={size} />
+        <ElementChip key={e} element={e} label={tr(label)} size={size} />
       ))}
     </div>
   );
@@ -104,6 +107,7 @@ export function ElementBanner({
   element: string;
   size?: number;
 }) {
+  useLocale();
   const key = elementTokenKey(element);
   const color = key ? `var(--color-el-${key})` : "var(--color-ink-dim)";
   const glyph = elementGlyphUrl(element);
@@ -118,7 +122,7 @@ export function ElementBanner({
       {glyph ? (
         <img
           src={glyph}
-          alt=""
+          alt={t("")}
           width={size}
           height={size}
           loading="lazy"
@@ -138,7 +142,7 @@ export function ElementBanner({
         className="font-display text-[12px] font-semibold uppercase tracking-[0.12em]"
         style={{ color }}
       >
-        {element}
+        {tr(element)}
       </span>
     </span>
   );
@@ -154,6 +158,7 @@ export function ElementBanners({
   size?: number;
   className?: string;
 }) {
+  useLocale();
   if (!elements || elements.length === 0) return null;
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>

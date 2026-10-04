@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // IV Lab — the stat-breeding companion to the passive Solver. The passive
 // Solver asks "which pals carry these passives"; the IV Lab asks "how do I hit
 // these stat floors, from which parents, with which cake". Same `solve` backend
@@ -41,11 +42,11 @@ const STAT_LABEL: Record<StatKey, string> = {
 };
 
 const CAKES: { token: CakeToken; label: string }[] = [
-  { token: "normal", label: "None" },
-  { token: "mushroom", label: "Mushroom" },
-  { token: "vegetable", label: "Vegetable" },
-  { token: "deluxe_vegetable", label: "Deluxe Veg" },
-  { token: "special", label: "Special" },
+  { token: "normal", get label() { return t("None"); } },
+  { token: "mushroom", get label() { return t("Mushroom"); } },
+  { token: "vegetable", get label() { return t("Vegetable"); } },
+  { token: "deluxe_vegetable", get label() { return t("Deluxe Veg"); } },
+  { token: "special", get label() { return t("Special"); } },
 ];
 
 /** Cakes that raise a bred egg's IV floor by +5 (TalentBonusMax); mirrors the
@@ -90,6 +91,7 @@ function IvSlider({
   value: number;
   onChange: (v: number) => void;
 }) {
+  useLocale();
   const active = value > 0;
   return (
     <div className="flex flex-col gap-1">
@@ -102,7 +104,7 @@ function IvSlider({
             active ? QUALITY_TEXT[ivBand(value)] : "text-ink-faint"
           }`}
         >
-          {active ? value : "any"}
+          {active ? value : t("any")}
         </span>
       </div>
       <input
@@ -111,7 +113,7 @@ function IvSlider({
         max={100}
         value={value}
         onChange={(e) => onChange(Number(e.currentTarget.value))}
-        aria-label={`${STAT_LABEL[stat]} minimum IV`}
+        aria-label={t("{0} minimum IV", [STAT_LABEL[stat]])}
         className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-line accent-amber"
       />
     </div>
@@ -133,6 +135,7 @@ function DonorRow({
   showSum: boolean;
   onOpen: () => void;
 }) {
+  useLocale();
   const g = genderView(pal.gender);
   return (
     <PalHoverCard speciesId={pal.character_id} pal={pal}>
@@ -144,13 +147,12 @@ function DonorRow({
         <PalIcon id={pal.character_id} name={name} size={26} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="truncate text-[12.5px] text-ink">{name}</span>
-            <span className={`text-[11px] ${g.className}`} title={g.label}>
+            <span className="truncate text-[12.5px] text-ink">{tr(name)}</span>
+            <span className={`text-[11px] ${g.className}`} title={tr(g.label)}>
               {g.glyph}
             </span>
           </div>
-          <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-            Lv {pal.level}
+          <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Lv ")}{pal.level}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1.5 font-mono tabular-nums">
@@ -172,9 +174,7 @@ function DonorRow({
           })}
           {showSum && (
             <span className="flex w-8 flex-col items-center leading-none text-amber">
-              <span className="text-[8px] uppercase tracking-wide text-ink-faint">
-                sum
-              </span>
+              <span className="text-[8px] uppercase tracking-wide text-ink-faint">{t("sum")}</span>
               <span className="text-[11px] font-semibold">{ivSum(pal)}</span>
             </span>
           )}
@@ -185,6 +185,7 @@ function DonorRow({
 }
 
 export default function IvLab() {
+  useLocale();
   const { saveDir, saveSummary, requestDex, playerScope, ivLabSession, setIvLabSession } =
     useAppState();
   const { setup, cake, setCake } = useBreedingSetup();
@@ -388,43 +389,33 @@ export default function IvLab() {
       <aside className="flex w-80 shrink-0 flex-col gap-4 overflow-auto border-r border-line bg-panel px-5 pb-6 pt-5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">
-              IV Lab
-            </div>
-            <h1 className="font-display text-xl font-bold tracking-wide text-ink">
-              Stat breeding
-            </h1>
+            <div className="font-mono text-[11px] uppercase tracking-[0.24em] text-amber">{t("IV Lab")}</div>
+            <h1 className="font-display text-xl font-bold tracking-wide text-ink">{t("Stat breeding")}</h1>
           </div>
           <div className="mt-0.5 flex shrink-0 items-center gap-1.5">
             <button
               type="button"
               onClick={() => setHistoryOpen(true)}
-              title="Recent IV lines — reopen a previous solve"
+              title={t("Recent IV lines — reopen a previous solve")}
               className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-amber/50 hover:text-amber focus-visible:border-amber/50 focus-visible:text-amber"
-            >
-              History
-            </button>
+            >{t("History")}</button>
             <button
               type="button"
               onClick={resetForm}
-              title="Clear target, IV floors and passives (keeps breeding setup & cake)"
+              title={t("Clear target, IV floors and passives (keeps breeding setup & cake)")}
               className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-faint transition-colors hover:border-bad/50 hover:text-bad focus-visible:border-bad/50 focus-visible:text-bad"
-            >
-              Reset
-            </button>
+            >{t("Reset")}</button>
           </div>
         </div>
 
         <label className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Target species
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Target species")}</span>
           <div className="flex items-center gap-2 rounded-md border border-line bg-abyss px-2 py-1 focus-within:border-amber/60">
             <PalIcon id={targetId} name={species || "target"} size={26} />
             <input
               className="min-w-0 flex-1 bg-transparent py-0.5 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
               list="ivlab-species-options"
-              placeholder="e.g. Anubis"
+              placeholder={t("e.g. Anubis")}
               value={species}
               onChange={(e) => setSpecies(e.currentTarget.value)}
             />
@@ -437,9 +428,7 @@ export default function IvLab() {
         </label>
 
         <div className="flex flex-col gap-2.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Target IVs
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Target IVs")}</span>
           {STAT_KEYS.map((k) => (
             <IvSlider
               key={k}
@@ -449,10 +438,7 @@ export default function IvLab() {
             />
           ))}
           {!anyThreshold && (
-            <p className="text-[12px] leading-relaxed text-ink-faint">
-              Set at least one stat floor above 0 &mdash; that&rsquo;s what the IV
-              Lab optimizes for. All zero solves like a plain passive plan.
-            </p>
+            <p className="text-[12px] leading-relaxed text-ink-faint">{t("Set at least one stat floor above 0 — that’s what the IV Lab optimizes for. All zero solves like a plain passive plan.")}</p>
           )}
         </div>
 
@@ -465,9 +451,7 @@ export default function IvLab() {
         />
 
         <label className="flex items-center gap-2 text-[13px] text-ink-dim">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Max steps
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Max steps")}</span>
           <input
             type="number"
             min={1}
@@ -480,13 +464,11 @@ export default function IvLab() {
         </label>
 
         <div className="flex flex-col gap-1.5">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-            Breeding cake
-          </span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Breeding cake")}</span>
           <div
             className="grid grid-cols-3 gap-1"
             role="radiogroup"
-            aria-label="Breeding cake fed at the farm"
+            aria-label={t("Breeding cake fed at the farm")}
           >
             {CAKES.map((c) => {
               const on = cake === c.token;
@@ -503,33 +485,23 @@ export default function IvLab() {
                       : "border-line bg-abyss text-ink-dim hover:bg-hover hover:text-ink"
                   }`}
                 >
-                  {c.label}
+                  {tr(c.label)}
                 </button>
               );
             })}
           </div>
           {floorCovered ? (
-            <p className="text-[12px] leading-relaxed text-good">
-              This cake guarantees a +{IV_FLOOR} IV floor, so your 1&ndash;
-              {IV_FLOOR} thresholds are already covered &mdash; the solver drops
-              them.
-            </p>
+            <p className="text-[12px] leading-relaxed text-good">{t("This cake guarantees a +")}{IV_FLOOR}{t(" IV floor, so your 1–")}{IV_FLOOR}{t(" thresholds are already covered — the solver drops them.")}</p>
           ) : cake === "normal" && anyThreshold ? (
-            <p className="text-[12px] leading-relaxed text-ink-faint">
-              No cake &mdash; every IV is inherited or rolled from scratch.{" "}
+            <p className="text-[12px] leading-relaxed text-ink-faint">{t("No cake — every IV is inherited or rolled from scratch.")}{" "}
               <button
                 type="button"
                 onClick={() => setCake("mushroom")}
                 className="font-medium text-amber underline decoration-amber/40 underline-offset-2 transition-colors hover:text-amber-bright"
-              >
-                Mushroom adds a +{IV_FLOOR} IV floor &mdash; use it
-              </button>
+              >{t("Mushroom adds a +")}{IV_FLOOR}{t(" IV floor — use it")}</button>
             </p>
           ) : (
-            <p className="text-[12px] leading-relaxed text-ink-faint">
-              Mushroom &amp; Deluxe Veg add a +{IV_FLOOR} IV floor; Vegetable
-              doubles eggs; Special forces 4 passive inherits.
-            </p>
+            <p className="text-[12px] leading-relaxed text-ink-faint">{t("Mushroom & Deluxe Veg add a +")}{IV_FLOOR}{t(" IV floor; Vegetable doubles eggs; Special forces 4 passive inherits.")}</p>
           )}
         </div>
 
@@ -547,19 +519,15 @@ export default function IvLab() {
               }`}
             >
               &rsaquo;
-            </span>
-            Advanced
-          </button>
+            </span>{t("Advanced")}</button>
           {showAdvanced && (
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                  IV model
-                </span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("IV model")}</span>
                 <div
                   className="flex overflow-hidden rounded-md border border-line"
                   role="radiogroup"
-                  aria-label="IV inherit-count model"
+                  aria-label={t("IV inherit-count model")}
                 >
                   {(["empirical", "cdo"] as const).map((m) => {
                     const on = ivModel === m;
@@ -587,19 +555,14 @@ export default function IvLab() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                  Farm setup
-                </span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">{t("Farm setup")}</span>
                 <div className="flex flex-col gap-0.5 rounded-md border border-line bg-abyss px-2.5 py-2 font-mono text-[11px] tabular-nums text-ink-dim">
-                  <SetupLine label="Farm speed" value={`+${Math.round(setup.farm_speed_bonus * 100)}%`} />
-                  <SetupLine label="Incubation" value={`-${Math.round(setup.incubation_reduction * 100)}%`} />
-                  <SetupLine label="Extra egg" value={`+${Math.round(setup.extra_egg_chance * 100)}%`} />
-                  <SetupLine label="Hatch time" value={`${setup.egg_hatch_hours}h`} />
+                  <SetupLine label={t("Farm speed")} value={`+${Math.round(setup.farm_speed_bonus * 100)}%`} />
+                  <SetupLine label={t("Incubation")} value={`-${Math.round(setup.incubation_reduction * 100)}%`} />
+                  <SetupLine label={t("Extra egg")} value={`+${Math.round(setup.extra_egg_chance * 100)}%`} />
+                  <SetupLine label={t("Hatch time")} value={`${setup.egg_hatch_hours}h`} />
                 </div>
-                <p className="text-[12px] leading-relaxed text-ink-faint">
-                  Shared with the Solver &mdash; edit boosts in its Breeding
-                  Setup panel.
-                </p>
+                <p className="text-[12px] leading-relaxed text-ink-faint">{t("Shared with the Solver — edit boosts in its Breeding Setup panel.")}</p>
               </div>
             </div>
           )}
@@ -610,12 +573,10 @@ export default function IvLab() {
           onClick={runSolve}
           disabled={!canSolve}
         >
-          {solving ? "Solving\u2026" : "Solve IV line"}
+          {solving ? t("Solving…") : t("Solve IV line")}
         </button>
         {!saveDir.trim() && (
-          <p className="-mt-2 text-[12px] leading-relaxed text-ink-faint">
-            Load a save from the sidebar to scan donors and solve.
-          </p>
+          <p className="-mt-2 text-[12px] leading-relaxed text-ink-faint">{t("Load a save from the sidebar to scan donors and solve.")}</p>
         )}
       </aside>
 
@@ -623,24 +584,18 @@ export default function IvLab() {
       {showDonors && (
         <aside className="flex w-72 shrink-0 flex-col gap-3 overflow-auto border-r border-line bg-panel/60 px-4 pb-6 pt-5">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber">
-              Best donors
-            </div>
-            <p className="mt-0.5 text-[12px] leading-relaxed text-ink-faint">
-              Your strongest owned parents for {species || "this line"}
-              {plans && plans.length > 0 ? " and its plan kin" : ""}.
+            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber">{t("Best donors")}</div>
+            <p className="mt-0.5 text-[12px] leading-relaxed text-ink-faint">{t("Your strongest owned parents for ")}{species || t("this line")}
+              {plans && plans.length > 0 ? t(" and its plan kin") : ""}.
             </p>
           </div>
           {donorGroups.length === 0 ? (
-            <div className="rounded-md border border-line bg-panel px-3 py-4 text-[12px] leading-relaxed text-ink-faint">
-              No owned {species || "pals"} yet. Catch or breed one to seed the
-              line, then its best IVs show up here.
-            </div>
+            <div className="rounded-md border border-line bg-panel px-3 py-4 text-[12px] leading-relaxed text-ink-faint">{t("No owned ")}{species || t("pals")}{t(" yet. Catch or breed one to seed the line, then its best IVs show up here.")}</div>
           ) : (
             donorGroups.map((group) => (
               <div key={group.key} className="flex flex-col gap-1.5">
                 <div className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                  {group.label}
+                  {tr(group.label)}
                 </div>
                 {group.pals.map((pal) => (
                   <DonorRow
@@ -667,9 +622,7 @@ export default function IvLab() {
         ) : (
           <>
             {cancelled && !plans && (
-              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">
-                Solve cancelled.
-              </div>
+              <div className="m-6 rounded-md border border-line bg-raised px-3 py-2 text-[12px] text-ink-dim">{t("Solve cancelled.")}</div>
             )}
         {error && (
           <div className="m-6 rounded-md border border-bad/40 bg-bad/10 px-4 py-3 text-sm text-bad">
@@ -681,12 +634,9 @@ export default function IvLab() {
           <NoPathPanel
             diagnosis={diagnosis}
             maxSteps={maxSteps}
-            title="No line found"
+            title={t("No line found")}
             fallback={
-              <p className="max-w-xs text-sm text-ink-faint">
-                No breeding chain reaches those IV floors within {maxSteps} steps.
-                Loosen a threshold, raise max steps, or try a cake with an IV floor.
-              </p>
+              <p className="max-w-xs text-sm text-ink-faint">{t("No breeding chain reaches those IV floors within ")}{maxSteps}{t(" steps. Loosen a threshold, raise max steps, or try a cake with an IV floor.")}</p>
             }
           />
         )}
@@ -696,16 +646,14 @@ export default function IvLab() {
             {banners}
             {searchTruncated && (
               <div className="border-b border-line-soft bg-abyss/40 px-4 py-1.5">
-                <span className="font-mono text-[11px] tabular-nums text-ink-faint">
-                  search truncated at time budget &mdash; plans shown may not be optimal
-                </span>
+                <span className="font-mono text-[11px] tabular-nums text-ink-faint">{t("search truncated at time budget — plans shown may not be optimal")}</span>
               </div>
             )}
             <div className="flex items-center gap-3 border-b border-line bg-panel px-4 py-2">
               <div
                 className="flex flex-wrap items-center gap-1"
                 role="tablist"
-                aria-label="Breeding lines"
+                aria-label={t("Breeding lines")}
               >
                 {plans.map((_plan, i) => {
                   const on = i === activePlan;
@@ -721,16 +669,13 @@ export default function IvLab() {
                           ? "border-amber/50 bg-amber/10 text-amber"
                           : "border-line bg-panel text-ink-dim hover:bg-hover hover:text-ink"
                       }`}
-                    >
-                      Line {i + 1}
+                    >{t("Line ")}{i + 1}
                       {i === fastestIdx && (
                         <span
                           className={`rounded-sm px-1 py-0.5 text-[9px] font-semibold uppercase leading-none tracking-wider ${
                             on ? "bg-amber/20 text-amber" : "bg-raised text-amber/80"
                           }`}
-                        >
-                          Fastest
-                        </span>
+                        >{t("Fastest")}</span>
                       )}
                     </button>
                   );
@@ -746,26 +691,20 @@ export default function IvLab() {
                 </span>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-dim">
                   <span>
-                    <span className="text-ink">~{expectedEggs(active.root, eggMult)}</span>{" "}
-                    eggs
-                  </span>
+                    <span className="text-ink">~{expectedEggs(active.root, eggMult)}</span>{" "}{t("eggs")}</span>
                   <span className="text-line">|</span>
                   <span>
-                    <span className="text-ink">{active.total_steps}</span> steps
-                  </span>
+                    <span className="text-ink">{active.total_steps}</span>{t(" steps")}</span>
                   {active.cake && active.cake !== "Normal" && (
                     <>
                       <span className="text-line">|</span>
                       <span>
                         <span className="text-ink">{active.cake_count}</span>{" "}
-                        {active.cake} cake
-                      </span>
+                        {active.cake}{t(" cake")}</span>
                     </>
                   )}
                 </div>
-                <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                  Estimates &middot; {ivModel} IV model
-                </span>
+                <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Estimates · ")}{ivModel}{t(" IV model")}</span>
               </div>
             )}
 
@@ -794,14 +733,8 @@ export default function IvLab() {
 
         {!plans && !error && (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-            <div className="font-display text-lg text-ink-dim">
-              Engineer an IV line
-            </div>
-            <p className="max-w-sm text-sm text-ink-faint">
-              Pick a target, set the stat floors you want, choose a cake, then
-              solve. The plan shows the full lineage; your best owned parents sit
-              in the donors panel.
-            </p>
+            <div className="font-display text-lg text-ink-dim">{t("Engineer an IV line")}</div>
+            <p className="max-w-sm text-sm text-ink-faint">{t("Pick a target, set the stat floors you want, choose a cake, then solve. The plan shows the full lineage; your best owned parents sit in the donors panel.")}</p>
           </div>
         )}
           </>
@@ -813,7 +746,7 @@ export default function IvLab() {
           nameToId={nameToId}
           onRestore={restoreFromHistory}
           storageKey="pal-lab.ivLabHistory"
-          title="Recent IV lines"
+          title={t("Recent IV lines")}
           ariaLabel="IV line history"
           variant="ivlab"
         />
@@ -824,9 +757,10 @@ export default function IvLab() {
 
 /** One label/value row of the compact farm-setup readout. */
 function SetupLine({ label, value }: { label: string; value: string }) {
+  useLocale();
   return (
     <div className="flex items-center justify-between">
-      <span className="text-ink-faint">{label}</span>
+      <span className="text-ink-faint">{tr(label)}</span>
       <span className="text-ink-dim">{value}</span>
     </div>
   );

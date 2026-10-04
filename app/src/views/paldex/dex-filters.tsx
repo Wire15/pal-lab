@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // Deeper pal-dex filters (work suitability, rarity tier, guaranteed passive,
 // nocturnal), collapsed behind a single FILTERS button + popover so the index
 // toolbar stays legible at 1280. State + the pure predicate live here; the
@@ -87,26 +88,26 @@ function WorkStepper({
   level: number;
   onSet: (level: number) => void;
 }) {
+  useLocale();
   return (
     <div className="flex items-center gap-2 rounded-sm bg-abyss/60 px-1.5 py-1">
       <WorkGlyph kind={kind} size={15} />
-      <span className="min-w-0 flex-1 truncate text-[12px] text-ink-dim">{label}</span>
+      <span className="min-w-0 flex-1 truncate text-[12px] text-ink-dim">{tr(label)}</span>
       <span className="flex items-center gap-1">
         <button
           type="button"
-          aria-label={`Decrease ${label} minimum level`}
+          aria-label={t("Decrease {0} minimum level", [label])}
           disabled={level <= WORK_MIN}
           onClick={() => onSet(Math.max(WORK_MIN, level - 1))}
           className="flex h-5 w-5 items-center justify-center rounded-xs border border-line bg-panel font-mono text-[13px] leading-none text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
         >
           {"\u2212"}
         </button>
-        <span className="w-8 text-center font-mono text-[11px] leading-none tabular-nums text-amber">
-          Lv {level}
+        <span className="w-8 text-center font-mono text-[11px] leading-none tabular-nums text-amber">{t("Lv ")}{level}
         </span>
         <button
           type="button"
-          aria-label={`Increase ${label} minimum level`}
+          aria-label={t("Increase {0} minimum level", [label])}
           disabled={level >= WORK_MAX}
           onClick={() => onSet(Math.min(WORK_MAX, level + 1))}
           className="flex h-5 w-5 items-center justify-center rounded-xs border border-line bg-panel font-mono text-[13px] leading-none text-ink-dim transition-colors hover:bg-hover hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
@@ -130,6 +131,7 @@ export function DexFilterButton({
   onChange: (next: DexFilterState) => void;
   passiveOptions: PassiveOption[];
 }) {
+  useLocale();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const count = dexFilterCount(filters);
@@ -187,9 +189,7 @@ export function DexFilterButton({
       >
         <span aria-hidden className="text-[12px] leading-none">
           {"\u25a4"}
-        </span>
-        Filters
-        {count > 0 && (
+        </span>{t("Filters")}{count > 0 && (
           <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-amber px-1 font-mono text-[10px] font-semibold leading-none text-abyss tabular-nums">
             {count}
           </span>
@@ -199,19 +199,15 @@ export function DexFilterButton({
       {open && (
         <div
           role="dialog"
-          aria-label="Dex filters"
+          aria-label={t("Dex filters")}
           className="absolute right-0 top-full z-50 mt-2 w-[344px] rounded-md border border-line bg-panel p-3 shadow-lg shadow-abyss/60 ring-1 ring-abyss/50"
         >
           {/* WORK */}
           <section>
             <div className="mb-1.5 flex items-baseline justify-between">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                Work
-              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Work")}</span>
               {selectedWork.length > 1 && (
-                <span className="font-mono text-[9px] uppercase tracking-wider text-ink-faint">
-                  all required
-                </span>
+                <span className="font-mono text-[9px] uppercase tracking-wider text-ink-faint">{t("all required")}</span>
               )}
             </div>
             <div className="grid grid-cols-6 gap-1">
@@ -222,7 +218,7 @@ export function DexFilterButton({
                     key={m.kind}
                     type="button"
                     onClick={() => toggleWork(m.kind)}
-                    title={m.label}
+                    title={tr(m.label)}
                     aria-pressed={active}
                     className={`group flex items-center justify-center rounded-sm border p-1 transition-colors ${
                       active
@@ -249,7 +245,7 @@ export function DexFilterButton({
                   <WorkStepper
                     key={m.kind}
                     kind={m.kind}
-                    label={m.label}
+                    label={tr(m.label)}
                     level={filters.work[m.kind]}
                     onSet={(lvl) => setWorkLevel(m.kind, lvl)}
                   />
@@ -260,9 +256,7 @@ export function DexFilterButton({
 
           {/* RARITY */}
           <section className="mt-3 border-t border-line-soft pt-3">
-            <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-              Rarity
-            </span>
+            <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Rarity")}</span>
             <div className="flex flex-wrap gap-1.5">
               {RARITY_TIERS.map((t) => {
                 const active = filters.rarities.has(t.name);
@@ -287,7 +281,7 @@ export function DexFilterButton({
                         : "border-line bg-abyss/50 text-ink-dim hover:bg-hover hover:text-ink"
                     }`}
                   >
-                    {t.name}
+                    {tr(t.name)}
                   </button>
                 );
               })}
@@ -298,13 +292,9 @@ export function DexFilterButton({
           {passiveOptions.length > 0 && (
             <section className="mt-3 border-t border-line-soft pt-3">
               <div className="mb-1.5 flex items-baseline justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-                  Guaranteed passive
-                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Guaranteed passive")}</span>
                 {filters.passives.size > 1 && (
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-ink-faint">
-                    any of
-                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-ink-faint">{t("any of")}</span>
                 )}
               </div>
               <div className="flex max-h-44 flex-col gap-1 overflow-auto pr-0.5">
@@ -330,9 +320,7 @@ export function DexFilterButton({
 
           {/* NIGHT */}
           <section className="mt-3 border-t border-line-soft pt-3">
-            <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-              Time
-            </span>
+            <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wider text-ink-faint">{t("Time")}</span>
             <button
               type="button"
               onClick={() => onChange({ ...filters, nocturnal: !filters.nocturnal })}
@@ -345,9 +333,7 @@ export function DexFilterButton({
             >
               <span aria-hidden className="text-[13px] leading-none">
                 {MOON}
-              </span>
-              Nocturnal only
-            </button>
+              </span>{t("Nocturnal only")}</button>
           </section>
         </div>
       )}

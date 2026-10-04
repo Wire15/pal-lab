@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../../i18n";
 // Spawn overlay control: a species search combobox (same datalist pattern as
 // the Solver's target field) plus, once a species is chosen, a legend chip
 // showing the species, its on-layer point count and level range, a day/night
@@ -32,6 +33,7 @@ export default function SpawnSearch({
   onClear: () => void;
   onOpenDex: (id: string) => void;
 }) {
+  useLocale();
   const [text, setText] = useState("");
   const nameToId = new Map(options.map((o) => [o.name, o.id]));
 
@@ -43,24 +45,23 @@ export default function SpawnSearch({
           type="button"
           onClick={() => onOpenDex(selectedId)}
           className="tracking-wide text-el-leaf transition-colors hover:text-ink"
-          title="Open in Pal-dex"
+          title={t("Open in Pal-dex")}
         >
           {selectedName ?? selectedId}
         </button>
         <span className="tabular-nums text-ink-dim">
-          {legend.count} {legend.count === 1 ? "site" : "sites"}
+          {legend.count} {legend.count === 1 ? t("site") : t("sites")}
         </span>
         <span className="text-line">·</span>
-        <span className="tabular-nums text-ink-faint">
-          Lv {legend.lv[0] === legend.lv[1] ? legend.lv[0] : `${legend.lv[0]}\u2013${legend.lv[1]}`}
+        <span className="tabular-nums text-ink-faint">{t("Lv ")}{legend.lv[0] === legend.lv[1] ? legend.lv[0] : t("{0}–{1}", [legend.lv[0], legend.lv[1]])}
         </span>
         {legend.hasNight && (
-          <span className="text-el-dark" title="Night-only spawns present">
+          <span className="text-el-dark" title={t("Night-only spawns present")}>
             {"\u263e"}
           </span>
         )}
         {legend.hasDay && legend.hasNight && (
-          <span className="text-amber" title="Day spawns present">
+          <span className="text-amber" title={t("Day spawns present")}>
             {"\u2600"}
           </span>
         )}
@@ -70,7 +71,7 @@ export default function SpawnSearch({
             setText("");
             onClear();
           }}
-          aria-label="Clear spawn overlay"
+          aria-label={t("Clear spawn overlay")}
           className="ml-0.5 flex h-5 w-5 items-center justify-center rounded-sm text-ink-faint transition-colors hover:bg-hover hover:text-ink"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -90,7 +91,7 @@ export default function SpawnSearch({
       <input
         className="w-40 min-w-0 bg-transparent py-0.5 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:outline-none"
         list="spawn-species-options"
-        placeholder={"Find spawns\u2026"}
+        placeholder={tr("Find spawns\u2026")}
         value={text}
         onChange={(e) => {
           const v = e.currentTarget.value;

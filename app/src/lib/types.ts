@@ -677,7 +677,7 @@ export interface LearnMoveEntry {
   level: number;
 }
 
-/** One per-pal item drop (`DT_PalDropItem`), as shown in palpedia's drop rows.
+/** One per-pal item drop from the game table `DT_PalDropItem`.
  * `rate` is a PERCENT in 0..100 (100 = always drops). */
 export interface ItemDrop {
   /** Raw item id (e.g. "Wool", "ElectricOrgan"). */

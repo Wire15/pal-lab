@@ -1,3 +1,4 @@
+import { t, tr, useLocale } from "../i18n";
 // The breeding-step briefing card that opens off a plan-graph junction chip:
 // the "what does this one breed step actually take" tooltip. Mirrors
 // PalHoverCard's positioning machinery verbatim — a `position: fixed`, measured,
@@ -89,6 +90,7 @@ function poolFor(
 
 /** Mono uppercase section label — the card's shared row heading idiom. */
 function Label({ children }: { children: React.ReactNode }) {
+  useLocale();
   return (
     <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-ink-faint">
       {children}
@@ -112,6 +114,7 @@ export function BreedHoverCard({
   resolvePal: (id?: Guid | null) => OwnedPal | undefined;
   children: ReactElement;
 }) {
+  useLocale();
   const triggerRef = useRef<HTMLElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const timer = useRef<number | null>(null);
@@ -231,8 +234,7 @@ export function BreedHoverCard({
   return (
     <>
       {trigger}
-      {open &&
-        createPortal(
+      {open && createPortal(
           <div
             ref={cardRef}
             role="tooltip"
@@ -273,7 +275,7 @@ export function BreedHoverCard({
                   className="min-w-0 truncate font-semibold text-ink"
                   title={child.species_name}
                 >
-                  {child.species_name}
+                  {tr(child.species_name)}
                 </span>
               </div>
             </div>
@@ -315,7 +317,7 @@ export function BreedHoverCard({
                   <>
                     <span>
                       ~<span className="font-semibold text-ink">{eggs}</span> egg
-                      {eggs === 1 ? "" : "s"}
+                      {eggs === 1 ? "" : t("s")}
                     </span>
                     {timePerEgg !== null && (
                       <>
@@ -378,7 +380,7 @@ export function BreedHoverCard({
                       <div
                         key={`${p}-${i}`}
                         className="rounded-sm ring-1 ring-amber"
-                        title="Must be inherited by the child"
+                        title={t("Must be inherited by the child")}
                       >
                         <PassiveStrip id={p} size="sm" />
                       </div>
